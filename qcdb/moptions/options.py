@@ -29,7 +29,7 @@
 from __future__ import absolute_import
 from __future__ import print_function
 import math
-from .exceptions import *
+from ..exceptions import *
 
 
 def format_option_for_cfour(opt, val):
@@ -46,13 +46,7 @@ def format_option_for_cfour(opt, val):
                 raise ValidationError('Option has level of array nesting inconsistent with CFOUR.')
             else:
                 # option is 2D array
-                for no in range(len(val)):
-                    for ni in range(len(val[no])):
-                        text += str(val[no][ni])
-                        if ni < (len(val[no]) - 1):
-                            text += '-'
-                    if no < (len(val) - 1):
-                        text += '/'
+                text += '/'.join('-'.join(map(str, no)) for no in val)
         else:
             # option is plain 1D array
             if opt == 'CFOUR_ESTATE_SYM':
@@ -69,12 +63,13 @@ def format_option_for_cfour(opt, val):
         text += '0'
 
     # Transform the basis sets that *must* be lowercase (dratted c4 input)
-    elif (opt == 'CFOUR_BASIS') and (val.upper() in ['SVP', 'DZP', 'TZP', 'TZP2P', 'QZ2P', 'PZ3D2F', '13S9P4D3F']):
+    elif (opt == 'CFOUR_BASIS' and
+          val.upper() in ['SVP', 'DZP', 'TZP', 'TZP2P', 'QZ2P', 'PZ3D2F', '13S9P4D3F']):
         text += str(val.lower())
 
     # No Transform
     else:
-        text += str(val)
+        text += str(val).upper()
 
     return opt[6:], text
 
@@ -86,16 +81,18 @@ def prepare_options_for_cfour(options):
     a CFOUR deck with those options.
 
     """
-    text = ''
+    text = []
 
-    for opt, val in options['CFOUR'].items():
+    for opt, val in sorted(options['CFOUR'].items()):
         if opt.startswith('CFOUR_'):
             if val['has_changed']:
-                if not text:
-                    text += """*CFOUR("""
-                text += """%s=%s\n""" % (format_option_for_cfour(opt, val['value']))
-    if text:
-        text = text[:-1] + ')\n\n'
+                #if not text:
+                #    text += """*CFOUR("""
+                #text += """%s=%s\n""" % (format_option_for_cfour(opt, val['value']))
+                text.append('='.join(format_option_for_cfour(opt, val['value'])))
+
+    text = '\n'.join(text)
+    text = '\n\n*CFOUR(' + text + ')\n\n'
 
     return text
 
@@ -209,8 +206,8 @@ def reconcile_options(full, partial):
                     full[module][kw]['has_changed'] = True
                     #print '@P4C4 Overwriting %s with %s' % (kw, kwprop['value'])
 
-    except KeyError as e:  # not expected but want to trap
-        raise ValidationError("""Unexpected KeyError reconciling keywords: %s.""" % (repr(e)))
+    except KeyError as err:  # not expected but want to trap
+        raise ValidationError("""Unexpected KeyError reconciling keywords: {}.""".format(repr(err)))
 
     return full
 

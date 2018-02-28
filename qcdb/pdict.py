@@ -29,6 +29,7 @@
 from __future__ import absolute_import
 from __future__ import print_function
 from decimal import Decimal, ROUND_FLOOR, ROUND_CEILING
+
 from .exceptions import *
 
 
@@ -37,12 +38,13 @@ class PreservingDict(dict):
     files. Extends the dictionary object to (1) store key as all-caps
     version of itself and (2) validate value for duplicate values for the
     same key by testing which has more decimal places and whether value
-    the same within a plausing rounding error. Allows consistency checks
+    the same within a plausible rounding error. Allows consistency checks
     when parsing output files without loss of precision.
 
     """
 
     def __init__(self, *args, **kwargs):
+        self.verbose = kwargs.get('verbose', 1)
         self.update(*args, **kwargs)
 
     def __setitem__(self, key, value):
@@ -65,15 +67,20 @@ class PreservingDict(dict):
             places = max(places, Decimal('1E-11'))  # for computed psivars
             #print('FLOOR: ', self[key].quantize(places, rounding=ROUND_FLOOR) - value.quantize(places, rounding=ROUND_FLOOR))
             #print('CEIL:  ', self[key].quantize(places, rounding=ROUND_CEILING) - value.quantize(places, rounding=ROUND_CEILING))
-            if (self[key].quantize(places, rounding=ROUND_CEILING).compare(value.quantize(places, rounding=ROUND_CEILING)) != 0) and \
-               (self[key].quantize(places, rounding=ROUND_FLOOR).compare(value.quantize(places, rounding=ROUND_FLOOR)) != 0):
+            if ((self[key].quantize(places, rounding=ROUND_CEILING).compare(
+                     value.quantize(places, rounding=ROUND_CEILING)) != 0) and
+                (self[key].quantize(places, rounding=ROUND_FLOOR).compare(
+                     value.quantize(places, rounding=ROUND_FLOOR)) != 0)):
                 raise ParsingValidationError(
                     """Output file yielded both %s and %s as values for quantity %s.""" %
                     (self[key].to_eng_string(), value.to_eng_string(), key))
-            #print 'Resetting variable %s to %s' % (key, best_value.to_eng_string())
+            if self.verbose >= 2:
+                print("""Resetting variable {} to {}""".format(key, best_value.to_eng_string()))
         else:
             best_value = value
-            #print 'Setting   variable %s to %s' % (key, best_value.to_eng_string())
+            if self.verbose >= 2:
+                print("""Setting   variable {} to {}""".format(key, best_value.to_eng_string()))
+
         super(PreservingDict, self).__setitem__(key, best_value)
 
     def update(self, *args, **kwargs):
@@ -103,5 +110,5 @@ if __name__ == '__main__':
     c4info['curl'] = '-437.123457'
     c4info['curl'] = '-437.1234444'  # fails
     c4info['curl'] = '-437.123456789'
-    #c4info['curl'] = '-437.1234567779'  # fails
+    c4info['curl'] = '-437.1234567779'  # fails
     print(c4info)

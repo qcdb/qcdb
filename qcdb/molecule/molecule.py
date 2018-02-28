@@ -37,10 +37,10 @@ import collections
 import numpy as np
 
 from .libmintsmolecule import *
-from .psiutil import compare_values, compare_integers, compare_molrecs
-from .util import unnp
-from . import molparse
-from .bfs import BFS
+from ..testutil import compare_values, compare_integers, compare_molrecs
+from ..util import unnp
+from .. import molparse
+from ..bfs import BFS
 
 if sys.version_info >= (3,0):
     basestring = str
@@ -1210,8 +1210,101 @@ class Molecule(LibmintsMolecule):
             return Molecule.from_dict(molrec)
 
 
+#    def to_string(self, dtype, units='Angstrom', atom_format=None, ghost_format=None, width=17, prec=12):
+#        """Format a string representation of QM molecule.
+#
+#        Parameters
+#        ----------
+#        dtype : {'xyz'}
+#            Overall string format. Note that it's possible to request variations
+#            that don't fit the dtype spec so may not be re-readable (e.g., ghost
+#            and mass in nucleus label with 'xyz').
+#        units : {'Angstrom', 'Bohr'}
+#            Units in which to write string. There is not an option to write in
+#            intrinsic/input units. For `dtype='xyz', units='Bohr'` where the
+#            format doesn't have a slot to specify units, "au" is added so that
+#            readable as 'xyz+'.
+#        atom_format : str, optional
+#            General format is '{elem}'. A format string that may contain fields
+#            'elea' (-1 will be ''), 'elez', 'elem', 'mass', 'elbl' in any
+#            arrangement. For example if a format naturally uses element symbol
+#            and you want atomic number instead with mass info, too, pass
+#            '{elez}@{mass}'. See `ghost_format` for handling field 'real'.
+#        ghost_format : str, optional
+#            General format is '@{elem}'. Like `atom_format`, but this formatter
+#            is used when `real=False`. To suppress ghost atoms, use `ghost_format=''`.
+#        width : int, optional
+#            Field width for formatting coordinate float.
+#        prec : int, optional
+#            Number of decimal places for formatting coordinate float.
+#
+#        Returns
+#        -------
+#        smol : str
+#            String representation of the molecule.
+#
+#        """
+#        def _atoms_formatter(molrec, atom_format, ghost_format, width, prec, sp):
+#            geom = molrec['geom'].reshape((-1, 3))
+#            nat = geom.shape[0]
+#            fxyz = """{:>{width}.{prec}f}"""
+#            sp = """{:{sp}}""".format('', sp=sp)
+#
+#            atoms = []
+#            for iat in range(nat):
+#                atom = []
+#                atominfo = {'elea': '' if molrec['elea'][iat] == -1 else molrec['elea'][iat],
+#                            'elez': molrec['elez'][iat],
+#                            'elem': molrec['elem'][iat],
+#                            'mass': molrec['mass'][iat],
+#                            'elbl': molrec['elbl'][iat]}
+#
+#                if molrec['real'][iat]:
+#                    nuc = """{:{width}}""".format(atom_format.format(**atominfo), width=width)
+#                    atom.append(nuc)
+#                else:
+#                    if ghost_format == '':
+#                        continue
+#                    else:
+#                        nuc = """{:{width}}""".format(ghost_format.format(**atominfo), width=width)
+#                        atom.append(nuc)
+#
+#                atom.extend([fxyz.format(x, width=width, prec=prec) for x in geom[iat]])
+#                atoms.append(sp.join(atom))
+#
+#            return atoms
+#
+#        molrec = self.to_dict(force_units=units, np_out=True)
+#
+#        if dtype == 'xyz':
+#            atom_format = '{elem}' if atom_format is None else atom_format
+#            ghost_format = '@{elem}' if ghost_format is None else ghost_format
+#
+#            atoms = _atoms_formatter(molrec, atom_format, ghost_format, width, prec, 2)
+#            nat = len(atoms)
+#
+#            first_line = """{}{}""".format(str(nat), ' au' if units == 'Bohr' else '')
+#            smol = [first_line, '']
+#            smol.extend(atoms)
+#
+#        return '\n'.join(smol)
+
+    def _raw_to_string(self, dtype, units='Angstrom', atom_format=None, ghost_format=None, width=17, prec=12):
+        """Format a string representation of QM molecule."""
+
+        #molrec = self.to_dict(force_units=units, np_out=True)
+        molrec = self.to_dict(np_out=True)
+        smol = molparse.to_string(molrec,
+                                  dtype=dtype,
+                                  units=units,
+                                  atom_format=atom_format,
+                                  ghost_format=ghost_format,
+                                  width=width,
+                                  prec=prec)
+        return smol
+
     @staticmethod
-    def _raw_to_dict(self, force_c1=False, force_au=False, np_out=True):
+    def _raw_to_dict(self, force_c1=False, force_units=False, np_out=True):
         """Serializes instance into Molecule dictionary."""
 
         self.update_geometry()
@@ -1220,8 +1313,10 @@ class Molecule(LibmintsMolecule):
         if self.name() not in ['', 'default']:
             molrec['name'] = self.name()
 
-        if force_au:
+        if force_units == 'Bohr':
             molrec['units'] = 'Bohr'
+        elif force_units == 'Angstrom':
+            molrec['units'] = 'Angstrom'
         else:
             units = self.units()
             molrec['units'] = units
@@ -1240,9 +1335,9 @@ class Molecule(LibmintsMolecule):
         # TODO zmat, geometry_variables
 
         nat = self.natom()
-        geom = np.array(self.geometry())
-        if not force_au:
-            geom /= self.input_units_to_au()
+        geom = np.array(self.geometry())  # [a0]
+        if molrec['units'] == 'Angstrom':
+            geom *= psi_bohr2angstroms #self.input_units_to_au()
         molrec['geom'] = geom.reshape((-1))
 
         molrec['elea'] = np.array([self.mass_number(at) for at in range(nat)])
@@ -1567,7 +1662,7 @@ class Molecule(LibmintsMolecule):
             determined by `concern_mol` type.
 
         """
-        from .align import B787
+        from ..align import B787
 
         rgeom, rmass, relem, relez, runiq = ref_mol.to_arrays()
         cgeom, cmass, celem, celez, cuniq = concern_mol.to_arrays()
@@ -1666,7 +1761,7 @@ class Molecule(LibmintsMolecule):
         None
 
         """
-        from .align import compute_scramble
+        from ..align import compute_scramble
 
         rgeom, rmass, relem, relez, runiq = ref_mol.to_arrays()
         nat = rgeom.shape[0]
@@ -1723,17 +1818,18 @@ class Molecule(LibmintsMolecule):
 
 
 # Attach methods to qcdb.Molecule class
-from .interface_dftd3 import run_dftd3 as _dftd3_qcdb_yo
-Molecule.run_dftd3 = _dftd3_qcdb_yo
+#from .interface_dftd3 import run_dftd3 as _dftd3_qcdb_yo
+#Molecule.run_dftd3 = _dftd3_qcdb_yo
 from .parker import xyz2mol as _parker_xyz2mol_yo
 Molecule.format_molecule_for_mol2 = _parker_xyz2mol_yo
 from .parker import bond_profile as _parker_bondprofile_yo
 Molecule.bond_profile = _parker_bondprofile_yo
-from .interface_gcp import run_gcp as _gcp_qcdb_yo
-Molecule.run_gcp = _gcp_qcdb_yo
+#from .interface_gcp import run_gcp as _gcp_qcdb_yo
+#Molecule.run_gcp = _gcp_qcdb_yo
 
 Molecule.to_arrays = Molecule._raw_to_arrays
 Molecule.to_dict = Molecule._raw_to_dict
 Molecule.BFS = Molecule._raw_BFS
 Molecule.B787 = Molecule._raw_B787
 Molecule.scramble = Molecule._raw_scramble
+Molecule.to_string = Molecule._raw_to_string

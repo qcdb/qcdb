@@ -42,7 +42,7 @@ try:
 except ImportError:
     from .exceptions import *
     isP4regime = False
-from .p4regex import *
+#from .p4regex import *
 from .molecule import Molecule
 
 
@@ -83,9 +83,9 @@ def run_gcp(self, func=None, dertype=None, verbose=False):  # dashlvl=None, dash
 
     if dertype is None:
         dertype = -1
-    elif der0th.match(str(dertype)):
+    elif util.der0th.match(str(dertype)):
         dertype = 0
-    elif der1st.match(str(dertype)):
+    elif util.der1st.match(str(dertype)):
         dertype = 1
 #    elif der2nd.match(str(dertype)):
 #        raise ValidationError('Requested derivative level \'dertype\' %s not valid for run_dftd3.' % (dertype))
@@ -151,12 +151,13 @@ def run_gcp(self, func=None, dertype=None, verbose=False):  # dashlvl=None, dash
     lenv = {k: v for k, v in lenv.items() if v is not None}
 
     # Find out if running from Psi4 for scratch details and such
-    try:
-        import psi4
-    except ImportError as err:
-        isP4regime = False
-    else:
-        isP4regime = True
+#    try:
+#        import psi4
+#    except ImportError as err:
+#        isP4regime = False
+#    else:
+#        isP4regime = True
+    isP4regime = False
 
     # Setup unique scratch directory and move in
     current_directory = os.getcwd()

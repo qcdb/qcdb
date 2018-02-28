@@ -32,13 +32,13 @@ import re
 import struct
 from collections import defaultdict
 from decimal import Decimal
-from .pdict import PreservingDict
-from .periodictable import *
-from .physconst import *
-from .exceptions import *
-from .molecule import Molecule
-from .orient import OrientMols
-from .options import conv_float2negexp
+
+from .. import periodictable
+from .. exceptions import *
+from .. molecule import Molecule
+from .. physconst import *
+from ..moptions.options import conv_float2negexp
+from ..pdict import PreservingDict
 
 
 def harvest_output(outtext):
@@ -52,7 +52,7 @@ def harvest_output(outtext):
 
     #for outpass in re.split(r'--invoking executable xjoda', outtext, re.MULTILINE):
     for outpass in re.split(r'JODA beginning optimization cycle', outtext, re.MULTILINE):
-        psivar, c4coord, c4grad = harvest_outfile_pass(outpass)
+        psivar, c4coord, c4grad, version, error = harvest_outfile_pass(outpass)
         pass_psivar.append(psivar)
         pass_coord.append(c4coord)
         pass_grad.append(c4grad)
@@ -75,7 +75,7 @@ def harvest_output(outtext):
 #    for item in pass_grad[retindx]:
 #        print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
 
-    return pass_psivar[retindx], pass_coord[retindx], pass_grad[retindx]
+    return pass_psivar[retindx], pass_coord[retindx], pass_grad[retindx], version, error
 
 
 def harvest_outfile_pass(outtext):
@@ -86,6 +86,8 @@ def harvest_outfile_pass(outtext):
     psivar = PreservingDict()
     psivar_coord = None
     psivar_grad = None
+    version = ''
+    error = ''
 
 #    TODO: BCC
 #          CI
@@ -94,6 +96,13 @@ def harvest_outfile_pass(outtext):
 #          vcc/ecc
 
     NUMBER = "((?:[-+]?\\d*\\.\\d+(?:[DdEe][-+]?\\d+)?)|(?:[-+]?\\d+\\.\\d*(?:[DdEe][-+]?\\d+)?))"
+
+    # Process version
+    mobj = re.search(r'^\s*' + r'Version' + r'\s+' + r'(?P<version>[\w.]+)' + r'\s*$',
+        outtext, re.MULTILINE)
+    if mobj:
+        print('matched version')
+        version = mobj.group('version')
 
     # Process NRE
     mobj = re.search(r'^\s+' + r'(?:Nuclear repulsion energy :)' + r'\s+' + NUMBER + r'\s+a\.u\.\s*$',
@@ -176,10 +185,23 @@ def harvest_outfile_pass(outtext):
         print('matched mp2ro')
         psivar['MP2 SAME-SPIN CORRELATION ENERGY'] = Decimal(mobj.group(1)) + Decimal(mobj.group(2))
         psivar['MP2 OPPOSITE-SPIN CORRELATION ENERGY'] = mobj.group(3)
-        psivar['MP2 SINGLES ENERGY'] = mobj.group(4)
+        psivar['MP2 SINGLES CORRELATION ENERGY'] = mobj.group(4)
         psivar['MP2 CORRELATION ENERGY'] = Decimal(mobj.group(1)) + \
             Decimal(mobj.group(2)) + Decimal(mobj.group(3)) + Decimal(mobj.group(4))
         psivar['MP2 TOTAL ENERGY'] = mobj.group(6)
+
+    mobj = re.search(
+        r'^\s+' + r'(?:S-MBPT\(2\))' + r'\s+' + r'(?P<sgl>' + NUMBER + r')' + r'\s+' + NUMBER + r'\s*' +
+        r'^\s+' + r'(?:D-MBPT\(2\))' + r'\s+' + r'(?P<dbl>' + NUMBER + r')' + r'\s+' + 
+                                                r'(?P<mp2tot>' + NUMBER + r')' + r'\s*$',
+        outtext, re.MULTILINE)
+    if mobj:
+        print('matched mp2ro2')
+        #psivar['MP2 SAME-SPIN CORRELATION ENERGY'] = Decimal(mobj.group(1)) + Decimal(mobj.group(2))
+        #psivar['MP2 OPPOSITE-SPIN CORRELATION ENERGY'] = mobj.group(3)
+        psivar['MP2 SINGLES CORRELATION ENERGY'] = mobj.group('sgl')
+        psivar['MP2 CORRELATION ENERGY'] = Decimal(mobj.group('sgl')) + Decimal(mobj.group('dbl'))
+        psivar['MP2 TOTAL ENERGY'] = mobj.group('mp2tot')
 
     # Process MP3
     mobj = re.search(
@@ -305,6 +327,19 @@ def harvest_outfile_pass(outtext):
         psivar['%s CORRELATION ENERGY' % (mobj.group('iterCC'))] = mobj.group(3)
         psivar['%s TOTAL ENERGY' % (mobj.group('iterCC'))] = mobj.group(4)
 
+    mobj = re.search(
+        r'^\s+' + r'(?:\d+)' + r'\s+' + r'(?P<corl>' + NUMBER + r')\s+' + 
+                  NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
+        r'^\s*' +
+        r'^\s*' + r'(?:\w+ iterations converged .*?)' +
+        r'^\s*' +
+        r'^\s*' + r'(?:Total (?P<iterCC>\w+) energy:)' + r'\s+' + r'(?P<tot>' + NUMBER + ')\s*$',
+        outtext, re.MULTILINE | re.DOTALL)
+    if mobj:
+        print('matched ncc cc iter')
+        psivar['{} CORRELATION ENERGY'.format(mobj.group('iterCC'))] = mobj.group('corl')
+        psivar['{} TOTAL ENERGY'.format(mobj.group('iterCC'))] = mobj.group('tot')
+
     # Process CC(T)
     mobj = re.search(
         r'^\s+' + r'(?:E\(SCF\))' + r'\s+=\s+' + NUMBER + r'\s+a\.u\.\s*' +
@@ -320,6 +355,17 @@ def harvest_outfile_pass(outtext):
         psivar['(T) CORRECTION ENERGY'] = Decimal(mobj.group(3)) - Decimal(mobj.group(2))
         psivar['CCSD(T) CORRELATION ENERGY'] = Decimal(mobj.group(3)) - Decimal(mobj.group(1))
         psivar['CCSD(T) TOTAL ENERGY'] = mobj.group(3)
+
+    mobj = re.search(
+        r'^\s+' + r'(?:E\(CCSD\))' + r'\s+=\s+' + NUMBER + r'\s*' +
+        r'(?:.*?)' +
+        r'^\s+' + r'(?:E\(CCSD\(T\)\))' + r'\s+=\s+' + NUMBER + r'\s*$',
+        outtext, re.MULTILINE | re.DOTALL)
+    if mobj:
+        print('matched ccsd(t) vcc v2')
+        psivar['CCSD TOTAL ENERGY'] = mobj.group(1)
+        psivar['(T) CORRECTION ENERGY'] = Decimal(mobj.group(2)) - Decimal(mobj.group(1))
+        psivar['CCSD(T) TOTAL ENERGY'] = mobj.group(2)
 
     mobj = re.search(
         r'^\s+' + r'(?:E\(SCF\))' + r'\s+=\s*' + NUMBER + r'\s+a\.u\.\s*' +
@@ -367,6 +413,17 @@ def harvest_outfile_pass(outtext):
         psivar['(T) CORRECTION ENERGY'] = Decimal(mobj.group(2)) - Decimal(mobj.group(1))
         psivar['CCSD(T) CORRELATION ENERGY'] = Decimal(mobj.group(2)) - psivar['SCF TOTAL ENERGY']
         psivar['CCSD(T) TOTAL ENERGY'] = mobj.group(2)
+
+    mobj = re.search(
+        r'^\s+' + r'(?:CCSD\(T\) contribution:)\s+' + r'(?P<tcorr>' + NUMBER + ')' + r'\s*'
+        r'^\s*' + r'(?:CCSD\[T\] contribution:)\s+' + r'(?P<bkttcorr>' + NUMBER + ')' + r'\s*'
+        r'^\s*' + r'(?:Total CCSD\(T\) energy:)\s+' + r'(?P<ttot>' + NUMBER + ')' + r'\s*$',
+        outtext, re.MULTILINE | re.DOTALL)
+    if mobj:
+        print('matched ccsd(t) ncc')
+        psivar['(T) CORRECTION ENERGY'] = mobj.group('tcorr')
+        psivar['[T] CORRECTION ENERGY'] = mobj.group('bkttcorr')
+        psivar['CCSD(T) TOTAL ENERGY'] = mobj.group('ttot')
 
     # Process SCS-CC
     mobj = re.search(
@@ -439,7 +496,8 @@ def harvest_outfile_pass(outtext):
             lline = line.split()
             molxyz += '%s %16s %16s %16s\n' % (lline[0], lline[-3], lline[-2], lline[-1])
         # Rather a dinky Molecule as no ghost, charge, or multiplicity
-        psivar_coord = Molecule.init_with_xyz(molxyz, no_com=True, no_reorient=True, contentsNotFilename=True)
+        #psivar_coord = Molecule.init_with_xyz(molxyz, no_com=True, no_reorient=True, contentsNotFilename=True)
+        psivar_coord = Molecule.from_string(molxyz, dtype='xyz+', fix_com=True, fix_orientation=True)
 
     # Process atom geometry
     mobj = re.search(
@@ -458,7 +516,9 @@ def harvest_outfile_pass(outtext):
         outtext, re.MULTILINE)
     if mobj:
         print('matched error')
-        psivar['CFOUR ERROR CODE'] = mobj.group(2)
+        #psivar['CFOUR ERROR CODE'] = mobj.group(2)
+        if int(mobj.group(2)) != 0:
+            error += '--executable {} finished with status {}'.format(mobj.group(1), mobj.group(2))
 
     # Process CURRENT energies (TODO: needs better way)
     if 'SCF TOTAL ENERGY' in psivar:
@@ -503,7 +563,7 @@ def harvest_outfile_pass(outtext):
         psivar['CURRENT CORRELATION ENERGY'] = psivar['CCSDT CORRELATION ENERGY']
         psivar['CURRENT ENERGY'] = psivar['CCSDT TOTAL ENERGY']
 
-    return psivar, psivar_coord, psivar_grad
+    return psivar, psivar_coord, psivar_grad, version, error
 
 
 def harvest(p4Mol, c4out, **largs):
@@ -516,7 +576,7 @@ def harvest(p4Mol, c4out, **largs):
 
     """
     # Collect results from output file and subsidiary files
-    outPsivar, outMol, outGrad = harvest_output(c4out)
+    outPsivar, outMol, outGrad, version, error = harvest_output(c4out)
 
     if 'GRD' in largs:
         grdMol, grdGrad = harvest_GRD(largs['GRD'])
@@ -569,10 +629,18 @@ def harvest(p4Mol, c4out, **largs):
         oriGrad = p4c4.transform_gradient(grdGrad)
         oriDip = None if dipolDip is None else p4c4.transform_vector(dipolDip)
     elif p4Mol and outMol:
-        p4c4 = OrientMols(p4Mol, outMol)
-        oriCoord = p4c4.transform_coordinates2(outMol)
+        rmsd, mill, amol = outMol.B787(p4Mol, atoms_map=True, mols_align=True, verbose=0)
+
+        oriCoord = mill.align_coordinates(outMol.geometry(np_out=True))
         oriGrad = None
-        oriDip = None if dipolDip is None else p4c4.transform_vector(dipolDip)
+        if dipolDip is None:
+            oriDip = None
+        else:
+            oriDip = mill.align_vector(dipolDip)
+        #p4c4 = OrientMols(p4Mol, outMol)
+        #oriCoord = p4c4.transform_coordinates2(outMol)
+        #oriGrad = None
+        #oriDip = None if dipolDip is None else p4c4.transform_vector(dipolDip)
     elif outMol:
         oriCoord = None
         oriGrad = None
@@ -607,7 +675,7 @@ def harvest(p4Mol, c4out, **largs):
     else:
         retGrad = None
 
-    return outPsivar, retGrad, retMol
+    return outPsivar, retGrad, retMol, version, error
 
 
 def harvest_GRD(grd):
@@ -792,7 +860,7 @@ def muster_psi4options(opt):
 #   Specification options
 #   Massaging options
 
-#   * No program's defaults should be tampered with w/o provokation
+#   * No program's defaults should be tampered with w/o provocation
 
 #   want all defaults applied to all programs, so p4 scf_conv is 5 and c4 scf_conv is 5
 #   want separate regimes, so conv 6 covers all the p4 parts and cfour_conv = 8 covers the c4 parts
@@ -837,7 +905,7 @@ def muster_modelchem(name, dertype):
     else:
         raise ValidationError("""Requested Cfour dertype %d is not available.""" % (dertype))
 
-    if lowername == 'cfour':
+    if lowername == 'c4-cfour':
         pass
     elif lowername in ['c4-scf', 'c4-hf']:
         options['CFOUR']['CFOUR_CALC_LEVEL']['value'] = 'SCF'
@@ -904,7 +972,7 @@ def cfour_list():
 
     """
     val = []
-    val.append('cfour')
+    val.append('c4-cfour')
     val.append('c4-scf')
     val.append('c4-hf')
     val.append('c4-mp2')

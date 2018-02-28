@@ -30,8 +30,10 @@ Module to hold and distribute the -D dispersion correction parameters.
 """
 from __future__ import absolute_import
 from __future__ import print_function
+import copy
 try:
-    from .p4regex import *
+    #from .p4regex import *
+    pass
 except ImportError:
     from .exceptions import *
 
@@ -216,35 +218,44 @@ dashcoeff = {
 full_dash_keys = list(dashcoeff) + [x.replace('-', '') for x in list(dash_alias)]
 
 
-def dash_server(func, dashlvl):
+def dash_server(func, dashlvl, return_levelkeys=False, return_triplet=False):
     """ Returns the dictionary of keys for default empirical parameters"""
 
-    # Validate input arguments
     dashlvl = dashlvl.lower()
     dashlvleff = dash_alias['-' + dashlvl][1:] if ('-' + dashlvl) in dash_alias.keys() else dashlvl
 
     if dashlvleff not in dashcoeff.keys():
-        raise ValidationError("""-D correction level %s is not available. Choose among %s.""" % (dashlvl,
-                                                                                                 dashcoeff.keys()))
+        raise ValidationError("""Requested -D correction level ({}) not among ({})""".
+            format(dashlvl, dashcoeff.keys()))
+
+    if return_levelkeys:
+        return dashlvleff, dashcoeff[dashlvleff]['b3lyp'].keys()
 
     func = func.lower()
     if func not in dashcoeff[dashlvleff].keys():
         raise ValidationError("""Functional %s is not available for -D level %s.""" % (func, dashlvl))
 
-    # Return the values
-    return dashcoeff[dashlvleff][func]
+    params = copy.deepcopy(dashcoeff[dashlvleff][func])
+
+    if return_triplet:
+        return func, dashlvleff, params
+    else:
+        return params
 
 
 def dftd3_coeff_formatter(dashlvl, dashcoeff):
-    # Return strings for dftd3 program parameter file
-    #            s6 rs6 s18 rs8 alpha6 version
-    #   d2p4:    s6 sr6=1.1 s8=0.0 a2=None alpha6=20.0 version=2
-    #   d2gr:    s6 sr6=1.1 s8=0.0 a2=None alpha6 version=2
-    #   d3zero:  s6 sr6 s8 a2=None alpha6 version=3
-    #   d3bj:    s6 a1 s8 a2 alpha6=None version=4
-    #   d3mzero: s6 sr6 s8 beta alpha6=14.0 version=5
-    #   d3mbj:   s6 a1 s8 a2 alpha6=None version=6
+    """Return strings for dftd3 program parameter file.
 
+             s6 rs6     s18    rs8     alpha6      version
+             ---------------------------------------------
+    d2p4:    s6 sr6=1.1 s8=0.0 a2=None alpha6=20.0 version=2
+    d2gr:    s6 sr6=1.1 s8=0.0 a2=None alpha6      version=2
+    d3zero:  s6 sr6     s8     a2=None alpha6      version=3
+    d3bj:    s6 a1      s8     a2      alpha6=None version=4
+    d3mzero: s6 sr6     s8     beta    alpha6=14.0 version=5
+    d3mbj:   s6 a1      s8     a2      alpha6=None version=6
+
+    """
     dashlvleff = dash_alias['-' + dashlvl][1:] if ('-' + dashlvl) in dash_alias.keys() else dashlvl
     dashformatter = """{:12.6f} {:12.6f} {:12.6f} {:12.6f} {:12.6f} {:6}\n"""
 

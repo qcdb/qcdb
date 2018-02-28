@@ -1,4 +1,27 @@
+import os
+import subprocess
+
 import pytest
+
+
+def _which(command):
+    # environment is $PSIPATH:$PATH, less any None values
+    lenv = {'PATH': ':'.join([os.path.abspath(x) for x in os.environ.get('PSIPATH', '').split(':') if x != '']) +
+                    ':' + os.environ.get('PATH')}
+    lenv = {k: v for k, v in lenv.items() if v is not None}
+
+    # thanks, http://stackoverflow.com/a/11270665
+    try:
+        from subprocess import DEVNULL  # py33
+    except ImportError:
+        DEVNULL = open(os.devnull, 'wb')
+
+    try:
+        dashout = subprocess.Popen(command, stdout=DEVNULL, stderr=subprocess.STDOUT, env=lenv)
+    except OSError as e:
+        return False
+    else:
+        return True
 
 
 def _plugin_import(plug):
@@ -58,3 +81,5 @@ using_psi4_molrec = pytest.mark.skipif(is_psi4_new_enough("1.2a1.dev999") is Fal
 using_pylibefp = pytest.mark.skipif(_plugin_import('pylibefp') is False,
                                 reason='Not detecting module pylibefp. Install package if necessary and add to envvar PYTHONPATH')
 
+using_cfour = pytest.mark.skipif(_which('xcfour') is False,
+                                reason='Not detecting executable xcfour. Install program if necessary and add to envvar PATH')

@@ -32,31 +32,63 @@ databases. Contains Molecule class and physical constants from psi4 suite.
 from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import division
-__version__ = '0.4'
+#__version__ = '0.4'
 __author__ = 'Lori A. Burns'
 
-# Load Python modules
-import sys
-from .molecule import Molecule, compute_atom_map
-from .dbproc import *
-from .options import *
-from .qcformat import *
-from . import cfour
-from . import jajo
-from . import orca
-from .orient import OrientMols
-from .dbwrap import Database, DB4  #DatabaseWrapper, ReactionDatum, Reagent, Reaction
-from .libmintspointgrp import SymmetryOperation, PointGroup
-from .libmintsbasisset import BasisSet
-from .libmintsmolecule import LibmintsMolecule
-from .basislist import *
-from . import align
+
+# Figure out psidatadir: envvar trumps staged/installed
+import os
+qcdb_module_loc = os.path.dirname(os.path.abspath(__file__))
+pymod = os.path.normpath(os.path.sep.join(['@PYMOD_INSTALL_LIBDIR@', '@CMAKE_INSTALL_LIBDIR@', 'qcdb']))
+if pymod.startswith(os.path.sep + os.path.sep):
+    pymod = pymod[1:]
+pymod_dir_step = os.path.sep.join(['..'] * pymod.count(os.path.sep))
+data_dir = os.path.sep.join([qcdb_module_loc, pymod_dir_step, '@CMAKE_INSTALL_DATADIR@', 'qcdb'])
+
+if 'PSIDATADIR' in os.environ.keys():
+    data_dir = os.path.expanduser(os.environ['PSIDATADIR'])
+elif 'CMAKE_INSTALL_DATADIR' in data_dir:
+    data_dir = os.path.sep.join([os.path.abspath(os.path.dirname(__file__)), '..', 'share', 'qcdb'])
+
+data_dir = os.path.abspath(data_dir)
+if not os.path.isdir(data_dir):
+    raise KeyError('Unable to read the data folder - check the PSIDATADIR environment variable'
+                   '      Current value of PSIDATADIR is {}'.format(data_dir))
+
+from .metadata import __version__, version_formatter
+from .driver import *
+from .driver.driver_helpers import set_options, get_variable, print_variables, set_molecule
+#from .header import print_header
+
+## Load Python modules
+#import sys
+from .molecule import Molecule #, compute_atom_map
+#from .dbproc import *
+#from .options import *
+#from . import moptions
+#from .qcformat import *
+#from . import cfour
+#from . import jajo
+#from . import orca
+#from .orient import OrientMols
+#from .dbwrap import Database, DB4  #DatabaseWrapper, ReactionDatum, Reagent, Reaction
+#from .libmintspointgrp import SymmetryOperation, PointGroup
+from .libmintsbasisset import BasisSet, basishorde
+#from .libmintsmolecule import LibmintsMolecule
+#from .basislist import *
+#from . import align
 from . import vib
+#from . import molparse
+#
+## Load items that are useful to access from an input file
+#from .psiutil import *
 from .vib import compare_vibinfos
-from . import molparse
+from .testutil import compare_values, compare_integers, compare_strings
+from .testutil import compare_dicts, compare_molrecs, compare_matrices, compare_arrays
 
-# Load items that are useful to access from an input file
-from .psiutil import *
 from .physconst import *
+from .exceptions import *
 
-from .util import *
+#from .util import *
+
+#from .driver.endorsed_plugins import *

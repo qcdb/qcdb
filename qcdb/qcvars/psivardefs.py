@@ -29,14 +29,99 @@
 import collections
 
 
+def _difference(args):
+    minuend, subtrahend = args
+    return minuend - subtrahend
+ 
+ 
+def _product(args):
+    multiplicand, multiplier = args
+    return multiplicand * multiplier
+ 
+ 
+def _spin_component_scaling(args):
+    os_scale, ss_scale, tot_corl, ss_corl = args
+    return os_scale * (tot_corl - ss_corl) + ss_scale * ss_corl
+ 
+ 
+def _linear(args):
+    coeff, varss = args
+    return sum(c * v for c, v in zip(args))
+
+
+def _solve_in_turn(args, coeff):
+    assert len(args) == len(coeff)
+    pv0 = []
+
+    for itgt in range(len(args)):
+        non_target_args = args[:]
+        non_target_args.pop(itgt)
+
+        non_target_coeff = coeff[:]
+        non_target_coeff.pop(itgt)
+        solve_by = -1 // coeff[itgt]
+        non_target_coeff = [solve_by * c for c in non_target_coeff]
+
+        pv0.append({
+            'form': args[itgt],
+            'func': lambda vv, cc=non_target_coeff: sum(c * v for c, v in zip(vv, cc)),
+            'args': non_target_args})
+
+    return pv0
+
+
+def wfn_psivars():
+    pv0 = []
+
+    # MP2
+    pv0.extend(_solve_in_turn(
+        args=['MP2 TOTAL ENERGY', 'HF TOTAL ENERGY', 'MP2 CORRELATION ENERGY'],
+        coeff=[-1, 1, 1]))
+    pv0.extend(_solve_in_turn(
+        args=['MP2 DOUBLES CORRELATION ENERGY', 'MP2 SAME-SPIN CORRELATION ENERGY', 'MP2 OPPOSITE-SPIN CORRELATION ENERGY'],
+        coeff=[-1, 1, 1]))
+    pv0.extend(_solve_in_turn(
+        args=['MP2 CORRELATION ENERGY', 'MP2 DOUBLES CORRELATION ENERGY', 'MP2 SINGLES CORRELATION ENERGY'],
+        coeff=[-1, 1, 1]))
+
+    # CCSD
+    pv0.extend(_solve_in_turn(
+        args=['CCSD TOTAL ENERGY', 'HF TOTAL ENERGY', 'CCSD CORRELATION ENERGY'],
+        coeff=[-1, 1, 1]))
+    pv0.extend(_solve_in_turn(
+        args=['CCSD CORRELATION ENERGY', 'CCSD SAME-SPIN CORRELATION ENERGY', 'CCSD OPPOSITE-SPIN CORRELATION ENERGY'],
+        coeff=[-1, 1, 1]))
+
+    # CCSD(T)
+    pv0.extend(_solve_in_turn(
+        args=['CCSD(T) TOTAL ENERGY', 'HF TOTAL ENERGY', 'CCSD(T) CORRELATION ENERGY'],
+        coeff=[-1, 1, 1]))
+    pv0.extend(_solve_in_turn(
+        args=['CCSD(T) CORRELATION ENERGY', 'CCSD CORRELATION ENERGY', '(T) CORRECTION ENERGY'],
+        coeff=[-1, 1, 1]))
+
+    # CCSD[T]
+    pv0.extend(_solve_in_turn(
+        args=['CCSD[T] TOTAL ENERGY', 'HF TOTAL ENERGY', 'CCSD[T] CORRELATION ENERGY'],
+        coeff=[-1, 1, 1]))
+    pv0.extend(_solve_in_turn(
+        args=['CCSD[T] CORRELATION ENERGY', 'CCSD CORRELATION ENERGY', '[T] CORRECTION ENERGY'],
+        coeff=[-1, 1, 1]))
+
+    return pv0
+
+
 def sapt_psivars():
     """Returns dictionary of PsiVariable definitions.
 
     """
     pv1 = collections.OrderedDict()
-    pv1['SAPT EXCHSCAL1'] = {'func': lambda x: 1.0 if x[0] < 1.0e-5 else x[0] / x[1], 'args': ['SAPT EXCH10 ENERGY', 'SAPT EXCH10(S^2) ENERGY']}  # special treatment in pandas
-    pv1['SAPT EXCHSCAL3'] = {'func': lambda x: x[0] ** 3, 'args': ['SAPT EXCHSCAL1']}
-    pv1['SAPT EXCHSCAL'] = {'func': lambda x: x[0] ** x[1], 'args': ['SAPT EXCHSCAL1', 'SAPT ALPHA']}
+    pv1['SAPT EXCHSCAL1'] = {'func': lambda x: 1.0 if x[0] < 1.0e-5 else x[0] / x[1],
+                             'args': ['SAPT EXCH10 ENERGY', 'SAPT EXCH10(S^2) ENERGY']}  # special treatment in pandas
+    pv1['SAPT EXCHSCAL3'] = {'func': lambda x: x[0] ** 3, 
+                             'args': ['SAPT EXCHSCAL1']}
+    pv1['SAPT EXCHSCAL'] = {'func': lambda x: x[0] ** x[1], 
+                            'args': ['SAPT EXCHSCAL1', 'SAPT ALPHA']}
     pv1['SAPT HF(2) ALPHA=0.0 ENERGY'] = {'func': lambda x: x[0] - (x[1] + x[2] + x[3] + x[4]),
                                           'args': ['SAPT HF TOTAL ENERGY', 'SAPT ELST10,R ENERGY', 'SAPT EXCH10 ENERGY',
                                                    'SAPT IND20,R ENERGY', 'SAPT EXCH-IND20,R ENERGY']}

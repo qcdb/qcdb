@@ -9,7 +9,7 @@ import numpy as np
 
 from .molecule import Molecule
 from .util import *
-from .psiutil import *
+from .testutil import compare_values, compare_integers
 from .physconst import psi_bohr2angstroms
 
 try:

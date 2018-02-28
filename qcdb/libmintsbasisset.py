@@ -36,12 +36,13 @@ import itertools
 import collections
 
 from .exceptions import *
-from .psiutil import search_file
+from .util import search_file
 from .molecule import Molecule
 from .periodictable import *
 from .libmintsgshell import ShellInfo
 from .libmintsbasissetparser import Gaussian94BasisSetParser
 from .basislist import corresponding_basis, corresponding_zeta
+from .driver import pe
 
 if sys.version_info >= (3,0):
     basestring = str
@@ -739,20 +740,22 @@ class BasisSet(object):
         mol.update_geometry()
 
         # Paths to search for gbs files: here + PSIPATH + library
-        try:
-            from psi4 import core
-            psidatadir = core.get_datadir()
-        except ImportError:
-            pass
-        #nolongerenvvar psidatadir = os.environ.get('PSIDATADIR', None)
-        #nolongerpredicatble psidatadir = __file__ + '/../../..' if psidatadir is None else psidatadir
-        if psidatadir:
-            libraryPath = ':' + os.path.abspath(psidatadir) + '/basis'
-        else:
-            libraryPath = ''
+        #try:
+        #    from psi4 import core
+        #    psidatadir = core.get_datadir()
+        #except ImportError:
+        #    psidatadir = None
+        #    pass
+        ##nolongerenvvar psidatadir = os.environ.get('PSIDATADIR', None)
+        ##nolongerpredicatble psidatadir = __file__ + '/../../..' if psidatadir is None else psidatadir
+        #if psidatadir:
+        #    libraryPath = ':' + os.path.abspath(psidatadir) + '/basis'
+        #else:
+        #    libraryPath = ''
+        libraryPath = os.sep.join([pe.data_dir, 'basis'])
         basisPath = os.path.abspath('.') + \
             ':' + ':'.join([os.path.abspath(x) for x in os.environ.get('PSIPATH', '').split(':')]) + \
-            libraryPath
+            ':' + libraryPath
 
         # Validate deffit for key
         univdef_zeta = 4

@@ -8,9 +8,9 @@ import collections
 import numpy as np
 
 from .physconst import *
-from .psiutil import *
+#from .psiutil import *
 from .util import *
-from .libmintsmolecule import compute_atom_map
+from .molecule.libmintsmolecule import compute_atom_map
 
 try:
     from itertools import izip_longest as zip_longest  # py2

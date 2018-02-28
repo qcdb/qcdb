@@ -31,8 +31,8 @@ from __future__ import print_function
 from __future__ import division
 import sys
 
-from .exceptions import *
-from .vecutil import *
+from ..exceptions import *
+from ..vecutil import *
 
 if sys.version_info >= (3,0):
     basestring = str

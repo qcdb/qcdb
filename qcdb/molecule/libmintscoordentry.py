@@ -38,8 +38,8 @@ import math
 import copy
 import collections
 
-from .vecutil import *
-from .exceptions import *
+from ..vecutil import *
+from ..exceptions import *
 
 
 class CoordValue(object):

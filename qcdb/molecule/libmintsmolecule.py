@@ -36,13 +36,13 @@ import collections
 
 import numpy as np
 
-from .periodictable import *
-from .physconst import *
-from .vecutil import *
-from .exceptions import *
+from ..periodictable import *
+from ..physconst import *
+from ..vecutil import *
+from ..exceptions import *
+from ..util import distance_matrix
 from .libmintscoordentry import NumberValue, VariableValue, CartesianEntry, ZMatrixEntry
 from .libmintspointgrp import SymmOps, similar, SymmetryOperation, PointGroup
-from .util import distance_matrix
 
 
 LINEAR_A_TOL = 1.0E-2  # When sin(a) is below this, we consider the angle to be linear
