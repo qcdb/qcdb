@@ -102,3 +102,5 @@ ENV/
 
 # QC stuff
 timer.dat
+install*/
+build*/
