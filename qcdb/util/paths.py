@@ -69,26 +69,26 @@ def search_file(filename, search_path):
 #    seq2 = sum(seq, [])
 #    [noDupes.append(i) for i in seq2 if not noDupes.count(i)]
 #    return noDupes
-#
-#
-#def all_casings(input_string):
-#    """Function to return a generator of all lettercase permutations
-#    of *input_string*.
-#
-#    """
-#    if not input_string:
-#        yield ''
-#    else:
-#        first = input_string[:1]
-#        if first.lower() == first.upper():
-#            for sub_casing in all_casings(input_string[1:]):
-#                yield first + sub_casing
-#        else:
-#            for sub_casing in all_casings(input_string[1:]):
-#                yield first.lower() + sub_casing
-#                yield first.upper() + sub_casing
-#
-#
+
+
+def all_casings(input_string):
+    """Function to return a generator of all lettercase permutations
+    of *input_string*.
+
+    """
+    if not input_string:
+        yield ''
+    else:
+        first = input_string[:1]
+        if first.lower() == first.upper():
+            for sub_casing in all_casings(input_string[1:]):
+                yield first + sub_casing
+        else:
+            for sub_casing in all_casings(input_string[1:]):
+                yield first.lower() + sub_casing
+                yield first.upper() + sub_casing
+
+
 #def getattr_ignorecase(module, attr):
 #    """Function to extract attribute *attr* from *module* if *attr*
 #    is available in any possible lettercase permutation. Returns
@@ -106,37 +106,38 @@ def search_file(filename, search_path):
 #            break
 #
 #    return array
-#
-#
-#def import_ignorecase(module):
-#    """Function to import *module* in any possible lettercase
-#    permutation. Returns module object if available, None if not.
-#
-#    """
-#    modobj = None
-#    for per in list(all_casings(module)):
-#        try:
-#            modobj = __import__(per)
-#        except ImportError:
-#            pass
-#        else:
-#            break
-#
-#    return modobj
-#
-#def findfile_ignorecase(fil, pre='', post=''):
-#    """Function to locate a file *pre* + *fil* + *post* in any possible
-#    lettercase permutation of *fil*. Returns *pre* + *fil* + *post* if
-#    available, None if not.
-#
-#    """
-#    afil = None
-#    for per in list(all_casings(fil)):
-#        if os.path.isfile(pre + per + post):
-#            afil = pre + per + post
-#            break
-#        else:
-#            pass
-#
-#    return afil
+
+
+def import_ignorecase(module):
+    """Function to import *module* in any possible lettercase
+    permutation. Returns module object if available, None if not.
+
+    """
+    modobj = None
+    for per in list(all_casings(module)):
+        try:
+            modobj = __import__(per)
+        except ImportError:
+            pass
+        else:
+            break
+
+    return modobj
+
+
+def findfile_ignorecase(fil, pre='', post=''):
+    """Function to locate a file *pre* + *fil* + *post* in any possible
+    lettercase permutation of *fil*. Returns *pre* + *fil* + *post* if
+    available, None if not.
+
+    """
+    afil = None
+    for per in list(all_casings(fil)):
+        if os.path.isfile(pre + per + post):
+            afil = pre + per + post
+            break
+        else:
+            pass
+
+    return afil
 

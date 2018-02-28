@@ -1,0 +1,110 @@
+# After changing this file, check it on:
+#   http://lint.travis-ci.org/
+language: python
+
+# Run jobs on container-based infrastructure, can be overridden per job
+sudo: false
+
+# We do not work on the "trusty" container yet
+dist: precise
+
+matrix:
+  include:
+
+  - os: linux
+    #compiler: clang
+    #addons: &1
+    #  apt:
+    #    sources:
+    #    - llvm-toolchain-precise-3.6
+    #    - ubuntu-toolchain-r-test
+    #    - george-edison55-precise-backports
+    #    packages:
+    #    - liblapack-dev
+    #    - clang-3.6
+    env:
+    #  - CXX_COMPILER='clang++-3.6'
+      - PYTHON_VER='3.6'
+    #  - C_COMPILER='clang-3.6'
+
+  - os: linux
+    #compiler: gcc
+    #addons: &3
+    #  apt:
+    #    sources:
+    #    - ubuntu-toolchain-r-test
+    #    - george-edison55-precise-backports
+    #    packages:
+    #    - liblapack-dev
+    #    - g++-4.9
+    #    - gcc-4.9
+    env:
+    #  - CXX_COMPILER='g++-4.9'
+      - PYTHON_VER='2.7'
+    #  - C_COMPILER='gcc-4.9'
+
+  #- os: linux
+  #  compiler: gcc
+  #  addons: &4
+  #    apt:
+  #      sources:
+  #      - ubuntu-toolchain-r-test
+  #      - george-edison55-precise-backports
+  #      packages:
+  #      - liblapack-dev
+  #      - g++-6
+  #      - gcc-6
+  #  env:
+  #    - CXX_COMPILER='g++-6'
+  #    - PYTHON_VER='3.5'
+  #    - C_COMPILER='gcc-6'
+
+before_install:
+  - uname -a
+  - free -m
+  - df -h
+  - ulimit -a
+
+install:
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda info -a
+
+# Build out environment
+  #- conda create -n tenv python=$PYTHON_VER cmake numpy ci-psi4 psi4 -c psi4/label/dev -c psi4
+  - conda create -n tenv python=$PYTHON_VER cmake numpy
+  - source activate tenv
+  - conda install pytest pytest-cov codecov -c conda-forge
+  - pip install deepdiff
+  - conda list
+
+before_script:
+  - python -V
+  - cd ${TRAVIS_BUILD_DIR}
+  #- ${C_COMPILER} --version
+  #- ${CXX_COMPILER} --version
+  - > 
+      cmake -Bbuild -H. 
+      -DCMAKE_BUILD_TYPE=Release
+      -DPYTHON_EXECUTABLE="${HOME}/miniconda/envs/tenv/bin/python"
+      -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/Install
+  - cd build
+  - make -j2
+
+script:
+  - cd ${TRAVIS_BUILD_DIR}/Install && PYTHONPATH=lib/ /home/travis/miniconda/envs/tenv/bin/python -m pytest -rws -v --capture=sys --cov
+  #- make pytest VERBOSE=1
+  #- PYTHONPATH=stage/usr/local/pylibefp/lib/ pytest -v --cov --ignore=external ../tests/
+  #- cd ../tests && PYTHONPATH=../build/stage/usr/local/pylibefp/lib/ python -m pytest -v --ignore=../build/external --cov
+  #- cd ${TRAVIS_BUILD_DIR}/build/tests && PYTHONPATH=${TRAVIS_BUILD_DIR}/build/stage/${TRAVIS_BUILD_DIR}/Install/lib/ /home/travis/miniconda/envs/tenv/bin/python -m pytest -rws -v --capture=sys ${TRAVIS_BUILD_DIR}/tests --ignore=${TRAVIS_BUILD_DIR}/build/external --cov
+
+notifications:
+    email: false
+
+after_success:
+  - codecov
+

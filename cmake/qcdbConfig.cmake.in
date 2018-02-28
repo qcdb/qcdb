@@ -1,0 +1,45 @@
+# qcdbConfig.cmake
+# --------------------
+#
+# QCDB cmake module.
+# This module sets the following variables in your project::
+#
+#   qcdb_FOUND - true if qcdb and all required components found on the system
+#   qcdb_VERSION - qcdb version in format Major.Minor.Release
+#   qcdb_PYMOD - path to qcdb python modules
+#
+#
+# Available components: None
+#
+#
+## Exported targets::
+##
+## If qcdb is found, this module defines the following :prop_tgt:`IMPORTED`
+## target. Target is always shared _or_ static, so, for both, use separate, not
+## overlapping, installations. ::
+##
+##   qcdb::core - the main qcdb library with libefp and pybind11 attached.
+#
+#
+# Suggested usage::
+#
+#   find_package(qcdb)
+#   find_package(qcdb 0.1 EXACT CONFIG REQUIRED)
+#
+#
+# The following variables can be set to guide the search for this package::
+#
+#   qcdb_DIR - CMake variable, set to directory containing this Config file
+#   CMAKE_PREFIX_PATH - CMake variable, set to root directory of this package
+##   PATH - environment variable, set to bin directory of this package
+#   CMAKE_DISABLE_FIND_PACKAGE_qcdb - CMake variable, disables
+#     find_package(qcdb) when not REQUIRED, perhaps to force internal build
+
+@PACKAGE_INIT@
+
+set(PN qcdb)
+
+set(${PN}_PYMOD "${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_LIBDIR@@PYMOD_INSTALL_LIBDIR@")
+
+check_required_components(${PN})
+

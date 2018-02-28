@@ -47,7 +47,7 @@ from collections import OrderedDict
 from .exceptions import *
 from .molecule import Molecule
 from .modelchems import Method, BasisSet, Error, methods, bases, errors, pubs
-from . import psiutil
+from .util.paths import import_ignorecase, findfile_ignorecase 
 from . import textables
 
 
@@ -648,7 +648,7 @@ class WrappedDatabase(object):
             sys.path.insert(1, pythonpath)
         else:
             sys.path.append(os.path.dirname(__file__) + '/../databases')
-        database = psiutil.import_ignorecase(dbname)
+        database = import_ignorecase(dbname)
         if not database:
             print('\nPython module for database %s failed to load\n\n' % (dbname))
             print('\nSearch path that was tried:\n')
@@ -1198,8 +1198,8 @@ class WrappedDatabase(object):
         """
         if path is None:
             path = os.path.dirname(__file__) + '/../data'
-        picklefile = psiutil.findfile_ignorecase(dbname,
-                                                 pre=os.path.abspath(path) + os.sep, post='_WDb.pickle')
+        picklefile = findfile_ignorecase(dbname,
+                                         pre=os.path.abspath(path) + os.sep, post='_WDb.pickle')
         if not picklefile:
             raise ValidationError("Pickle file for loading database data from file %s does not exist" % (
                 os.path.abspath(path) + os.sep + dbname + '.pickle'))
