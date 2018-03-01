@@ -76,17 +76,14 @@ install:
 
 # Build out environment
   #- conda create -n tenv python=$PYTHON_VER cmake numpy ci-psi4 psi4 -c psi4/label/dev -c psi4
-  - conda create -n tenv python=$PYTHON_VER cmake numpy
+  - conda create -n tenv python=$PYTHON_VER cmake numpy nomkl
   - source activate tenv
   - conda install pytest pytest-cov codecov deepdiff -c conda-forge
-  #- pip install deepdiff
   - conda list
 
 before_script:
   - python -V
   - cd ${TRAVIS_BUILD_DIR}
-  #- ${C_COMPILER} --version
-  #- ${CXX_COMPILER} --version
   - > 
       cmake -Bbuild -H. 
       -DCMAKE_BUILD_TYPE=Release
