@@ -39,14 +39,11 @@ __author__ = 'Lori A. Burns'
 # Figure out psidatadir: envvar trumps staged/installed
 import os
 qcdb_module_loc = os.path.dirname(os.path.abspath(__file__))
-print('QML', qcdb_module_loc)
 pymod = os.path.normpath(os.sep.join(['@PYMOD_INSTALL_LIBDIR@', '@CMAKE_INSTALL_LIBDIR@', 'qcdb']))
-print('PM', pymod)
 if pymod.startswith(os.sep + os.sep):
     pymod = pymod[1:]
 pymod_dir_step = os.sep.join(['..'] * pymod.count(os.sep))
 data_dir = os.sep.join([qcdb_module_loc, pymod_dir_step, '@CMAKE_INSTALL_DATADIR@', 'qcdb'])
-print('DD1', data_dir)
 
 if 'PSIDATADIR' in os.environ.keys():
     data_dir = os.path.expanduser(os.environ['PSIDATADIR'])
@@ -54,7 +51,6 @@ elif 'CMAKE_INSTALL_DATADIR' in data_dir:
     data_dir = os.sep.join([os.path.abspath(os.path.dirname(__file__)), '..', 'share', 'qcdb'])
 
 data_dir = os.path.abspath(data_dir)
-print('DD2', data_dir)
 if not os.path.isdir(data_dir):
     raise KeyError('Unable to read the data folder - check the PSIDATADIR environment variable'
                    '      Current value of PSIDATADIR is {}'.format(data_dir))

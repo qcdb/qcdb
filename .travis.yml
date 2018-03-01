@@ -5,43 +5,16 @@ language: python
 # Run jobs on container-based infrastructure, can be overridden per job
 sudo: false
 
-# We do not work on the "trusty" container yet
-#dist: precise
-
 matrix:
   include:
 
   - os: linux
-    #compiler: clang
-    #addons: &1
-    #  apt:
-    #    sources:
-    #    - llvm-toolchain-precise-3.6
-    #    - ubuntu-toolchain-r-test
-    #    - george-edison55-precise-backports
-    #    packages:
-    #    - liblapack-dev
-    #    - clang-3.6
     env:
-    #  - CXX_COMPILER='clang++-3.6'
       - PYTHON_VER='3.6'
-    #  - C_COMPILER='clang-3.6'
 
-  - os: linux
-    #compiler: gcc
-    #addons: &3
-    #  apt:
-    #    sources:
-    #    - ubuntu-toolchain-r-test
-    #    - george-edison55-precise-backports
-    #    packages:
-    #    - liblapack-dev
-    #    - g++-4.9
-    #    - gcc-4.9
-    env:
-    #  - CXX_COMPILER='g++-4.9'
-      - PYTHON_VER='2.7'
-    #  - C_COMPILER='gcc-4.9'
+  #- os: linux
+  #  env:
+  #    - PYTHON_VER='2.7'
 
 before_install:
   - uname -a
@@ -78,11 +51,7 @@ before_script:
   - make install
 
 script:
-  - cd ${HOME}/qcdb-install && PYTHONPATH=lib/ /home/travis/miniconda/envs/tenv/bin/python -m pytest -rws -v --capture=sys --cov
-  #- make pytest VERBOSE=1
-  #- PYTHONPATH=stage/usr/local/pylibefp/lib/ pytest -v --cov --ignore=external ../tests/
-  #- cd ../tests && PYTHONPATH=../build/stage/usr/local/pylibefp/lib/ python -m pytest -v --ignore=../build/external --cov
-  #- cd ${TRAVIS_BUILD_DIR}/build/tests && PYTHONPATH=${TRAVIS_BUILD_DIR}/build/stage/${TRAVIS_BUILD_DIR}/Install/lib/ /home/travis/miniconda/envs/tenv/bin/python -m pytest -rws -v --capture=sys ${TRAVIS_BUILD_DIR}/tests --ignore=${TRAVIS_BUILD_DIR}/build/external --cov
+  - cd ${HOME}/qcdb-install && PYTHONPATH=lib/ python -m pytest -rws -v --capture=sys --cov
 
 notifications:
     email: false
