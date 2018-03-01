@@ -6,7 +6,7 @@ language: python
 sudo: false
 
 # We do not work on the "trusty" container yet
-dist: precise
+#dist: precise
 
 matrix:
   include:
@@ -43,22 +43,6 @@ matrix:
       - PYTHON_VER='2.7'
     #  - C_COMPILER='gcc-4.9'
 
-  #- os: linux
-  #  compiler: gcc
-  #  addons: &4
-  #    apt:
-  #      sources:
-  #      - ubuntu-toolchain-r-test
-  #      - george-edison55-precise-backports
-  #      packages:
-  #      - liblapack-dev
-  #      - g++-6
-  #      - gcc-6
-  #  env:
-  #    - CXX_COMPILER='g++-6'
-  #    - PYTHON_VER='3.5'
-  #    - C_COMPILER='gcc-6'
-
 before_install:
   - uname -a
   - free -m
@@ -94,7 +78,7 @@ before_script:
   - make install
 
 script:
-  - cd ${HOME}/qcd-install && PYTHONPATH=lib/ /home/travis/miniconda/envs/tenv/bin/python -m pytest -rws -v --capture=sys --cov
+  - cd ${HOME}/qcdb-install && PYTHONPATH=lib/ /home/travis/miniconda/envs/tenv/bin/python -m pytest -rws -v --capture=sys --cov
   #- make pytest VERBOSE=1
   #- PYTHONPATH=stage/usr/local/pylibefp/lib/ pytest -v --cov --ignore=external ../tests/
   #- cd ../tests && PYTHONPATH=../build/stage/usr/local/pylibefp/lib/ python -m pytest -v --ignore=../build/external --cov
