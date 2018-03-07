@@ -3,7 +3,7 @@ import collections
 from .. import data_dir
 from ..molecule import Molecule
 from ..moptions.read_options2 import RottenOptions, load_qcdb_defaults
-from ..iface_psi4.options import load_cfour_defaults_from_psi
+from ..iface_psi4.options import load_cfour_defaults_from_psi4, load_psi4_defaults
 
 
 def clean_nu_options():
@@ -15,7 +15,8 @@ def load_nu_options():
     global nu_options
 
     load_qcdb_defaults(nu_options)
-    load_cfour_defaults_from_psi(nu_options)
+    load_cfour_defaults_from_psi4(nu_options)
+    load_psi4_defaults(nu_options)
     #print('OPTIONS LOADED')
     #print(nu_options)
 

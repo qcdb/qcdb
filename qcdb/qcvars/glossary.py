@@ -425,7 +425,15 @@ qcvardefs['CURRENT CORRELATION ENERGY'] = {
 qcvardefs['CURRENT ENERGY'] = {
     'units': 'Eh',
     'glossary': """
-   The total electronic energy [H] of the most recent stage of a
+   The total electronic energy of the most recent stage of a
+   calculation (frequently overwritten). This is the quantity tracked by
+   the geometry optimizer.
+"""}
+
+qcvardefs['CURRENT GRADIENT'] = {
+    'units': 'Eh/a0',
+    'glossary': """
+   The total electronic gradient of the most recent stage of a
    calculation (frequently overwritten). This is the quantity tracked by
    the geometry optimizer.
 """}
@@ -435,6 +443,27 @@ qcvardefs['CURRENT REFERENCE ENERGY'] = {
     'glossary': """
    The total electronic energy of the reference stage corresponding to
    the :psivar:`CURRENT ENERGY <CURRENTENERGY>` variable.
+"""}
+
+qcvardefs['CURRENT DIPOLE X'] = {
+    'units': 'D',
+    'glossary': """
+   The X component of the dipole [Debye] for the requested
+   level of theory and root.
+"""}
+
+qcvardefs['CURRENT DIPOLE Y'] = {
+    'units': 'D',
+    'glossary': """
+   The Y component of the dipole [Debye] for the requested
+   level of theory and root.
+"""}
+
+qcvardefs['CURRENT DIPOLE Z'] = {
+    'units': 'D',
+    'glossary': """
+   The Z component of the dipole [Debye] for the requested
+   level of theory and root.
 """}
 
 #.. psivar:: db_name DATABASE MEAN ABSOLUTE DEVIATION
@@ -602,7 +631,7 @@ qcvardefs['MP2 OPPOSITE-SPIN CORRELATION ENERGY'] = {
    :math:`E_{\text{OS}}` in Eq. :eq:`MP2corl`.
 """}
 
-qcvardefs['MP2 SINGLES CORRELATION ENERGY'] = {
+qcvardefs['MP2 SINGLES ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    The singles portion of the MP2 correlation energy.
@@ -610,12 +639,80 @@ qcvardefs['MP2 SINGLES CORRELATION ENERGY'] = {
    :math:`E_{\text{S}}` in Eq. :eq:`MP2corl`.
 """}
 
-qcvardefs['MP2 DOUBLES CORRELATION ENERGY'] = {
+qcvardefs['MP2 DOUBLES ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    The doubles portion of the MP2 correlation energy
    including same-spin and opposite-spin correlations.
    :math:`E_{\text{D}}` in Eq. :eq:`MP2corl`.
+"""}
+
+qcvardefs['SCS-MP2 CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The MP2-like correlation energy by reweighting 
+   MP2 DOUBLES ENERGY by 6/5 opposite-spin
+   and 1/3 same-spin contributions, with any singles
+   carried along.
+"""}
+
+qcvardefs['SCS-MP2 TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total energy built from SCS-MP2 CORRELATION ENERGY
+   and reference.
+"""}
+
+qcvardefs['CUSTOM SCS-MP2 CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   Changeable quantity. The MP2-like correlation
+   energy by any reweighting of SAME-SPIN or
+   OPPOSITE-SPIN components. Depending on weights,
+   this may equal any of MP2, SCS-MP2, SCS(N)-MP2,
+   etc. quantities.
+"""}
+
+qcvardefs['CUSTOM SCS-MP2 TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total energy built from 
+   CUSTOM SCS-MP2 CORRELATION ENERGY and reference.
+"""}
+
+qcvardefs[''] = {
+    'units': 'Eh',
+    'glossary': r"""
+"""}
+
+qcvardefs[''] = {
+    'units': 'Eh',
+    'glossary': r"""
+"""}
+
+qcvardefs[''] = {
+    'units': 'Eh',
+    'glossary': r"""
+"""}
+
+qcvardefs[''] = {
+    'units': 'Eh',
+    'glossary': r"""
+"""}
+
+qcvardefs[''] = {
+    'units': 'Eh',
+    'glossary': r"""
+"""}
+
+qcvardefs[''] = {
+    'units': 'Eh',
+    'glossary': r"""
+"""}
+
+qcvardefs[''] = {
+    'units': 'Eh',
+    'glossary': r"""
 """}
 
 #.. psivar:: MP2.5 TOTAL ENERGY

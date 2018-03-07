@@ -103,12 +103,6 @@ def cfour_subprocess(cfourrec):  # cfourrec@i -> cfourrec@io
     # clean up files and remove scratch directory
     # NOTE used to keep scr arond if path in kwargs
     if 'scratch_messy' not in cfourrec or cfourrec['scratch_messy'] is False:
-        #os.unlink(paramfileold)
-        #os.unlink(paramfile)
-        #os.unlink(geomfile)
-        #if '-grad' in dftd3rec['command']:
-        #    os.unlink(derivfile)
-
         os.chdir('..')
         try:
             shutil.rmtree(cfour_tmpdir)

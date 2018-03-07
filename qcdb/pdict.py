@@ -30,6 +30,8 @@ from __future__ import absolute_import
 from __future__ import print_function
 from decimal import Decimal, ROUND_FLOOR, ROUND_CEILING
 
+import numpy as np
+
 from .exceptions import *
 
 
@@ -40,6 +42,8 @@ class PreservingDict(dict):
     same key by testing which has more decimal places and whether value
     the same within a plausible rounding error. Allows consistency checks
     when parsing output files without loss of precision.
+
+    works in decimal.Decimal (scalar) and np.ndarray (non-scalar)
 
     """
 
@@ -52,34 +56,56 @@ class PreservingDict(dict):
             key = key.upper()
         except AttributeError:
             raise AttributeError('Keys stored as upper-case strings: %s unsuitable' % (key))
-        value = Decimal(value)
-        if key in self.keys() and not 'CURRENT' in key:
-            # Validate choosing more detailed value for variable
-            existing_exp = self[key].as_tuple().exponent  # 0.1111 --> -4
-            candidate_exp = value.as_tuple().exponent
-            if existing_exp > candidate_exp:  # candidate has more digits
-                places = Decimal(10) ** (existing_exp + 1)  # exp+1 permits slack in rounding
+
+        if isinstance(value, (list, np.ndarray)):
+            # non-scalar
+            value = np.array(value)
+
+            if key in self.keys() and not 'CURRENT' in key:
+                if np.allclose(self[key], value, atol=1.e-5, rtol=1e-3):
+                    best_value = value  # no way to choose, really
+                else:
+                    raise ParsingValidationError(
+                        """Output file yielded both {} and {} as values for quantity {}.""".
+                            format(self[key], value, key))
+                if self.verbose >= 2:
+                    print("""Resetting array {} to {}""".format(key, best_value))
+            else:
                 best_value = value
-            else:                             # existing has more digits
-                places = Decimal(10) ** (candidate_exp + 1)
-                best_value = self[key]
-            # Validate values are the same
-            places = max(places, Decimal('1E-11'))  # for computed psivars
-            #print('FLOOR: ', self[key].quantize(places, rounding=ROUND_FLOOR) - value.quantize(places, rounding=ROUND_FLOOR))
-            #print('CEIL:  ', self[key].quantize(places, rounding=ROUND_CEILING) - value.quantize(places, rounding=ROUND_CEILING))
-            if ((self[key].quantize(places, rounding=ROUND_CEILING).compare(
-                     value.quantize(places, rounding=ROUND_CEILING)) != 0) and
-                (self[key].quantize(places, rounding=ROUND_FLOOR).compare(
-                     value.quantize(places, rounding=ROUND_FLOOR)) != 0)):
-                raise ParsingValidationError(
-                    """Output file yielded both %s and %s as values for quantity %s.""" %
-                    (self[key].to_eng_string(), value.to_eng_string(), key))
-            if self.verbose >= 2:
-                print("""Resetting variable {} to {}""".format(key, best_value.to_eng_string()))
+                if self.verbose >= 2:
+                    print("""Setting   array {} to {}""".format(key, best_value))
+
         else:
-            best_value = value
-            if self.verbose >= 2:
-                print("""Setting   variable {} to {}""".format(key, best_value.to_eng_string()))
+            # scalar
+            value = Decimal(value)
+
+            if key in self.keys() and not 'CURRENT' in key:
+                # Validate choosing more detailed value for variable
+                existing_exp = self[key].as_tuple().exponent  # 0.1111 --> -4
+                candidate_exp = value.as_tuple().exponent
+                if existing_exp > candidate_exp:  # candidate has more digits
+                    places = Decimal(10) ** (existing_exp + 1)  # exp+1 permits slack in rounding
+                    best_value = value
+                else:                             # existing has more digits
+                    places = Decimal(10) ** (candidate_exp + 1)
+                    best_value = self[key]
+                # Validate values are the same
+                places = max(places, Decimal('1E-11'))  # for computed psivars
+                #print('FLOOR: ', self[key].quantize(places, rounding=ROUND_FLOOR) - value.quantize(places, rounding=ROUND_FLOOR))
+                #print('CEIL:  ', self[key].quantize(places, rounding=ROUND_CEILING) - value.quantize(places, rounding=ROUND_CEILING))
+                if ((self[key].quantize(places, rounding=ROUND_CEILING).compare(
+                         value.quantize(places, rounding=ROUND_CEILING)) != 0) and
+                    (self[key].quantize(places, rounding=ROUND_FLOOR).compare(
+                         value.quantize(places, rounding=ROUND_FLOOR)) != 0)):
+                    raise ParsingValidationError(
+                        """Output file yielded both %s and %s as values for quantity %s.""" %
+                        (self[key].to_eng_string(), value.to_eng_string(), key))
+                if self.verbose >= 2:
+                    print("""Resetting variable {} to {}""".format(key, best_value.to_eng_string()))
+            else:
+                best_value = value
+                if self.verbose >= 2:
+                    print("""Setting   variable {} to {}""".format(key, best_value.to_eng_string()))
 
         super(PreservingDict, self).__setitem__(key, best_value)
 

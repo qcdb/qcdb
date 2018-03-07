@@ -4,6 +4,19 @@ import re
 from ..exceptions import *
 
 
+def boolean(inputval):
+    yes = re.compile(r'^(yes|true|on|1)', re.IGNORECASE)
+    no = re.compile(r'^(no|false|off|0)', re.IGNORECASE)
+
+    if yes.match(str(inputval)):
+        return True
+    elif no.match(str(inputval)):
+        return False
+    else:
+        raise OptionValidationError(
+            """Can't interpret into boolean: {}""".format(inputval))
+         
+
 def sphcart(inputval):
     sph = re.compile(r'^(yes|true|on|1|sph|spherical)', re.IGNORECASE)
     cart = re.compile(r'^(no|false|off|0|cart|cartesian)', re.IGNORECASE)

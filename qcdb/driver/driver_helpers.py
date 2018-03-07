@@ -1,5 +1,7 @@
 import re
 
+import numpy as np
+
 from ..molecule import Molecule
 #from .driver import options
 from . import pe
@@ -176,7 +178,7 @@ def set_options(options_dict):
     """
     Sets Psi4 global options from an input dictionary.
     """
-    optionre = re.compile(r'\A((?P<silo>(cfour|psi))_)?(?P<module>\w+__)?(?P<option>\w+)\Z', re.IGNORECASE)
+    optionre = re.compile(r'\A((?P<silo>(cfour|psi4))_)?(?P<module>\w+__)?(?P<option>\w+)\Z', re.IGNORECASE)
 
     if len(pe.nu_options.scroll) == 0:
         print('EMPTY OPT')
@@ -194,8 +196,8 @@ def set_options(options_dict):
             module = mobj.group('module').upper() if mobj.group('module') else ''
             option = mobj.group('option').upper()
 
-            pe.nu_options.require(silo, module + option, v, accession=pe.nu_options.mark_of_the_user)
             print('SET_OPTIONS: [{}][{}] = {}'.format(silo, module + option, v)) 
+            pe.nu_options.require(silo, module + option, v, accession=pe.nu_options.mark_of_the_user)
         else:
             raise ValidationError('Option not in {space}?_{module}?__{option} format: {}'.format(k))
 
@@ -232,11 +234,13 @@ def get_variable(key):
     if ukey in pe.active_qcvars:
         return pe.active_qcvars[ukey].data
     else:
-        return None
+        # TODO this matches psi, as None confuses compare_values, but is it right soln?
+        return 0.
 
 
 def get_active_molecule():
     return pe.active_molecule
+
 
 def print_variables(qcvars=None):
     """Form a printable representation of qcvariables.
@@ -259,12 +263,24 @@ def print_variables(qcvars=None):
     if qcvars is None:
         qcvars = pe.active_qcvars
 
+    if len(qcvars) == 0:
+        text.append('  (none)')
+        return '\n'.join(text)
+
     largest_key = max(len(k) for k in qcvars) + 2  # for quotation marks
     for k, qca in sorted(qcvars.items()):
         if k != qca.lbl:
             raise ValidationError('Huh? {} != {}'.format(k, qca.label))
-        text.append("""  {:{keywidth}} => {:{width}.{prec}f} [{}]""".
-            format('"' + k + '"', qca.data, qca.unit, keywidth=largest_key, width=20, prec=12))
+
+        if isinstance(qca.data, np.ndarray):
+            data = np.array_str(qca.data, max_line_width=120, precision=8, suppress_small=True)
+            data = '\n'.join('        ' + ln for ln in data.splitlines())
+            text.append("""  {:{keywidth}} => {:{width}} [{}]""".
+                format('"' + k + '"', '', qca.unit, keywidth=largest_key, width=20))
+            text.append(data)
+        else:
+            text.append("""  {:{keywidth}} => {:{width}.{prec}f} [{}]""".
+                format('"' + k + '"', qca.data, qca.unit, keywidth=largest_key, width=20, prec=12))
 
     text.append('')
     return '\n'.join(text)

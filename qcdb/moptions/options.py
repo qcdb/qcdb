@@ -32,7 +32,7 @@ import math
 from ..exceptions import *
 
 
-def format_option_for_cfour(opt, val):
+def format_option_for_cfour(opt, val, lop_off=True):
     """Function to reformat value *val* for option *opt* from python
     into cfour-speak. Arrays are the primary target.
 
@@ -49,7 +49,7 @@ def format_option_for_cfour(opt, val):
                 text += '/'.join('-'.join(map(str, no)) for no in val)
         else:
             # option is plain 1D array
-            if opt == 'CFOUR_ESTATE_SYM':
+            if opt in ['ESTATE_SYM', 'CFOUR_ESTATE_SYM']:
                 # [3, 1, 0, 2] --> 3/1/0/2
                 text += '/'.join(map(str, val))
             else:
@@ -63,7 +63,7 @@ def format_option_for_cfour(opt, val):
         text += '0'
 
     # Transform the basis sets that *must* be lowercase (dratted c4 input)
-    elif (opt == 'CFOUR_BASIS' and
+    elif (opt in ['CFOUR_BASIS', 'BASIS'] and
           val.upper() in ['SVP', 'DZP', 'TZP', 'TZP2P', 'QZ2P', 'PZ3D2F', '13S9P4D3F']):
         text += str(val.lower())
 
@@ -71,10 +71,48 @@ def format_option_for_cfour(opt, val):
     else:
         text += str(val).upper()
 
-    return opt[6:], text
+    if lop_off:
+        return opt[6:], text
+    else:
+        return opt, text
 
 
 def prepare_options_for_cfour(options):
+    """Function to take the full snapshot of the liboptions object
+    encoded in dictionary *options*, find the options directable toward
+    Cfour (options['CFOUR']['CFOUR_**']) that aren't default, then write
+    a CFOUR deck with those options.
+
+    """
+    text = []
+
+    for key, ropt in sorted(options.scroll['CFOUR'].items()):
+        #if not ropt.is_default():
+        if ropt.disputed():
+            text.append('='.join(format_option_for_cfour(key, ropt.value, lop_off=False)))
+
+    text = '\n'.join(text)
+    text = '\n\n*CFOUR(' + text + ')\n\n'
+
+    return text
+
+
+#    popts = {}
+#    for k, v in options.scroll['QCDB'].items():
+#        if not v.is_default():
+#            print('QQQQ', k, v.value, v.is_default())
+#            popts[k] = v.value
+#
+#    for k, v in options.scroll['PSI4'].items():
+#        if not v.is_default():
+#            print('PPPP', k, v.value, v.is_default())
+#            popts[k] = v.value
+#    jobrec['options'] = popts
+
+
+
+
+def old_prepare_options_for_cfour(options):
     """Function to take the full snapshot of the liboptions object
     encoded in dictionary *options*, find the options directable toward
     Cfour (options['CFOUR']['CFOUR_**']) that aren't default, then write

@@ -29,14 +29,17 @@
 from __future__ import absolute_import
 from __future__ import print_function
 import re
+import uuid
 import struct
 from collections import defaultdict
 from decimal import Decimal
 
+import numpy as np
+
 from .. import periodictable
-from .. exceptions import *
-from .. molecule import Molecule
-from .. physconst import *
+from ..exceptions import *
+from ..physconst import *
+from ..molecule import Molecule
 from ..moptions.options import conv_float2negexp
 from ..pdict import PreservingDict
 
@@ -624,11 +627,20 @@ def harvest(p4Mol, c4out, **largs):
 
     # Set up array reorientation object
     if p4Mol and grdMol:
-        p4c4 = OrientMols(p4Mol, grdMol)
-        oriCoord = p4c4.transform_coordinates2(grdMol)
-        oriGrad = p4c4.transform_gradient(grdGrad)
-        oriDip = None if dipolDip is None else p4c4.transform_vector(dipolDip)
+        rmsd, mill, amol = grdMol.B787(p4Mol, atoms_map=False, mols_align=True, verbose=0)
+
+        oriCoord = mill.align_coordinates(grdMol.geometry(np_out=True))
+        oriGrad = mill.align_gradient(np.array(grdGrad))
+        if dipolDip is None:
+            oriDip = None
+        else:
+            oriDip = mill.align_vector(np.array(dipolDip))
+        #p4c4 = OrientMols(p4Mol, grdMol)
+        #oriCoord = p4c4.transform_coordinates2(grdMol)
+        #oriGrad = p4c4.transform_gradient(grdGrad)
+        #oriDip = None if dipolDip is None else p4c4.transform_vector(dipolDip)
     elif p4Mol and outMol:
+        # TODO watch out - haven't seen atom_map=False yet
         rmsd, mill, amol = outMol.B787(p4Mol, atoms_map=True, mols_align=True, verbose=0)
 
         oriCoord = mill.align_coordinates(outMol.geometry(np_out=True))
@@ -636,7 +648,7 @@ def harvest(p4Mol, c4out, **largs):
         if dipolDip is None:
             oriDip = None
         else:
-            oriDip = mill.align_vector(dipolDip)
+            oriDip = mill.align_vector(np.array(dipolDip))
         #p4c4 = OrientMols(p4Mol, outMol)
         #oriCoord = p4c4.transform_coordinates2(outMol)
         #oriGrad = None
@@ -663,14 +675,18 @@ def harvest(p4Mol, c4out, **largs):
 
     retMol = None if p4Mol else grdMol
 
-    if oriDip:
-        outPsivar['CURRENT DIPOLE X'] = str(oriDip[0] * psi_dipmom_au2debye)
-        outPsivar['CURRENT DIPOLE Y'] = str(oriDip[1] * psi_dipmom_au2debye)
-        outPsivar['CURRENT DIPOLE Z'] = str(oriDip[2] * psi_dipmom_au2debye)
+    if oriDip is not None:
+        oriDip *= psi_dipmom_au2debye
+        outPsivar['CURRENT DIPOLE X'] = oriDip[0]
+        outPsivar['CURRENT DIPOLE Y'] = oriDip[1]
+        outPsivar['CURRENT DIPOLE Z'] = oriDip[2]
+        #outPsivar['CURRENT DIPOLE X'] = str(oriDip[0] * psi_dipmom_au2debye)
+        #outPsivar['CURRENT DIPOLE Y'] = str(oriDip[1] * psi_dipmom_au2debye)
+        #outPsivar['CURRENT DIPOLE Z'] = str(oriDip[2] * psi_dipmom_au2debye)
 
-    if oriGrad:
+    if oriGrad is not None:
         retGrad = oriGrad
-    elif grdGrad:
+    elif grdGrad is not None:
         retGrad = grdGrad
     else:
         retGrad = None
@@ -693,11 +709,11 @@ def harvest_GRD(grd):
     grad = []
     for at in range(Nat):
         mline = grd[at + 1].split()
-        el = 'GH' if int(float(mline[0])) == 0 else z2el[int(float(mline[0]))]
+        el = 'GH' if int(float(mline[0])) == 0 else periodictable.z2el[int(float(mline[0]))]
         molxyz += '%s %16s %16s %16s\n' % (el, mline[-3], mline[-2], mline[-1])
         lline = grd[at + 1 + Nat].split()
         grad.append([float(lline[-3]), float(lline[-2]), float(lline[-1])])
-    mol = Molecule.init_with_xyz(molxyz, no_com=True, no_reorient=True, contentsNotFilename=True)
+    mol = Molecule.from_string(molxyz, dtype='xyz+', fix_com=True, fix_orientation=True)
 
     return mol, grad
 
@@ -784,20 +800,39 @@ def harvest_DIPOL(dipol):
     return dip
 
 
-def muster_memory(mem):
-    """Transform input *mem* in MB into psi4-type options for cfour.
-
-    """
-    text = ''
-
-    # prepare memory keywords to be set as c-side keywords
-    options = defaultdict(lambda: defaultdict(dict))
-    options['CFOUR']['CFOUR_MEMORY_SIZE']['value'] = int(mem)
-    options['CFOUR']['CFOUR_MEM_UNIT']['value'] = 'MB'
-
-    for item in options['CFOUR']:
-        options['CFOUR'][item]['clobber'] = True
-    return text, options
+#def nu_muster_memory(mem, ropts, verbose=1):
+#    """Transform input *mem* in MB into psi4-type options for cfour.
+#
+#    """
+#    text = ''
+#    accession = 4567
+#
+#    # prepare memory keywords to be set as c-side keywords
+#    #options['CFOUR']['CFOUR_MEMORY_SIZE']['value'] = int(mem)
+#    #options['CFOUR']['CFOUR_MEM_UNIT']['value'] = 'MB'
+#    ropts.require('CFOUR', 'MEMORY_SIZE', int(mem), accession=accession, verbose=verbose)
+#    ropts.require('CFOUR', 'MEM_UNIT', 'MB', accession=accession, verbose=verbose)
+#
+#    #for item in options['CFOUR']:
+#    #    options['CFOUR'][item]['clobber'] = True
+#    #return text, options
+#
+#    return ''
+#
+#def muster_memory(mem):
+#    """Transform input *mem* in MB into psi4-type options for cfour.
+#
+#    """
+#    text = ''
+#
+#    # prepare memory keywords to be set as c-side keywords
+#    options = defaultdict(lambda: defaultdict(dict))
+#    options['CFOUR']['CFOUR_MEMORY_SIZE']['value'] = int(mem)
+#    options['CFOUR']['CFOUR_MEM_UNIT']['value'] = 'MB'
+#
+#    for item in options['CFOUR']:
+#        options['CFOUR'][item]['clobber'] = True
+#    return text, options
 
 #   Ways of modifying a computation
 #   global:     set global c-side option
@@ -816,6 +851,47 @@ def muster_memory(mem):
 #   kwarg ~= i-local > local > global > driver-def > i-def
 
 #   P4 infrastructure replacing interfaced infrastructure (mol, basis, mem) where unavoidable overlap in how things are specified (mult in mol{} vs keyword) is treated as a clobber & complain if conflict VS P4 infrastructure as an aliased/convenient leak into interfaced infrastructure (psi) and is strictly no clobber or complain.
+
+
+def muster_inherited_options(ropts, verbose=1):
+    import sys
+    accession = sys._getframe().f_code.co_name + '_' + str(uuid.uuid4())[:8]
+    kwgs = {'accession': accession, 'verbose': verbose}
+    do_translate = ropts.scroll['QCDB']['TRANSLATE_QCDB'].value
+
+    # qcdb/memory [B] --> cfour/memory_size [MB]
+    qopt = ropts.scroll['QCDB']['MEMORY']
+    if do_translate or qopt.is_required():
+        mem = int(0.000001 * qopt.value)
+        print('\n\nMEMORY', mem, '\n\n')
+        ropts.suggest('CFOUR', 'MEMORY_SIZE', mem, **kwgs)
+        ropts.suggest('CFOUR', 'MEM_UNIT', 'MB', **kwgs)
+
+    # qcdb/puream --> cfour/spherical
+    ropts.suggest('CFOUR', 'SPHERICAL', ropts.scroll['QCDB']['PUREAM'].value, **kwgs)
+
+    # qcdb/reference --> cfour/reference
+    # TODO ref or scf__ref?
+    qref = ropts.scroll['QCDB']['SCF__REFERENCE'].value
+    if qref in ['RHF', 'UHF', 'ROHF']:
+    #ref = {'RHF': 'RHF',
+    #       'UHF': 'UHF',
+    #       'ROHF': 'ROHF'}[ropts.scroll['QCDB']['REFERENCE'].value]
+        ropts.suggest('CFOUR', 'REFERENCE', qref, **kwgs)
+
+    # qcdb/scf__d_convergence --> cfour/scf_conv
+    qopt = ropts.scroll['QCDB']['SCF__D_CONVERGENCE']
+    if qopt.disputed():
+        conv = conv_float2negexp(qopt.value)
+    #conv = conv_float2negexp(ropts.scroll['QCDB']['SCF__D_CONVERGENCE'].value)
+        ropts.suggest('CFOUR', 'SCF_CONV', conv, **kwgs)
+
+    # qcdb/scf__maxiter --> cfour/scf_maxcyc
+    ropts.suggest('CFOUR', 'SCF_MAXCYC', ropts.scroll['QCDB']['SCF__MAXITER'].value, **kwgs)
+
+    # qcdb/scf__damping_percentage --> cfour/scf_damping
+    damp = int(10 * ropts.scroll['QCDB']['SCF__DAMPING_PERCENTAGE'].value)
+    ropts.suggest('CFOUR', 'SCF_DAMPING', damp, **kwgs)
 
 
 def muster_psi4options(opt):
@@ -878,6 +954,82 @@ def muster_psi4options(opt):
 #   c4-scf                  CCSD from set {...}
 
 
+def nu_muster_modelchem(name, dertype, ropts, verbose=1):
+    lowername = name.lower()
+    accession=2345
+
+    if dertype == 0:
+        if lowername == 'c4-cfour':
+            pass  # permit clean operation of sandwich mode
+        else:
+            ropts.require('CFOUR', 'DERIV_LEVEL', 'ZERO', accession=accession, verbose=verbose)
+    elif dertype == 1:
+        ropts.require('CFOUR', 'DERIV_LEVEL', 'FIRST', accession=accession, verbose=verbose)
+    elif dertype == 2:
+        ropts.require('CFOUR', 'DERIV_LEVEL', 'SECOND', accession=accession, verbose=verbose)
+    else:
+        raise ValidationError("""Requested Cfour dertype %d is not available.""" % (dertype))
+
+    if lowername == 'c4-cfour':
+        pass
+    elif lowername in ['c4-scf', 'c4-hf']:
+        ropts.require('CFOUR', 'CALC_LEVEL', 'SCF', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-mp2':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'MP2', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-mp3':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'MP3', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-mp4(sdq)':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'SDQ-MP4', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-mp4':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'MP4', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-cc2':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'CC2', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-ccsd':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'CCSD', accession=accession, verbose=verbose)
+        ropts.suggest('CFOUR', 'CC_PROGRAM', 'ECC', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-cc3':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'CC3', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-ccsd(t)':
+        # Can't use (T) b/c bug in xsymcor lops it off
+        ropts.require('CFOUR', 'CALC_LEVEL', 'CCSD[T]', accession=accession, verbose=verbose)
+        ropts.suggest('CFOUR', 'CC_PROGRAM', 'ECC', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-ccsdt':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'CCSDT', accession=accession, verbose=verbose)
+        ropts.suggest('CFOUR', 'CC_PROGRAM', 'ECC', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-ccsdt(q)':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'CCSDT(Q)', accession=accession, verbose=verbose)
+        ropts.suggest('CFOUR', 'CC_PROGRAM', 'NCC', accession=accession, verbose=verbose)
+ 
+    elif lowername == 'c4-ccsdtq':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'CCSDTQ', accession=accession, verbose=verbose)
+        ropts.suggest('CFOUR', 'CC_PROGRAM', 'NCC', accession=accession, verbose=verbose)
+
+    else:
+        raise ValidationError("""Requested Cfour computational methods %d is not available.""" % (lowername))
+
+#    # Set clobbering
+#    if 'CFOUR_DERIV_LEVEL' in options['CFOUR']:
+#        options['CFOUR']['CFOUR_DERIV_LEVEL']['clobber'] = True
+#        options['CFOUR']['CFOUR_DERIV_LEVEL']['superclobber'] = True
+#    if 'CFOUR_CALC_LEVEL' in options['CFOUR']:
+#        options['CFOUR']['CFOUR_CALC_LEVEL']['clobber'] = True
+#        options['CFOUR']['CFOUR_CALC_LEVEL']['superclobber'] = True
+#    if 'CFOUR_CC_PROGRAM' in options['CFOUR']:
+#        options['CFOUR']['CFOUR_CC_PROGRAM']['clobber'] = False
+
+    return ''
+
+
 def muster_modelchem(name, dertype):
     """Transform calculation method *name* and derivative level *dertype*
     into options for cfour. While deliberately requested pieces,
@@ -894,7 +1046,7 @@ def muster_modelchem(name, dertype):
     options = defaultdict(lambda: defaultdict(dict))
 
     if dertype == 0:
-        if lowername == 'cfour':
+        if lowername == 'c4-cfour':
             pass  # permit clean operation of sandwich mode
         else:
             options['CFOUR']['CFOUR_DERIV_LEVEL']['value'] = 'ZERO'
@@ -1195,7 +1347,7 @@ def jajo2mol(jajodic):
     # TODO chgmult, though not really necessary for reorientation
     for at in range(Nat):
         posn = map[at] - 1
-        el = 'GH' if elem[posn] == 0 else z2el[elem[posn]]
+        el = 'GH' if elem[posn] == 0 else periodictable.z2el[elem[posn]]
         posn *= 3
         molxyz += '%s %21.15f %21.15f %21.15f\n' % (el, coord[posn], coord[posn + 1], coord[posn + 2])
     mol = Molecule.init_with_xyz(molxyz, no_com=True, no_reorient=True, contentsNotFilename=True)

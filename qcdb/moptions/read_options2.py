@@ -9,6 +9,12 @@ from . import parsers
 #def read_options(options):
 def load_qcdb_defaults(options):
 
+    options.add('qcdb', RottenOption(
+            keyword='translate_qcdb',
+            default=True,
+            validator=parsers.boolean,
+            glossary='assert always translated. should qcdb or program defaults prevail?'))
+
     options.add('qcdb', RottenOption(  # true global
             keyword='memory',
             default='700 mb',
@@ -98,6 +104,30 @@ def load_qcdb_defaults(options):
         density being mixed into the current density)
         could help to solve problems with oscillatory convergence."""))
 
+    options.add('qcdb', RottenOption(
+            keyword='mp2_ss_scale',
+            default=1.0,
+            validator=lambda x: float(x),
+            glossary="""MP2 same-spin scaling value. Default produces canonical MP2, not canonical SCS-MP2."""))
+
+    options.add('qcdb', RottenOption(
+            keyword='mp2_os_scale',
+            default=1.0,
+            validator=lambda x: float(x),
+            glossary="""MP2 opposite-spin scaling value. Default produces canonical MP2, not canonical SCS-MP2."""))
+
+#    options.add('qcdb', RottenOption(
+#            keyword='',
+#            default=,
+#            validator=,
+#            glossary="""."""))
+
+#    options.add('qcdb', RottenOption(
+#            keyword='',
+#            default=,
+#            validator=,
+#            glossary="""."""))
+
 #    options.add('qcdb', RottenOption(
 #            keyword='',
 #            default=,
@@ -119,6 +149,17 @@ class RottenOptions(object):
             text.append('  <<<  {}  >>>'.format(pkg))
             for opt, oopt in sorted(self.scroll[pkg].items()):
                 text.append(str(oopt))
+
+        return '\n'.join(text)
+
+    def print_changed(self):
+        text = []
+        for pkg in self.scroll:
+            text.append('  <<<  {}  >>>'.format(pkg))
+            for opt, oopt in sorted(self.scroll[pkg].items()):
+                #if not oopt.is_default():
+                if len(oopt.history) > 1:
+                    text.append(str(oopt))
 
         return '\n'.join(text)
 
@@ -164,23 +205,24 @@ class RottenOption(object):
         self.validator = validator
         self.history = []  # list of quads (value, required, overlap, accession)
         self.suggest(default, accession=self.mark_of_the_default, verbose=0)
-        #self.default = copy.deepcopy(self.value)
         self.has_changed = False
         self.expert = expert
 
     def __str__(self):
         text = []
-        text.append('  {:23} {:>30} {} {}'.format(
+        text.append('  {:50} {:>30} {} {}'.format(
                                         self.keyword + ':',
                                         str(self.value),
                                         '  ' if self.is_default() else '<>',
-                                        #'(' + str(self.default) + ')')
                                         '(' + str(self.history[0][0]) + ')'))
-        #text.extend([str(entry) for entry in self.history])
+        if self.disputed():
+            text.extend(['         ' + str(entry) for entry in self.history])
+                #format(self.keyword, added[0], added[2] + 100 * int(added[1]), added[3]))
         return '\n'.join(text)
 
-    @property
-    def value(self):
+    #@property
+    #def value(self):
+    def _compute(self):
         """The all-important `self.value` is read-only and computed on-the-fly from `self.history`."""
 
         scores = [cand[2] + 100 * int(cand[1]) for cand in self.history]
@@ -202,24 +244,37 @@ class RottenOption(object):
         if user is None and driver is None:
             raise OptionReconciliationError('No info')
         elif user is None and driver is not None:
-            val = driver[0]
+            hist = driver
         elif user is not None and driver is None:
-            val = user[0]
+            hist = user
         elif user is not None and driver is not None:
             if user[0] == driver[0]:
-                val = user[0]
+                hist = user
             else:
                 raise OptionReconciliationError(
                     'Conflicting option requirements btwn user ({}) and driver ({})'.
                     format(user[0], driver[0]))
         
-        return val
+        #self.score = max_score
+        return hist[0], max_score, hist
         
-    
-    #@value.setter
-    #def value(self, val):
-    #    self._value = self._check(val)
-    #    self.has_changed = True
+    @property
+    def value(self):
+        val, score, hist = self._compute()
+        return val
+
+    def inherit(self, other, transform, suggests_too=True): #score_cutoff=100):
+        assert isinstance(other, RottenOption)
+        #oval, oscore, ohist = other._compute()
+        _, _, ohist = other._compute()
+        oval, oimperative, ooverlap, oaccession = ohist
+        
+        # if `other` has no required and mere suggestions not wanted, done
+        #if not ohist[1] and not suggests_too:
+        if not oimperative and not suggests_too:
+            return
+
+        #self.set(oimperative, transform(oval), ???, oaccession)
 
     def suggest(self, value, overlap=None, accession=None, verbose=1):
         self._set(False, value, overlap, accession, verbose)
@@ -268,6 +323,12 @@ class RottenOption(object):
         return nuval
 
     def is_default(self):
-        #return self.value == self.default
         return self.value == self.history[0][0]
+
+    def disputed(self):
+        return len(self.history) > 1
+
+    def is_required(self, score_cutoff=100):
+        val, score, hist = self._compute()
+        return score >= score_cutoff
 

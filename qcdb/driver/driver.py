@@ -40,6 +40,8 @@ from __future__ import absolute_import
 #   import shutil
 
 import copy
+import pprint
+pp = pprint.PrettyPrinter(width=120)
 
 #   import numpy as np
 #   
@@ -497,6 +499,7 @@ def energy(name, **kwargs):
 #            targetfile = filepath + prefix + '.' + pid + '.' + namespace + '.' + str(filenum)
 #            shutil.copy(item, targetfile)
 
+    print('QWER', pe.nu_options.print_changed())
     prefix = {'p4-': 'psi4',
               'c4-': 'cfour'}
     for k, v in prefix.items():
@@ -513,8 +516,6 @@ def energy(name, **kwargs):
 #        postcallback(lowername, wfn=wfn, **kwargs)
 #
 #    optstash.restore()
-    import pprint
-    pp = pprint.PrettyPrinter(width=120)
     #jobrec.pop('raw_output')  # just to moderate printint to screen
     pp.pprint(jobrec)
     pe.active_qcvars = copy.deepcopy(jobrec['qcvars'])

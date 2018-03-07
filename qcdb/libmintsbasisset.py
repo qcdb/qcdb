@@ -1298,8 +1298,8 @@ class BasisSet(object):
 
         for uA in range(self.molecule.nunique()):
             A = self.molecule.unique(uA)
-            text += """%s:P4_%d\n""" % (self.molecule.symbol(A), A + 1)
-            text += """Psi4 basis %s for element %s atom %d\n\n""" % \
+            text += """%s:CD_%d\n""" % (self.molecule.symbol(A), A + 1)
+            text += """qcdb basis %s for element %s atom %d\n\n""" % \
                 (self.name.upper(), self.molecule.symbol(A), A + 1)
 
             first_shell = self.center_to_shell[A]
@@ -1307,8 +1307,11 @@ class BasisSet(object):
 
             max_am_center = 0
             for Q in range(n_shell):
-                max_am_center = self.shells[Q + first_shell].am() if \
-                self.shells[Q + first_shell].am() > max_am_center else max_am_center
+                if self.shells[Q + first_shell].am() > max_am_center:
+                    max_am_center = self.shells[Q + first_shell].am() 
+
+                #max_am_center = self.shells[Q + first_shell].am() if \
+                #self.shells[Q + first_shell].am() > max_am_center else max_am_center
 
             shell_per_am = [[] for i in range(max_am_center + 1)]
             for Q in range(n_shell):

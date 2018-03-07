@@ -27,6 +27,7 @@
 #
 
 import collections
+from decimal import Decimal as Dm
 
 
 def _difference(args):
@@ -42,6 +43,11 @@ def _product(args):
 def _spin_component_scaling(args):
     os_scale, ss_scale, tot_corl, ss_corl = args
     return os_scale * (tot_corl - ss_corl) + ss_scale * ss_corl
+ 
+ 
+def _spin_component_scaling_wsing(args):
+    os_scale, ss_scale, tot_corl, ss_corl, s_corl = args
+    return os_scale * (tot_corl - ss_corl) + ss_scale * ss_corl + s_corl
  
  
 def _linear(args):
@@ -78,11 +84,25 @@ def wfn_psivars():
         args=['MP2 TOTAL ENERGY', 'HF TOTAL ENERGY', 'MP2 CORRELATION ENERGY'],
         coeff=[-1, 1, 1]))
     pv0.extend(_solve_in_turn(
-        args=['MP2 DOUBLES CORRELATION ENERGY', 'MP2 SAME-SPIN CORRELATION ENERGY', 'MP2 OPPOSITE-SPIN CORRELATION ENERGY'],
+        args=['MP2 DOUBLES ENERGY', 'MP2 SAME-SPIN CORRELATION ENERGY', 'MP2 OPPOSITE-SPIN CORRELATION ENERGY'],
         coeff=[-1, 1, 1]))
     pv0.extend(_solve_in_turn(
-        args=['MP2 CORRELATION ENERGY', 'MP2 DOUBLES CORRELATION ENERGY', 'MP2 SINGLES CORRELATION ENERGY'],
+        args=['MP2 CORRELATION ENERGY', 'MP2 DOUBLES ENERGY', 'MP2 SINGLES ENERGY'],
         coeff=[-1, 1, 1]))
+
+    pv0.extend(_solve_in_turn(
+        args=['CUSTOM SCS-MP2 TOTAL ENERGY', 'CUSTOM SCS-MP2 CORRELATION ENERGY', 'HF TOTAL ENERGY'],
+        coeff=[-1, 1, 1]))
+
+    # SCS-MP2
+    pv0.append({
+        'form': 'SCS-MP2 CORRELATION ENERGY',
+        'func': _spin_component_scaling_wsing,
+        'args': [Dm(6) / Dm(5), Dm(1) / Dm(3), 'MP2 CORRELATION ENERGY', 'MP2 SAME-SPIN CORRELATION ENERGY', 'MP2 SINGLES ENERGY']})
+    pv0.append({
+        'form': 'SCS-MP2 TOTAL ENERGY',
+        'func': sum, 
+        'args': ['HF TOTAL ENERGY', 'SCS-MP2 CORRELATION ENERGY']})
 
     # CCSD
     pv0.extend(_solve_in_turn(
@@ -106,6 +126,11 @@ def wfn_psivars():
         coeff=[-1, 1, 1]))
     pv0.extend(_solve_in_turn(
         args=['CCSD[T] CORRELATION ENERGY', 'CCSD CORRELATION ENERGY', '[T] CORRECTION ENERGY'],
+        coeff=[-1, 1, 1]))
+
+    # misc.
+    pv0.extend(_solve_in_turn(
+        args=['CURRENT ENERGY', 'CURRENT REFERENCE ENERGY', 'CURRENT CORRELATION ENERGY'],
         coeff=[-1, 1, 1]))
 
     return pv0

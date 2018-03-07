@@ -520,8 +520,10 @@ def _plausible_atom_orderings(ref, current, rgeom, cgeom, algo='hunguno', verbos
     if algo == 'hunguno':
         ccdistmat = distance_matrix(cgeom, cgeom)
         rrdistmat = distance_matrix(rgeom, rgeom)
-        ccnremat = np.reciprocal(ccdistmat)
-        rrnremat = np.reciprocal(rrdistmat)
+        # TODO investigate soundness
+        with np.errstate(divide='ignore'):
+            ccnremat = np.reciprocal(ccdistmat)
+            rrnremat = np.reciprocal(rrdistmat)
         ccnremat[ccnremat == np.inf] = 0.
         rrnremat[rrnremat == np.inf] = 0.
         algofn = filter_hungarian_uno

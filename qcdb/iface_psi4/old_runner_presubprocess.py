@@ -8,7 +8,8 @@ from ..pdict import PreservingDict
 
 def run_psi4_deferred(name, molecule, options, **kwargs):
     print('\nhit run_psi4_deferred', name, kwargs)
-    print(options)
+    #print(options)
+    print('ASDF', options.print_changed())
 
     jobrec = {}
     prov = {}
@@ -44,17 +45,22 @@ def run_psi4_deferred(name, molecule, options, **kwargs):
     #jobrec['stdout']
     jobrec['return_output'] = True
 
+    print('GG')
+    print(options.print_changed())
+
     popts = {}
     for k, v in options.scroll['QCDB'].items():
-#    for k, v in options['GLOBALS'].items():
-#        print('P4 opt', k, v)
-#   #     psi4.core.set_global_option(k.upper(), v['value'])
-#        popts[k] = v['value']
-        print('WWWW', k, v.value, v.is_default())
         if not v.is_default():
+            print('QQQQ', k, v.value, v.is_default())
             popts[k] = v.value
-            
+
+    for k, v in options.scroll['PSI4'].items():
+        if not v.is_default():
+            print('PPPP', k, v.value, v.is_default())
+            popts[k] = v.value
     jobrec['options'] = popts
+    print('INTO JSON RUNNER')
+    print(options.print_changed())
 
     jobrec['driver'] = 'energy'
     jobrec['method'] = name
@@ -65,6 +71,7 @@ def run_psi4_deferred(name, molecule, options, **kwargs):
     print('>>>')
     import psi4
     psi4.core.clean()
+#    psi4.core.clean_options()  # breaks non-qcdb psi
     #try:
     psi4.json_wrapper.run_json(jobrec)
     #    jobrec['success'] = True

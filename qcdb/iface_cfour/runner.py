@@ -1,12 +1,14 @@
 import sys
 import copy
 import pprint
+pp = pprint.PrettyPrinter(width=120)
 import inspect
 
 from .. import __version__
 from .. import molparse
 from .. import moptions
 from .. import qcvars
+from ..driver.driver_helpers import print_variables
 from ..exceptions import *
 from ..iface_psi4.options import query_options_defaults_from_psi
 from ..libmintsbasisset import BasisSet
@@ -14,16 +16,16 @@ from ..molecule import Molecule
 from ..pdict import PreservingDict
 from . import harvester
 from .worker import cfour_subprocess
-from .bas import extract_basis_from_genbas
+from .bas import extract_basis_from_genbas, format_basis_for_cfour, format_molecule_for_cfour
 
 
 def run_cfour(name, molecule, options, **kwargs):
     print('\nhit run_cfour', name, kwargs)
 
-    calledby = inspect.stack()
-    print('CALLEDBY')
-    for cur in calledby:
-        print('CUR', cur[3])
+    #calledby = inspect.stack()
+    #print('CALLEDBY')
+    #for cur in calledby:
+    #    print('CUR', cur[3])
 
     jobrec = {}
     jobrec['error'] = ''
@@ -57,7 +59,8 @@ def run_cfour(name, molecule, options, **kwargs):
 
 
     print('comin in')
-    print(jobrec['options'])
+    #print(jobrec['options'])
+    print(jobrec['options'].print_changed())
 
     #try:
     jobrec = cfour_driver(jobrec)
@@ -85,11 +88,14 @@ def cfour_driver(jobrec):
     # *
 
     cfourrec = cfour_plant(jobrec)
+    #cfourrec['scratch_messy'] = True
 
     # test json roundtrip
     jcfourrec = json.dumps(cfourrec)
     cfourrec = json.loads(jcfourrec)
 
+    print('CFOURREC')
+    pp.pprint(cfourrec)
     cfour_subprocess(cfourrec)  # updates cfourrec
 
     cfour_harvest(jobrec, cfourrec)  # ? updates jobrec ?
@@ -110,10 +116,11 @@ def cfour_plant(jobrec):  # jobrec@i -> cfour@i
     """
     import qcdb
     # Handle memory
-    if 'memory' in jobrec:
-        memcmd, memkw = harvester.muster_memory(jobrec['memory'])
-    else:
-        memcmd, memkw = '', {}
+    # I don't think memory belongs in jobrec. it goes in pkgrec (for pbs) and possibly duplicated in options (for prog)
+#    if 'memory' in jobrec:
+#        memcmd, memkw = harvester.muster_memory(jobrec['memory'])
+#    else:
+#        memcmd, memkw = '', {}
     #mem = int(0.000001 * core.get_memory())
     #if mem == 524:
     #    memcmd, memkw = '', {}
@@ -121,7 +128,7 @@ def cfour_plant(jobrec):  # jobrec@i -> cfour@i
     #    memcmd, memkw = qcdb.cfour.muster_memory(mem)
 
     print('in cfour_plant')
-    pprint.pprint(jobrec)
+    pp.pprint(jobrec)
     # Handle molecule and basis set
     #if molecule.name() == 'blank_molecule_psi4_yo':
     #    molcmd, molkw = '', {}
@@ -133,79 +140,95 @@ def cfour_plant(jobrec):  # jobrec@i -> cfour@i
         #qcdbmolecule = qcdb.Molecule(molecule.create_psi4_string_from_molecule())
         #qcdbmolecule.tagline = molecule.name()
 
-    molcmd, molkw = molparse.to_string(jobrec['molecule'], dtype='cfour', units='Bohr', return_options=True)
-    print(molcmd, molkw)
+    molcmd = format_molecule_for_cfour(jobrec['molecule'], jobrec['options'], verbose=1)
+
+    #molcmd, molkw = molparse.to_string(jobrec['molecule'], dtype='cfour', units='Bohr', return_options=True)
+    print(molcmd) #, molkw)
         #molcmd, molkw = qcdbmolecule.format_molecule_for_cfour()
 
-    opts = jobrec['options']
-    if opts.scroll['QCDB']['BASIS'].value == '':
-        #if 'BASIS' not in opts['GLOBALS']:
-        #if core.get_global_option('BASIS') == '':
-        cfourrec['genbas'] = extract_basis_from_genbas(opts.scroll['CFOUR']['BASIS'].value, jobrec['molecule']['elem'])
+    # Handle qcdb keywords implying cfour keyword values
+#    if core.get_option('CFOUR', 'TRANSLATE_PSI4'):
+    harvester.muster_inherited_options(jobrec['options'])
+
+#    opts = jobrec['options']
+    _qcdb_basis = jobrec['options'].scroll['QCDB']['BASIS'].value
+    _cfour_basis = jobrec['options'].scroll['CFOUR']['BASIS'].value
+    #if core.get_global_option('BASIS') == '':
+    if _qcdb_basis == '':
+        _, cased_basis = moptions.format_option_for_cfour('CFOUR_BASIS', _cfour_basis)
+        cfourrec['genbas'] = extract_basis_from_genbas(cased_basis, jobrec['molecule']['elem'], exact=False)
         bascmd, baskw = '', {}
     else:
-#    user_pg = molecule.schoenflies_symbol()
-#    molecule.reset_point_group('c1')  # need basis printed for *every* atom
-        qbs = BasisSet.pyconstruct(jobrec['molecule'], 'BASIS', jobrec['options']['BASIS'])
-#    qbs = core.BasisSet.build(molecule, "BASIS", core.get_global_option('BASIS'))
-        if qbs.has_ECP():
-            raise ValidationError("""ECPs not hooked up for Cfour""")
-        cfourrec['genbas'] = qbs.genbas()
-    #print('  GENBAS loaded from Psi4 LibMints for basis %s\n' % (core.get_global_option('BASIS')))
-#    molecule.reset_point_group(user_pg)
-#    molecule.update_geometry()
-        bascmd, baskw = cfour.format_basis_for_cfour(jobrec['molecule'], qbs.has_puream())
+        qbs = BasisSet.pyconstruct(jobrec['molecule'], 'BASIS', _qcdb_basis)
+        #if qbs.has_ECP():
+        #    raise ValidationError("""ECPs not hooked up for Cfour""")
+        cfourrec['genbas'] = qbs.print_detail_cfour() #qbs.genbas()
+        #bascmd, baskw = format_basis_for_cfour(jobrec['molecule'], qbs.has_puream())
+        bascmd = format_basis_for_cfour(jobrec['molecule'], jobrec['options'], qbs.has_puream())
 
-    # Handle psi4 keywords implying cfour keyword values
-#    if core.get_option('CFOUR', 'TRANSLATE_PSI4'):
 #        psicmd, psikw = qcdb.cfour.muster_psi4options(p4util.prepare_options_for_modules(changedOnly=True))
 #    else:
 #        psicmd, psikw = '', {}
 
     # Handle calc type and quantum chemical method
-    mdccmd, mdckw = harvester.muster_modelchem(jobrec['method'], jobrec['dertype'])
+    #mdccmd, mdckw = harvester.nu_muster_modelchem(jobrec['method'], jobrec['dertype'], jobrec['options'])
+    mdccmd = harvester.nu_muster_modelchem(jobrec['method'], jobrec['dertype'], jobrec['options'])
 
-    # Handle calc type and quantum chemical method
-    mdccmd, mdckw = harvester.muster_modelchem(jobrec['method'], jobrec['dertype'])
+    print('HH')
+    print(jobrec['options'].print_changed())
 
     # Handle driver vs input/default keyword reconciliation
     #userkw = query_options_defaults_from_psi() #prepare_options_for_modules()
     userkw = {}
     userkw['CFOUR'] = {}
     for k, v in jobrec['options'].scroll['CFOUR'].items():
-        print('QQ', v)
+        #print('QQ', v)
         userkw['CFOUR']['CFOUR_' + v.keyword] = {'value': v.value, 'has_changed': not v.is_default()}
 
 #    userkw = jobrec['options']
     print('\nDEFAULT OPTIONS')
-    print(userkw)
+    #print(userkw)
     #pprint.pprint(userkw['CFOUR'])
     print('\nUSER OPTIONS')
     print('\nDRIVER OPTIONS')
-    pprint.pprint(opts)
-    print('\nMEM OPTIONS')
-    pprint.pprint(memkw)
-    print('\nMOL OPTIONS')
-    pprint.pprint(molkw)
-    print('\nBAS OPTIONS')
-    pprint.pprint(baskw)
-    print('\nMDC OPTIONS')
-    pprint.pprint(mdckw)
-    userkw = moptions.reconcile_options(userkw, memkw)
-    userkw = moptions.reconcile_options(userkw, molkw)
-    userkw = moptions.reconcile_options(userkw, baskw)
+#    pprint.pprint(opts)
+    #print('\nMEM OPTIONS')
+    #pprint.pprint(memkw)
+    #print('\nMOL OPTIONS')
+    #pprint.pprint(molkw)
+    #print('\nBAS OPTIONS')
+    #pprint.pprint(baskw)
+    #print('\nMDC OPTIONS')
+    #pprint.pprint(mdckw)
+    #userkw = moptions.reconcile_options(userkw, memkw)
+    #userkw = moptions.reconcile_options(userkw, molkw)
+#    userkw = moptions.reconcile_options(userkw, baskw)
 #    userkw = moptions.reconcile_options(userkw, psikw)
-    userkw = moptions.reconcile_options(userkw, mdckw)
+#    userkw = moptions.reconcile_options(userkw, mdckw)
 
     # Handle conversion of psi4 keyword structure into cfour format
-    optcmd = moptions.prepare_options_for_cfour(userkw)
+    #optcmd = moptions.old_prepare_options_for_cfour(userkw)
+    optcmd = moptions.prepare_options_for_cfour(jobrec['options'])
 
     # Handle text to be passed untouched to cfour
 #    litcmd = core.get_global_option('LITERAL_CFOUR')
 
+
+#    popts = {}
+#    for k, v in options.scroll['QCDB'].items():
+#        if not v.is_default():
+#            print('QQQQ', k, v.value, v.is_default())
+#            popts[k] = v.value
+#
+#    for k, v in options.scroll['PSI4'].items():
+#        if not v.is_default():
+#            print('PPPP', k, v.value, v.is_default())
+#            popts[k] = v.value
+#    jobrec['options'] = popts
+
     # Assemble ZMAT pieces
     #zmat = memcmd + molcmd + optcmd + mdccmd + psicmd + bascmd + litcmd
-    zmat = memcmd + molcmd + optcmd + mdccmd + bascmd
+    zmat = molcmd + optcmd + mdccmd + bascmd
     cfourrec['zmat'] = zmat
     print('<<< ZMAT||{}||>>>\n'.format(zmat))
     cfourrec['command'] = ['xcfour']
@@ -268,9 +291,7 @@ def cfour_harvest(jobrec, cfourrec):  # jobrec@i, cfourrec@io -> jobrec@io
 
     # amalgamate output
     text = cfourrec['stdout']
-    text += '\n  <<<  Cfour {} {} Results  >>>'.format('', '') #name.lower(), calledby.capitalize()))  # banner()
-    #text += qcdb.print_variables(calcinfo)
-    jobrec['raw_output'] = text
+    text += '\n  <<<  Cfour {} {} Results  >>>\n\n'.format('', '') #name.lower(), calledby.capitalize()))  # banner()
 
     c4files = {}
     for fl in ['GRD', 'FCMFINAL', 'DIPOL']:
@@ -278,7 +299,7 @@ def cfour_harvest(jobrec, cfourrec):  # jobrec@i, cfourrec@io -> jobrec@io
         if field in cfourrec:
             text += '  Cfour scratch file {} has been read\n'.format(fl)
             text += cfourrec[field]
-            c4file[fl] = cfourrec[field]
+            c4files[fl] = cfourrec[field]
 
 
     #if molecule.name() == 'blank_molecule_psi4_yo':
@@ -300,9 +321,6 @@ def cfour_harvest(jobrec, cfourrec):  # jobrec@i, cfourrec@io -> jobrec@io
     #calcinfo = qcvars.certify_qcvars(psivar)
     #jobrec['qcvars'] = {info.lbl: info for info in calcinfo}
     progvars = PreservingDict(psivar)
-    qcvars.fill_in(progvars)
-    calcinfo = qcvars.certify_qcvars(progvars)
-    jobrec['qcvars'] = calcinfo
 
     #if qcdbmolecule is None and c4mol is not None:
     #    molecule = geometry(c4mol.create_psi4_string_from_molecule(), name='blank_molecule_psi4_yo')
@@ -312,14 +330,22 @@ def cfour_harvest(jobrec, cfourrec):  # jobrec@i, cfourrec@io -> jobrec@io
     #    #   c4mol is dinky, w/o chg, mult, dummies and retains name
     #    #   blank_molecule_psi4_yo so as to not interfere with future cfour {} blocks
 
-    if c4grad:
-        mat = core.Matrix.from_list(c4grad)
-        core.set_gradient(mat)
+    if c4grad is not None:
+        progvars['CURRENT GRADIENT'] = c4grad
+        #mat = core.Matrix.from_list(c4grad)
+        #core.set_gradient(mat)
+
+    qcvars.fill_in(progvars)
+    calcinfo = qcvars.certify_qcvars(progvars)
+    text += print_variables(calcinfo)
+
+    jobrec['raw_output'] = text
+    jobrec['qcvars'] = calcinfo
 
     prov = {}
     prov['creator'] = 'Cfour'
-    prov['routine'] = sys._getframe().f_code.co_name,
-    prov['version'] = version,
+    prov['routine'] = sys._getframe().f_code.co_name
+    prov['version'] = version
     jobrec['provenance'].append(prov)
 
     return jobrec

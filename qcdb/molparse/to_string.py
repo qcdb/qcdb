@@ -4,7 +4,7 @@ import numpy as np
 
 from ..physconst import psi_bohr2angstroms
 
-def to_string(molrec, dtype, units='Angstrom', atom_format=None, ghost_format=None, width=17, prec=12, return_options=False):
+def to_string(molrec, dtype, units='Angstrom', atom_format=None, ghost_format=None, width=17, prec=12): #, return_options=False):
     """Format a string representation of QM molecule.
 
     Parameters
@@ -34,15 +34,15 @@ def to_string(molrec, dtype, units='Angstrom', atom_format=None, ghost_format=No
         Field width for formatting coordinate float.
     prec : int, optional
         Number of decimal places for formatting coordinate float.
-    return_options : bool, optional
-        Some dtypes (cfour) can also return options knowable from `molrec`
+#    return_options : bool, optional
+#        Some dtypes (cfour) can also return options knowable from `molrec`
 
     Returns
     -------
     smol : str
         String representation of the molecule.
-    opts : dict
-        Only when `return_options=True`Some formats (cfour) can also return options
+#    opts : dict
+#        Only when `return_options=True`Some formats (cfour) can also return options
 
     """
 
@@ -92,21 +92,21 @@ def to_string(molrec, dtype, units='Angstrom', atom_format=None, ghost_format=No
         smol = [tagline]
         smol.extend(atoms)
 
-        options = collections.defaultdict(lambda: collections.defaultdict(dict))
-        options['CFOUR']['CFOUR_CHARGE']['value'] = int(molrec['molecular_charge'])
-        options['CFOUR']['CFOUR_MULTIPLICITY']['value'] = molrec['molecular_multiplicity']
-        options['CFOUR']['CFOUR_UNITS']['value'] = units.upper()
-        options['CFOUR']['CFOUR_COORDINATES']['value'] = 'CARTESIAN'
-
-        options['CFOUR']['CFOUR_CHARGE']['clobber'] = True
-        options['CFOUR']['CFOUR_MULTIPLICITY']['clobber'] = True
-        options['CFOUR']['CFOUR_UNITS']['clobber'] = True
-        options['CFOUR']['CFOUR_COORDINATES']['clobber'] = True
-
-    if return_options:
-        return '\n'.join(smol), options
-    else:
-        return '\n'.join(smol)
+#        options = collections.defaultdict(lambda: collections.defaultdict(dict))
+#        options['CFOUR']['CFOUR_CHARGE']['value'] = int(molrec['molecular_charge'])
+#        options['CFOUR']['CFOUR_MULTIPLICITY']['value'] = molrec['molecular_multiplicity']
+#        options['CFOUR']['CFOUR_UNITS']['value'] = units.upper()
+#        options['CFOUR']['CFOUR_COORDINATES']['value'] = 'CARTESIAN'
+#
+#        options['CFOUR']['CFOUR_CHARGE']['clobber'] = True
+#        options['CFOUR']['CFOUR_MULTIPLICITY']['clobber'] = True
+#        options['CFOUR']['CFOUR_UNITS']['clobber'] = True
+#        options['CFOUR']['CFOUR_COORDINATES']['clobber'] = True
+#
+#    if return_options:
+#        return '\n'.join(smol), options
+#    else:
+    return '\n'.join(smol)
 
 
 def _atoms_formatter(molrec, geom, atom_format, ghost_format, width, prec, sp):

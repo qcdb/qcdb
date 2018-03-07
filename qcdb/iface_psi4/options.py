@@ -3,17 +3,43 @@ import collections
 from ..moptions.read_options2 import RottenOption
 
 
-def load_cfour_defaults_from_psi(peoptions):
+def load_psi4_defaults(peoptions):
+
+    opts = query_options_defaults_from_psi()
+
+    for m in opts:
+        for o, v in opts[m].items():
+            if m == 'GLOBALS':
+                keyword = o
+            else:
+                keyword = m + '__' + o
+
+            peoptions.add('psi4',
+                          RottenOption(keyword=keyword,
+                                       default=v['value'],
+                                       validator=lambda x: x))
+
+
+def load_cfour_defaults_from_psi4(peoptions):
 
     opts = query_options_defaults_from_psi()
     opts = opts['CFOUR']
+
+    def c4_validator(val):
+        try:
+            nuval = val.upper()
+        except AttributeError:
+            nuval = val
+
+        return nuval
 
     for o, v in opts.items():
         if o.startswith('CFOUR_'):
             peoptions.add('cfour', 
                           RottenOption(keyword=o[6:],
                                        default=v['value'],
-                                       validator=lambda x: x))
+                                       validator=c4_validator))
+                                       #validator=lambda x: x))
 
 
 def query_options_defaults_from_psi(changedOnly=False):

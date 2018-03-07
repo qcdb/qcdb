@@ -29,7 +29,6 @@ def certify_qcvars(dicary):
             raise ValidationError('Undefined QCvar!: {}'.format(pv))
 
     return {info.lbl: info for info in calcinfo}
-    #return calcinfo
 
 
 def fill_in(rawvars, verbose=2):
