@@ -47,6 +47,13 @@ dash_alias = {
     '-d3m': '-d3mzero',  # means -D3 uses the 3-param zero-damping fn, refit for short-range
 }
 
+formal_alias = {'d2p4': 'd2',
+                'd2gr': 'd2',
+                'd3zero': 'd3',
+                'd3bj': 'd3(bj)',
+                'd3mzero': 'd3m',
+                'd3mbj': 'd3m(bj)'}
+
 dash_alias_reverse = {v: k for k, v in dash_alias.items()}
 
 # The dashcoeff dict below defines the -D parameters for all of psi4. 'd2p4' are
@@ -55,16 +62,16 @@ dash_alias_reverse = {v: k for k, v in dash_alias.items()}
 #   translated from Turbomole to Psi4 functional names.
 dashcoeff = {
     'd2p4': {
-        'b97-d'       : {'s6': 1.25},  # IN
-        'blyp'        : {'s6': 1.20},  # IN
-        'b3lyp'       : {'s6': 1.05},  # IN
-        'bp86'        : {'s6': 1.05},  # IN
-        'pbe'         : {'s6': 0.75},  # IN
-        'pbe0'        : {'s6': 0.60},  # IN
-        'dsd-blyp'    : {'s6': 0.35},  # IN but different btwn dftd3 and psi4 and variants need to be worked out
-        'dsd-pbep86'  : {'s6': 0.29},  # IN
-        'dsd-pbepbe'  : {'s6': 0.42},  # IN
-        'b2plyp'      : {'s6': 0.55},  # IN
+        'b97-d'       : {'s6': 1.25, 'alpha6': 20.0},  # IN
+        'blyp'        : {'s6': 1.20, 'alpha6': 20.0},  # IN
+        'b3lyp'       : {'s6': 1.05, 'alpha6': 20.0},  # IN
+        'bp86'        : {'s6': 1.05, 'alpha6': 20.0},  # IN
+        'pbe'         : {'s6': 0.75, 'alpha6': 20.0},  # IN
+        'pbe0'        : {'s6': 0.60, 'alpha6': 20.0},  # IN
+        'dsd-blyp'    : {'s6': 0.35, 'alpha6': 20.0},  # IN but different btwn dftd3 and psi4 and variants need to be worked out
+        'dsd-pbep86'  : {'s6': 0.29, 'alpha6': 20.0},  # IN
+        'dsd-pbepbe'  : {'s6': 0.42, 'alpha6': 20.0},  # IN
+        'b2plyp'      : {'s6': 0.55, 'alpha6': 20.0},  # IN
     },
     'd2gr': {
         'blyp'        : {'s6': 1.2,  'alpha6': 20.0},  # in psi4  #IN
@@ -80,7 +87,7 @@ dashcoeff = {
         'b2plyp'      : {'s6': 0.55, 'alpha6': 20.0},  # in psi4  #IN
         'b2gp-plyp'   : {'s6': 0.4,  'alpha6': 20.0},
         'dsd-blyp'    : {'s6': 0.41, 'alpha6': 60.0},  # in psi4
-        'core-dsd-blyp'    : {'s6': 0.41, 'alpha6': 60.0},  # in psi4
+        'core-dsd-blyp': {'s6': 0.41, 'alpha6': 60.0},  # in psi4
     },
     'd3zero': {
         'hf'          : {'s6': 1.0,  's8': 1.746, 'sr6': 1.158, 'alpha6': 14.0},  # in psi4  #IN
@@ -217,6 +224,17 @@ dashcoeff = {
 # Full list of all possible endings
 full_dash_keys = list(dashcoeff) + [x.replace('-', '') for x in list(dash_alias)]
 
+def dftd3_list():
+    avail = [
+    'd3-b3lyp-d2',
+    'd3-b3lyp-d3',
+    'd3-b3lyp-d3bj',
+    'd3-b3lyp-d3m',
+    'd3-b3lyp-d3mbj',
+    ]
+    return avail
+
+
 
 def dash_server(func, dashlvl, return_levelkeys=False, return_triplet=False):
     """ Returns the dictionary of keys for default empirical parameters"""
@@ -236,6 +254,9 @@ def dash_server(func, dashlvl, return_levelkeys=False, return_triplet=False):
         raise ValidationError("""Functional %s is not available for -D level %s.""" % (func, dashlvl))
 
     params = copy.deepcopy(dashcoeff[dashlvleff][func])
+    if dashlvleff == 'd2p4':
+        # had to add alpha6 to dashcoeff['d2p4'] so keys would match with d2gr. but downstream doesn't like it.
+        params.pop('alpha6')
 
     if return_triplet:
         return func, dashlvleff, params

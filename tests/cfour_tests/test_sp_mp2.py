@@ -66,8 +66,8 @@ def test_sp_uhf_mp2():
     assert compare_values(-55.5893469688, qcdb.get_variable('scf total energy'), 6, tnm + ' SCF')
     assert compare_values(-55.784877360093, qcdb.get_variable('mp2 total energy'), 6, tnm + ' MP2')
     assert compare_values(-0.195530391306, qcdb.get_variable('mp2 correlation energy'), 6, tnm + ' MP2 corl')
-    assert compare_values(-0.195530391306, qcdb.get_variable('mp2 doubles correlation energy'), 6, tnm + ' MP2 corl')
-    assert compare_values(0., qcdb.get_variable('mp2 singles correlation energy'), 6, tnm + ' MP2 corl')
+    assert compare_values(-0.195530391306, qcdb.get_variable('mp2 doubles energy'), 6, tnm + ' MP2 corl')
+    assert compare_values(0., qcdb.get_variable('mp2 singles energy'), 6, tnm + ' MP2 corl')
     assert compare_values(-0.0416164, qcdb.get_variable('mp2 same-spin correlation energy'), 6, tnm + ' MP2 SS corl')
     assert compare_values(-0.1539141, qcdb.get_variable('mp2 opposite-spin correlation energy'), 6, tnm + ' MP2 OS corl')
 
@@ -94,11 +94,11 @@ def test_sp_rohf_mp2_sc():
     mp2tot = -55.785276787341
     tnm = sys._getframe().f_code.co_name
     assert compare_values(scftot, qcdb.get_variable('scf total energy'), 6, tnm + ' SCF')
-    assert compare_values(scorl, qcdb.get_variable('mp2 singles correlation energy'), 6, tnm + ' MP2 singles')
+    assert compare_values(scorl, qcdb.get_variable('mp2 singles energy'), 6, tnm + ' MP2 singles')
     # non printed assert compare_values(oscorl, qcdb.get_variable('mp2 opposite-spin correlation energy'), 6, tnm + ' MP2 OS corl')
     # not printed assert compare_values(sscorl, qcdb.get_variable('mp2 same-spin correlation energy'), 6, tnm + ' MP2 SS corl')
     assert compare_values(mp2corl, qcdb.get_variable('mp2 correlation energy'), 6, tnm + ' MP2 corl')
-    assert compare_values(mp2corl - scorl, qcdb.get_variable('mp2 doubles correlation energy'), 6, tnm + ' MP2 corl')
+    assert compare_values(mp2corl - scorl, qcdb.get_variable('mp2 doubles energy'), 6, tnm + ' MP2 corl')
     assert compare_values(mp2tot, qcdb.get_variable('mp2 total energy'), 6, tnm + ' MP2')
 
 

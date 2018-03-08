@@ -51,7 +51,7 @@ class PreservingDict(dict):
         self.verbose = kwargs.get('verbose', 1)
         self.update(*args, **kwargs)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, value, accept_places=11):
         try:
             key = key.upper()
         except AttributeError:
@@ -78,6 +78,8 @@ class PreservingDict(dict):
         else:
             # scalar
             value = Decimal(value)
+            if abs(float(value)) < 1.e-16:
+                value = Decimal('0')
 
             if key in self.keys() and not 'CURRENT' in key:
                 # Validate choosing more detailed value for variable
@@ -90,7 +92,8 @@ class PreservingDict(dict):
                     places = Decimal(10) ** (candidate_exp + 1)
                     best_value = self[key]
                 # Validate values are the same
-                places = max(places, Decimal('1E-11'))  # for computed psivars
+                #places = max(places, Decimal('1E-11'))  # for computed psivars
+                places = max(places, Decimal('1E-{}'.format(accept_places)))  # for computed psivars
                 #print('FLOOR: ', self[key].quantize(places, rounding=ROUND_FLOOR) - value.quantize(places, rounding=ROUND_FLOOR))
                 #print('CEIL:  ', self[key].quantize(places, rounding=ROUND_CEILING) - value.quantize(places, rounding=ROUND_CEILING))
                 if ((self[key].quantize(places, rounding=ROUND_CEILING).compare(

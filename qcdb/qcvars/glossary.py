@@ -11,6 +11,9 @@ qcvardefs = {}
 #   See text for fuller description.
 
 
+_dip_components = ['X', 'Y', 'Z']
+_quad_components = ['XX', 'XY', 'XZ', 'YY', 'YZ', 'ZZ']
+
 qcvardefs['(T) CORRECTION ENERGY'] = {
     'units': 'Eh',
     'glossary': """
@@ -438,6 +441,13 @@ qcvardefs['CURRENT GRADIENT'] = {
    the geometry optimizer.
 """}
 
+qcvardefs['CURRENT HESSIAN'] = {
+    'units': 'Eh/a0/a0',
+    'glossary': """
+   The total electronic Hessian of the most recent stage of a
+   calculation.
+"""}
+
 qcvardefs['CURRENT REFERENCE ENERGY'] = {
     'units': 'Eh',
     'glossary': """
@@ -466,6 +476,71 @@ qcvardefs['CURRENT DIPOLE Z'] = {
    level of theory and root.
 """}
 
+def define_scf_qcvars(mtd, is_dft=True, extra='', is_dh=False):
+    global qcvardefs
+
+    if mtd + 'TOTAL ENERGY' not in qcvardefs:
+        qcvardefs['{} TOTAL ENERGY'.format(mtd)] = {
+            'units': 'Eh',
+            'glossary': """
+           The total electronic energy for the {} level of theory. {}
+        """.format(mtd, extra)}
+
+    if is_dft:
+        qcvardefs['{} FUNCTIONAL TOTAL ENERGY'.format(mtd)] = {
+            'units': 'Eh',
+            'glossary': r""" 
+           The total electronic energy for the underlying functional of the
+           requested DFT method {}, without any dispersion correction. {}
+        """.format(mtd, extra)}
+
+    if is_dft and is_dh:
+        qcvardefs['{} DOUBLE-HYBRID CORRECTION ENERGY'.format(mtd)] = {
+            'units': 'Eh',
+            'glossary': r"""
+           The scaled MP2 correlation energy correction appended to an 
+           underlying functional {}. {}
+        """.format(mtd, extra)}
+
+    for i in _dip_components:
+        qcvardefs['{} DIPOLE {}'.format(mtd, i)] = {
+            'units': 'D',
+            'glossary': """
+           The {} component of the dipole for the {} level of theory. {}
+    """.format(i, mtd, extra)}
+    
+    for i in _quad_components:
+        qcvardefs['{} QUADRUPOLE {}'.format(mtd, i)] = {
+            'units': 'D A',
+            'glossary': """
+           The {} component of the quadrupole for the {} level of theory. {}
+    """.format(i, mtd, extra)}
+
+
+def define_dashd_qcvars(fctl, dashes, extra=''):
+    for dd in dashes:
+        qcvardefs['{}-{} DISPERSION CORRECTION ENERGY'.format(fctl.upper(), dd.upper())] = {
+            'units': 'Eh',
+            'glossary': """
+   The dispersion correction defined for appending to underlying functional
+   {} when a DFT-D method is requested. {}
+    """.format(fctl, extra)}
+
+        qcvardefs['{}-{} DISPERSION CORRECTION GRADIENT'.format(fctl.upper(), dd.upper())] = {
+            'units': 'Eh',
+            'glossary': """
+   The gradient to the dispersion correction defined for appending to underlying functional
+   {} when a DFT-D method is requested. {}
+    """.format(fctl, extra)}
+
+        qcvardefs['{}-{} TOTAL ENERGY'.format(fctl.upper(), dd.upper())] = {
+            'units': 'Eh',
+            'glossary': r""" 
+           The total electronic energy for the underlying functional of the
+           requested DFT method {}, with dispersion correction. {}
+        """.format(fctl, extra)}
+
+#TRACELESS QUADRUPOLE POLARIZABILITY XZYY
 #.. psivar:: db_name DATABASE MEAN ABSOLUTE DEVIATION
 #
 #   The mean absolute deviation [\ |kcalpermol|\ ] of the requested method
@@ -547,12 +622,21 @@ qcvardefs['DISPERSION CORRECTION ENERGY'] = {
    in Eqs. :eq:`SCFterms` and :eq:`DFTterms`.
 """}
 
-#.. psivar:: DOUBLE-HYBRID CORRECTION ENERGY
-#
-#   The scaled MP2 correlation energy correction [H] appended to an 
-#   underlying functional when a DH-DFT method is requested.
-#   Quantity :math:`E_{\text{DH}}` in Eq. :eq:`DFTterms`.
-#
+qcvardefs['DISPERSION CORRECTION GRADIENT'] = {
+    'units': 'Eh/a0',
+    'glossary': r"""
+   The gradient to the dispersion correction appended to an underlying functional
+   when a DFT-D method is requested. Quantity :math:`E_{\text{-D}}`
+"""}
+
+qcvardefs['DOUBLE-HYBRID CORRECTION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The scaled MP2 correlation energy correction [H] appended to an 
+   underlying functional when a DH-DFT method is requested.
+   Quantity :math:`E_{\text{DH}}` in Eq. :eq:`DFTterms`.
+"""}
+
 #.. psivar:: FCI TOTAL ENERGY
 #   FCI CORRELATION ENERGY
 #
@@ -566,6 +650,24 @@ qcvardefs['HF TOTAL ENERGY'] = {
    any dispersion correction; the first three (or four, since 
    :math:`E_{xc} = 0`) terms in Eq. :eq:`SCFterms`. Quantity :math:`E_{\text{HF}}`
    in Eq. :eq:`SCFterms`.
+"""}
+
+qcvardefs['HF TOTAL HESSIAN'] = {
+    'units': 'Eh/a0/a0',
+    'glossary': """
+   The total electronic energy for the Hartree-Fock method.
+"""}
+
+qcvardefs['DMRG-SCF TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': """
+   The total DMRG total electonic energy. Not unique b/c oribital spaces
+"""}
+
+qcvardefs['DMRG-CASPT2 TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': """
+   The total DMRG plus CASPT2 total electonic energy. Not unique b/c orbital spaces.
 """}
 
 #.. psivar:: LCC2 (+LMP2) TOTAL ENERGY
@@ -680,9 +782,18 @@ qcvardefs['CUSTOM SCS-MP2 TOTAL ENERGY'] = {
    CUSTOM SCS-MP2 CORRELATION ENERGY and reference.
 """}
 
-qcvardefs[''] = {
+qcvardefs['CUSTOM D2 DISPERSION CORRECTION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
+   Label for D2-formula dispersion correction when
+   parameters match no functional.
+"""}
+
+qcvardefs['CUSTOM D2 DISPERSION CORRECTION GRADIENT'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   Label for D2-formula dispersion correction gradient when
+   parameters match no functional.
 """}
 
 qcvardefs[''] = {
@@ -715,12 +826,18 @@ qcvardefs[''] = {
     'glossary': r"""
 """}
 
-#.. psivar:: MP2.5 TOTAL ENERGY
-#   MP2.5 CORRELATION ENERGY
-#
-#   The total electronic energy [H] and correlation energy component [H]
-#   for the MP2.5 level of theory.
-#
+qcvardefs['MP2.5 TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total electronic energy for the MP2.5 level of theory.
+"""}
+
+qcvardefs['MP2.5 CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The correlation energy component for the MP2.5 level of theory.
+"""}
+
 #.. psivar:: MP3 TOTAL ENERGY
 #   MP3 CORRELATION ENERGY
 #
@@ -754,6 +871,54 @@ qcvardefs[''] = {
 #   The total electronic energy [H] and correlation energy component [H]
 #   for the labeled |MollerPlesset| perturbation theory level.
 #   *n* is MP perturbation order.
+
+qcvardefs['MP3 TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total electronic energy for 3-order Perturbation theory.
+"""}
+
+qcvardefs['MP3 CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The correlation energy component for 3-order Perturbation theory.
+"""}
+
+qcvardefs['MP4 TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total electronic energy for 4-order Perturbation theory.
+"""}
+
+qcvardefs['MP4 CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The correlation energy component for 4-order Perturbation theory.
+"""}
+
+qcvardefs['MP5 TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total electronic energy for 5-order Perturbation theory.
+"""}
+
+qcvardefs['MP5 CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The correlation energy component for 5-order Perturbation theory.
+"""}
+
+qcvardefs['MP6 TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total electronic energy for 6-order Perturbation theory.
+"""}
+
+qcvardefs['MP6 CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The correlation energy component for 6-order Perturbation theory.
+"""}
 
 qcvardefs['CCSD TOTAL ENERGY'] = {
     'units': 'Eh',
@@ -960,11 +1125,17 @@ qcvardefs['SCF TOTAL ENERGY'] = {
                            & = E_{\text{FCTL/HF}} + E_{\text{-D}}
          \end{align*}
 
-   Unless the method includes a dispersion correction, this quantity is
-   equal to :psivar:`HF TOTAL ENERGY <HFTOTALENERGY>` (for HF) or
+   Unless the method includes a dispersion correction, this quantity is equal to :psivar:`HF TOTAL ENERGY <HFTOTALENERGY>` (for HF) or
    :psivar:`DFT FUNCTIONAL TOTAL ENERGY <DFTFUNCTIONALTOTALENERGY>` (for
    DFT). Unless the method is a DFT double-hybrid, this quantity is equal
    to :psivar:`DFT TOTAL ENERGY <DFTTOTALENERGY>`.
+"""}
+
+qcvardefs['SCF TOTAL HESSIAN'] = {
+    'units': 'Eh/a0/a0',
+    'glossary': """
+   The total electronic Hessian of the SCF stage of a calculation.
+   May be HF or DFT.
 """}
 
 qcvardefs['TWO-ELECTRON ENERGY'] = {
@@ -973,6 +1144,43 @@ qcvardefs['TWO-ELECTRON ENERGY'] = {
    The two-electron energy contribution [H] to the total SCF energy.
    Quantity :math:`E_{2e^-}` in Eq. :eq:`SCFterms`.
 """}
+
+qcvardefs['DLDF-DAS2009 DISPERSION CORRECTION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   disp correction attaching to DLDF+D09 ORPHAN
+"""}
+
+qcvardefs['WB97-CHG DISPERSION CORRECTION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   disp correction attaching to DLDF+D09 ORPHAN
+"""}
+
+qcvardefs['B97-D TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   functional energy for B97-D w/ disp correction ORPHAN
+"""} 
+
+qcvardefs['B97-D FUNCTIONAL TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   functional energy for B97-D w/o disp correction ORPHAN
+"""} 
+
+# why not normal for this?
+qcvardefs['B97-0 TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   functional energy for original hybrid B97-0 w/o disp correction ORPHAN
+"""} 
+
+qcvardefs['B97-0 FUNCTIONAL TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   functional energy for original hybrid B97-0 w/o disp correction ORPHAN
+"""} 
 
 #.. psivar:: UNCP-CORRECTED 2-BODY INTERACTION ENERGY
 #
@@ -988,4 +1196,47 @@ qcvardefs['TWO-ELECTRON ENERGY'] = {
 #   The total electronic energy [H] and correlation energy component [H]
 #   for the labeled Z-averaged perturbation theory level.
 #   *n* is ZAPT perturbation order.
-   
+define_scf_qcvars('HF', is_dft=False)
+define_scf_qcvars('B3LYP')
+define_scf_qcvars('B3LYP5')
+define_scf_qcvars('SCF', is_dft=False, extra=' This is a generic HF/DFT quantity and not necessarily aligned across different calcs.')
+define_scf_qcvars('B2PLYP', is_dh=True)
+define_scf_qcvars('DSD-PBEP86', is_dh=True)
+define_scf_qcvars('WPBE', is_dh=False)
+define_scf_qcvars('WB97', is_dh=False)
+define_scf_qcvars('PBE', is_dh=False)
+define_scf_qcvars('CAM-B3LYP', is_dh=False)
+define_scf_qcvars('DLDF+D09', is_dh=False)
+define_scf_qcvars('WB97X', is_dh=False)
+define_scf_qcvars('PBE0-2', is_dh=True)
+define_scf_qcvars('PBE0', is_dh=False)
+define_scf_qcvars('SVWN', is_dh=False)
+define_scf_qcvars('WB97X-D', is_dh=False)
+define_scf_qcvars('PW91', is_dh=False)
+define_scf_qcvars('BLYP', is_dh=False)
+define_scf_qcvars('PW86PBE', is_dh=False)
+define_scf_qcvars('FT97', is_dh=False)
+define_scf_qcvars('BOP', is_dh=False)
+define_scf_qcvars('MPWPW', is_dh=False)
+define_scf_qcvars('SOGGA11', is_dh=False)
+define_scf_qcvars('BP86', is_dh=False)
+define_scf_qcvars('B86BPBE', is_dh=False)
+define_scf_qcvars('PW6B95', is_dh=False)
+define_scf_qcvars('MN15', is_dh=False)
+define_scf_qcvars('SOGGA11-X', is_dh=False)
+define_scf_qcvars('B2GPPLYP', is_dh=True)
+define_scf_qcvars('PTPSS', is_dh=True)
+define_scf_qcvars('PWPB95', is_dh=True)
+define_scf_qcvars('DSD-BLYP', is_dh=True), 
+define_scf_qcvars('PBE0-DH', is_dh=True)
+#define_scf_qcvars('B97-D', is_dh=False)
+define_dashd_qcvars('bp86', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
+define_dashd_qcvars('b3lyp', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
+define_dashd_qcvars('b3lyp5', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
+define_dashd_qcvars('b2plyp', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
+define_dashd_qcvars('pbe', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
+define_dashd_qcvars('b97', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
+define_dashd_qcvars('blyp', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
+define_dashd_qcvars('pbe0', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
+define_dashd_qcvars('wpbe', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
+#define_dashd_qcvars('wb97x', dashes=['d'])

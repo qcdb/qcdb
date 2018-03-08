@@ -28,11 +28,12 @@
 """Module with functions that interface with Grimme's DFTD3 code."""
 from __future__ import absolute_import
 from __future__ import print_function
+import re
 import sys
+import copy
 import collections
-#import os
-#import re
-#
+from decimal import Decimal
+
 #try:
 #    from psi4.driver.p4util.exceptions import *
 #    from psi4 import core
@@ -45,12 +46,16 @@ import collections
 
 import numpy as np
 
+#from ..datastructures import *
 from ..util import update_with_error, der0th, der1st
 from ..exceptions import *
+from ..pdict import PreservingDict
 #from .dashparam import dash_server, dashcoeff
-from .. import dashparam
+from . import dashparam
 from .. import molparse
+from .. import qcvars
 from .. import __version__
+from ..driver.driver_helpers import print_variables
 
 import pprint
 
@@ -114,6 +119,44 @@ Psi4 mode: When `psi4` the python module is importable at `import qcdb`
 
 """
 
+def alt_run_dftd3(name, molecule, options, **kwargs):
+    print('\nhit run_alt_dftd3', name, kwargs)
+
+    _, fctl, dash = name.split('-')
+    jobrec = from_arrays_qc(
+        functional=fctl,
+        dashlevel=dash,
+#        dashparams=dashparams,
+        dertype=kwargs['ptype'])
+
+    jobrec['error'] = ''
+    jobrec['success'] = None
+    jobrec['raw_output'] = None
+
+    prov = {}
+    prov['creator'] = 'QCDB'
+    prov['version'] = __version__
+    prov['routine'] = sys._getframe().f_code.co_name
+    jobrec['provenance'] = [prov]
+
+    jobrec['molecule'] = molecule.to_dict(np_out=False)
+    jobrec['method'] = name
+#    jobrec['options'] = copy.deepcopy(options)
+#    print('comin in')
+#    print(jobrec['options'].print_changed())
+
+    try:
+        dftd3_driver(jobrec)
+        jobrec['success'] = True
+    except Exception as err:
+        jobrec['success'] = False
+        jobrec['error'] += repr(err)
+
+    jobrec['qcvars']['CURRENT ENERGY'] = copy.deepcopy(jobrec['qcvars']['DISPERSION CORRECTION ENERGY'])
+    pprint.pprint(jobrec)
+    return jobrec
+
+
 
 def run_dftd3(molrec,
               functional=None,
@@ -170,7 +213,7 @@ def run_dftd3(molrec,
         jobrec['success'] = True
     except Exception as err:
         jobrec['success'] = False
-        #json_data["error"] += repr(error)
+        jobrec['error'] += repr(err)
 
     return jobrec
 
@@ -194,6 +237,50 @@ def from_arrays_qc(functional=None,
 
 
 def dftd3_driver(jobrec):
+    print('INDRIV')
+# DRIVER
+    dftd3rec = dftd3_plant(jobrec)
+#    #cfourrec['scratch_messy'] = True
+#
+#    # test json roundtrip
+#    jcfourrec = json.dumps(cfourrec)
+#    cfourrec = json.loads(jcfourrec)
+#
+#    print('CFOURREC')
+#    pp.pprint(cfourrec)
+#    cfour_subprocess(cfourrec)  # updates cfourrec
+#
+#    cfour_harvest(jobrec, cfourrec)  # ? updates jobrec ?
+#
+#    print('QC', jobrec['qcvars'])
+#    return jobrec
+
+    # test json roundtrip
+#    jdftd3rec = json.dumps(dftd3rec)
+#    dftd3rec = json.loads(jdftd3rec)
+
+    print('DFTD3REC')
+    print(dftd3rec)
+    subprocess_dftd3(dftd3rec)  # updates dftd3rec
+
+    print('OUT')
+    #    pprint.pprint(dftd3rec)
+
+    #if maxder == 1:
+    #require 'dftd3grad'
+    #    derivfile = './dftd3_gradient'
+
+    #for reqd in ['stdout'
+    #try:
+    dftd3_harvest(jobrec, dftd3rec)  # ? updates jobrec ?
+
+    print('CALC')
+    pprint.pprint(jobrec)
+
+    return jobrec
+
+
+def dftd3_plant(jobrec):
     import json
 
     try:
@@ -226,27 +313,29 @@ def dftd3_driver(jobrec):
     dftd3rec['command'] = command
 
     print('IN')
-    #    pprint.pprint(dftd3rec)
+    pprint.pprint(dftd3rec)
 
-    # test json roundtrip
-    jdftd3rec = json.dumps(dftd3rec)
-    dftd3rec = json.loads(jdftd3rec)
+    return dftd3rec
 
-    subprocess_dftd3(dftd3rec)  # updates dftd3rec
-
-    print('OUT')
-    #    pprint.pprint(dftd3rec)
-
-    #if maxder == 1:
-    #require 'dftd3grad'
-    #    derivfile = './dftd3_gradient'
-
-    #for reqd in ['stdout'
-    #try:
-    jobrec = dftd3_harvest(jobrec, dftd3rec)
-
-    print('CALC')
-    pprint.pprint(jobrec)
+#    # test json roundtrip
+#    jdftd3rec = json.dumps(dftd3rec)
+#    dftd3rec = json.loads(jdftd3rec)
+#
+#    subprocess_dftd3(dftd3rec)  # updates dftd3rec
+#
+#    print('OUT')
+#    #    pprint.pprint(dftd3rec)
+#
+#    #if maxder == 1:
+#    #require 'dftd3grad'
+#    #    derivfile = './dftd3_gradient'
+#
+#    #for reqd in ['stdout'
+#    #try:
+#    jobrec = dftd3_harvest(jobrec, dftd3rec)
+#
+#    print('CALC')
+#    pprint.pprint(jobrec)
 
     ## Print program output to file if verbose
     #if not verbose and isP4regime:
@@ -376,6 +465,7 @@ def subprocess_dftd3(dftd3rec):
     # find environment by merging PSIPATH and PATH environment variables
     # * filter out None values as subprocess will fault on them
     lenv = {
+        'HOME': os.environ.get('HOME'),
         'PATH': ':'.join([os.path.abspath(x) for x in os.environ.get('PSIPATH', '').split(':') if x != '']) + \
                 ':' + os.environ.get('PATH'),
         'LD_LIBRARY_PATH': os.environ.get('LD_LIBRARY_PATH')
@@ -391,6 +481,7 @@ def subprocess_dftd3(dftd3rec):
     if not os.path.exists(dftd3_tmpdir):
         os.mkdir(dftd3_tmpdir)
     os.chdir(dftd3_tmpdir)
+    print('CWD', os.getcwd())
 
     # write governing inputs
     paramfileold = 'dftd3_parameters'  # older patched name
@@ -414,6 +505,7 @@ def subprocess_dftd3(dftd3rec):
     # recover output data
     out, err = spcall.communicate()
     dftd3rec['stdout'] = out.decode('utf-8')
+    print('OUT', dftd3rec['stdout'])
 
     if '-grad' in dftd3rec['command']:
         derivfile = './dftd3_gradient'
@@ -465,16 +557,17 @@ def dftd3_harvest(jobrec, dftd3rec):
     for ln in dftd3rec['stdout'].splitlines():
         if re.search('DFTD3 V', ln):
             version = ln.replace('DFTD3', '').replace('|', '').strip().lower()
-        if re.match(' Edisp /kcal,au', ln):
-            ene = float(ln.split()[3])
-        if re.match(' normal termination of dftd3', ln):
+        elif re.match(' Edisp /kcal,au', ln):
+            #ene = float(ln.split()[3])
+            ene = Decimal(ln.split()[3])
+        elif re.match(' normal termination of dftd3', ln):
             break
     else:
         raise Dftd3Error('Unsuccessful run. Possibly -D variant not available in dftd3 version.')
 
     # parse gradient output
     if 'dftd3_gradient' in dftd3rec:
-        real = jobrec['molecule']['real']
+        real = np.array(jobrec['molecule']['real'])
         fnat = real.shape[0]
         rnat = np.sum(real)
         srealgrad = dftd3rec['dftd3_gradient'].replace('D', 'E')
@@ -488,32 +581,57 @@ def dftd3_harvest(jobrec, dftd3rec):
         # TODO if dftd3rec['do_gradient']: raise Dftd3Error
 
     #QCAspect = collections.namedtuple('QCAspect', 'lbl unit data comment')
-    calcinfo = []
-    calcinfo.append(QCAspect('DISPERSION CORRECTION ENERGY', '[Eh]', ene, ''))
-    calcinfo.append(
-        QCAspect('DISPERSION CORRECTION GRADIENT', '[Eh/a0]', fullgrad, ''))
-    calcinfo = {info.lbl: info for info in calcinfo}
+    #calcinfo = []
+    #calcinfo.append(QCAspect('DISPERSION CORRECTION ENERGY', '[Eh]', ene, ''))
+    #calcinfo.append(
+    #    QCAspect('DISPERSION CORRECTION GRADIENT', '[Eh/a0]', fullgrad, ''))
+    #calcinfo = {info.lbl: info for info in calcinfo}
+    #pprint.pprint(jobrec)
+    #import sys
+    #sys.exit()
+
+    formal = {'d2p4': 'd2',
+              'd2gr': 'd2',
+              'd3zero': 'd3',
+              'd3bj': 'd3(bj)',
+              'd3mzero': 'd3m',
+              'd3mbj': 'd3m(bj)'}
+    dash = formal[jobrec['dashlevel']]
+    if jobrec['functional'] == '':
+        qcvkey = ' '.join(['custom', dash]).upper()
+    else:
+        fctl = jobrec['functional']
+        if fctl.endswith('-d'):
+            fctl = fctl[:-2]
+        elif fctl == 'lcwpbe':
+            fctl = 'wpbe'
+        qcvkey = '-'.join([fctl, dash]).upper()
+    
+    dftd3var = {}
+    dftd3var['DISPERSION CORRECTION ENERGY'] =  ene
+    dftd3var['{} DISPERSION CORRECTION ENERGY'.format(qcvkey)] =  ene
+    if 'dftd3_gradient' in dftd3rec:
+        dftd3var['DISPERSION CORRECTION GRADIENT'] = fullgrad
+        dftd3var['{} DISPERSION CORRECTION GRADIENT'.format(qcvkey)] = fullgrad
+
+    progvars = PreservingDict(dftd3var)
+    qcvars.build_out(progvars)
+    calcinfo = qcvars.certify(progvars)
 
     # amalgamate output
     text = dftd3rec['stdout']
     text += '\n  <<<  DFTD3 {} {} Results  >>>'.format('', '') #name.lower(), calledby.capitalize()))  # banner()
-    text += qcdb.print_variables(calcinfo)
+    text += print_variables(calcinfo)
     jobrec['raw_output'] = text
 
     jobrec['qcvars'] = calcinfo
     prov = {}
     prov['creator'] = 'DFTD3'
-    prov['routine'] = sys._getframe().f_code.co_name,
-    prov['version'] = version,
+    prov['routine'] = sys._getframe().f_code.co_name
+    prov['version'] = version
     jobrec['provenance'].append(prov)
 
     return jobrec
-
-    # Prepare results for Psi4
-    if isP4regime and dertype != 0:
-        print('P4-2?', isP4regime)
-        core.set_variable('DISPERSION CORRECTION ENERGY', dashd)
-        psi_dashdderiv = core.Matrix.from_list(dashdderiv)
 
 
 def _validate_and_fill_dertype(dertype=None):
@@ -556,18 +674,29 @@ def _validate_and_fill_dashparam(dashlevel, functional=None, dashparams=None):
         dashleveleff, allowed_params = dashparam.dash_server(
             func=None, dashlvl=dashlevel, return_levelkeys=True)
         if not set(dashparams.keys()).issubset(allowed_params):
+            #pass
             raise ValidationError(
                 'Requested keys ({}) not among allowed ({}) for dispersion level ({})'.
                 format(dashparams.keys(), allowed_params, dashlevel))
 
     dftd3_params.update(dashparams)
 
-    for func, params in dashparam.dashcoeff[dashleveleff].items():
-        if dftd3_params == params:
-            functionaleff = func
-            break
+    if dashleveleff == 'd2p4':
+        trial = {'alpha6': 20.0}
+        trial.update(dftd3_params)
     else:
-        functionaleff = ''
+        trial = {}
+    if functional is not None and (dftd3_params == dashparam.dashcoeff[dashleveleff][functionaleff] or
+                                          trial == dashparam.dashcoeff[dashleveleff][functionaleff]):
+        # chooses right label when some fctls have identical param sets
+        pass
+    else:
+        for func, params in dashparam.dashcoeff[dashleveleff].items():
+            if dftd3_params == params:
+                functionaleff = func
+                break
+        else:
+            functionaleff = ''
 
     return {
         'dashlevel': dashleveleff,

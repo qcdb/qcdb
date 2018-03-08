@@ -335,8 +335,8 @@ def cfour_harvest(jobrec, cfourrec):  # jobrec@i, cfourrec@io -> jobrec@io
         #mat = core.Matrix.from_list(c4grad)
         #core.set_gradient(mat)
 
-    qcvars.fill_in(progvars)
-    calcinfo = qcvars.certify_qcvars(progvars)
+    qcvars.build_out(progvars)
+    calcinfo = qcvars.certify(progvars)
     text += print_variables(calcinfo)
 
     jobrec['raw_output'] = text

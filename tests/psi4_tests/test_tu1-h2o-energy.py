@@ -20,7 +20,7 @@ def test_tu1a():
   H 1 0.96 2 104.5
 """)
     print(h2o)
-    print(qcdb.pe.active_options)
+    print(qcdb.get_active_options().print_changed())
 
     qcdb.set_options({'basis': 'cc-pVDZ',
                       'memory': '600 mb'})
@@ -93,6 +93,6 @@ def test_tu2():
 
 
 if __name__ == '__main__':
-    #test_tu1a()
-    test_tu1b()
+    test_tu1a()
+    #test_tu1b()
     #test_tu2()

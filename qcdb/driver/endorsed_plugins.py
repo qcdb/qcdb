@@ -1,6 +1,7 @@
 from .proc_table import procedures
 from .. import iface_psi4
 from .. import iface_cfour
+from .. import iface_dftd3
 
 #from .util import pl
 #
@@ -16,14 +17,26 @@ if True:
     import psi4
     print('loaded psi4 from:', psi4.__file__)
     
-    # Integrate Psi4 with driver routines
+    # integrate Psi4 with driver routines
     procedures['energy']['psi4'] = {}
     for mtd in psi4.driver.proc_table.procedures['energy']:
         procedures['energy']['psi4'][mtd.lower()] = iface_psi4.run_psi4
     
+    procedures['properties']['psi4'] = {}
+    for mtd in psi4.driver.proc_table.procedures['properties']:
+        procedures['properties']['psi4'][mtd.lower()] = iface_psi4.run_psi4
+    
+    procedures['gradient']['psi4'] = {}
+    for mtd in psi4.driver.proc_table.procedures['gradient']:
+        procedures['gradient']['psi4'][mtd.lower()] = iface_psi4.run_psi4
+    
+    procedures['hessian']['psi4'] = {}
+    for mtd in psi4.driver.proc_table.procedures['hessian']:
+        procedures['hessian']['psi4'][mtd.lower()] = iface_psi4.run_psi4
+    
 if True:
     
-    # Integrate CFOUR with driver routines
+    # integrate CFOUR with driver routines
     procedures['energy']['cfour'] = {}
     for mtd in iface_cfour.cfour_list():
         procedures['energy']['cfour'][mtd.lower()] = iface_cfour.run_cfour
@@ -31,3 +44,12 @@ if True:
     #procedures['gradient']['cfour'] = {}
     #for mtd in iface_cfour.cfour_gradient_list():
     #   procedures['gradient']['cfour'][mtd.lower()] = iface_cfour.run_cfour
+
+if True:
+
+    # integrate DFTD3 with driver routines
+    procedures['energy']['dftd3'] = {}
+    for mtd in iface_dftd3.dftd3_list():
+        procedures['energy']['dftd3'][mtd.lower()] = iface_dftd3.alt_run_dftd3
+
+

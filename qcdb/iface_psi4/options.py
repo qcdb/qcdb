@@ -7,6 +7,13 @@ def load_psi4_defaults(peoptions):
 
     opts = query_options_defaults_from_psi()
 
+    def p4_validator(val):
+        try:
+            nuval = val.upper()
+        except AttributeError:
+            nuval = val
+        return nuval
+
     for m in opts:
         for o, v in opts[m].items():
             if m == 'GLOBALS':
@@ -17,7 +24,7 @@ def load_psi4_defaults(peoptions):
             peoptions.add('psi4',
                           RottenOption(keyword=keyword,
                                        default=v['value'],
-                                       validator=lambda x: x))
+                                       validator=p4_validator))
 
 
 def load_cfour_defaults_from_psi4(peoptions):
@@ -30,7 +37,6 @@ def load_cfour_defaults_from_psi4(peoptions):
             nuval = val.upper()
         except AttributeError:
             nuval = val
-
         return nuval
 
     for o, v in opts.items():
@@ -39,7 +45,6 @@ def load_cfour_defaults_from_psi4(peoptions):
                           RottenOption(keyword=o[6:],
                                        default=v['value'],
                                        validator=c4_validator))
-                                       #validator=lambda x: x))
 
 
 def query_options_defaults_from_psi(changedOnly=False):

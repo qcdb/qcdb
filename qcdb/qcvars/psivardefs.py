@@ -104,6 +104,12 @@ def wfn_psivars():
         'func': sum, 
         'args': ['HF TOTAL ENERGY', 'SCS-MP2 CORRELATION ENERGY']})
 
+    # MPN
+    for mpn in range(3, 20):
+        pv0.extend(_solve_in_turn(
+            args=['MP{} TOTAL ENERGY'.format(mpn), 'HF TOTAL ENERGY', 'MP{} CORRELATION ENERGY'.format(mpn)],
+            coeff=[-1, 1, 1]))
+
     # CCSD
     pv0.extend(_solve_in_turn(
         args=['CCSD TOTAL ENERGY', 'HF TOTAL ENERGY', 'CCSD CORRELATION ENERGY'],
@@ -126,6 +132,57 @@ def wfn_psivars():
         coeff=[-1, 1, 1]))
     pv0.extend(_solve_in_turn(
         args=['CCSD[T] CORRELATION ENERGY', 'CCSD CORRELATION ENERGY', '[T] CORRECTION ENERGY'],
+        coeff=[-1, 1, 1]))
+
+    # DFT
+
+    #   fctl
+    #       TODO want B97 here?
+    for fctl in ['B3LYP', 'B3LYP5', 'WPBE', 'PBE', 'CAM-B3LYP', 'B97', 'WB97X', 'SVWN', 'PW91', 'BLYP',
+                 'PW86PBE', 'FT97', 'BOP', 'MPWPW', 'SOGGA11', 'BP86', 'B86BPBE', 'PW6B95', 'PBE0',
+                 'SOGGA11-X', 'MN15']:
+        pv0.extend(_solve_in_turn(
+            args=['{} TOTAL ENERGY'.format(fctl), '{} FUNCTIONAL TOTAL ENERGY'.format(fctl)],
+            coeff=[-1, 1]))
+
+    #   fctl + D
+    for dash in ['-D2', '-D3', '-D3(BJ)', '-D3M', '-D3M(BJ)']:
+        for fctl in ['B3LYP', 'B3LYP5', 'PBE', 'B97', 'BLYP', 'BP86', 'PBE0', 'WPBE']:
+            pv0.extend(_solve_in_turn(
+                args=['{}{} TOTAL ENERGY'.format(fctl, dash),
+                      '{} FUNCTIONAL TOTAL ENERGY'.format('B97-D' if fctl == 'B97' else fctl), 
+                      '{}{} DISPERSION CORRECTION ENERGY'.format(fctl, dash)],
+                coeff=[-1, 1, 1]))
+
+    #   fctl + DH
+    for fctl in ['B2PLYP', 'DSD-PBEP86', 'PBE0-2', 'B2GPPLYP', 'PTPSS', 'PWPB95', 'DSD-BLYP', 'PBE0-DH']:
+        pv0.extend(_solve_in_turn(
+            args=['{} TOTAL ENERGY'.format(fctl), 
+                  '{} FUNCTIONAL TOTAL ENERGY'.format(fctl), 
+                  '{} DOUBLE-HYBRID CORRECTION ENERGY'.format(fctl)],
+            coeff=[-1, 1, 1]))
+
+    #   fctl + D + DH
+    #   no psivar for fctl + dh, which would be the more restrictive def
+    for dash in ['-D2', '-D3', '-D3(BJ)', '-D3M', '-D3M(BJ)']:
+        for fctl in ['B2PLYP']:
+            pv0.extend(_solve_in_turn(
+                args=['{}{} TOTAL ENERGY'.format(fctl, dash),
+                      '{} TOTAL ENERGY'.format(fctl), 
+                      '{}{} DISPERSION CORRECTION ENERGY'.format(fctl, dash)],
+                coeff=[-1, 1, 1]))
+
+    #   misc.
+    pv0.extend(_solve_in_turn(
+        args=['DLDF+D09 TOTAL ENERGY',
+              'DLDF+D09 FUNCTIONAL TOTAL ENERGY',
+              'DLDF-DAS2009 DISPERSION CORRECTION ENERGY'],
+        coeff=[-1, 1, 1]))
+
+    pv0.extend(_solve_in_turn(
+        args=['WB97X-D TOTAL ENERGY',
+              'WB97X FUNCTIONAL TOTAL ENERGY', 
+              'WB97-CHG DISPERSION CORRECTION ENERGY'],
         coeff=[-1, 1, 1]))
 
     # misc.

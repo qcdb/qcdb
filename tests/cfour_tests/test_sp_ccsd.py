@@ -128,7 +128,7 @@ def test_sp_rohf_ccsd():
     ccsdtot = -55.802586766392
     tnm = sys._getframe().f_code.co_name
     compare_values(scftot, qcdb.get_variable('scf total energy'), 6, tnm + 'SCF')
-    # not printed compare_values(smp2corl, qcdb.get_variable('mp2 singles correlation energy'), 6, tnm + 'MP2 singles')
+    # not printed compare_values(smp2corl, qcdb.get_variable('mp2 singles energy'), 6, tnm + 'MP2 singles')
     # not printed compare_values(osmp2corl, qcdb.get_variable('mp2 opposite-spin correlation energy'), 6, tnm + 'MP2 OS corl')
     # not printed compare_values(ssmp2corl, qcdb.get_variable('mp2 same-spin correlation energy'), 6, tnm + 'MP2 SS corl')
     # not printed compare_values(mp2corl, qcdb.get_variable('mp2 correlation energy'), 6, tnm + 'MP2 corl')

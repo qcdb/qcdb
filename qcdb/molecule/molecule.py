@@ -1349,7 +1349,7 @@ class Molecule(LibmintsMolecule):
 
         fragments = [x[:] for x in self.get_fragments()]
         fragment_charges = [float(f) for f in self.get_fragment_charges()]
-        fragment_multiplicities = self.get_fragment_multiplicities()
+        fragment_multiplicities = [m for m in self.get_fragment_multiplicities()]
 
         # do trimming not performed in Molecule class b/c fragment_* member data never directly exposed
         for ifr, fr in reversed(list(enumerate(self.get_fragment_types()))):
@@ -1481,6 +1481,40 @@ class Molecule(LibmintsMolecule):
 
         if not unsettled:
             self.update_geometry()
+
+    def _raw_run_dftd3(self,
+                       functional=None,
+                       dashlevel=None,
+                       dashparams=None,
+                       dertype=None,
+                       #return_gradient=True,
+                       verbose=1):
+        from ..iface_dftd3 import run_dftd3
+
+        molrec = self.to_dict(np_out=False)
+        jrec = run_dftd3(molrec=molrec,
+                         functional=functional,
+                         dashlevel=dashlevel,
+                         dashparams=dashparams,
+                         dertype=dertype,
+                         verbose=verbose)
+        print('M-ANS', jrec)
+        import pprint
+        #return pprint.pprint(ans)
+
+        if jrec['do_gradient']:
+            return (jrec['qcvars']['DISPERSION CORRECTION ENERGY'].data,
+                    jrec['qcvars']['DISPERSION CORRECTION GRADIENT'].data)
+        else:
+            return jrec['qcvars']['DISPERSION CORRECTION ENERGY'].data
+#        print(jrec['qcvars']['DISPERSION CORRECTION ENERGY'].data)
+#        print(jrec['qcvars']['DISPERSION CORRECTION GRADIENT'].data)
+
+    ## Prepare results for Psi4
+    #if isP4regime and dertype != 0:
+    #    print('P4-2?', isP4regime)
+    #    core.set_variable('DISPERSION CORRECTION ENERGY', dashd)
+    #    psi_dashdderiv = core.Matrix.from_list(dashdderiv)
 
     @staticmethod
     def _raw_BFS(self,
@@ -1818,8 +1852,6 @@ class Molecule(LibmintsMolecule):
 
 
 # Attach methods to qcdb.Molecule class
-#from .interface_dftd3 import run_dftd3 as _dftd3_qcdb_yo
-#Molecule.run_dftd3 = _dftd3_qcdb_yo
 from .parker import xyz2mol as _parker_xyz2mol_yo
 Molecule.format_molecule_for_mol2 = _parker_xyz2mol_yo
 from .parker import bond_profile as _parker_bondprofile_yo
@@ -1827,6 +1859,7 @@ Molecule.bond_profile = _parker_bondprofile_yo
 #from .interface_gcp import run_gcp as _gcp_qcdb_yo
 #Molecule.run_gcp = _gcp_qcdb_yo
 
+Molecule.run_dftd3 = Molecule._raw_run_dftd3
 Molecule.to_arrays = Molecule._raw_to_arrays
 Molecule.to_dict = Molecule._raw_to_dict
 Molecule.BFS = Molecule._raw_BFS

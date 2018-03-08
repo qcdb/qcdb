@@ -116,11 +116,13 @@ def load_qcdb_defaults(options):
             validator=lambda x: float(x),
             glossary="""MP2 opposite-spin scaling value. Default produces canonical MP2, not canonical SCS-MP2."""))
 
-#    options.add('qcdb', RottenOption(
-#            keyword='',
-#            default=,
-#            validator=,
-#            glossary="""."""))
+    options.add('qcdb', RottenOption(
+            keyword='writer_file_label',
+            default='',
+            validator=lambda x: x,
+            glossary="""Base filename for text files written by QCDB, such as the
+  MOLDEN output file, the Hessian file, the internal coordinate file, etc.
+"""))
 
 #    options.add('qcdb', RottenOption(
 #            keyword='',
@@ -179,7 +181,8 @@ class RottenOptions(object):
     def _set(self, imperative, package, option, value, accession, verbose):
         count = 0
         for ropt, oropt in self.scroll[package.upper()].items():
-            if ropt.endswith(option.upper()):
+            #if ropt.endswith(option.upper()):
+            if ropt == option.upper() or ropt.endswith('__' + option.upper()):  # psi wants
                 overlap = len(option)
                 if imperative:
                     oropt.require(value, overlap=overlap, accession=accession, verbose=verbose)

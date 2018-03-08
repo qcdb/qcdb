@@ -2,6 +2,7 @@ import re
 
 import numpy as np
 
+from ..exceptions import *
 from ..molecule import Molecule
 #from .driver import options
 from . import pe
@@ -174,6 +175,10 @@ def set_molecule(molinit, name='default'):
     return molecule
 
 
+def activate(mol):
+    pe.active_molecule = mol
+
+
 def set_options(options_dict):
     """
     Sets Psi4 global options from an input dictionary.
@@ -235,11 +240,16 @@ def get_variable(key):
         return pe.active_qcvars[ukey].data
     else:
         # TODO this matches psi, as None confuses compare_values, but is it right soln?
-        return 0.
+        #return 0.
+        raise ValidationError('No such var as {}'.format(key))
 
 
 def get_active_molecule():
     return pe.active_molecule
+
+
+def get_active_options():
+    return pe.nu_options
 
 
 def print_variables(qcvars=None):

@@ -85,8 +85,6 @@ def run_psi4_deferred(name, molecule, options, **kwargs):
     print('>>>')
 
     progvars = PreservingDict(jobrec['psivars'])
-    #morevars = qcvars.fill_in(progvars)
-    #calcinfo = qcvars.certify_qcvars(morevars)
     qcvars.fill_in(progvars)
     calcinfo = qcvars.certify_qcvars(progvars)
     jobrec['qcvars'] = calcinfo
@@ -97,37 +95,6 @@ def run_psi4_deferred(name, molecule, options, **kwargs):
 
 #run_psi4 = run_psi4_realtime
 run_psi4 = run_psi4_deferred
-
-def write_job(name, dertype, molecule, options):
-    pass
-
-    # Handle memory
-    memopt = options['GLOBALS']['MEMORY']
-    if memopt.is_default():
-        memcmd, memkw = '', {}
-    else:
-        memcmd, memkw = muster_memory(memopt.value)
-
-#    mem = int(0.000001 * core.get_memory())
-#    if mem == 524:
-#        memcmd, memkw = '', {}
-#    else:
-#        memcmd, memkw = qcdb.cfour.muster_memory(mem)
-
-
-def muster_memory(mem):
-    """Transform input `mem` in bytes options for psi4.
-
-    """
-    text = ''
-
-    # prepare memory keywords to be set as c-side keywords
-    options = defaultdict(lambda: defaultdict(dict))
-    options['PSI']['MEMORY']['value'] = int(mem)
-
-    for item in options['PSI']:
-        options['PSI'][item]['clobber'] = True
-    return text, options
 
 
 def run_psi4_realtime(name, molecule, options, **kwargs):

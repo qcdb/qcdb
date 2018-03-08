@@ -47,7 +47,7 @@ from .dashparam import *
 from .molecule import Molecule
 
 
-def run_dftd3(mol, func=None, dashlvl=None, dashparam=None, dertype=None, verbose=False):
+def orig_run_dftd3(mol, func=None, dashlvl=None, dashparam=None, dertype=None, verbose=False):
     """Compute dispersion correction using Grimme's DFTD3 executable.
 
     Function to call Grimme's dftd3 program to compute the -D correction

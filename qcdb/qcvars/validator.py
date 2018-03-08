@@ -11,7 +11,7 @@ except NameError:
     basestring = str
 
 
-def certify_qcvars(dicary):
+def certify(dicary):
     """
 
     Parameters
@@ -26,12 +26,13 @@ def certify_qcvars(dicary):
         if pv in qcvardefs.keys():
             calcinfo.append(QCAspect(pv, qcvardefs[pv]['units'], var, ''))
         else:
-            raise ValidationError('Undefined QCvar!: {}'.format(pv))
+            defined = sorted(qcvardefs.keys())
+            raise ValidationError('Undefined QCvar!: {}\n{}'.format(pv, '\n\t'.join(defined)))
 
     return {info.lbl: info for info in calcinfo}
 
 
-def fill_in(rawvars, verbose=2):
+def build_out(rawvars, verbose=1):
     """
 
     Parameters
@@ -47,8 +48,7 @@ def fill_in(rawvars, verbose=2):
     """
     for action in wfn_psivars():
         pvar = action['form']
-        if verbose >= 2:
-            print("""building %s %s""" % (pvar, '.' * (50 - len(pvar))), end='')
+        buildline = """building {} {}""".format(pvar, '.' * (50 - len(pvar)))
 
         data_rich_args = []
 
@@ -58,15 +58,17 @@ def fill_in(rawvars, verbose=2):
                     data_rich_args.append(rawvars[pv])
                 else:
                     if verbose >= 2:
-                        print("""EMPTY, missing {}""".format(pv))
+                        print("""{}EMPTY, missing {}""".format(buildline, pv))
                     break
             else:
                 data_rich_args.append(pv)
         else:
             result = action['func'](data_rich_args)
-            rawvars[pvar] = result
-            if verbose >= 2:
-                print("""SUCCESS""")
+            #rawvars[pvar] = result
+            # with data coming from file --> variable, looks more precise than it is. hack
+            rawvars.__setitem__(pvar, result, 6)
+            if verbose >= 1:
+                print("""{}SUCCESS""".format(buildline))
 
 
 def expand_qcvars(qcvars, qvdefs, verbose=1):

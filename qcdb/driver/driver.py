@@ -50,7 +50,7 @@ pp = pprint.PrettyPrinter(width=120)
 from . import pe
 from . import driver_util
 from . import driver_helpers
-from . import driver_cbs
+from . import cbs_driver
 #   from psi4.driver import driver_nbody
 #   from psi4.driver import p4util
 from . proc_table import procedures
@@ -435,12 +435,9 @@ def energy(name, **kwargs):
     from . import endorsed_plugins
     kwargs = driver_util.kwargs_lower(kwargs)
 
-#    emptyoptions = collections.defaultdict(lambda: collections.defaultdict(dict))
-#    options = kwargs.get(options, emptyoptions)    
-
-#    # Bounce if name is function
-#    if hasattr(name, '__call__'):
-#        return name(energy, kwargs.pop('label', 'custom function'), ptype='energy', **kwargs)
+    # Bounce if name is function
+    if hasattr(name, '__call__'):
+        return name(energy, kwargs.pop('label', 'custom function'), ptype='energy', **kwargs)
 
     # Allow specification of methods to arbitrary order
     lowername = name.lower()
@@ -462,7 +459,7 @@ def energy(name, **kwargs):
 
     # Bounce to CBS if "method/basis" name
     if '/' in lowername:
-        return driver_cbs._cbs_gufunc(energy, name, ptype='energy', molecule=molecule, **kwargs)
+        return cbs_driver._cbs_gufunc(energy, name, ptype='energy', molecule=molecule, **kwargs)
 
     # Commit to procedures['energy'] call hereafter
     return_wfn = kwargs.pop('return_wfn', False)
@@ -500,17 +497,16 @@ def energy(name, **kwargs):
 #            shutil.copy(item, targetfile)
 
     print('QWER', pe.nu_options.print_changed())
-    prefix = {'p4-': 'psi4',
-              'c4-': 'cfour'}
-    for k, v in prefix.items():
-        if lowername.startswith(k):
-            package = v
-            break
-    else:
-        package = kwargs.get('package', 'psi4')
+    package = driver_util.get_package(lowername, kwargs)
+    #for k, v in pkgprefix.items():
+    #    if lowername.startswith(k):
+    #        package = v
+    #        break
+    #else:
+    #    package = kwargs.get('package', 'psi4')
     #print('\nENE calling', 'procedures', package, lowername, 'with', lowername, molecule, pe.nu_options, kwargs)
     #jobrec = procedures['energy'][package][lowername](lowername, molecule=molecule, options=pe.active_options, **kwargs)
-    jobrec = procedures['energy'][package][lowername](lowername, molecule=molecule, options=pe.nu_options, **kwargs)
+    jobrec = procedures['energy'][package][lowername](lowername, molecule=molecule, options=pe.nu_options, ptype='energy', **kwargs)
 
 #    for postcallback in hooks['energy']['post']:
 #        postcallback(lowername, wfn=wfn, **kwargs)
@@ -533,7 +529,7 @@ def energy(name, **kwargs):
         return (float(jobrec['qcvars']['CURRENT ENERGY'].data), jobrec)
     else:
         return float(jobrec['qcvars']['CURRENT ENERGY'].data)
-        # not float() is for decimal.Decimal
+        # float() is for decimal.Decimal
 
 
 #   def gradient(name, **kwargs):
@@ -800,8 +796,8 @@ def energy(name, **kwargs):
 #               return (wfn.gradient(), wfn)
 #           else:
 #               return wfn.gradient()
-#   
-#   
+   
+   
 #   def properties(*args, **kwargs):
 #       r"""Function to compute various properties.
 #   
@@ -861,37 +857,50 @@ def energy(name, **kwargs):
 #       >>> properties('cc2', properties=['rotation'])
 #   
 #       """
-#       kwargs = p4util.kwargs_lower(kwargs)
-#       return_wfn = kwargs.pop('return_wfn', False)
-#   
-#       # Make sure the molecule the user provided is the active one
-#       molecule = kwargs.pop('molecule', core.get_active_molecule())
-#       molecule.update_geometry()
-#   
-#       # Allow specification of methods to arbitrary order
-#       lowername = args[0].lower()
-#       lowername, level = driver_util._parse_arbitrary_order(lowername)
-#       if level:
-#           kwargs['level'] = level
-#   
-#       properties = kwargs.get('properties', ['dipole', 'quadrupole'])
-#   
-#       if len(args) > 1:
-#           properties += args[1:]
-#   
-#       kwargs['properties'] = p4util.drop_duplicates(properties)
-#   
-#       optstash = driver_util._set_convergence_criterion('properties', lowername, 6, 10, 6, 10, 8)
-#       wfn = procedures['properties'][lowername](lowername, **kwargs)
-#   
-#       optstash.restore()
-#   
-#       if return_wfn:
-#           return (core.get_variable('CURRENT ENERGY'), wfn)
-#       else:
-#           return core.get_variable('CURRENT ENERGY')
-#   
-#   
+def properties(*args, **kwargs):
+    r"""Function to compute various properties."""
+
+    from . import endorsed_plugins
+    kwargs = driver_util.kwargs_lower(kwargs)
+
+    # Make sure the molecule the user provided is the active one
+    molecule = kwargs.pop('molecule', driver_helpers.get_active_molecule())
+    molecule.update_geometry()
+
+    if len(pe.nu_options.scroll) == 0:
+        print('EMPTY OPT')
+        pe.load_nu_options()
+
+    # Allow specification of methods to arbitrary order
+    lowername = args[0].lower()
+    lowername, level = driver_helpers._parse_arbitrary_order(lowername)
+    if level:
+        kwargs['level'] = level
+
+    # Commit to procedures['properties'] call hereafter
+    return_wfn = kwargs.pop('return_wfn', False)
+    pe.active_qcvars = {}
+
+    properties = kwargs.get('properties', ['dipole', 'quadrupole'])
+    if len(args) > 1:
+        properties += args[1:]
+    kwargs['properties'] = list(set(properties))
+#    kwargs['properties'] = p4util.drop_duplicates(properties)
+
+    package = driver_util.get_package(lowername, kwargs)
+#    optstash = driver_util._set_convergence_criterion('properties', lowername, 6, 10, 6, 10, 8)
+#    wfn = procedures['properties'][lowername](lowername, **kwargs)
+    jobrec = procedures['properties'][package][lowername](lowername, molecule=molecule, options=pe.nu_options, ptype='properties', **kwargs)
+
+    pp.pprint(jobrec)
+    pe.active_qcvars = copy.deepcopy(jobrec['qcvars'])
+
+    if return_wfn:
+        return (float(jobrec['qcvars']['CURRENT ENERGY'].data), jobrec)
+    else:
+        return float(jobrec['qcvars']['CURRENT ENERGY'].data)
+
+
 #   def optimize(name, **kwargs):
 #       r"""Function to perform a geometry optimization.
 #   

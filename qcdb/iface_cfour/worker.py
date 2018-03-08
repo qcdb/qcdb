@@ -46,6 +46,7 @@ def cfour_subprocess(cfourrec):  # cfourrec@i -> cfourrec@io
     # * `path` kwarg gets precedence
     # * filter out None values as subprocess will fault on them
     lenv = {
+        'HOME': os.environ.get('HOME'),
         'PATH': (':'.join([os.path.abspath(x) for x in os.environ.get('PSIPATH', '').split(':') if x != '']) +
                  ':' + os.environ.get('PATH')),# +
 #                 ':' + qcdb.get_datadir() + '/basis'),

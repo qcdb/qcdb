@@ -188,7 +188,7 @@ def harvest_outfile_pass(outtext):
         print('matched mp2ro')
         psivar['MP2 SAME-SPIN CORRELATION ENERGY'] = Decimal(mobj.group(1)) + Decimal(mobj.group(2))
         psivar['MP2 OPPOSITE-SPIN CORRELATION ENERGY'] = mobj.group(3)
-        psivar['MP2 SINGLES CORRELATION ENERGY'] = mobj.group(4)
+        psivar['MP2 SINGLES ENERGY'] = mobj.group(4)
         psivar['MP2 CORRELATION ENERGY'] = Decimal(mobj.group(1)) + \
             Decimal(mobj.group(2)) + Decimal(mobj.group(3)) + Decimal(mobj.group(4))
         psivar['MP2 TOTAL ENERGY'] = mobj.group(6)
@@ -202,7 +202,7 @@ def harvest_outfile_pass(outtext):
         print('matched mp2ro2')
         #psivar['MP2 SAME-SPIN CORRELATION ENERGY'] = Decimal(mobj.group(1)) + Decimal(mobj.group(2))
         #psivar['MP2 OPPOSITE-SPIN CORRELATION ENERGY'] = mobj.group(3)
-        psivar['MP2 SINGLES CORRELATION ENERGY'] = mobj.group('sgl')
+        psivar['MP2 SINGLES ENERGY'] = mobj.group('sgl')
         psivar['MP2 CORRELATION ENERGY'] = Decimal(mobj.group('sgl')) + Decimal(mobj.group('dbl'))
         psivar['MP2 TOTAL ENERGY'] = mobj.group('mp2tot')
 

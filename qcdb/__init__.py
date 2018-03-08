@@ -56,8 +56,11 @@ if not os.path.isdir(data_dir):
                    '      Current value of PSIDATADIR is {}'.format(data_dir))
 
 from .metadata import __version__, version_formatter
-from .driver import *
-from .driver.driver_helpers import set_options, get_variable, print_variables, set_molecule
+#from .driver import *
+from .driver import energy, properties, hessian, gradient
+from .driver.cbs_driver import cbs
+from .driver import cbs_helpers
+from .driver.driver_helpers import set_options, get_variable, print_variables, set_molecule, activate, get_active_options
 #from .header import print_header
 
 ## Load Python modules
