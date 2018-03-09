@@ -105,6 +105,14 @@ def load_qcdb_defaults(options):
         could help to solve problems with oscillatory convergence."""))
 
     options.add('qcdb', RottenOption(
+            keyword='mp2__mp2_type',
+            default='',
+            validator=lambda x: x.upper(),  # TODO
+            glossary="""What algorithm to use for MP2 computation. See 
+        :ref:`Cross-module Redundancies <table:managedmethods>` for details."""))
+    #options.add_str("MP2_TYPE", "DF", "DF CONV CD");
+
+    options.add('qcdb', RottenOption(
             keyword='mp2_ss_scale',
             default=1.0,
             validator=lambda x: float(x),

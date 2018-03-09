@@ -42,6 +42,8 @@ from ..physconst import *
 from ..molecule import Molecule
 from ..moptions.options import conv_float2negexp
 from ..pdict import PreservingDict
+from ..hessparse import load_hessian
+
 
 
 def harvest_output(outtext):
@@ -587,7 +589,9 @@ def harvest(p4Mol, c4out, **largs):
         grdMol, grdGrad = None, None
 
     if 'FCMFINAL' in largs:
-        fcmHess = harvest_FCM(largs['FCMFINAL'])
+        fcmHess = load_hessian(largs['FCMFINAL'], dtype='fcmfinal')
+        if np.count_nonzero(fcmHess) == 0:
+            fcmHess = None
     else:
         fcmHess = None
 
@@ -635,16 +639,24 @@ def harvest(p4Mol, c4out, **largs):
             oriDip = None
         else:
             oriDip = mill.align_vector(np.array(dipolDip))
+
+        if fcmHess is None:
+            oriHess = None
+        else:
+            oriHess = mill.align_hessian(np.array(fcmHess))
+
         #p4c4 = OrientMols(p4Mol, grdMol)
         #oriCoord = p4c4.transform_coordinates2(grdMol)
         #oriGrad = p4c4.transform_gradient(grdGrad)
         #oriDip = None if dipolDip is None else p4c4.transform_vector(dipolDip)
+
     elif p4Mol and outMol:
         # TODO watch out - haven't seen atom_map=False yet
         rmsd, mill, amol = outMol.B787(p4Mol, atoms_map=True, mols_align=True, verbose=0)
 
         oriCoord = mill.align_coordinates(outMol.geometry(np_out=True))
         oriGrad = None
+        oriHess = None  # I don't think we ever get FCMFINAL w/o GRAD
         if dipolDip is None:
             oriDip = None
         else:
@@ -653,9 +665,11 @@ def harvest(p4Mol, c4out, **largs):
         #oriCoord = p4c4.transform_coordinates2(outMol)
         #oriGrad = None
         #oriDip = None if dipolDip is None else p4c4.transform_vector(dipolDip)
+
     elif outMol:
         oriCoord = None
         oriGrad = None
+        oriHess = None
         oriDip = None if dipolDip is None else dipolDip
 
 #    print p4c4
@@ -691,7 +705,12 @@ def harvest(p4Mol, c4out, **largs):
     else:
         retGrad = None
 
-    return outPsivar, retGrad, retMol, version, error
+    if oriHess is not None:
+        retHess = oriHess
+    else:
+        retHess = None
+
+    return outPsivar, retHess, retGrad, retMol, version, error
 
 
 def harvest_GRD(grd):
@@ -765,27 +784,27 @@ def harvest_zmat(zmat):
     return mol
 
 
-def harvest_FCM(fcm):
-    """Parses the contents *fcm* of the Cfour FCMFINAL file into a hessian array.
-
-    """
-    fcm = fcm.splitlines()
-    Nat = int(fcm[0].split()[0])
-    Ndof = int(fcm[0].split()[1])
-
-    empty = True
-    hess = []
-    for df in range(Ndof):
-        for at in range(Nat):
-            lline = fcm[Ndof * at + at + 1].split()
-            if empty:
-                if (abs(float(lline[0])) > 1.0e-8) or \
-                   (abs(float(lline[1])) > 1.0e-8) or \
-                   (abs(float(lline[2])) > 1.0e-8):
-                    empty = False
-            fcm.append([float(lline[0]), float(lline[1]), float(lline[2])])
-
-    return None if empty else hess
+#def harvest_FCM(fcm):
+#    """Parses the contents *fcm* of the Cfour FCMFINAL file into a hessian array.
+#
+#    """
+#    fcm = fcm.splitlines()
+#    Nat = int(fcm[0].split()[0])
+#    Ndof = int(fcm[0].split()[1])
+#
+#    empty = True
+#    hess = []
+#    for df in range(Ndof):
+#        for at in range(Nat):
+#            lline = fcm[Ndof * at + at + 1].split()
+#            if empty:
+#                if (abs(float(lline[0])) > 1.0e-8) or \
+#                   (abs(float(lline[1])) > 1.0e-8) or \
+#                   (abs(float(lline[2])) > 1.0e-8):
+#                    empty = False
+#            fcm.append([float(lline[0]), float(lline[1]), float(lline[2])])
+#
+#    return None if empty else hess
 
 
 def harvest_DIPOL(dipol):
@@ -966,7 +985,8 @@ def nu_muster_modelchem(name, dertype, ropts, verbose=1):
     elif dertype == 1:
         ropts.require('CFOUR', 'DERIV_LEVEL', 'FIRST', accession=accession, verbose=verbose)
     elif dertype == 2:
-        ropts.require('CFOUR', 'DERIV_LEVEL', 'SECOND', accession=accession, verbose=verbose)
+        #ropts.require('CFOUR', 'DERIV_LEVEL', 'SECOND', accession=accession, verbose=verbose)
+        ropts.require('CFOUR', 'VIBRATION', 'EXACT', accession=accession, verbose=verbose)
     else:
         raise ValidationError("""Requested Cfour dertype %d is not available.""" % (dertype))
 
@@ -1003,6 +1023,7 @@ def nu_muster_modelchem(name, dertype, ropts, verbose=1):
         ropts.suggest('CFOUR', 'CC_PROGRAM', 'ECC', accession=accession, verbose=verbose)
 
     elif lowername == 'c4-ccsdt':
+        # TODO, CC_PROG needs defaulting on a per-reference basis
         ropts.require('CFOUR', 'CALC_LEVEL', 'CCSDT', accession=accession, verbose=verbose)
         ropts.suggest('CFOUR', 'CC_PROGRAM', 'ECC', accession=accession, verbose=verbose)
 
@@ -1027,7 +1048,7 @@ def nu_muster_modelchem(name, dertype, ropts, verbose=1):
 #    if 'CFOUR_CC_PROGRAM' in options['CFOUR']:
 #        options['CFOUR']['CFOUR_CC_PROGRAM']['clobber'] = False
 
-    return ''
+#    return ''
 
 
 def muster_modelchem(name, dertype):
@@ -1159,6 +1180,21 @@ def cfour_gradient_list():
     val.append('c4-cc3')
     val.append('c4-ccsd(t)')
     val.append('c4-ccsdt')
+    return val
+
+
+def cfour_hessian_list():
+    """Return an array of Cfour methods with analytical Hessians.
+    Appended to procedures['hessian'].
+
+    """
+    val = []
+    val.append('cfour')
+    val.append('c4-scf')
+    val.append('c4-hf')
+    val.append('c4-mp2')
+    val.append('c4-ccsd')
+    val.append('c4-ccsd(t)')
     return val
 
 

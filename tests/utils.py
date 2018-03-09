@@ -1,3 +1,7 @@
+import pprint
+pp = pprint.PrettyPrinter(width=120)
+
+
 import qcdb
 
 

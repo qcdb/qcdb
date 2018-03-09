@@ -19,3 +19,16 @@ def register_opts(ros):
         return wrapper
     return decorator
 
+
+from ..driver import driver_helpers
+def def_mol():
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            mol = kwargs.pop('molecule', driver_helpers.get_active_molecule())
+            mol.update_geometry()
+            kwargs['molecule'] = mol
+            ret = func(*args, **kwargs)
+            return ret
+        return wrapper
+    return decorator

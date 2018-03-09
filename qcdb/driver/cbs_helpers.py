@@ -42,7 +42,7 @@ def xtpl_highest_1(functionname, zHI, valueHI, verbose=True):
 
         return valueHI
 
-    elif isinstance(valueHI, np.ndarray): #(core.Matrix, core.Vector)):
+    elif isinstance(valueHI, np.ndarray):
 
         if verbose > 2:
             core.print_out("""   HI-zeta (%s) Total Energy:\n""" % (str(zHI)))
@@ -89,23 +89,17 @@ def scf_xtpl_helgaker_2(functionname, zLO, valueLO, zHI, valueHI, verbose=True, 
 
         return value
 
-    #elif isinstance(valueLO, (core.Matrix, core.Vector)):
     elif isinstance(valueLO, np.ndarray):
-        beta = valueHI.clone()
-        beta.name = 'Helgaker SCF (%s, %s) beta' % (zLO, zHI)
-        beta.subtract(valueLO)
-        beta.scale(beta_division)
-        beta.scale(beta_mult)
-
-        value = valueHI.clone()
-        value.subtract(beta)
-        value.name = 'Helgaker SCF (%s, %s) data' % (zLO, zHI)
+        beta = (valueHI - valueLO) * beta_division
+        value = valueHI - beta * beta_mult
+        #beta.name = 'Helgaker SCF (%s, %s) beta' % (zLO, zHI)
+        #value.name = 'Helgaker SCF (%s, %s) data' % (zLO, zHI)
 
         if verbose > 2:
             core.print_out("""\n   ==> Helgaker 2-point SCF extrapolation for method: %s <==\n\n""" % (functionname.upper()))
-            core.print_out("""   LO-zeta (%s)""" % str(zLO))
+            core.print_out("""   LO-zeta ({})""".format(zLO))
             core.print_out("""   LO-zeta Data""")
-            valueLO.print_out()
+            print(valueLO)
             core.print_out("""   HI-zeta (%s)""" % str(zHI))
             core.print_out("""   HI-zeta Data""")
             valueHI.print_out()
@@ -160,7 +154,7 @@ def scf_xtpl_helgaker_3(functionname, zLO, valueLO, zMD, valueMD, zHI, valueHI, 
 
         return value
 
-    elif isinstance(valueLO, np.ndarray): #(core.Matrix, core.Vector)):
+    elif isinstance(valueLO, np.ndarray):
         valueLO = np.array(valueLO)
         valueMD = np.array(valueMD)
         valueHI = np.array(valueHI)
@@ -175,18 +169,18 @@ def scf_xtpl_helgaker_3(functionname, zLO, valueLO, zMD, valueMD, zHI, valueHI, 
         np_value = valueHI.copy()
         np_value[nonzero_mask] -= beta * np.exp(-1 * alpha * zHI)
         np_value[~nonzero_mask] = 0.0
+        return np_value
 
-        # Build and set from numpy routines
-        value = core.Matrix(*valueHI.shape)
-        value_view = np.asarray(value)
-        value_view[:] = np_value
-        return value
+        ## Build and set from numpy routines
+        #value = core.Matrix(*valueHI.shape)
+        #value_view = np.asarray(value)
+        #value_view[:] = np_value
+        #return value
 
     else:
         raise ValidationError("scf_xtpl_helgaker_3: datatype is not recognized '%s'." % type(valueLO))
 
 
-#def corl_xtpl_helgaker_2(functionname, valueSCF, zLO, valueLO, zHI, valueHI, verbose=True):
 def corl_xtpl_helgaker_2(functionname, zLO, valueLO, zHI, valueHI, verbose=True):
     r"""Extrapolation scheme for correlation energies with two adjacent zeta-level bases.
     Used by :py:func:`~psi4.cbs`.
@@ -227,22 +221,12 @@ def corl_xtpl_helgaker_2(functionname, zLO, valueLO, zHI, valueHI, verbose=True)
 
         return final
 
-    elif isinstance(valueLO, np.ndarray): #(core.Matrix, core.Vector)):
+    elif isinstance(valueLO, np.ndarray):
+        beta = (valueHI - valueLO) / (zHI ** (-3) - zLO ** (-3))
+        #beta.name = 'Helgaker Corl (%s, %s) beta' % (zLO, zHI)
 
-        beta = valueHI.clone()
-        beta.subtract(valueLO)
-        beta.scale(1 / (zHI ** (-3) - zLO ** (-3)))
-        beta.name = 'Helgaker Corl (%s, %s) beta' % (zLO, zHI)
-
-        value = valueHI.clone()
-        value.scale(zHI ** 3)
-
-        tmp = valueLO.clone()
-        tmp.scale(zLO ** 3)
-        value.subtract(tmp)
-
-        value.scale(1 / (zHI ** 3 - zLO ** 3))
-        value.name = 'Helgaker Corr (%s, %s) data' % (zLO, zHI)
+        value = (valueHI * zHI ** 3 - valueLO * zLO ** 3) / (zHI ** 3 - zLO ** 3)
+        #value.name = 'Helgaker Corr (%s, %s) data' % (zLO, zHI)
 
         if verbose > 2:
             core.print_out("""\n   ==> Helgaker 2-point correlated extrapolation for """

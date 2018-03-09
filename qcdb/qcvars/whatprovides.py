@@ -172,8 +172,9 @@ def return_energy_components():
             VARH['mp{}'.format(mplevel)]['mp{}'.format(mplevel2)] = 'MP{} TOTAL ENERGY'.format(mplevel2)
 
     # Integrate CFOUR methods
-    #from psi4.driver.procrouting.interface_cfour import cfour_psivar_list
-    #VARH.update(cfour_psivar_list())
+    # TODO rearrange imports
+    from ..iface_cfour.harvester import cfour_psivar_list
+    VARH.update(cfour_psivar_list())
     return VARH
 
 VARH = return_energy_components()

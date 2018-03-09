@@ -129,85 +129,35 @@ def cfour_plant(jobrec):  # jobrec@i -> cfour@i
 
     print('in cfour_plant')
     pp.pprint(jobrec)
-    # Handle molecule and basis set
-    #if molecule.name() == 'blank_molecule_psi4_yo':
-    #    molcmd, molkw = '', {}
-    #    bascmd, baskw = '', {}
-    #    core.set_local_option('CFOUR', 'TRANSLATE_PSI4', False)
-    #else:
-        #molecule.update_geometry()
-        ##print(molecule.create_psi4_string_from_molecule())
-        #qcdbmolecule = qcdb.Molecule(molecule.create_psi4_string_from_molecule())
-        #qcdbmolecule.tagline = molecule.name()
 
     molcmd = format_molecule_for_cfour(jobrec['molecule'], jobrec['options'], verbose=1)
 
-    #molcmd, molkw = molparse.to_string(jobrec['molecule'], dtype='cfour', units='Bohr', return_options=True)
-    print(molcmd) #, molkw)
-        #molcmd, molkw = qcdbmolecule.format_molecule_for_cfour()
-
     # Handle qcdb keywords implying cfour keyword values
-#    if core.get_option('CFOUR', 'TRANSLATE_PSI4'):
+    # if core.get_option('CFOUR', 'TRANSLATE_PSI4'):
     harvester.muster_inherited_options(jobrec['options'])
 
-#    opts = jobrec['options']
     _qcdb_basis = jobrec['options'].scroll['QCDB']['BASIS'].value
     _cfour_basis = jobrec['options'].scroll['CFOUR']['BASIS'].value
     #if core.get_global_option('BASIS') == '':
     if _qcdb_basis == '':
         _, cased_basis = moptions.format_option_for_cfour('CFOUR_BASIS', _cfour_basis)
         cfourrec['genbas'] = extract_basis_from_genbas(cased_basis, jobrec['molecule']['elem'], exact=False)
-        bascmd, baskw = '', {}
+        bascmd = ''
     else:
         qbs = BasisSet.pyconstruct(jobrec['molecule'], 'BASIS', _qcdb_basis)
-        #if qbs.has_ECP():
-        #    raise ValidationError("""ECPs not hooked up for Cfour""")
+        #if qbs.has_ECP(): #    raise ValidationError("""ECPs not hooked up for Cfour""")
         cfourrec['genbas'] = qbs.print_detail_cfour() #qbs.genbas()
-        #bascmd, baskw = format_basis_for_cfour(jobrec['molecule'], qbs.has_puream())
         bascmd = format_basis_for_cfour(jobrec['molecule'], jobrec['options'], qbs.has_puream())
 
-#        psicmd, psikw = qcdb.cfour.muster_psi4options(p4util.prepare_options_for_modules(changedOnly=True))
-#    else:
-#        psicmd, psikw = '', {}
-
     # Handle calc type and quantum chemical method
-    #mdccmd, mdckw = harvester.nu_muster_modelchem(jobrec['method'], jobrec['dertype'], jobrec['options'])
-    mdccmd = harvester.nu_muster_modelchem(jobrec['method'], jobrec['dertype'], jobrec['options'])
+    harvester.nu_muster_modelchem(jobrec['method'], jobrec['dertype'], jobrec['options'])
 
     print('HH')
     print(jobrec['options'].print_changed())
 
     # Handle driver vs input/default keyword reconciliation
-    #userkw = query_options_defaults_from_psi() #prepare_options_for_modules()
-    userkw = {}
-    userkw['CFOUR'] = {}
-    for k, v in jobrec['options'].scroll['CFOUR'].items():
-        #print('QQ', v)
-        userkw['CFOUR']['CFOUR_' + v.keyword] = {'value': v.value, 'has_changed': not v.is_default()}
-
-#    userkw = jobrec['options']
-    print('\nDEFAULT OPTIONS')
-    #print(userkw)
-    #pprint.pprint(userkw['CFOUR'])
-    print('\nUSER OPTIONS')
-    print('\nDRIVER OPTIONS')
-#    pprint.pprint(opts)
-    #print('\nMEM OPTIONS')
-    #pprint.pprint(memkw)
-    #print('\nMOL OPTIONS')
-    #pprint.pprint(molkw)
-    #print('\nBAS OPTIONS')
-    #pprint.pprint(baskw)
-    #print('\nMDC OPTIONS')
-    #pprint.pprint(mdckw)
-    #userkw = moptions.reconcile_options(userkw, memkw)
-    #userkw = moptions.reconcile_options(userkw, molkw)
-#    userkw = moptions.reconcile_options(userkw, baskw)
-#    userkw = moptions.reconcile_options(userkw, psikw)
-#    userkw = moptions.reconcile_options(userkw, mdckw)
 
     # Handle conversion of psi4 keyword structure into cfour format
-    #optcmd = moptions.old_prepare_options_for_cfour(userkw)
     optcmd = moptions.prepare_options_for_cfour(jobrec['options'])
 
     # Handle text to be passed untouched to cfour
@@ -228,7 +178,7 @@ def cfour_plant(jobrec):  # jobrec@i -> cfour@i
 
     # Assemble ZMAT pieces
     #zmat = memcmd + molcmd + optcmd + mdccmd + psicmd + bascmd + litcmd
-    zmat = molcmd + optcmd + mdccmd + bascmd
+    zmat = molcmd + optcmd + bascmd
     cfourrec['zmat'] = zmat
     print('<<< ZMAT||{}||>>>\n'.format(zmat))
     cfourrec['command'] = ['xcfour']
@@ -311,7 +261,7 @@ def cfour_harvest(jobrec, cfourrec):  # jobrec@i, cfourrec@io -> jobrec@io
     qmol = Molecule(jobrec['molecule'])
 
     # c4mol, if it exists, is dinky, just a clue to geometry of cfour results
-    psivar, c4grad, c4mol, version, errorTMP = harvester.harvest(qmol, cfourrec['stdout'], **c4files)
+    psivar, c4hess, c4grad, c4mol, version, errorTMP = harvester.harvest(qmol, cfourrec['stdout'], **c4files)
 
     print ('errorTMP', errorTMP)
     jobrec['error'] += errorTMP
@@ -335,6 +285,9 @@ def cfour_harvest(jobrec, cfourrec):  # jobrec@i, cfourrec@io -> jobrec@io
         #mat = core.Matrix.from_list(c4grad)
         #core.set_gradient(mat)
 
+    if c4hess is not None:
+        progvars['CURRENT HESSIAN'] = c4hess
+
     qcvars.build_out(progvars)
     calcinfo = qcvars.certify(progvars)
     text += print_variables(calcinfo)
@@ -350,120 +303,6 @@ def cfour_harvest(jobrec, cfourrec):  # jobrec@i, cfourrec@io -> jobrec@io
 
     return jobrec
 
-
-
-
-#def run_psi4_realtime(name, molecule, options, **kwargs):
-#    print('\nhit run_psi4_realtime', name, options.keys(), options, kwargs)
-#    import psi4
-#
-#    if 'MEMORY' in options['GLOBALS']:
-#        mem = options['GLOBALS'].pop('MEMORY')
-#        print('MEM', mem)
-#        psi4.set_memory(mem['value'])
-#
-#    for k, v in options['GLOBALS'].items():
-#        print('P4 opt', k, v)
-#        psi4.core.set_global_option(k.upper(), v['value'])
-#
-#    pmol = psi4.core.Molecule.from_dict(molecule.to_dict())
-#    _, wfn = psi4.energy(name, molecule=pmol, return_wfn=True, **kwargs)
-#
-#    calcinfo = []
-#    for pv, var in wfn.variables().items():
-#        if pv in qcvardefs.keys():
-#            calcinfo.append(QCAspect(pv, qcvardefs[pv]['units'], var, ''))
-#        else:
-#            raise ValidationError('Undefined QCvar!: {}'.format(pv))
-#
-#    jobrec = {}
-#    jobrec['qcvars'] = {info.lbl: info for info in calcinfo}
-#    jobrec['wfn'] = wfn
-#    return jobrec
-
-##        jobrec['success'] = True
-##    except Exception as err:
-##        jobrec['success'] = False
-##        #json_data["error"] += repr(error)
-#
-#    jobrec['error'] = ''
-#    jobrec['success'] = False
-#    #jobrec['stdout']
-#
-#    popts = {}
-#    for k, v in options['GLOBALS'].items():
-#        print('P4 opt', k, v)
-#   #     psi4.core.set_global_option(k.upper(), v['value'])
-#        popts[k] = v['value']
-#    jobrec['options'] = popts
-#
-#    jobrec['driver'] = 'energy'
-#    jobrec['method'] = name
-#    jobrec['return_output'] = False #True
-#    import pprint
-#    print('JOBREC PREE <<<')
-#    pprint.pprint(jobrec)
-#    print('>>>')
-#    import psi4
-#    psi4.core.clean()
-#    #try:
-#    psi4.json_wrapper.run_json(jobrec)
-#    #    jobrec['success'] = True
-#    #except Exception as err:
-#    #    jobrec['success'] = False
-#    #    print ('STOP TROUBLE')
-#    if jobrec['error']:
-#        raise RuntimeError(jobrec['error'])
-#    print('JOBREC POST <<<')
-#    pprint.pprint(jobrec)
-#    print('>>>')
-#
-#    calcinfo = []
-#    for pv, var in jobrec['psivars'].items():
-#        if pv in qcvardefs.keys():
-#            calcinfo.append(QCAspect(pv, qcvardefs[pv]['units'], var, ''))
-#        else:
-#            raise ValidationError('Undefined QCvar!: {}'.format(pv))
-#
-#    jobrec['qcvars'] = {info.lbl: info for info in calcinfo}
-##    jobrec['wfn'] = wfn
-#    return jobrec
-#
-##run_psi4 = run_psi4_realtime
-#run_psi4 = run_psi4_deferred
-#
-#def write_job(name, dertype, molecule, options):
-#    pass
-#
-#    # Handle memory
-#    memopt = options['GLOBALS']['MEMORY']
-#    if memopt.is_default():
-#        memcmd, memkw = '', {}
-#    else:
-#        memcmd, memkw = muster_memory(memopt.value)
-#
-##    mem = int(0.000001 * core.get_memory())
-##    if mem == 524:
-##        memcmd, memkw = '', {}
-##    else:
-##        memcmd, memkw = qcdb.cfour.muster_memory(mem)
-#
-#
-#def muster_memory(mem):
-#    """Transform input `mem` in bytes options for psi4.
-#
-#    """
-#    text = ''
-#
-#    # prepare memory keywords to be set as c-side keywords
-#    options = defaultdict(lambda: defaultdict(dict))
-#    options['PSI']['MEMORY']['value'] = int(mem)
-#
-#    for item in options['PSI']:
-#        options['PSI'][item]['clobber'] = True
-#    return text, options
-#
-#
 
 
     """

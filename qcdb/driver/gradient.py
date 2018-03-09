@@ -48,7 +48,7 @@ pp = pprint.PrettyPrinter(width=120)
 from . import pe
 from . import driver_util
 from . import driver_helpers
-#from . import cbs_driver
+from . import cbs_driver
 ##   from psi4.driver import driver_nbody
 ##   from psi4.driver import p4util
 from .proc_table import procedures
@@ -131,11 +131,12 @@ def gradient(name, **kwargs):
 
     elif gradient_type == 'cbs_gufunc':
         cbs_methods = cbs_driver._parse_cbs_gufunc_string(name.lower())[0]
-        dertype = min([driver_util.find_derivative_type('gradient', package, method, user_dertype) for method in cbs_methods])
-#        lowername = name.lower()
-#        if dertype == 1:
-#            # Bounce to CBS in pure-gradient mode if "method/basis" name and all parts have analytic grad. avail.
-#            return driver_cbs._cbs_gufunc(gradient, name, ptype='gradient', **kwargs)
+        dertype = min(driver_util.find_derivative_type('gradient', method, user_dertype, kwargs.get('package', None)) for method in cbs_methods)
+        lowername = name.lower()
+        molecule = kwargs.pop('molecule', driver_helpers.get_active_molecule())
+        if dertype == 1:
+            # Bounce to CBS in pure-gradient mode if "method/basis" name and all parts have analytic grad. avail.
+            return cbs_driver._cbs_gufunc(gradient, name, ptype='gradient', molecule=molecule, **kwargs)
 #        else:
 #            # Set method-dependent scf convergence criteria (test on procedures['energy'] since that's guaranteed)
 #            optstash = driver_util._set_convergence_criterion('energy', cbs_methods[0], 8, 10, 8, 10, 8)
@@ -143,7 +144,6 @@ def gradient(name, **kwargs):
     else:
         # Allow specification of methods to arbitrary order
         lowername = name.lower()
-        package = driver_util.get_package(lowername, kwargs)
 #        lowername, level = driver_util._parse_arbitrary_order(lowername)
 #        if level:
 #            kwargs['level'] = level
@@ -152,13 +152,15 @@ def gradient(name, **kwargs):
 #        if lowername in energy_only_methods:
 #            raise ValidationError("gradient('%s') does not have an associated gradient" % name)
 
-        dertype = driver_util.find_derivative_type('gradient', package, lowername, user_dertype)
+        dertype = driver_util.find_derivative_type('gradient', lowername, user_dertype, kwargs.get('package', None))
 
 #        # Set method-dependent scf convergence criteria (test on procedures['energy'] since that's guaranteed)
 #        optstash = driver_util._set_convergence_criterion('energy', lowername, 8, 10, 8, 10, 8)
 
     # Commit to procedures[] call hereafter
+  #  lowername = name.lower()
     return_wfn = kwargs.pop('return_wfn', False)
+    package = driver_util.get_package2(lowername, kwargs.get('package', None))
 #    core.clean_variables()
 #
 #    # no analytic derivatives for scf_type cd

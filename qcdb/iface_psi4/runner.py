@@ -14,6 +14,7 @@ from ..exceptions import *
 from ..molecule import Molecule
 from ..pdict import PreservingDict
 from .worker import psi4_subprocess
+from .botanist import muster_inherited_options
 
 
 def run_psi4(name, molecule, options, **kwargs):
@@ -91,6 +92,7 @@ def psi4_plant(jobrec):  # jobrec@i -> psi4@i
     psi4rec['json'] = {}
 
     opts = jobrec['options']
+    muster_inherited_options(opts)
 
     omem = opts.scroll['QCDB'].pop('MEMORY')
     psi4rec['json']['memory'] = omem.value  #pts.scroll['QCDB']['MEMORY'].value

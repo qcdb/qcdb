@@ -41,9 +41,13 @@ if True:
     for mtd in iface_cfour.cfour_list():
         procedures['energy']['cfour'][mtd.lower()] = iface_cfour.run_cfour
 
-    #procedures['gradient']['cfour'] = {}
-    #for mtd in iface_cfour.cfour_gradient_list():
-    #   procedures['gradient']['cfour'][mtd.lower()] = iface_cfour.run_cfour
+    procedures['gradient']['cfour'] = {}
+    for mtd in iface_cfour.cfour_gradient_list():
+       procedures['gradient']['cfour'][mtd.lower()] = iface_cfour.run_cfour
+
+    procedures['hessian']['cfour'] = {}
+    for mtd in iface_cfour.cfour_hessian_list():
+       procedures['hessian']['cfour'][mtd.lower()] = iface_cfour.run_cfour
 
 if True:
 

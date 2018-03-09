@@ -47,10 +47,11 @@ pp = pprint.PrettyPrinter(width=120)
 #   
 #   import qcdb
 
+from ..exceptions import *
 from . import pe
 from . import driver_util
 from . import driver_helpers
-#from . import cbs_driver
+from . import cbs_driver
 ##   from psi4.driver import driver_nbody
 ##   from psi4.driver import p4util
 from .proc_table import procedures
@@ -80,107 +81,6 @@ from .proc_table import procedures
 #       return translations_projection_sound, rotations_projection_sound
    
    
-#   MOVED   #def energy(name, **kwargs):
-#   MOVED   #    r"""Function to compute the single-point electronic energy."""
-#   MOVED   #
-#   MOVED   #    from . import endorsed_plugins
-#   MOVED   #    kwargs = driver_util.kwargs_lower(kwargs)
-#   MOVED   #
-#   MOVED   #    # Bounce if name is function
-#   MOVED   #    if hasattr(name, '__call__'):
-#   MOVED   #        return name(energy, kwargs.pop('label', 'custom function'), ptype='energy', **kwargs)
-#   MOVED   #
-#   MOVED   #    # Allow specification of methods to arbitrary order
-#   MOVED   #    lowername = name.lower()
-#   MOVED   #    lowername, level = driver_helpers._parse_arbitrary_order(lowername)
-#   MOVED   #    if level:
-#   MOVED   #        kwargs['level'] = level
-#   MOVED   #
-#   MOVED   #    # Make sure the molecule the user provided is the active one
-#   MOVED   #    molecule = kwargs.pop('molecule', driver_helpers.get_active_molecule())
-#   MOVED   #    molecule.update_geometry()
-#   MOVED   #
-#   MOVED   #    if len(pe.nu_options.scroll) == 0:
-#   MOVED   #        print('EMPTY OPT')
-#   MOVED   #        pe.load_nu_options()
-#   MOVED   #
-#   MOVED   ##    # Bounce to CP if bsse kwarg
-#   MOVED   ##    if kwargs.get('bsse_type', None) is not None:
-#   MOVED   ##        return driver_nbody.nbody_gufunc(energy, name, ptype='energy', **kwargs)
-#   MOVED   #
-#   MOVED   #    # Bounce to CBS if "method/basis" name
-#   MOVED   #    if '/' in lowername:
-#   MOVED   #        return cbs_driver._cbs_gufunc(energy, name, ptype='energy', molecule=molecule, **kwargs)
-#   MOVED   #
-#   MOVED   #    # Commit to procedures['energy'] call hereafter
-#   MOVED   #    return_wfn = kwargs.pop('return_wfn', False)
-#   MOVED   #    pe.active_qcvars = {}
-#   MOVED   #
-#   MOVED   ##    #for precallback in hooks['energy']['pre']:
-#   MOVED   ##    #    precallback(lowername, **kwargs)
-#   MOVED   ##
-#   MOVED   ##    optstash = driver_util._set_convergence_criterion('energy', lowername, 6, 8, 6, 8, 6)
-#   MOVED   ##
-#   MOVED   ##    # Before invoking the procedure, we rename any file that should be read.
-#   MOVED   ##    # This is a workaround to do restarts with the current PSI4 capabilities
-#   MOVED   ##    # before actual, clean restarts are put in there
-#   MOVED   ##    # Restartfile is always converted to a single-element list if
-#   MOVED   ##    # it contains a single string
-#   MOVED   ##    if 'restart_file' in kwargs:
-#   MOVED   ##        restartfile = kwargs['restart_file']  # Option still available for procedure-specific action
-#   MOVED   ##        if restartfile != list(restartfile):
-#   MOVED   ##            restartfile = [restartfile]
-#   MOVED   ##        # Rename the files to be read to be consistent with psi4's file system
-#   MOVED   ##        for item in restartfile:
-#   MOVED   ##            name_split = re.split(r'\.', item)
-#   MOVED   ##            filenum = name_split[len(name_split) - 1]
-#   MOVED   ##            try:
-#   MOVED   ##                filenum = int(filenum)
-#   MOVED   ##            except ValueError:
-#   MOVED   ##                filenum = 32  # Default file number is the checkpoint one
-#   MOVED   ##            psioh = core.IOManager.shared_object()
-#   MOVED   ##            psio = core.IO.shared_object()
-#   MOVED   ##            filepath = psioh.get_file_path(filenum)
-#   MOVED   ##            namespace = psio.get_default_namespace()
-#   MOVED   ##            pid = str(os.getpid())
-#   MOVED   ##            prefix = 'psi'
-#   MOVED   ##            targetfile = filepath + prefix + '.' + pid + '.' + namespace + '.' + str(filenum)
-#   MOVED   ##            shutil.copy(item, targetfile)
-#   MOVED   #
-#   MOVED   #    print('QWER', pe.nu_options.print_changed())
-#   MOVED   #    package = driver_util.get_package(lowername, kwargs)
-#   MOVED   #    #for k, v in pkgprefix.items():
-#   MOVED   #    #    if lowername.startswith(k):
-#   MOVED   #    #        package = v
-#   MOVED   #    #        break
-#   MOVED   #    #else:
-#   MOVED   #    #    package = kwargs.get('package', 'psi4')
-#   MOVED   #    #print('\nENE calling', 'procedures', package, lowername, 'with', lowername, molecule, pe.nu_options, kwargs)
-#   MOVED   #    #jobrec = procedures['energy'][package][lowername](lowername, molecule=molecule, options=pe.active_options, **kwargs)
-#   MOVED   #    jobrec = procedures['energy'][package][lowername](lowername, molecule=molecule, options=pe.nu_options, ptype='energy', **kwargs)
-#   MOVED   #
-#   MOVED   ##    for postcallback in hooks['energy']['post']:
-#   MOVED   ##        postcallback(lowername, wfn=wfn, **kwargs)
-#   MOVED   ##
-#   MOVED   ##    optstash.restore()
-#   MOVED   #    #jobrec.pop('raw_output')  # just to moderate printint to screen
-#   MOVED   #    pp.pprint(jobrec)
-#   MOVED   #    pe.active_qcvars = copy.deepcopy(jobrec['qcvars'])
-#   MOVED   #
-#   MOVED   #    if return_wfn:  # TODO current energy safer than wfn.energy() for now, but should be revisited
-#   MOVED   #
-#   MOVED   ##        # TODO place this with the associated call, very awkward to call this in other areas at the moment
-#   MOVED   ##        if lowername in ['efp', 'mrcc', 'dmrg', 'psimrcc']:
-#   MOVED   ##            core.print_out("\n\nWarning! %s does not have an associated derived wavefunction." % name)
-#   MOVED   ##            core.print_out("The returned wavefunction is the incoming reference wavefunction.\n\n")
-#   MOVED   ##        elif 'sapt' in lowername:
-#   MOVED   ##            core.print_out("\n\nWarning! %s does not have an associated derived wavefunction." % name)
-#   MOVED   ##            core.print_out("The returned wavefunction is the dimer SCF wavefunction.\n\n")
-#   MOVED   #
-#   MOVED   #        return (float(jobrec['qcvars']['CURRENT ENERGY'].data), jobrec)
-#   MOVED   #    else:
-#   MOVED   #        return float(jobrec['qcvars']['CURRENT ENERGY'].data)
-#   MOVED   #        # float() is for decimal.Decimal
 
 
 def hessian(name, **kwargs):
@@ -212,7 +112,7 @@ def hessian(name, **kwargs):
 #    # Bounce to CP if bsse kwarg (someday)
 #    if kwargs.get('bsse_type', None) is not None:
 #        raise ValidationError("Hessian: Cannot specify bsse_type for hessian yet.")
-#
+
 #    # Figure out what kind of gradient this is
 #    if hasattr(name, '__call__'):
 #        if name.__name__ in ['cbs', 'complete_basis_set']:
@@ -231,9 +131,10 @@ def hessian(name, **kwargs):
     lowername = name.lower()
     package = driver_util.get_package(lowername, kwargs)
 
-#    # Check if this is a CBS extrapolation
-#    if "/" in lowername:
-#        return driver_cbs._cbs_gufunc('hessian', lowername, **kwargs)
+    # Check if this is a CBS extrapolation
+    if "/" in lowername:
+        molecule = kwargs.pop('molecule', driver_helpers.get_active_molecule())
+        return cbs_driver._cbs_gufunc(hessian, lowername, ptype='hessian', molecule=molecule, **kwargs)
 
     return_wfn = kwargs.pop('return_wfn', False)
 #    core.clean_variables()
@@ -253,7 +154,9 @@ def hessian(name, **kwargs):
 #    if level:
 #        kwargs['level'] = level
 
-    dertype = driver_util.find_derivative_type('hessian', package, lowername, kwargs.pop('freq_dertype', kwargs.pop('dertype', None)))
+    dertype = driver_util.find_derivative_type('hessian', lowername,
+                                               kwargs.pop('freq_dertype', kwargs.pop('dertype', None)),
+                                               kwargs.get('package'))
 
     # Make sure the molecule the user provided is the active one
     molecule = kwargs.pop('molecule', driver_helpers.get_active_molecule())

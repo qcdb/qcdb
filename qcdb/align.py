@@ -95,7 +95,7 @@ class AlignmentMill(collections.namedtuple('AlignmentMill', 'shift rotation atom
     def align_hessian(self, hess):
         # UNTESTED
 
-        blocked_hess = qcdb.util.blockwise_expand(hess, (3, 3), False)
+        blocked_hess = blockwise_expand(hess, (3, 3), False)
         alhess = np.zeros_like(blocked_hess)
 
         nat = blocked_hess.shape[0]
@@ -105,7 +105,7 @@ class AlignmentMill(collections.namedtuple('AlignmentMill', 'shift rotation atom
 
         alhess = alhess[np.ix_(self.atommap, self.atommap)]
 
-        alhess = qcdb.util.blockwise_contract(alhess)
+        alhess = blockwise_contract(alhess)
         return alhess
 
     def align_system(self, geom, mass, elem, elez, uniq, reverse=False):

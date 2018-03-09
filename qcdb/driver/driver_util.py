@@ -63,17 +63,32 @@ def get_package(lowername, kwargs, default_package='psi4'):
     return package
 
 
-def find_derivative_type(ptype, package, method_name, user_dertype):
+def get_package2(lowername, user_package=None, default_package='psi4'):
+    pkgprefix = {'p4-': 'psi4',
+                 'c4-': 'cfour',
+                 'd3-': 'dftd3',
+                }
+    for k, v in pkgprefix.items():
+        if lowername.startswith(k):
+            package = v
+            break
+    else:
+        package = user_package if user_package else default_package
+
+    return package
+
+
+def find_derivative_type(ptype, method_name, user_dertype, user_package):
     r"""
     Figures out the derivative type (0, 1, 2) for a given method_name. Will
     first use user default and then the highest available derivative type for
     a given method.
     """
-
     if ptype not in ['gradient', 'hessian']:
         raise ValidationError("find_derivative_type: ptype must either be gradient or hessian: {}".format(ptype))
 
     dertype = "(auto)"
+    package = get_package2(method_name, user_package=user_package)
 #   MOVED   #    jobrec = procedures['energy'][package][lowername](lowername, molecule=molecule, options=pe.nu_options, ptype='energy', **kwargs)
 
     # If user type is None, try to find the highest derivative

@@ -1,5 +1,8 @@
 import re
+import copy
 import math
+import pprint
+pp = pprint.PrettyPrinter(width=120)
 
 import numpy as np
 
@@ -140,13 +143,6 @@ def _cbs_gufunc(func, total_method_name, molecule, **kwargs):
         return (ptype_value, wfn)
     else:
         return ptype_value
-
-
-
-
-
-
-
 
 
 ###################################
@@ -851,10 +847,8 @@ def cbs(func, label, **kwargs):
         for wfn in qcvars.VARH[job['f_wfn']]:
             JOBS_EXT.append(dict(zip(f_fields, [wfn, job['f_basis'], job['f_zeta'],
                                                 0.0,
-                                                np.array((natom, 3)),
-                                                np.array((3 * natom, 3 * natom))])))
-                                                #core.Matrix(natom, 3),
-                                                #core.Matrix(3 * natom, 3 * natom)])))
+                                                np.zeros((natom, 3)),
+                                                np.zeros((3 * natom, 3 * natom))])))
 
     instructions += """\n    Full listing of computations to be obtained (required and bonus).\n"""
     for mc in JOBS_EXT:
@@ -887,7 +881,12 @@ def cbs(func, label, **kwargs):
         # Build string of molecule and commands that are dependent on the database
         pe.nu_options.require('QCDB', 'BASIS', mc['f_basis'], **kwgs)
         pe.nu_options.require('QCDB', 'WRITER_FILE_LABEL',
-            '-'.join([pe.nu_options.scroll['QCDB']['WRITER_FILE_LABEL'].value, mc['f_wfn'].lower(), mc['f_basis'].lower()]), **kwgs)
+            '-'.join(filter(None,
+                [pe.nu_options.scroll['QCDB']['WRITER_FILE_LABEL'].value,
+                 mc['f_wfn'].lower(), 
+                 mc['f_basis'].lower()]
+            )), **kwgs)
+
 #        commands = '\n'
 #        commands += """\ncore.set_global_option('BASIS', '%s')\n""" % (mc['f_basis'])
 #        commands += """core.set_global_option('WRITER_FILE_LABEL', '%s')\n""" % \
@@ -900,19 +899,23 @@ def cbs(func, label, **kwargs):
         #response = func(molecule=molecule, **kwargs)
         if ptype == 'energy':
             mc['f_energy'] = response
+
         elif ptype == 'gradient':
             mc['f_gradient'] = response
-            mc['f_energy'] = core.get_variable('CURRENT ENERGY')
+            mc['f_energy'] = float(jrec['qcvars']['CURRENT ENERGY'].data)
             if verbose > 1:
-                mc['f_gradient'].print_out()
+                print(np.array_str(mc['f_gradient'], max_line_width=120, precision=8, suppress_small=True))
+                #mc['f_gradient'].print_out()
+
         elif ptype == 'hessian':
             mc['f_hessian'] = response
-            mc['f_energy'] = core.get_variable('CURRENT ENERGY')
+            mc['f_energy'] = float(jrec['qcvars']['CURRENT ENERGY'].data)
+            mc['f_gradient'] = jrec['qcvars']['CURRENT GRADIENT'].data  # risky if GRAD not computed
             if verbose > 1:
-                mc['f_hessian'].print_out()
+                print(np.array_str(mc['f_hessian'], max_line_width=120, precision=8, suppress_small=True))
         Njobs += 1
         if verbose > 1:
-            core.print_out("\nCURRENT ENERGY: %14.16f\n" % mc['f_energy'])
+            print("\nCURRENT ENERGY: %14.16f\n" % mc['f_energy'])
 
         # Fill in energies for subsumed methods
         if ptype == 'energy':
@@ -965,31 +968,26 @@ def cbs(func, label, **kwargs):
 
     # Make xtpl() call
     finalenergy = 0.0
-    finalgradient = np.array((natom, 3))
-    finalhessian = np.array((3 * natom, 3 * natom))
-    #finalgradient = core.Matrix(natom, 3)
-    #finalhessian = core.Matrix(3 * natom, 3 * natom)
+    finalgradient = np.zeros((natom, 3))
+    finalhessian = np.zeros((3 * natom, 3 * natom))
     for stage in GRAND_NEED:
         hiloargs = _contract_scheme_orders(stage['d_need'], 'f_energy')
-        print('VVVV', stage['d_need'], 'f_energy', hiloargs)
         stage['d_energy'] = stage['d_scheme'](**hiloargs)
-        print('TTTT', stage['d_scheme'], stage['d_energy'])
-        print('IIII', stage['d_coef'])
         finalenergy += stage['d_energy'] * stage['d_coef']
 
         if ptype == 'gradient':
             hiloargs = _contract_scheme_orders(stage['d_need'], 'f_gradient')
             stage['d_gradient'] = stage['d_scheme'](**hiloargs)
-            work = stage['d_gradient'].clone()
-            work.scale(stage['d_coef'])
-            finalgradient.add(work)
+            finalgradient = stage['d_coef'] * np.copy(stage['d_gradient']) + finalgradient
 
         elif ptype == 'hessian':
+            hiloargs = _contract_scheme_orders(stage['d_need'], 'f_gradient')
+            stage['d_gradient'] = stage['d_scheme'](**hiloargs)
+            finalgradient = stage['d_coef'] * np.copy(stage['d_gradient']) + finalgradient
+
             hiloargs = _contract_scheme_orders(stage['d_need'], 'f_hessian')
             stage['d_hessian'] = stage['d_scheme'](**hiloargs)
-            work = stage['d_hessian'].clone()
-            work.scale(stage['d_coef'])
-            finalhessian.add(work)
+            finalhessian = stage['d_coef'] * np.copy(stage['d_hessian']) + finalhessian
 
     # Build string of results table
     table_delimit = '  ' + '-' * 105 + '\n'
@@ -1054,16 +1052,17 @@ def cbs(func, label, **kwargs):
 
     print(tables)
 
+    calcinfo = []
     #core.set_variable('CBS REFERENCE ENERGY', GRAND_NEED[0]['d_energy'])
     #core.set_variable('CBS CORRELATION ENERGY', finalenergy - GRAND_NEED[0]['d_energy'])
     #core.set_variable('CBS TOTAL ENERGY', finalenergy)
     #core.set_variable('CURRENT REFERENCE ENERGY', GRAND_NEED[0]['d_energy'])
     #core.set_variable('CURRENT CORRELATION ENERGY', finalenergy - GRAND_NEED[0]['d_energy'])
     #core.set_variable('CURRENT ENERGY', finalenergy)
-    #core.set_variable('CBS NUMBER', Njobs)
-    pe.active_qcvars.update({'CBS NUMBER': QCAspect('CBS NUMBER', '', Njobs, '')})  # TODO not really a result
+    calcinfo.append(QCAspect('CBS NUMBER', '', Njobs, ''))  # TODO not really a result
 
     # new skeleton wavefunction w/mol, highest-SCF basis (just to choose one), & not energy
+    jobrec = {}
 #    basis = core.BasisSet.build(molecule, "ORBITAL", 'sto-3g')
 #    wfn = core.Wavefunction(molecule, basis)
 
@@ -1071,21 +1070,33 @@ def cbs(func, label, **kwargs):
 
     if ptype == 'energy':
         finalquantity = finalenergy
+        calcinfo.append(QCAspect('CURRENT ENERGY', 'Eh', finalquantity, ''))
+
     elif ptype == 'gradient':
         finalquantity = finalgradient
-        wfn.set_gradient(finalquantity)
-        if finalquantity.rows(0) < 20:
+        calcinfo.append(QCAspect('CURRENT GRADIENT', 'Eh/a0', finalquantity, ''))
+        if finalquantity.shape[0] < 20:
             print('CURRENT GRADIENT')
             print(finalquantity)
+
     elif ptype == 'hessian':
+        calcinfo.append(QCAspect('CURRENT ENERGY', 'Eh', finalenergy, ''))
+        calcinfo.append(QCAspect('CURRENT GRADIENT', 'Eh/a0', finalgradient, ''))
+
         finalquantity = finalhessian
-        wfn.set_hessian(finalquantity)
-        if finalquantity.rows(0) < 20:
-            core.print_out('CURRENT HESSIAN')
-            finalquantity.print_out()
+        calcinfo.append(QCAspect('CURRENT HESSIAN', 'Eh/a0/a0', finalquantity, ''))
+        if finalquantity.shape[0] < 20:
+            print('CURRENT GRADIENT')
+            print(finalquantity)
+            print('CURRENT HESSIAN')
+            print(finalquantity)
+
+    jobrec['qcvars'] = {info.lbl: info for info in calcinfo}
+    pp.pprint(jobrec)
+    pe.active_qcvars = copy.deepcopy(jobrec['qcvars'])
 
     if return_wfn:
-        return (finalquantity, wfn)
+        return (finalquantity, jobrec)
     else:
         return finalquantity
 
@@ -1113,10 +1124,8 @@ def _expand_scheme_orders(scheme, basisname, basiszeta, wfnname, natom):
     for idx in range(Nxtpl):
         NEED[_lmh_labels[Nxtpl][idx]] = dict(zip(f_fields, [wfnname, basisname[idx], basiszeta[idx],
                                                             0.0,
-                                                            np.array((natom, 3)),
-                                                            np.array((3 * natom, 3 * natom))]))
-                                                            #core.Matrix(natom, 3),
-                                                            #core.Matrix(3 * natom, 3 * natom)]))
+                                                            np.zeros((natom, 3)),
+                                                            np.zeros((3 * natom, 3 * natom))]))
     return NEED
 
 
@@ -1218,246 +1227,4 @@ def _contract_bracketed_basis(basisarray):
         post = basisarray[0][zetaindx + 1:]
         basisstring = pre + '[' + ''.join(ZSET) + ']' + post
         return basisstring
-
-
-#   MOVED   #def xtpl_highest_1(functionname, zHI, valueHI, verbose=True):
-#   MOVED   #    r"""Scheme for total or correlation energies with a single basis or the highest
-#   MOVED   #    zeta-level among an array of bases. Used by :py:func:`~psi4.cbs`.
-#   MOVED   #
-#   MOVED   #    .. math:: E_{total}^X = E_{total}^X
-#   MOVED   #
-#   MOVED   #    """
-#   MOVED   #    if isinstance(valueHI, float):
-#   MOVED   #
-#   MOVED   #        if verbose:
-#   MOVED   #            # Output string with extrapolation parameters
-#   MOVED   #            cbsscheme = ''
-#   MOVED   #            cbsscheme += """\n   ==> {} <==\n\n""".format(functionname.upper())
-#   MOVED   #            cbsscheme += """   HI-zeta ({}) Energy:               {:16.12f}\n""".format(zHI, valueHI)
-#   MOVED   #
-#   MOVED   #            print(cbsscheme)
-#   MOVED   #
-#   MOVED   #        return valueHI
-#   MOVED   #
-#   MOVED   #    elif isinstance(valueHI, np.ndarray): #(core.Matrix, core.Vector)):
-#   MOVED   #
-#   MOVED   #        if verbose > 2:
-#   MOVED   #            core.print_out("""   HI-zeta (%s) Total Energy:\n""" % (str(zHI)))
-#   MOVED   #            valueHI.print_out()
-#   MOVED   #
-#   MOVED   #        return valueHI
-#   MOVED   #
-#   MOVED   #
-#   MOVED   #def scf_xtpl_helgaker_2(functionname, zLO, valueLO, zHI, valueHI, verbose=True, alpha=1.63):
-#   MOVED   #    r"""Extrapolation scheme for reference energies with two adjacent zeta-level bases.
-#   MOVED   #    Used by :py:func:`~psi4.cbs`.
-#   MOVED   #    Halkier, Helgaker, Jorgensen, Klopper, & Olsen, Chem. Phys. Lett. 302 (1999) 437-446.
-#   MOVED   #
-#   MOVED   #    .. math:: E_{total}^X = E_{total}^{\infty} + \beta e^{-\alpha X}, \alpha = 1.63
-#   MOVED   #
-#   MOVED   #    """
-#   MOVED   #
-#   MOVED   #    if type(valueLO) != type(valueHI):
-#   MOVED   #        raise ValidationError("scf_xtpl_helgaker_2: Inputs must be of the same datatype! (%s, %s)"
-#   MOVED   #                              % (type(valueLO), type(valueHI)))
-#   MOVED   #
-#   MOVED   #    beta_division = 1 / (math.exp(-1 * alpha * zLO) * (math.exp(-1 * alpha) - 1))
-#   MOVED   #    beta_mult = math.exp(-1 * alpha * zHI)
-#   MOVED   #
-#   MOVED   #    if isinstance(valueLO, float):
-#   MOVED   #        beta = (valueHI - valueLO) / (math.exp(-1 * alpha * zLO) * (math.exp(-1 * alpha) - 1))
-#   MOVED   #        value = valueHI - beta * math.exp(-1 * alpha * zHI)
-#   MOVED   #
-#   MOVED   #        if verbose:
-#   MOVED   #            # Output string with extrapolation parameters
-#   MOVED   #            cbsscheme = ''
-#   MOVED   #            cbsscheme += """\n   ==> Helgaker 2-point SCF extrapolation for method: %s <==\n\n""" % (functionname.upper())
-#   MOVED   #            cbsscheme += """   LO-zeta (%s) Energy:               % 16.12f\n""" % (str(zLO), valueLO)
-#   MOVED   #            cbsscheme += """   HI-zeta (%s) Energy:               % 16.12f\n""" % (str(zHI), valueHI)
-#   MOVED   #            cbsscheme += """   Alpha (exponent) Value:           % 16.12f\n""" % (alpha)
-#   MOVED   #            cbsscheme += """   Beta (coefficient) Value:         % 16.12f\n\n""" % (beta)
-#   MOVED   #
-#   MOVED   #            name_str = "%s/(%s,%s)" % (functionname.upper(), zeta_val2sym[zLO].upper(), zeta_val2sym[zHI].upper())
-#   MOVED   #            cbsscheme += """   @Extrapolated """
-#   MOVED   #            cbsscheme += name_str + ':'
-#   MOVED   #            cbsscheme += " " * (18 - len(name_str))
-#   MOVED   #            cbsscheme += """% 16.12f\n\n""" % value
-#   MOVED   #            print(cbsscheme)
-#   MOVED   #
-#   MOVED   #        return value
-#   MOVED   #
-#   MOVED   #    #elif isinstance(valueLO, (core.Matrix, core.Vector)):
-#   MOVED   #    elif isinstance(valueLO, np.ndarray):
-#   MOVED   #        beta = valueHI.clone()
-#   MOVED   #        beta.name = 'Helgaker SCF (%s, %s) beta' % (zLO, zHI)
-#   MOVED   #        beta.subtract(valueLO)
-#   MOVED   #        beta.scale(beta_division)
-#   MOVED   #        beta.scale(beta_mult)
-#   MOVED   #
-#   MOVED   #        value = valueHI.clone()
-#   MOVED   #        value.subtract(beta)
-#   MOVED   #        value.name = 'Helgaker SCF (%s, %s) data' % (zLO, zHI)
-#   MOVED   #
-#   MOVED   #        if verbose > 2:
-#   MOVED   #            core.print_out("""\n   ==> Helgaker 2-point SCF extrapolation for method: %s <==\n\n""" % (functionname.upper()))
-#   MOVED   #            core.print_out("""   LO-zeta (%s)""" % str(zLO))
-#   MOVED   #            core.print_out("""   LO-zeta Data""")
-#   MOVED   #            valueLO.print_out()
-#   MOVED   #            core.print_out("""   HI-zeta (%s)""" % str(zHI))
-#   MOVED   #            core.print_out("""   HI-zeta Data""")
-#   MOVED   #            valueHI.print_out()
-#   MOVED   #            core.print_out("""   Extrapolated Data:\n""")
-#   MOVED   #            value.print_out()
-#   MOVED   #            core.print_out("""   Alpha (exponent) Value:          %16.8f\n""" % (alpha))
-#   MOVED   #            core.print_out("""   Beta Data:\n""")
-#   MOVED   #            beta.print_out()
-#   MOVED   #
-#   MOVED   #        return value
-#   MOVED   #
-#   MOVED   #    else:
-#   MOVED   #        raise ValidationError("scf_xtpl_helgaker_2: datatype is not recognized '%s'." % type(valueLO))
-#   MOVED   #
-#   MOVED   #
-#   MOVED   #def scf_xtpl_helgaker_3(functionname, zLO, valueLO, zMD, valueMD, zHI, valueHI, verbose=True):
-#   MOVED   #    r"""Extrapolation scheme for reference energies with three adjacent zeta-level bases.
-#   MOVED   #    Used by :py:func:`~psi4.cbs`.
-#   MOVED   #    Halkier, Helgaker, Jorgensen, Klopper, & Olsen, Chem. Phys. Lett. 302 (1999) 437-446.
-#   MOVED   #
-#   MOVED   #    .. math:: E_{total}^X = E_{total}^{\infty} + \beta e^{-\alpha X}
-#   MOVED   #    """
-#   MOVED   #
-#   MOVED   #    if (type(valueLO) != type(valueMD)) or (type(valueMD) != type(valueHI)):
-#   MOVED   #        raise ValidationError("scf_xtpl_helgaker_3: Inputs must be of the same datatype! (%s, %s, %s)"
-#   MOVED   #                              % (type(valueLO), type(valueMD), type(valueHI)))
-#   MOVED   #
-#   MOVED   #    if isinstance(valueLO, float):
-#   MOVED   #
-#   MOVED   #        ratio = (valueHI - valueMD) / (valueMD - valueLO)
-#   MOVED   #        alpha = -1 * math.log(ratio)
-#   MOVED   #        beta = (valueHI - valueMD) / (math.exp(-1 * alpha * zMD) * (ratio - 1))
-#   MOVED   #        value = valueHI - beta * math.exp(-1 * alpha * zHI)
-#   MOVED   #
-#   MOVED   #        if verbose:
-#   MOVED   #            # Output string with extrapolation parameters
-#   MOVED   #            cbsscheme = ''
-#   MOVED   #            cbsscheme += """\n   ==> Helgaker 3-point SCF extrapolation for method: %s <==\n\n""" % (functionname.upper())
-#   MOVED   #            cbsscheme += """   LO-zeta (%s) Energy:               % 16.12f\n""" % (str(zLO), valueLO)
-#   MOVED   #            cbsscheme += """   MD-zeta (%s) Energy:               % 16.12f\n""" % (str(zMD), valueMD)
-#   MOVED   #            cbsscheme += """   HI-zeta (%s) Energy:               % 16.12f\n""" % (str(zHI), valueHI)
-#   MOVED   #            cbsscheme += """   Alpha (exponent) Value:           % 16.12f\n""" % (alpha)
-#   MOVED   #            cbsscheme += """   Beta (coefficient) Value:         % 16.12f\n\n""" % (beta)
-#   MOVED   #
-#   MOVED   #            name_str = "%s/(%s,%s,%s)" % (functionname.upper(), zeta_val2sym[zLO].upper(), zeta_val2sym[zMD].upper(),
-#   MOVED   #                                                             zeta_val2sym[zHI].upper())
-#   MOVED   #            cbsscheme += """   @Extrapolated """
-#   MOVED   #            cbsscheme += name_str + ':'
-#   MOVED   #            cbsscheme += " " * (18 - len(name_str))
-#   MOVED   #            cbsscheme += """% 16.12f\n\n""" % value
-#   MOVED   #            print(cbsscheme)
-#   MOVED   #
-#   MOVED   #        return value
-#   MOVED   #
-#   MOVED   #    elif isinstance(valueLO, np.ndarray): #(core.Matrix, core.Vector)):
-#   MOVED   #        valueLO = np.array(valueLO)
-#   MOVED   #        valueMD = np.array(valueMD)
-#   MOVED   #        valueHI = np.array(valueHI)
-#   MOVED   #
-#   MOVED   #        nonzero_mask = np.abs(valueHI) > 1.e-14
-#   MOVED   #        top = (valueHI - valueMD)[nonzero_mask]
-#   MOVED   #        bot = (valueMD - valueLO)[nonzero_mask]
-#   MOVED   #
-#   MOVED   #        ratio = top / bot
-#   MOVED   #        alpha = -1 * np.log(np.abs(ratio))
-#   MOVED   #        beta = top / (np.exp(-1 * alpha * zMD) * (ratio - 1))
-#   MOVED   #        np_value = valueHI.copy()
-#   MOVED   #        np_value[nonzero_mask] -= beta * np.exp(-1 * alpha * zHI)
-#   MOVED   #        np_value[~nonzero_mask] = 0.0
-#   MOVED   #
-#   MOVED   #        # Build and set from numpy routines
-#   MOVED   #        value = core.Matrix(*valueHI.shape)
-#   MOVED   #        value_view = np.asarray(value)
-#   MOVED   #        value_view[:] = np_value
-#   MOVED   #        return value
-#   MOVED   #
-#   MOVED   #    else:
-#   MOVED   #        raise ValidationError("scf_xtpl_helgaker_3: datatype is not recognized '%s'." % type(valueLO))
-#   MOVED   #
-#   MOVED   #
-#   MOVED   ##def corl_xtpl_helgaker_2(functionname, valueSCF, zLO, valueLO, zHI, valueHI, verbose=True):
-#   MOVED   #def corl_xtpl_helgaker_2(functionname, zLO, valueLO, zHI, valueHI, verbose=True):
-#   MOVED   #    r"""Extrapolation scheme for correlation energies with two adjacent zeta-level bases.
-#   MOVED   #    Used by :py:func:`~psi4.cbs`.
-#   MOVED   #    Halkier, Helgaker, Jorgensen, Klopper, Koch, Olsen, & Wilson, Chem. Phys. Lett. 286 (1998) 243-252.
-#   MOVED   #
-#   MOVED   #    .. math:: E_{corl}^X = E_{corl}^{\infty} + \beta X^{-3}
-#   MOVED   #
-#   MOVED   #    """
-#   MOVED   #    if type(valueLO) != type(valueHI):
-#   MOVED   #        raise ValidationError("corl_xtpl_helgaker_2: Inputs must be of the same datatype! (%s, %s)"
-#   MOVED   #                              % (type(valueLO), type(valueHI)))
-#   MOVED   #
-#   MOVED   #    if isinstance(valueLO, float):
-#   MOVED   #        value = (valueHI * zHI ** 3 - valueLO * zLO ** 3) / (zHI ** 3 - zLO ** 3)
-#   MOVED   #        beta = (valueHI - valueLO) / (zHI ** (-3) - zLO ** (-3))
-#   MOVED   #
-#   MOVED   ##        final = valueSCF + value
-#   MOVED   #        final = value
-#   MOVED   #        if verbose:
-#   MOVED   #            # Output string with extrapolation parameters
-#   MOVED   #            cbsscheme = """\n\n   ==> Helgaker 2-point correlated extrapolation for method: %s <==\n\n""" % (functionname.upper())
-#   MOVED   ##            cbsscheme += """   HI-zeta (%1s) SCF Energy:           % 16.12f\n""" % (str(zHI), valueSCF)
-#   MOVED   #            cbsscheme += """   LO-zeta (%s) Energy:               % 16.12f\n""" % (str(zLO), valueLO)
-#   MOVED   #            cbsscheme += """   HI-zeta (%s) Energy:               % 16.12f\n""" % (str(zHI), valueHI)
-#   MOVED   ##            cbsscheme += """   Beta (coefficient) Value:         % 16.12f\n""" % beta
-#   MOVED   #            cbsscheme += """   Extrapolated Energy:              % 16.12f\n\n""" % value
-#   MOVED   #            #cbsscheme += """   LO-zeta (%s) Correlation Energy:   % 16.12f\n""" % (str(zLO), valueLO)
-#   MOVED   #            #cbsscheme += """   HI-zeta (%s) Correlation Energy:   % 16.12f\n""" % (str(zHI), valueHI)
-#   MOVED   #            #cbsscheme += """   Beta (coefficient) Value:         % 16.12f\n""" % beta
-#   MOVED   #            #cbsscheme += """   Extrapolated Correlation Energy:  % 16.12f\n\n""" % value
-#   MOVED   #
-#   MOVED   #            name_str = "%s/(%s,%s)" % (functionname.upper(), zeta_val2sym[zLO].upper(), zeta_val2sym[zHI].upper())
-#   MOVED   #            cbsscheme += """   @Extrapolated """
-#   MOVED   #            cbsscheme += name_str + ':'
-#   MOVED   #            cbsscheme += " " * (19 - len(name_str))
-#   MOVED   #            cbsscheme += """% 16.12f\n\n""" % final
-#   MOVED   #            print(cbsscheme)
-#   MOVED   #
-#   MOVED   #        return final
-#   MOVED   #
-#   MOVED   #    elif isinstance(valueLO, np.ndarray): #(core.Matrix, core.Vector)):
-#   MOVED   #
-#   MOVED   #        beta = valueHI.clone()
-#   MOVED   #        beta.subtract(valueLO)
-#   MOVED   #        beta.scale(1 / (zHI ** (-3) - zLO ** (-3)))
-#   MOVED   #        beta.name = 'Helgaker Corl (%s, %s) beta' % (zLO, zHI)
-#   MOVED   #
-#   MOVED   #        value = valueHI.clone()
-#   MOVED   #        value.scale(zHI ** 3)
-#   MOVED   #
-#   MOVED   #        tmp = valueLO.clone()
-#   MOVED   #        tmp.scale(zLO ** 3)
-#   MOVED   #        value.subtract(tmp)
-#   MOVED   #
-#   MOVED   #        value.scale(1 / (zHI ** 3 - zLO ** 3))
-#   MOVED   #        value.name = 'Helgaker Corr (%s, %s) data' % (zLO, zHI)
-#   MOVED   #
-#   MOVED   #        if verbose > 2:
-#   MOVED   #            core.print_out("""\n   ==> Helgaker 2-point correlated extrapolation for """
-#   MOVED   #                           """method: %s <==\n\n""" % (functionname.upper()))
-#   MOVED   #            core.print_out("""   LO-zeta (%s) Data\n""" % (str(zLO)))
-#   MOVED   #            valueLO.print_out()
-#   MOVED   #            core.print_out("""   HI-zeta (%s) Data\n""" % (str(zHI)))
-#   MOVED   #            valueHI.print_out()
-#   MOVED   #            core.print_out("""   Extrapolated Data:\n""")
-#   MOVED   #            value.print_out()
-#   MOVED   #            core.print_out("""   Beta Data:\n""")
-#   MOVED   #            beta.print_out()
-#   MOVED   #
-#   MOVED   ##        value.add(valueSCF)
-#   MOVED   #        return value
-#   MOVED   #
-#   MOVED   #    else:
-#   MOVED   #        raise ValidationError("corl_xtpl_helgaker_2: datatype is not recognized '%s'." % type(valueLO))
-
-
 
