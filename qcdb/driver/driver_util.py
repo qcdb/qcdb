@@ -1,6 +1,7 @@
 from ..exceptions import *
 from ..util import yes, no, der0th, der1st, der2nd, find_approximate_string_matches
 from .proc_table import procedures
+from .aids import pkgprefix
 
 
 def kwargs_lower(kwargs):
@@ -49,10 +50,6 @@ def kwargs_lower(kwargs):
 
 
 def get_package(lowername, kwargs, default_package='psi4'):
-    pkgprefix = {'p4-': 'psi4',
-                 'c4-': 'cfour',
-                 'd3-': 'dftd3',
-                }
     for k, v in pkgprefix.items():
         if lowername.startswith(k):
             package = v
@@ -64,10 +61,6 @@ def get_package(lowername, kwargs, default_package='psi4'):
 
 
 def get_package2(lowername, user_package=None, default_package='psi4'):
-    pkgprefix = {'p4-': 'psi4',
-                 'c4-': 'cfour',
-                 'd3-': 'dftd3',
-                }
     for k, v in pkgprefix.items():
         if lowername.startswith(k):
             package = v

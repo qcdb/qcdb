@@ -1,8 +1,8 @@
 
 def return_energy_components():
     VARH = {}
-#    VARH['scf'] = {
-#                            'scf': 'SCF TOTAL ENERGY'}
+    VARH['scf'] = {
+                            'scf': 'SCF TOTAL ENERGY'}
     VARH['hf'] = {
                              'hf': 'HF TOTAL ENERGY'}
     VARH['mp2'] = {
@@ -170,6 +170,10 @@ def return_energy_components():
            'mp{}'.format(mplevel): 'MP{} TOTAL ENERGY'.format(mplevel)}
         for mplevel2 in range(2, mplevel):
             VARH['mp{}'.format(mplevel)]['mp{}'.format(mplevel2)] = 'MP{} TOTAL ENERGY'.format(mplevel2)
+
+    # Explicit Psi4 methods
+    p4_VARH = {('p4-' + k): {('p4-' + kk): vv for kk, vv in v.items()} for k, v in VARH.items()}
+    VARH.update(p4_VARH)
 
     # Integrate CFOUR methods
     # TODO rearrange imports

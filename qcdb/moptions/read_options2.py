@@ -132,6 +132,42 @@ def load_qcdb_defaults(options):
   MOLDEN output file, the Hessian file, the internal coordinate file, etc.
 """))
 
+    options.add('qcdb', RottenOption(
+            keyword='geom_maxiter',
+            default=20,
+            validator=parsers.positive_integer,
+            glossary="""Maximum number of geometry optimization steps."""))
+
+#    options.add('qcdb', RottenOption(
+#            keyword='',
+#            default=,
+#            validator=,
+#            glossary="""."""))
+
+#    options.add('qcdb', RottenOption(
+#            keyword='',
+#            default=,
+#            validator=,
+#            glossary="""."""))
+
+#    options.add('qcdb', RottenOption(
+#            keyword='',
+#            default=,
+#            validator=,
+#            glossary="""."""))
+
+#    options.add('qcdb', RottenOption(
+#            keyword='',
+#            default=,
+#            validator=,
+#            glossary="""."""))
+
+#    options.add('qcdb', RottenOption(
+#            keyword='',
+#            default=,
+#            validator=,
+#            glossary="""."""))
+
 #    options.add('qcdb', RottenOption(
 #            keyword='',
 #            default=,

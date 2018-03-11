@@ -58,9 +58,13 @@ if not os.path.isdir(data_dir):
 from .metadata import __version__, version_formatter
 #from .driver import *
 from .driver import energy, properties, hessian, gradient
+from .driver import optking
 from .driver.cbs_driver import cbs
-from .driver import cbs_helpers
-from .driver.driver_helpers import set_options, get_variable, print_variables, set_molecule, activate, get_active_options
+from .driver.cbs_helpers import *
+from .driver.driver_helpers import get_variable, print_variables
+from .driver.driver_helpers import set_options, get_active_options
+from .driver.driver_helpers import set_molecule, activate
+from .driver.yaml import yaml_run
 #from .header import print_header
 
 ## Load Python modules

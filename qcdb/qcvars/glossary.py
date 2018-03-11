@@ -476,6 +476,26 @@ qcvardefs['CURRENT DIPOLE Z'] = {
    level of theory and root.
 """}
 
+def define_prop_qcvars(mtd, extra=''):
+    mtd = mtd.upper()
+
+    for i in _dip_components:
+        qcvardefs['{} DIPOLE {}'.format(mtd, i)] = {
+            'units': 'D',
+            'glossary': """
+           The {} component of the dipole for the {} level of theory
+           and root *n* (number starts at GS = 0). {}
+    """.format(i, mtd, extra)}
+    
+    for i in _quad_components:
+        qcvardefs['{} QUADRUPOLE {}'.format(mtd, i)] = {
+            'units': 'D A',
+            'glossary': """
+           The {} component of the quadrupole for the {} level of theory
+           and root *n* (number starts at GS = 0). {}
+    """.format(i, mtd, extra)}
+
+
 def define_scf_qcvars(mtd, is_dft=True, extra='', is_dh=False):
     global qcvardefs
 
@@ -1240,3 +1260,5 @@ define_dashd_qcvars('blyp', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
 define_dashd_qcvars('pbe0', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
 define_dashd_qcvars('wpbe', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
 #define_dashd_qcvars('wb97x', dashes=['d'])
+
+define_prop_qcvars('ccsd')

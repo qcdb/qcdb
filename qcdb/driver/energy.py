@@ -381,6 +381,9 @@ def energy(name, **kwargs):
     from . import endorsed_plugins
     kwargs = driver_util.kwargs_lower(kwargs)
 
+    if 'options' in kwargs:
+        driver_helpers.set_options(kwargs.pop('options'))
+
     # Bounce if name is function
     if hasattr(name, '__call__'):
         return name(energy, kwargs.pop('label', 'custom function'), ptype='energy', **kwargs)
@@ -398,6 +401,7 @@ def energy(name, **kwargs):
     if len(pe.nu_options.scroll) == 0:
         print('EMPTY OPT')
         pe.load_nu_options()
+
 
 #    # Bounce to CP if bsse kwarg
 #    if kwargs.get('bsse_type', None) is not None:

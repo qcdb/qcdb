@@ -98,7 +98,8 @@ def psi4_plant(jobrec):  # jobrec@i -> psi4@i
     psi4rec['json']['memory'] = omem.value  #pts.scroll['QCDB']['MEMORY'].value
     psi4rec['json']['molecule'] = {'qm': jobrec['molecule']}
     psi4rec['json']['driver'] = jobrec['driver']
-    psi4rec['json']['method'] = jobrec['method']
+    mtd = jobrec['method']
+    psi4rec['json']['method'] = mtd[3:] if mtd.startswith('p4-') else mtd
     #psi4rec['json']['args'] = 
     psi4rec['json']['kwargs'] = jobrec['kwargs']
     #psi4rec['json']['options'] = 

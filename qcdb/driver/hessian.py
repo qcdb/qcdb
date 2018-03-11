@@ -225,7 +225,7 @@ def hessian(name, **kwargs):
             return jobrec['qcvars']['CURRENT HESSIAN'].data
 
     elif dertype == 1:
-        raise FeatureNotImplemented("""hessian(dertype=1)""")
+        raise FeatureNotImplemented("""hessian({}, dertype=1)""".format(lowername))
 
 #        core.print_out("""hessian() will perform frequency computation by finite difference of analytic gradients.\n""")
 #
@@ -366,7 +366,7 @@ def hessian(name, **kwargs):
 #            return wfn.hessian()
 
     else:
-        raise FeatureNotImplemented("""hessian(dertype=0)""")
+        raise FeatureNotImplemented("""hessian({}, dertype=0)""".format(lowername))
 #        core.print_out("""hessian() will perform frequency computation by finite difference of analytic energies.\n""")
 #
 #        # Set method-dependent scf convergence criteria (test on procedures['energy'] since that's guaranteed)

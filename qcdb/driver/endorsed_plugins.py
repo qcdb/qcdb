@@ -21,6 +21,7 @@ if True:
     procedures['energy']['psi4'] = {}
     for mtd in psi4.driver.proc_table.procedures['energy']:
         procedures['energy']['psi4'][mtd.lower()] = iface_psi4.run_psi4
+        procedures['energy']['psi4']['p4-' + mtd.lower()] = iface_psi4.run_psi4
     
     procedures['properties']['psi4'] = {}
     for mtd in psi4.driver.proc_table.procedures['properties']:

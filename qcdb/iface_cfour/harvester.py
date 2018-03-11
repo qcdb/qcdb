@@ -501,7 +501,6 @@ def harvest_outfile_pass(outtext):
             lline = line.split()
             molxyz += '%s %16s %16s %16s\n' % (lline[0], lline[-3], lline[-2], lline[-1])
         # Rather a dinky Molecule as no ghost, charge, or multiplicity
-        #psivar_coord = Molecule.init_with_xyz(molxyz, no_com=True, no_reorient=True, contentsNotFilename=True)
         psivar_coord = Molecule.from_string(molxyz, dtype='xyz+', fix_com=True, fix_orientation=True)
 
     # Process atom geometry
@@ -513,7 +512,7 @@ def harvest_outfile_pass(outtext):
         print('matched atom')
         # Dinky Molecule
         molxyz = '1 bohr\n\n%s 0.0 0.0 0.0\n' % (mobj.group(1))
-        psivar_coord = Molecule.init_with_xyz(molxyz, no_com=True, no_reorient=True, contentsNotFilename=True)
+        psivar_coord = Molecule.from_string(molxyz, dtype='xyz+', fix_com=True, fix_orientation=True)
 
     # Process error codes
     mobj = re.search(

@@ -88,6 +88,68 @@ def test_tu2():
     assert compare_values(ans2, qcdb.get_variable('scf total energy'), 6, sys._getframe().f_code.co_name)
 
 
+#@using_psi4
+#def test_tu2_sowreap():
+#    """tu2-ch2-energy/input.dat
+#    #! Sample UHF/6-31G** CH2 computation
+#
+#    """
+#    ans2 = -38.9253416082900827
+#
+#
+#    ch2 = qcdb.set_molecule("""
+#  0 3
+#  C
+#  H 1 R
+#  H 1 R 2 A
+#
+#  R = 1.075
+#  A = 133.93
+#""")
+#
+#    qcdb.set_options({'basis': '6-31G**',
+#                      'reference': ' uhf',
+#                      'puream': 'cart',
+#                      #'psi_scf_type': 'pk'})
+#                      'scf_type': 'pk'})
+#
+#    E, jrec = qcdb.energy ('scf', return_wfn=True, probe=True)
+#    print(qcdb.print_variables())
+#
+#    assert compare_values(ans2, qcdb.get_variable('scf total energy'), 6, sys._getframe().f_code.co_name)
+
+@using_psi4
+def test_tu2_yaml():
+
+    yamlin = """
+molecule: |
+  0 3
+  C
+  H 1 R
+  H 1 R 2 A
+
+  R = 1.075
+  A = 133.93
+
+driver: !!python/name:qcdb.energy
+method: scf
+options:
+  memory: 1gb
+  basis: '6-31g**'
+  reference: uhf
+  puream: cart
+  scf_type: pk
+"""
+
+    import yaml
+    asdf = yaml.load(yamlin)
+
+    ene = asdf['driver'](asdf['method'],
+                         options=asdf['options'],
+                         molecule=qcdb.Molecule(asdf['molecule']))
+
+    assert compare_values(-38.9253416082900827, ene, 6, 'calc from yaml str')
+
 
 
 
