@@ -1,5 +1,4 @@
 import os
-import bson
 import json
 import uuid
 import shutil
@@ -37,6 +36,7 @@ def psi4_subprocess(psi4rec):  # psi4rec@i -> psi4rec@io
 #    output_dipol : str, optional
 
     """
+    import bson
 
     try:
         psi4rec['command']

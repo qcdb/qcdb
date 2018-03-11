@@ -47,6 +47,46 @@ def load_cfour_defaults_from_psi4(peoptions):
                                        validator=c4_validator))
 
 
+def load_nwchem_defaults_from_psi4(peoptions):
+
+    opts = query_options_defaults_from_psi()
+    opts = opts['NWCHEM']
+
+    def c4_validator(val):
+        try:
+            nuval = val.upper()
+        except AttributeError:
+            nuval = val
+        return nuval
+
+    for o, v in opts.items():
+        if o.startswith('NWCHEM_'):
+            peoptions.add('nwchem', 
+                          RottenOption(keyword=o[7:],
+                                       default=v['value'],
+                                       validator=c4_validator))
+
+
+def load_gamess_defaults_from_psi4(peoptions):
+
+    opts = query_options_defaults_from_psi()
+    opts = opts['GAMESS']
+
+    def c4_validator(val):
+        try:
+            nuval = val.upper()
+        except AttributeError:
+            nuval = val
+        return nuval
+
+    for o, v in opts.items():
+        if o.startswith('GAMESS_'):
+            peoptions.add('gamess', 
+                          RottenOption(keyword=o[7:],
+                                       default=v['value'],
+                                       validator=c4_validator))
+
+
 def query_options_defaults_from_psi(changedOnly=False):
     """Function to return a string of commands to replicate the
     current state of user-modified options. Used to capture C++
@@ -71,7 +111,7 @@ def query_options_defaults_from_psi(changedOnly=False):
         "MCSCF", "MINTS", "MRCC", "OCC", "OPTKING", "PSIMRCC", "RESPONSE",
         "SAPT", "SCF", "STABILITY", "THERMO", "TRANSQT", "TRANSQT2",
         # External Modules
-        "CFOUR",
+        "CFOUR", "NWCHEM", "GAMESS",
         ]
 
     options = collections.defaultdict(dict)
