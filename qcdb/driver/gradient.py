@@ -43,20 +43,16 @@ import copy
 import pprint
 pp = pprint.PrettyPrinter(width=120)
 
-#   import numpy as np
-
+from .. import moptions
 from . import pe
 from . import driver_util
 from . import driver_helpers
 from . import cbs_driver
-##   from psi4.driver import driver_nbody
-##   from psi4.driver import p4util
+#from psi4.driver import driver_nbody
 from .proc_table import procedures
-##   from psi4.driver.procrouting import *
-##   from psi4.driver.p4util.exceptions import *
-##   # never import wrappers or aliases into this file
 
 
+@moptions.register_opts(pe.nu_options)
 def gradient(name, **kwargs):
 #       r"""Function complementary to :py:func:~driver.optimize(). Carries out one gradient pass,
 #       deciding analytic or finite difference.
@@ -100,6 +96,11 @@ def gradient(name, **kwargs):
    
 ##    lowername = name.lower()
 ##    package = driver_util.get_package(lowername, kwargs)
+
+    if len(pe.nu_options.scroll) == 0:
+        print('EMPTY OPT')
+        pe.load_nu_options()
+
 
     # Figure out lowername, dertype, and func
     # If we have analytical gradients we want to pass to our wrappers, otherwise we want to run
@@ -175,10 +176,6 @@ def gradient(name, **kwargs):
     molecule = kwargs.pop('molecule', driver_helpers.get_active_molecule())
     molecule.update_geometry()
 
-    if len(pe.nu_options.scroll) == 0:
-        print('EMPTY OPT')
-        pe.load_nu_options()
-
 #    # S/R: Mode of operation- whether finite difference opt run in one job or files farmed out
 #    opt_mode = kwargs.get('mode', 'continuous').lower()
 #    if opt_mode == 'continuous':
@@ -200,7 +197,10 @@ def gradient(name, **kwargs):
         # Perform the gradient calculation
         jobrec = procedures['gradient'][package][lowername](lowername, molecule=molecule, options=pe.nu_options, ptype='gradient', **kwargs)
 
-        pp.pprint(jobrec)
+        #print('GRADIENT() JOBREC (j@io) <<<')
+        #pp.pprint(jobrec)
+        #print('>>>')
+
         pe.active_qcvars = copy.deepcopy(jobrec['qcvars'])
 
 #        optstash.restore()

@@ -1,9 +1,11 @@
+import os
 import re
 
 import numpy as np
 
 from ..exceptions import *
 from ..molecule import Molecule
+from ..util import import_ignorecase
 #from .driver import options
 from . import pe
 
@@ -170,6 +172,26 @@ def _parse_arbitrary_order(name):
 
 def set_molecule(molinit, name='default'):
 
+    if molinit.startswith('db:'):
+        db, rxn = molinit[3:].strip().split('-', 1)
+
+        libraryPath = os.sep.join([pe.data_dir, 'databases'])
+        dbPath = os.path.abspath('.') + \
+                 ':' + ':'.join([os.path.abspath(x) for x in os.environ.get('PSIPATH', '').split(':')]) + \
+                 ':' + libraryPath
+
+        dbmod = import_ignorecase(db, lenv=dbPath.split(':'))
+        if dbmod is None:
+            raise ImportError('Python module loading problem for database ({}): {}'.
+                format(db, dbPath))
+
+        molecule = dbmod.GEOS[dbmod.dbse + '-' + rxn]
+        # let KeyError on fail
+
+        molecule.update_geometry()
+        pe.active_molecule = molecule
+        return molecule
+
     molecule = Molecule(molinit)
     pe.active_molecule = molecule
     return molecule
@@ -286,11 +308,11 @@ def print_variables(qcvars=None):
             data = np.array_str(qca.data, max_line_width=120, precision=8, suppress_small=True)
             data = '\n'.join('        ' + ln for ln in data.splitlines())
             text.append("""  {:{keywidth}} => {:{width}} [{}]""".
-                format('"' + k + '"', '', qca.unit, keywidth=largest_key, width=20))
+                format('"' + k + '"', '', qca.units, keywidth=largest_key, width=20))
             text.append(data)
         else:
             text.append("""  {:{keywidth}} => {:{width}.{prec}f} [{}]""".
-                format('"' + k + '"', qca.data, qca.unit, keywidth=largest_key, width=20, prec=12))
+                format('"' + k + '"', qca.data, qca.units, keywidth=largest_key, width=20, prec=12))
 
     text.append('')
     return '\n'.join(text)

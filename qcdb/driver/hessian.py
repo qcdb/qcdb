@@ -47,6 +47,7 @@ pp = pprint.PrettyPrinter(width=120)
 #   
 #   import qcdb
 
+from .. import moptions
 from ..exceptions import *
 from . import pe
 from . import driver_util
@@ -60,29 +61,7 @@ from .proc_table import procedures
 ##   # never import wrappers or aliases into this file
 
 
-
-#   def _energy_is_invariant(gradient, stationary_criterion=1.e-2):
-#       """Polls options and probes `gradient` to return whether current method
-#       and system expected to be invariant to translations and rotations of
-#       the coordinate system.
-#   
-#       """
-#       stationary_point = gradient.rms() < stationary_criterion  # 1.e-2 pulled out of a hat
-#   
-#       mol = core.get_active_molecule()
-#       efp_present = hasattr(mol, 'EFP')
-#   
-#       translations_projection_sound = (not core.get_option('SCF', 'EXTERN') and
-#                                        not core.get_option('SCF', 'PERTURB_H') and
-#                                        not efp_present)
-#       rotations_projection_sound = (translations_projection_sound and 
-#                                     stationary_point)
-#   
-#       return translations_projection_sound, rotations_projection_sound
-   
-   
-
-
+@moptions.register_opts(pe.nu_options)
 def hessian(name, **kwargs):
 #    r"""Function complementary to :py:func:`~frequency`. Computes force
 #    constants, deciding analytic, finite difference of gradients, or
@@ -503,7 +482,8 @@ def hessian(name, **kwargs):
 #            return wfn.hessian()
 
 
-#def frequency(name, **kwargs):
+@moptions.register_opts(pe.nu_options)
+def frequency(name, **kwargs):
 #    r"""Function to compute harmonic vibrational frequencies.
 #
 #    :aliases: frequencies(), freq()
@@ -593,8 +573,10 @@ def hessian(name, **kwargs):
 #    >>> thermo(wfn, wfn.frequencies())
 #
 #    """
-#    kwargs = p4util.kwargs_lower(kwargs)
-#
+    from . import endorsed_plugins
+    kwargs = driver_util.kwargs_lower(kwargs)
+    text = ''
+
 #    # Bounce (someday) if name is function
 #    if hasattr(name, '__call__'):
 #        raise ValidationError("Frequency: Cannot use custom function")
@@ -619,11 +601,11 @@ def hessian(name, **kwargs):
 #    freq_mode = kwargs.get('mode', 'continuous').lower()
 #    if freq_mode not in ['continuous', 'sow', 'reap']:
 #        raise ValidationError("""Frequency execution mode '%s' not valid.""" % (freq_mode))
-#
-#    # Make sure the molecule the user provided is the active one
-#    molecule = kwargs.pop('molecule', core.get_active_molecule())
-#    molecule.update_geometry()
-#
+
+    # Make sure the molecule the user provided is the active one
+    molecule = kwargs.pop('molecule', driver_helpers.get_active_molecule())
+    molecule.update_geometry()
+
 #    # Compute the hessian
 #    H, wfn = hessian(lowername, return_wfn=True, molecule=molecule, **kwargs)
 #
@@ -653,8 +635,8 @@ def hessian(name, **kwargs):
 #        return (core.get_variable('CURRENT ENERGY'), wfn)
 #    else:
 #        return core.get_variable('CURRENT ENERGY')
-#
-#
+
+
 #def vibanal_wfn(wfn, hess=None, irrep=None, molecule=None, project_trans=True, project_rot=True):
 #    # TODO should go back to private
 #

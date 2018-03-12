@@ -14,10 +14,14 @@ def banner(text, type=1, width=35):
 
     null = ''
     if type == 1:
-        banner = '  //' + null.center(max_length, '>') + '//\n'
+        #banner = '  //' + null.center(max_length, '>') + '//\n'
+        #for line in lines:
+        #    banner += '  //' + line.center(max_length) + '//\n'
+        #banner += '  //' + null.center(max_length, '<') + '//\n'
+        banner = '  <<' + null.center(max_length, '>') + '>>\n'
         for line in lines:
-            banner += '  //' + line.center(max_length) + '//\n'
-        banner += '  //' + null.center(max_length, '<') + '//\n'
+            banner += '  <<' + line.center(max_length) + '>>\n'
+        banner += '  <<' + null.center(max_length, '<') + '>>\n'
 
     if type == 2:
         banner = ''

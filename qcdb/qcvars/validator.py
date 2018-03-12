@@ -22,9 +22,10 @@ def certify(dicary):
     """
     calcinfo = []
     for pv, var in dicary.items():
-        print('PV', pv, var)
         if pv in qcvardefs.keys():
-            calcinfo.append(QCAspect(pv, qcvardefs[pv]['units'], var, ''))
+            doi = qcvardefs[pv].get('doi', None)
+            calcinfo.append(QCAspect(pv, qcvardefs[pv]['units'], var, '', doi, qcvardefs[pv]['glossary']))
+
         else:
             defined = sorted(qcvardefs.keys())
             raise ValidationError('Undefined QCvar!: {}\n{}'.format(pv, '\n\t'.join(defined)))
@@ -101,4 +102,17 @@ def expand_qcvars(qcvars, qvdefs, verbose=1):
             core.set_variable(pvar, result)
             if verbose >= 2:
                 print("""SUCCESS""")
+
+
+# probably move to driver_helpers
+def get_variable_details(qcvar, qcvars=None):
+    from ..driver import pe
+
+    if qcvars is None:
+        qcvars = pe.active_qcvars
+
+    capslink = {k.lower(): k for k in qcvardefs.keys()}
+
+    print(qcvars[capslink[qcvar.lower()]])
+    print(qcvardefs[capslink[qcvar.lower()]])
 

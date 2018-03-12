@@ -49,6 +49,16 @@ def _spin_component_scaling_wsing(args):
     os_scale, ss_scale, tot_corl, ss_corl, s_corl = args
     return os_scale * (tot_corl - ss_corl) + ss_scale * ss_corl + s_corl
  
+
+def _dispersion_weighting_wsing(args):
+    omega, hb_mtd, dd_mtd, s_corl = args
+    return omega * hb_mtd + (1.0 - omega) * dd_mtd + s_corl
+
+
+def omega(args):
+    alpha, beta, ratio = args
+    return 0.5 * (1.0 + np.tanh(alpha + beta * ratio))
+
  
 def _linear(args):
     coeff, varss = args
@@ -103,6 +113,32 @@ def wfn_psivars():
         'form': 'SCS-MP2 TOTAL ENERGY',
         'func': sum, 
         'args': ['HF TOTAL ENERGY', 'SCS-MP2 CORRELATION ENERGY']})
+
+    # SCS(N)-MP2
+    pv0.append({
+        'form': 'SCS(N)-MP2 CORRELATION ENERGY',
+        'func': _spin_component_scaling_wsing,
+        'args': [Dm(0), Dm(1.76), 'MP2 CORRELATION ENERGY', 'MP2 SAME-SPIN CORRELATION ENERGY', 'MP2 SINGLES ENERGY']})
+    pv0.append({
+        'form': 'SCS(N)-MP2 TOTAL ENERGY',
+        'func': sum, 
+        'args': ['HF TOTAL ENERGY', 'SCS(N)-MP2 CORRELATION ENERGY']})
+
+    # DW-MP2
+    # only defined at the (IE) reaction level (like SAPT)
+    #    dwmp2['DW-MP2 OMEGA'][mt] = \
+    #        rxnm_contract_expand(df.xs('HF TOTAL ENERGY', level='psivar').xs(mtl[0], level='meta')) / \
+    #        rxnm_contract_expand(df.xs('MP2 TOTAL ENERGY', level='psivar').xs(mtl[1], level='meta'))
+    #    df_omega = omega([0.15276, 1.89952, df_omega])
+
+    #pv0.append({
+    #    'form': 'DW-MP2 CORRELATION ENERGY',
+    #    'func': _dispersion_weighting_wsing,
+    #    'args': ['DW_MP2 OMEGA', 'MP2 CORRELATION ENERGY', 'SCS-MP2 CORRELATION ENERGY', 'MP2 SINGLES ENERGY']})
+    #pv0.append({
+    #    'form': 'DW-MP2 TOTAL ENERGY',
+    #    'func': sum, 
+    #    'args': ['HF TOTAL ENERGY', 'DW-MP2 CORRELATION ENERGY']})
 
     # MPN
     for mpn in range(3, 20):

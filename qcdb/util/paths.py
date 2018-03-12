@@ -1,4 +1,6 @@
 import os
+import sys
+
 
 #def query_yes_no(question, default=True):
 #    """Ask a yes/no question via raw_input() and return their answer.
@@ -108,19 +110,23 @@ def all_casings(input_string):
 #    return array
 
 
-def import_ignorecase(module):
+def import_ignorecase(module, lenv=None):
     """Function to import *module* in any possible lettercase
     permutation. Returns module object if available, None if not.
+    `lenv` is list (not str) of addl sys.path members to try.
 
     """
-    modobj = None
-    for per in list(all_casings(module)):
-        try:
-            modobj = __import__(per)
-        except ImportError:
-            pass
-        else:
-            break
+    lenv = [] if lenv is None else lenv
+
+    with add_path(lenv):
+        modobj = None
+        for per in list(all_casings(module)):
+            try:
+                modobj = __import__(per)
+            except ImportError:
+                pass
+            else:
+                break
 
     return modobj
 
@@ -140,4 +146,21 @@ def findfile_ignorecase(fil, pre='', post=''):
             pass
 
     return afil
+
+
+class add_path():
+    """https://stackoverflow.com/a/39855753"""
+
+    def __init__(self, paths):
+        # paths must be list
+        self.paths = paths
+
+    def __enter__(self):
+        for pth in reversed(self.paths):
+            sys.path.insert(0, pth)
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        for pth in self.paths:
+            sys.path.remove(pth)
+
 

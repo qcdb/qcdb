@@ -11,7 +11,7 @@ def psi4_subprocess(psi4rec):  # psi4rec@i -> psi4rec@io
     Required Input Fields
     ---------------------
     command : list
-        Command and arguments to execute. 
+        Command and arguments to execute.
         Generally [psi4 --json]
     json : json
         psi4 json input
@@ -79,12 +79,11 @@ def psi4_subprocess(psi4rec):  # psi4rec@i -> psi4rec@io
 
 
     # write governing inputs
-    print('CWD', os.getcwd())
     inputjson = jobuuid + '.json'
     with open(inputjson, 'w') as handle:
         json.dump(psi4rec['json'], handle)
-#    with open(inputjson, 'wb') as handle:
-#        handle.write(bson.dumps(psi4rec['json']))
+    #with open(inputjson, 'wb') as handle:
+    #    handle.write(bson.dumps(psi4rec['json']))
     psi4rec['command'].append(inputjson)
 
     # call `psi4` program
@@ -94,7 +93,6 @@ def psi4_subprocess(psi4rec):  # psi4rec@i -> psi4rec@io
         raise OSError('Command (`{}`) failed with PATH ({})'.format(
             ' '.join(psi4rec['command']), lenv['PATH'])) from err
 
-    print('SPCALL', spcall)
     # recover output data
     spcallstdout = ''
     while True:
@@ -108,23 +106,18 @@ def psi4_subprocess(psi4rec):  # psi4rec@i -> psi4rec@io
 
     with open(inputjson, 'rb') as handle:
         psi4rec['json'] = bson.loads(handle.read())
-#    with open(inputjson, 'r') as handle:
-#        psi4rec['json'] = json.load(handle)
+    #with open(inputjson, 'r') as handle:
+    #    psi4rec['json'] = json.load(handle)
 
     # clean up files and remove scratch directory
     # NOTE used to keep scr arond if path in kwargs
-#    if 'scratch_messy' not in psi4rec or psi4rec['scratch_messy'] is False:
-#        os.chdir('..')
-#        try:
-#            shutil.rmtree(tmpdir)
-#        except OSError as err:
-#            raise OSError('Unable to remove Psi4 temporary directory: {}'.
-#                          format(tmpdir)) from err
+    if 'scratch_messy' not in psi4rec or psi4rec['scratch_messy'] is False:
+        os.chdir('..')
+        try:
+            shutil.rmtree(tmpdir)
+        except OSError as err:
+            raise OSError('Unable to remove Psi4 temporary directory: {}'.
+                          format(tmpdir)) from err
 
     os.chdir(current_directory)
-    print('END O RUNNER PSI4REC')
-    import pprint
-    pp = pprint.PrettyPrinter(width=120)   
-    pp.pprint(psi4rec)
 
-    print('END O RUNNER')

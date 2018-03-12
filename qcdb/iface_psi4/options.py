@@ -27,24 +27,25 @@ def load_psi4_defaults(peoptions):
                                        validator=p4_validator))
 
 
+def _basic_validator(val):
+    try:
+        nuval = val.upper()
+    except AttributeError:
+        nuval = val
+    return nuval
+
+
 def load_cfour_defaults_from_psi4(peoptions):
 
     opts = query_options_defaults_from_psi()
     opts = opts['CFOUR']
 
-    def c4_validator(val):
-        try:
-            nuval = val.upper()
-        except AttributeError:
-            nuval = val
-        return nuval
-
     for o, v in opts.items():
         if o.startswith('CFOUR_'):
-            peoptions.add('cfour', 
+            peoptions.add('cfour',
                           RottenOption(keyword=o[6:],
                                        default=v['value'],
-                                       validator=c4_validator))
+                                       validator=_basic_validator))
 
 
 def load_nwchem_defaults_from_psi4(peoptions):
@@ -52,19 +53,12 @@ def load_nwchem_defaults_from_psi4(peoptions):
     opts = query_options_defaults_from_psi()
     opts = opts['NWCHEM']
 
-    def c4_validator(val):
-        try:
-            nuval = val.upper()
-        except AttributeError:
-            nuval = val
-        return nuval
-
     for o, v in opts.items():
         if o.startswith('NWCHEM_'):
-            peoptions.add('nwchem', 
+            peoptions.add('nwchem',
                           RottenOption(keyword=o[7:],
                                        default=v['value'],
-                                       validator=c4_validator))
+                                       validator=_basic_validator))
 
 
 def load_gamess_defaults_from_psi4(peoptions):
@@ -72,19 +66,12 @@ def load_gamess_defaults_from_psi4(peoptions):
     opts = query_options_defaults_from_psi()
     opts = opts['GAMESS']
 
-    def c4_validator(val):
-        try:
-            nuval = val.upper()
-        except AttributeError:
-            nuval = val
-        return nuval
-
     for o, v in opts.items():
         if o.startswith('GAMESS_'):
-            peoptions.add('gamess', 
+            peoptions.add('gamess',
                           RottenOption(keyword=o[7:],
                                        default=v['value'],
-                                       validator=c4_validator))
+                                       validator=_basic_validator))
 
 
 def query_options_defaults_from_psi(changedOnly=False):
@@ -131,5 +118,3 @@ def query_options_defaults_from_psi(changedOnly=False):
                     options[module][opt] = {'value': val, 'has_changed': hoc}
 
     return options
-
-

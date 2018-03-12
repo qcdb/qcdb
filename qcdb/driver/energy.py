@@ -34,51 +34,18 @@ properties, and vibrational frequency calculations.
 """
 from __future__ import print_function
 from __future__ import absolute_import
-#   import os
-#   import re
-#   import sys
-#   import shutil
-
 import copy
 import pprint
 pp = pprint.PrettyPrinter(width=120)
 
-#   import numpy as np
-#   
-#   import qcdb
-
-from . import pe
+from . import pe  # keep this at top of imports
+from .. import moptions
 from . import driver_util
 from . import driver_helpers
 from . import cbs_driver
-#   from psi4.driver import driver_nbody
-#   from psi4.driver import p4util
+#from psi4.driver import driver_nbody
 from . proc_table import procedures
-#   from psi4.driver.procrouting import *
-#   from psi4.driver.p4util.exceptions import *
-#   # never import wrappers or aliases into this file
 
-
-
-#   def _energy_is_invariant(gradient, stationary_criterion=1.e-2):
-#       """Polls options and probes `gradient` to return whether current method
-#       and system expected to be invariant to translations and rotations of
-#       the coordinate system.
-#   
-#       """
-#       stationary_point = gradient.rms() < stationary_criterion  # 1.e-2 pulled out of a hat
-#   
-#       mol = core.get_active_molecule()
-#       efp_present = hasattr(mol, 'EFP')
-#   
-#       translations_projection_sound = (not core.get_option('SCF', 'EXTERN') and
-#                                        not core.get_option('SCF', 'PERTURB_H') and
-#                                        not efp_present)
-#       rotations_projection_sound = (translations_projection_sound and 
-#                                     stationary_point)
-#   
-#       return translations_projection_sound, rotations_projection_sound
-   
    
 #def energy(name, molecule, **kwargs):
 #    r"""Function to compute the single-point electronic energy."""
@@ -375,6 +342,7 @@ from . proc_table import procedures
 #   
 #       """
 
+@moptions.register_opts(pe.nu_options)
 def energy(name, **kwargs):
     r"""Function to compute the single-point electronic energy."""
 
@@ -541,6 +509,7 @@ def energy(name, **kwargs):
 #       >>> properties('cc2', properties=['rotation'])
 #   
 #       """
+@moptions.register_opts(pe.nu_options)
 def properties(*args, **kwargs):
     r"""Function to compute various properties."""
 
