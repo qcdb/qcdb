@@ -53,7 +53,7 @@ def system1():
     })
     
     he_dimer.update_geometry()
-    compare_values(nucenergy_ref, he_dimer.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy") #TEST
+    assert compare_values(nucenergy_ref, he_dimer.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
 
 
 def system2():
@@ -72,7 +72,7 @@ def system2():
     })
     
     he_dimer.update_geometry()
-    compare_values(nucenergy_ref, he_dimer.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy") #TEST
+    assert compare_values(nucenergy_ref, he_dimer.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
 
 
 # SCF TESTS

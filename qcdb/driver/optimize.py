@@ -226,7 +226,9 @@ def optking(name, **kwargs):
     return_wfn = kwargs.pop('return_wfn', False)
 
     import psi4
-
+    psi4.core.clean()
+    psi4.core.clean_options()
+    #psi4.set_output_file("pytest_output.dat", True)
 
 #    return_history = kwargs.pop('return_history', False)
 #    if return_history:
@@ -323,6 +325,7 @@ def optking(name, **kwargs):
 #        elif opt_mode == 'reap' and thisenergy == 0.0:
 #            return (0.0, None)
 
+        psi4.core.set_variable('CURRENT ENERGY', thisenergy)
         psi4.core.set_gradient(psi4.core.Matrix.from_array(G))
 
 #        # S/R: Move opt data file from last pass into namespace for this pass
@@ -355,6 +358,16 @@ def optking(name, **kwargs):
 #        else:
 #            core.set_global_option('CART_HESS_READ', False)
 #            steps_since_last_hessian += 1
+
+        popts = {}
+        for k, v in pe.nu_options.scroll['QCDB'].items():
+            if v.disputed() and k.endswith('G_CONVERGENCE'):
+                popts[k] = v.value
+
+        for k, v in pe.nu_options.scroll['PSI4'].items():
+            if v.disputed() and k.endswith('G_CONVERGENCE'):
+                popts[k] = v.value
+        psi4.driver.p4util.python_helpers.set_options(popts)
 
         # Take step. communicate to/from/within optking through legacy_molecule
         psi4.core.set_legacy_molecule(psi4.core.Molecule.from_dict(moleculeclone.to_dict()))
@@ -465,25 +478,35 @@ def geometric(name, **kwargs):
 
     import yaml
     tricin = {}
-    tricin['molecule'] = molecule.to_dict(np_out=False)
+    tricin['molecule'] = molecule.to_dict(np_out=False, force_units='Angstrom')
     cereal = {}
     cereal['driver'] = gradient
     cereal['method'] = name
-    cereal['options'] = {}
+    cereal['options'] = {}  # outrageous
     qwer = {'template': yaml.dump(cereal),
-            'molecule': molecule.to_dict(np_out=False)}
-    #tricin['template'] = yaml.dump(cereal) + '\n' + yaml.dump(tricin['molecule'])
+            'molecule': molecule.to_dict(np_out=False, force_units='Angstrom')}
     tricin['template'] = yaml.dump(qwer)
     tricin['argparse'] =  ['--qcdb', 'tmp_tricin.yaml'] #prepare_options_for_geometric({'qcdb': True}).split()
-    print(tricin)
     
     import geometric
     otricrec = geometric.json_run(tricin)
-    pp.pprint(otricrec)
+    #pp.pprint(otricrec)
 
     ngeom = otricrec['coords'].reshape((-1, 3))
     molecule.set_geometry(ngeom)
 
+    # going to do an extra grad to get E, G, wfn until better tric comm
+    G, jobrec = gradient(name, return_wfn=True, **kwargs)
+    E = jobrec['qcvars']['CURRENT ENERGY'].data
+
+    #jobrec['qcvars'] = {info.lbl: info for info in calcinfo}
+    pp.pprint(jobrec)
+    pe.active_qcvars = copy.deepcopy(jobrec['qcvars'])
+
+    if return_wfn:
+        return (E, jobrec)
+    else:
+        return E
 
 
 def prepare_options_for_geometric(dicary):

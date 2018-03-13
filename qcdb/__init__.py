@@ -57,7 +57,7 @@ if not os.path.isdir(data_dir):
 
 from .metadata import __version__, version_formatter
 #from .driver import *
-from .driver import energy, properties, hessian, gradient
+from .driver import energy, properties, hessian, gradient, frequency
 from .driver import optking, geometric
 from .driver.cbs_driver import cbs
 from .driver.cbs_helpers import *

@@ -123,7 +123,8 @@ def psi4_plant(jobrec):  # jobrec@i -> psi4@i
     # Handle conversion of qcdb keyword structure into psi4 format
     # * psi wants python anyways, so no action needed
 
-    psi4rec['command'] = ['psi4', '--json']
+    #psi4rec['command'] = ['psi4', '--json']
+    psi4rec['command'] = ['psi4', '--json', '--nthread', '6']  # TODO
 
     return psi4rec
 

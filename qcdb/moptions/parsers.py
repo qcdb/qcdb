@@ -4,6 +4,18 @@ import re
 from ..exceptions import *
 
 
+def enum(inputval):
+    allowed = inputval.split()
+
+    def closedenum(x, allowed=allowed):
+        if x.upper() in allowed:
+            return x.upper()
+        else:
+            raise OptionValidationError(
+                """Not allowed value: {} not in {}""".format(inputval, allowed))
+    return closedenum
+            
+
 def boolean(inputval):
     yes = re.compile(r'^(yes|true|on|1)', re.IGNORECASE)
     no = re.compile(r'^(no|false|off|0)', re.IGNORECASE)

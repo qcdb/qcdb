@@ -9,10 +9,10 @@ def register_opts(ros):
         def wrapper(*args, **kwargs):
             accession = str(uuid.uuid4())
             #accession = sys._getframe().f_code.co_name + '_' + str(uuid.uuid4())
-            print('<<< entering {:10} {}'.format(func.__name__, accession))
+            #print('<<< entering {:10} {}'.format(func.__name__, accession))
             kwargs['accession'] = accession
             ret = func(*args, **kwargs)
-            print('>>> exiting  {:10} {}'.format(func.__name__, accession))
+            #print('>>> exiting  {:10} {}'.format(func.__name__, accession))
             ros.unwind_by_accession(accession)
             #print(ros.print_changed())
             return ret

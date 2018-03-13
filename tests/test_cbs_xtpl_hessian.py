@@ -222,13 +222,94 @@ def test_1d():
     print(jrec['provenance'])
 
 
+@using_psi4
+def test_2a():
+    system1()
+    lbl = "[2a] SCF/cc-pVDZ, Psi4, dertype=1"
+
+    scf_dz, jrec = qcdb.hessian('SCF/cc-pVDZ', return_wfn=True, hess_dertype=1)
+    print('HESS OUT')
+    print(scf_dz)
+    assert compare_arrays(ref_hess_scf_dz, scf_dz, 6, lbl)
+    assert compare_arrays(ref_hess_scf_dz, qcdb.get_variable('CURRENT HESSIAN'), 6, lbl)
+    assert compare_arrays(ref_hess_scf_dz, jrec['qcvars']['CURRENT HESSIAN'].data, 6, lbl)
+    assert compare_arrays(ref_scf_dz, jrec['qcvars']['CURRENT GRADIENT'].data, 6, lbl)
+    assert compare_arrays(ref_scf_dz, qcdb.get_variable('CURRENT GRADIENT'), 6, lbl)
+    assert compare_values(ref_e_scf_dz, jrec['qcvars']['CURRENT ENERGY'].data, 6, lbl)
+    assert compare_values(ref_e_scf_dz, qcdb.get_variable('CURRENT ENERGY'), 6, lbl)
+#    assert compare_arrays(ref_hess_scf_dz, jrec['qcvars']['HF TOTAL HESSIAN'].data, 6, lbl)
+#    assert compare_arrays(ref_scf_dz, jrec['qcvars']['HF TOTAL GRADIENT'].data, 6, lbl)
+    assert compare_values(ref_e_scf_dz, jrec['qcvars']['HF TOTAL ENERGY'].data, 6, lbl)
+    #assert compare_arrays(ref_hess_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL HESSIAN'].data, 6, lbl)
+    #assert compare_arrays(ref_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, lbl)
+    #assert compare_values(ref_e_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL ENERGY'].data, 6, lbl)
+    assert ['QCDB', 'Psi4'] == [d['creator'] for d in jrec['provenance']], "[1a] prov"
+    print(jrec['provenance'])
+
+
+@using_cfour
+def test_2b():
+    system1()
+    lbl = "[2b] SCF/cc-pVDZ, Cfour, dertype=1"
+
+    scf_dz, jrec = qcdb.hessian('c4-SCF/cc-pVDZ', return_wfn=True, hess_dertype=1)
+    assert compare_arrays(ref_hess_scf_dz, scf_dz, 6, lbl)
+    assert compare_arrays(ref_hess_scf_dz, qcdb.get_variable('CURRENT HESSIAN'), 6, lbl)
+    assert compare_arrays(ref_hess_scf_dz, jrec['qcvars']['CURRENT HESSIAN'].data, 6, lbl)
+    assert compare_arrays(ref_scf_dz, jrec['qcvars']['CURRENT GRADIENT'].data, 6,lbl)
+    assert compare_arrays(ref_scf_dz, qcdb.get_variable('CURRENT GRADIENT'), 6, lbl)
+#    assert compare_values(ref_e_scf_dz, jrec['qcvars']['CURRENT ENERGY'].data, 6, lbl)
+#    assert compare_values(ref_e_scf_dz, qcdb.get_variable('CURRENT ENERGY'), 6, lbl)
+#    assert compare_arrays(ref_hess_scf_dz, jrec['qcvars']['HF TOTAL HESSIAN'].data, 6, lbl)
+#    assert compare_arrays(ref_scf_dz, jrec['qcvars']['HF TOTAL GRADIENT'].data, 6, lbl)
+    assert compare_values(ref_e_scf_dz, jrec['qcvars']['HF TOTAL ENERGY'].data, 6, lbl)
+    #assert compare_arrays(ref_hess_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL HESSIAN'].data, 6, lbl)
+    #assert compare_arrays(ref_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, lbl)
+    #assert compare_values(ref_e_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL ENERGY'].data, 6, lbl)
+    assert ['QCDB', 'Cfour'] == [d['creator'] for d in jrec['provenance']], "[1b] prov"
+
+
+@using_psi4
+def test_2c():
+    system2()
+    lbl = "[2c] SCF/cc-pVDZ, Psi4, dertype=1"
+
+    scf_dz, jrec = qcdb.hessian('SCF/cc-pVDZ', return_wfn=True, dertype=1)
+    assert compare_arrays(ref_hess_scf_dz_y, scf_dz, 6, lbl)
+    assert compare_arrays(ref_hess_scf_dz_y, qcdb.get_variable('CURRENT HESSIAN'), 6, lbl)
+    assert compare_arrays(ref_hess_scf_dz_y, jrec['qcvars']['CURRENT HESSIAN'].data, 6, lbl)
+    assert compare_arrays(ref_scf_dz_y, jrec['qcvars']['CURRENT GRADIENT'].data, 6, lbl)
+    assert compare_arrays(ref_scf_dz_y, qcdb.get_variable('CURRENT GRADIENT'), 6, lbl)
+    #assert compare_arrays(ref_hess_scf_dz_y, jrec['qcvars']['HF/CC-PVDZ TOTAL HESSIAN'].data, 6, lbl)
+    #assert compare_arrays(ref_scf_dz_y, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, lbl)
+    assert ['QCDB', 'Psi4'] == [d['creator'] for d in jrec['provenance']], "[1c] prov"
+    print(jrec['provenance'])
+
+
+@using_cfour
+def test_2d():
+    system2()
+    lbl = "[2d] SCF/cc-pVDZ, Cfour, dertype=1"
+
+    scf_dz, jrec = qcdb.hessian('c4-SCF/cc-pVDZ', return_wfn=True, dertype=1)
+    assert compare_arrays(ref_hess_scf_dz_y, scf_dz, 6, lbl)
+    assert compare_arrays(ref_hess_scf_dz_y, qcdb.get_variable('CURRENT HESSIAN'), 6, lbl)
+    assert compare_arrays(ref_hess_scf_dz_y, jrec['qcvars']['CURRENT HESSIAN'].data, 6, lbl)
+    assert compare_arrays(ref_scf_dz_y, jrec['qcvars']['CURRENT GRADIENT'].data, 6, lbl)
+    assert compare_arrays(ref_scf_dz_y, qcdb.get_variable('CURRENT GRADIENT'), 6, lbl)
+    #assert compare_arrays(ref_hess_scf_dz_y, jrec['qcvars']['HF/CC-PVDZ TOTAL HESSIAN'].data, 6, lbl)
+    #assert compare_arrays(ref_scf_dz_y, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, lbl)
+    assert ['QCDB', 'Cfour'] == [d['creator'] for d in jrec['provenance']], "[1d] prov"
+    print(jrec['provenance'])
+
+
 ##def hide_test_2():
 ##    system1()
 ##
 ##    scf_tz = qcdb.hessian('SCF/cc-pVTZ', dertype=0)
 ##    assert compare_arrays(ref_grad_scf_tz, scf_tz, 6, "[2] SCF/cc-pVTZ Gradient, dertype=0")
-##
-##
+
+
 ##def hide_test_3():
 ##    system1()
 ##

@@ -1280,3 +1280,4 @@ define_dashd_qcvars('wpbe', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
 #define_dashd_qcvars('wb97x', dashes=['d'])
 
 define_prop_qcvars('ccsd')
+define_prop_qcvars('cc')  # TODO reconsider

@@ -43,22 +43,20 @@ import copy
 import pprint
 pp = pprint.PrettyPrinter(width=120)
 
-#   import numpy as np
-#   
-#   import qcdb
-
-from .. import moptions
+import numpy as np
+   
 from ..exceptions import *
+from ..molecule import Molecule
+from .. import moptions
+from .. import util
+from .. import vib
 from . import pe
 from . import driver_util
 from . import driver_helpers
 from . import cbs_driver
-##   from psi4.driver import driver_nbody
-##   from psi4.driver import p4util
+from ..datastructures import QCAspect
 from .proc_table import procedures
-##   from psi4.driver.procrouting import *
-##   from psi4.driver.p4util.exceptions import *
-##   # never import wrappers or aliases into this file
+from .gradient import gradient
 
 
 @moptions.register_opts(pe.nu_options)
@@ -132,9 +130,10 @@ def hessian(name, **kwargs):
 #    lowername, level = driver_util._parse_arbitrary_order(lowername)
 #    if level:
 #        kwargs['level'] = level
+    # NOTE TODO kwargs getting overwitten by cbs_gufunc and dertype lost
 
     dertype = driver_util.find_derivative_type('hessian', lowername,
-                                               kwargs.pop('freq_dertype', kwargs.pop('dertype', None)),
+                                               kwargs.pop('hess_dertype', kwargs.pop('dertype', None)),
                                                kwargs.get('package'))
 
     # Make sure the molecule the user provided is the active one
@@ -162,10 +161,10 @@ def hessian(name, **kwargs):
     # Set method-dependent scf convergence criteria (test on procedures['energy'] since that's guaranteed)
 #    optstash_conv = driver_util._set_convergence_criterion('energy', lowername, 8, 10, 8, 10, 8)
 
-#    # Select certain irreps
-#    irrep = kwargs.get('irrep', -1)
-#    if irrep == -1:
-#        pass  # do all irreps
+    # Select certain irreps
+    irrep = kwargs.get('irrep', -1)
+    if irrep == -1:
+        pass  # do all irreps
 #    else:
 #        irrep = driver_util.parse_cotton_irreps(irrep, molecule.schoenflies_symbol())
 #        irrep -= 1  # A1 irrep is externally 1, internally 0
@@ -195,7 +194,8 @@ def hessian(name, **kwargs):
 #        # TODO: check that current energy's being set to the right figure when this code is actually used
 #        core.set_variable('CURRENT ENERGY', wfn.energy())
         # TODO who's setting CURRENT?
-        pp.pprint(jobrec)
+
+        #pp.pprint(jobrec)
         pe.active_qcvars = copy.deepcopy(jobrec['qcvars'])
 
         if return_wfn:
@@ -204,26 +204,29 @@ def hessian(name, **kwargs):
             return jobrec['qcvars']['CURRENT HESSIAN'].data
 
     elif dertype == 1:
-        raise FeatureNotImplemented("""hessian({}, dertype=1)""".format(lowername))
+        #raise FeatureNotImplemented("""hessian({}, dertype=1)""".format(lowername))
 
-#        core.print_out("""hessian() will perform frequency computation by finite difference of analytic gradients.\n""")
-#
-#        # Shifting the geometry so need to copy the active molecule
-#        moleculeclone = molecule.clone()
-#
-#        # Obtain list of displacements
-#        displacements = core.fd_geoms_freq_1(moleculeclone, irrep)
-#        moleculeclone.reinterpret_coordentry(False)
-#        moleculeclone.fix_orientation(True)
-#
-#        # Record undisplaced symmetry for projection of displaced point groups
-#        core.set_parent_symmetry(molecule.schoenflies_symbol())
-#
-#        ndisp = len(displacements)
-#        print(""" %d displacements needed.""" % ndisp)
-#        gradients = []
-#        energies = []
-#
+        print("""hessian() will perform frequency computation by finite difference of analytic gradients.\n""")
+        print('IRREP', irrep)
+        import psi4
+
+        # Shifting the geometry so need to copy the active molecule
+        #moleculeclone = molecule.clone()
+        moleculeclone = psi4.core.Molecule.from_dict(molecule.to_dict())
+
+        # Obtain list of displacements
+        displacements = psi4.core.fd_geoms_freq_1(moleculeclone, irrep)
+        moleculeclone.reinterpret_coordentry(False)
+        moleculeclone.fix_orientation(True)
+
+        # Record undisplaced symmetry for projection of displaced point groups
+        psi4.core.set_parent_symmetry(molecule.schoenflies_symbol())
+
+        ndisp = len(displacements)
+        print(""" %d displacements needed.""" % ndisp)
+        gradients = []
+        energies = []
+
 #        # S/R: Write instructions for sow/reap procedure to output file and reap input file
 #        if freq_mode == 'sow':
 #            instructionsO = """\n#    The frequency sow/reap procedure has been selected through mode='sow'. In addition\n"""
@@ -257,35 +260,37 @@ def hessian(name, **kwargs):
 #                fmaster.write(("""retE, retwfn = %s('%s', **kwargs)\n\n""" % (frequency.__name__, lowername)).encode('utf-8'))
 #                fmaster.write(instructionsM.encode('utf-8'))
 #            core.print_out(instructionsM)
-#
-#        for n, displacement in enumerate(displacements):
-#            rfile = 'FREQ-%s' % (n + 1)
-#
-#            # Build string of title banner
+
+        for n, displacement in enumerate(displacements):
+            rfile = 'FREQ-%s' % (n + 1)
+
+            # Build string of title banner
+            banners = util.banner(' Hessian Computation: Gradient Displacement %d '.format(n + 1))
 #            banners = ''
 #            banners += """core.print_out('\\n')\n"""
 #            banners += """p4util.banner(' Hessian Computation: Gradient Displacement %d ')\n""" % (n + 1)
 #            banners += """core.print_out('\\n')\n\n"""
-#
+
 #            if freq_mode == 'continuous':
-#
+            if True:
 #                # print progress to file and screen
 #                core.print_out('\n')
 #                p4util.banner('Loading displacement %d of %d' % (n + 1, ndisp))
 #                print(""" %d""" % (n + 1), end=('\n' if (n + 1 == ndisp) else ''))
 #                sys.stdout.flush()
-#
-#                # Load in displacement into the active molecule (xyz coordinates only)
-#                moleculeclone.set_geometry(displacement)
-#
-#                # Perform the gradient calculation
-#                G, wfn = gradient(lowername, molecule=moleculeclone, return_wfn=True, **kwargs)
-#                gradients.append(wfn.gradient())
-#                energies.append(core.get_variable('CURRENT ENERGY'))
-#
-#                # clean may be necessary when changing irreps of displacements
-#                core.clean()
-#
+
+                # Load in displacement into the active molecule (xyz coordinates only)
+                moleculeclone.set_geometry(displacement)
+
+                # Perform the gradient calculation
+                G, subjobrec = gradient(lowername, molecule=moleculeclone, return_wfn=True, **kwargs)
+
+                gradients.append(psi4.core.Matrix.from_array(subjobrec['qcvars']['CURRENT GRADIENT'].data))
+                energies.append(float(subjobrec['qcvars']['CURRENT ENERGY'].data))
+
+                # clean may be necessary when changing irreps of displacements
+                psi4.core.clean()
+
 #            # S/R: Write each displaced geometry to an input file
 #            elif freq_mode == 'sow':
 #                moleculeclone.set_geometry(displacement)
@@ -324,13 +329,17 @@ def hessian(name, **kwargs):
 #                return None
 #        elif freq_mode == 'reap':
 #            wfn = core.Wavefunction.build(molecule, core.get_global_option('BASIS'))
-#
-#        # Assemble Hessian from gradients
-#        #   Final disp is undisp, so wfn has mol, G, H general to freq calc
-#        H = core.fd_freq_1(molecule, gradients, irrep)  # TODO or moleculeclone?
+
+        # Assemble Hessian from gradients
+        #   Final disp is undisp, so wfn has mol, G, H general to freq calc
+        #H = psi4.core.fd_freq_1(molecule, gradients, irrep)  # TODO or moleculeclone?
+        for gr in gradients:
+            print(np.array(gr))
+        H = psi4.core.fd_freq_1(moleculeclone, gradients, irrep)  # TODO or moleculeclone?
 #        wfn.set_hessian(H)
 #        wfn.set_gradient(G0)
 #        wfn.set_frequencies(core.get_frequencies())
+        subjobrec['qcvars']['CURRENT HESSIAN'] = QCAspect('CURRENT HESSIAN', 'Eh/a0/a0', H.to_array(), '')
 #
 #        # The last item in the list is the reference energy, return it
 #        core.set_variable('CURRENT ENERGY', energies[-1])
@@ -343,6 +352,14 @@ def hessian(name, **kwargs):
 #            return (wfn.hessian(), wfn)
 #        else:
 #            return wfn.hessian()
+
+        #pp.pprint(subjobrec)
+        pe.active_qcvars = copy.deepcopy(subjobrec['qcvars'])
+
+        if return_wfn:
+            return (subjobrec['qcvars']['CURRENT HESSIAN'].data, subjobrec)
+        else:
+            return subjobrec['qcvars']['CURRENT HESSIAN'].data
 
     else:
         raise FeatureNotImplemented("""hessian({}, dertype=0)""".format(lowername))
@@ -580,9 +597,9 @@ def frequency(name, **kwargs):
 #    # Bounce (someday) if name is function
 #    if hasattr(name, '__call__'):
 #        raise ValidationError("Frequency: Cannot use custom function")
-#
-#    lowername = name.lower()
-#
+
+    lowername = name.lower()
+
 #    old_global_basis = None
 #    if "/" in lowername:
 #        if ("+" in lowername) or ("[" in lowername) or (lowername.count('/') > 1):
@@ -594,9 +611,9 @@ def frequency(name, **kwargs):
 #
 #    if kwargs.get('bsse_type', None) is not None:
 #        raise ValdiationError("Frequency: Does not currently support 'bsse_type' arguements")
-#
-#    return_wfn = kwargs.pop('return_wfn', False)
-#
+
+    return_wfn = kwargs.pop('return_wfn', False)
+
 #    # are we in sow/reap mode?
 #    freq_mode = kwargs.get('mode', 'continuous').lower()
 #    if freq_mode not in ['continuous', 'sow', 'reap']:
@@ -606,49 +623,77 @@ def frequency(name, **kwargs):
     molecule = kwargs.pop('molecule', driver_helpers.get_active_molecule())
     molecule.update_geometry()
 
-#    # Compute the hessian
-#    H, wfn = hessian(lowername, return_wfn=True, molecule=molecule, **kwargs)
-#
+    # Compute the hessian
+    H, jobrec= hessian(lowername, return_wfn=True, molecule=molecule, **kwargs)
+
 #    # S/R: Quit after getting new displacements
 #    if freq_mode == 'sow':
 #        return 0.0
 #
 #    # Project final frequencies?
 #    translations_projection_sound, rotations_projection_sound = _energy_is_invariant(wfn.gradient())
-#    project_trans = kwargs.get('project_trans', translations_projection_sound)
-#    project_rot = kwargs.get('project_rot', rotations_projection_sound)
-#
-#    irrep = kwargs.get('irrep', None)
-#    vibinfo = vibanal_wfn(wfn, irrep=irrep, project_trans=project_trans, project_rot=project_rot)
-#    vibonly = qcdb.vib.filter_nonvib(vibinfo)
+    # TODO hack!!!
+    translations_projection_sound, rotations_projection_sound = True, True
+    project_trans = kwargs.get('project_trans', translations_projection_sound)
+    project_rot = kwargs.get('project_rot', rotations_projection_sound)
+
+    irrep = kwargs.get('irrep', None)
+    vibinfo = vibanal_jobrec(jobrec, irrep=irrep, project_trans=project_trans, project_rot=project_rot)
+    vibonly = vib.filter_nonvib(vibinfo)
 #    wfn.set_frequencies(core.Vector.from_array(qcdb.vib.filter_omega_to_real(vibonly['omega'].data)))
 #    wfn.frequency_analysis = vibinfo
-#
+    jobrec['frequency_analysis'] = vibinfo
+
 #    for postcallback in hooks['frequency']['post']:
 #        postcallback(lowername, wfn=wfn, **kwargs)
 #
 #    # Reset old global basis if needed
 #    if not old_global_basis is None:
 #        core.set_global_option("BASIS", old_global_basis)
-#
-#    if return_wfn:
-#        return (core.get_variable('CURRENT ENERGY'), wfn)
-#    else:
-#        return core.get_variable('CURRENT ENERGY')
+
+    if return_wfn:
+        return (jobrec['qcvars']['CURRENT ENERGY'].data, jobrec)
+    else:
+        return jobrec['qcvars']['CURRENT ENERGY'].data
 
 
-#def vibanal_wfn(wfn, hess=None, irrep=None, molecule=None, project_trans=True, project_rot=True):
-#    # TODO should go back to private
-#
-#    if hess is None:
+def vibanal_str(mass, coord, fcm, hess=None, project_trans=True, project_rot=True):
+
+    if hess is None:
+        nmwhess = load_hessian(fcm, dtype='fcmfinal')
+    else:
+        nmwhess = hess
+
+    mol = psi4.geometry(coord)
+    m = np.asarray(mass)  # not good permanent
+    geom = np.asarray(mol.geometry())
+    symbols = [mol.symbol(at) for at in range(mol.natom())]
+    irrep_labels = mol.irrep_labels()
+
+    wfn = psi4.core.Wavefunction.build(mol, "STO-3G")  # dummy, obviously. only used for SALCs
+    basisset = wfn.basisset()
+
+    vibinfo, vibtext = qcdb.vib.harmonic_analysis(nmwhess, geom, m, basisset, irrep_labels,
+                                                  project_trans=project_trans, project_rot=project_rot)
+    print(vibtext)
+    print(qcdb.vib.print_vibs(vibinfo, shortlong=True, normco='q', atom_lbl=symbols)) #, groupby=-1))
+
+    return vibinfo
+
+
+def vibanal_jobrec(jobrec, hess=None, irrep=None, molecule=None, project_trans=True, project_rot=True):
+
+    if hess is None:
+        nmwhess = jobrec['qcvars']['CURRENT HESSIAN'].data
 #        nmwhess = np.asarray(wfn.hessian())
 #    else:
 #        nmwhess = hess
-#
-#    mol = wfn.molecule()
-#    geom = np.asarray(mol.geometry())
-#    symbols = [mol.symbol(at) for at in range(mol.natom())]
-#
+
+    molrec = jobrec['molecule']
+    molecule = Molecule(jobrec['molecule'])
+    geom = np.array(molrec['geom']).reshape((-1, 3))
+    symbols = molrec['elem']
+
 #    if molecule is not None:
 #        molecule.update_geometry()
 #        if mol.natom() != molecule.natom():
@@ -660,32 +705,37 @@ def frequency(name, **kwargs):
 #        #    raise ValidationError('Impostor molecule trying to be analyzed! geometry\n{}\n   !=\n{}'.format(
 #        #        np.asarray(mol.geometry()), np.asarray(molecule.geometry())))
 #        mol = molecule
-#            
-#    m = np.asarray([mol.mass(at) for at in range(mol.natom())])
-#    irrep_labels = mol.irrep_labels()
-#
-#    vibinfo, vibtext = qcdb.vib.harmonic_analysis(nmwhess, geom, m, wfn.basisset(), irrep_labels,
-#                                                  project_trans=project_trans, project_rot=project_rot)
-#
-#    core.print_out(vibtext)
-#    core.print_out(qcdb.vib.print_vibs(vibinfo, shortlong=True, normco='x', atom_lbl=symbols))
-#
+            
+    m = np.asarray(molrec['mass'])
+    irrep_labels = molecule.irrep_labels()
+
+    import psi4
+    wfn = psi4.core.Wavefunction.build(psi4.core.Molecule.from_dict(molrec), "STO-3G")  # dummy, obviously. only used for SALCs
+    basisset = wfn.basisset()
+
+    vibinfo, vibtext = vib.harmonic_analysis(nmwhess, geom, m, basisset, irrep_labels,
+                                             project_trans=project_trans, project_rot=project_rot)
+
+    print(vibtext)
+    print(vib.print_vibs(vibinfo, shortlong=True, normco='x', atom_lbl=symbols))
+
 #    if core.has_option_changed('THERMO', 'ROTATIONAL_SYMMETRY_NUMBER'):
 #        rsn = core.get_option('THERMO', 'ROTATIONAL_SYMMETRY_NUMBER')
 #    else:
 #        rsn = mol.rotational_symmetry_number()
-#
-#    if irrep is None:
-#        therminfo, thermtext = qcdb.vib.thermo(vibinfo,
-#                                      T=core.get_option("THERMO", "T"),  # 298.15
-#                                      P=core.get_option("THERMO", "P"),  # 101325.
-#                                      multiplicity=mol.multiplicity(),
-#                                      molecular_mass=np.sum(m),
-#                                      sigma=rsn,
-#                                      rotor_type=mol.rotor_type(),
-#                                      rot_const=np.asarray(mol.rotational_constants()),
-#                                      E0=core.get_variable('CURRENT ENERGY'))  # someday, wfn.energy()
-#
+    rsn = molecule.rotational_symmetry_number()
+
+    if irrep is None:
+        therminfo, thermtext = vib.thermo(vibinfo,
+                                          T=298.15, #core.get_option("THERMO", "T"),  # 298.15
+                                          P=101325, #core.get_option("THERMO", "P"),  # 101325.
+                                          multiplicity=molrec['molecular_multiplicity'],
+                                          molecular_mass=np.sum(m),
+                                          sigma=rsn,
+                                          rotor_type=molecule.rotor_type(),
+                                          rot_const=np.asarray(molecule.rotational_constants()),
+                                          E0=float(jobrec['qcvars']['CURRENT ENERGY'].data))
+
 #        core.set_variable("ZPVE", therminfo['ZPE_corr'].data)
 #        core.set_variable("THERMAL ENERGY CORRECTION", therminfo['E_corr'].data)
 #        core.set_variable("ENTHALPY CORRECTION", therminfo['H_corr'].data)
@@ -695,12 +745,12 @@ def frequency(name, **kwargs):
 #        core.set_variable("THERMAL ENERGY", therminfo['E_tot'].data)
 #        core.set_variable("ENTHALPY", therminfo['H_tot'].data)
 #        core.set_variable("GIBBS FREE ENERGY", therminfo['G_tot'].data)
-#
-#        core.print_out(thermtext)
-#    else:
-#        core.print_out('  Thermochemical analysis skipped for partial frequency calculation.\n')
-#
-#    return vibinfo
+
+        print(thermtext)
+    else:
+        print('  Thermochemical analysis skipped for partial frequency calculation.\n')
+
+    return vibinfo
 
 
 ## Aliases

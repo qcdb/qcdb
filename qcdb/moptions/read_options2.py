@@ -138,17 +138,35 @@ def load_qcdb_defaults(options):
             validator=parsers.positive_integer,
             glossary="""Maximum number of geometry optimization steps."""))
 
-#    options.add('qcdb', RottenOption(
-#            keyword='',
-#            default=,
-#            validator=,
-#            glossary="""."""))
 
-#    options.add('qcdb', RottenOption(
-#            keyword='',
-#            default=,
-#            validator=,
-#            glossary="""."""))
+    options.add('qcdb', RottenOption(
+            keyword='g_convergence',
+            default='qchem',
+            validator=parsers.enum("QCHEM MOLPRO GAU GAU_LOOSE GAU_TIGHT INTERFRAG_TIGHT GAU_VERYTIGHT TURBOMOLE CFOUR NWCHEM_LOOSE"),
+            glossary="""Set of optimization criteria. Specification of any MAX_*_G_CONVERGENCE
+      or RMS_*_G_CONVERGENCE options will append to overwrite the criteria set here
+      unless |optking__flexible_g_convergence| is also on.      See Table :ref:`Geometry Convergence <table:optkingconv>` for details."""))
+
+    options.add('qcdb', RottenOption(
+            keyword='max_force_g_convergence',
+            default=3.e-4,
+            validator=parsers.parse_convergence,
+            glossary="""Convergence criterion for geometry optmization: maximum force
+      (internal coordinates, atomic units)."""))
+
+      #/*- Convergence criterion for geometry optmization: rms force
+      #(internal coordinates, atomic units). -*/
+      #options.add_double("RMS_FORCE_G_CONVERGENCE", 3.0e-4);
+      #/*- Convergence criterion for geometry optmization: maximum energy change. -*/
+      #options.add_double("MAX_ENERGY_G_CONVERGENCE", 1.0e-6);
+      #/*- Convergence criterion for geometry optmization: maximum displacement
+      #(internal coordinates, atomic units). -*/
+      #options.add_double("MAX_DISP_G_CONVERGENCE", 1.2e-3);
+      #/*- Convergence criterion for geometry optmization: rms displacement
+      #(internal coordinates, atomic units). -*/
+      #options.add_double("RMS_DISP_G_CONVERGENCE", 1.2e-3);
+      #/*- Even if a user-defined threshold is set, allow for normal, flexible convergence criteria -*/
+      #options.add_bool("FLEXIBLE_G_CONVERGENCE", false);
 
 #    options.add('qcdb', RottenOption(
 #            keyword='',
@@ -356,8 +374,9 @@ class RottenOption(object):
 
         if verbose >= 1:
             added = self.history[-1]
-            print('Setting {} to {} priority {} accession {}'.
-                format(self.keyword, added[0], added[2] + 100 * int(added[1]), added[3]))
+            # TODO add back somehow
+            #print('Setting {} to {} priority {} accession {}'.
+            #    format(self.keyword, added[0], added[2] + 100 * int(added[1]), added[3]))
 
     def _check(self, val):
         """Common function to check `val` against `self.validator` for setting, defaulting, etc."""

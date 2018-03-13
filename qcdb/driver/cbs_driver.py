@@ -63,7 +63,7 @@ def _cbs_gufunc(func, total_method_name, molecule, **kwargs):
     """Text-based wrapper of the CBS function."""
 
     # Catch kwarg issues
-    print('\nINTO _cbs_gufunc', 'KW', kwargs)
+    #print('\nINTO _cbs_gufunc', 'KW', kwargs)
     kwargs = driver_util.kwargs_lower(kwargs)
     return_wfn = kwargs.pop('return_wfn', False)
 #    core.clean_variables()
@@ -102,7 +102,7 @@ def _cbs_gufunc(func, total_method_name, molecule, **kwargs):
         pe.nu_options.require('QCDB', 'BASIS', basis, accession=1234)
 
         #print('\n gufunc_calling', func, method_name, return_wfn, 'OPT', pe.active_options, 'KW', kwargs)
-        print('\n gufunc_calling', func, method_name, return_wfn, 'OPT', 'KW', kwargs)
+        #print('\n gufunc_calling', func, method_name, return_wfn, 'OPT', 'KW', kwargs)
         ptype_value, wfn = func(method_name, return_wfn=True, molecule=molecule, **kwargs)
 #        core.clean()
 
@@ -894,7 +894,7 @@ def cbs(func, label, **kwargs):
                 [pe.nu_options.scroll['QCDB']['WRITER_FILE_LABEL'].value,
                  mc['f_wfn'].lower(), 
                  mc['f_basis'].lower()]
-            )), **kwgs)
+            ))[:60], **kwgs)
 
 #        commands = '\n'
 #        commands += """\ncore.set_global_option('BASIS', '%s')\n""" % (mc['f_basis'])
@@ -1084,6 +1084,8 @@ def cbs(func, label, **kwargs):
 
     # new skeleton wavefunction w/mol, highest-SCF basis (just to choose one), & not energy
     jobrec = {}
+    # TODO hack
+    jobrec['molecule'] = jrec['molecule']
 #    basis = core.BasisSet.build(molecule, "ORBITAL", 'sto-3g')
 #    wfn = core.Wavefunction(molecule, basis)
 
