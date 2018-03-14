@@ -86,6 +86,11 @@ def psi4_subprocess(psi4rec):  # psi4rec@i -> psi4rec@io
     #    handle.write(bson.dumps(psi4rec['json']))
     psi4rec['command'].append(inputjson)
 
+    for fl in psi4rec['json'].keys():
+        if fl.startswith('infile_'):
+            with open(fl[7:], 'w') as handle:
+                handle.write(psi4rec['json'][fl])
+
     # call `psi4` program
     try:
         spcall = subprocess.Popen(psi4rec['command'], bufsize=0, stdout=subprocess.PIPE, env=lenv)
@@ -108,6 +113,15 @@ def psi4_subprocess(psi4rec):  # psi4rec@i -> psi4rec@io
         psi4rec['json'] = bson.loads(handle.read())
     #with open(inputjson, 'r') as handle:
     #    psi4rec['json'] = json.load(handle)
+
+    for fl in ['grid_esp.dat']:
+        fullpath = tmpdir + os.sep + fl
+        try:
+            with open(fullpath, 'r') as handle:
+                psi4rec['json']['outfile_' + fl.lower()] = handle.read()
+                print(handle.read())
+        except IOError:
+            pass
 
     # clean up files and remove scratch directory
     # NOTE used to keep scr arond if path in kwargs

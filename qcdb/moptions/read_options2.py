@@ -229,7 +229,7 @@ class RottenOptions(object):
 
     def add(self, package, opt):
         up = package.upper()
-        if up in ['QCDB', 'PSI4', 'CFOUR', 'DFTD3', 'NWCHEM', 'GAMESS']:
+        if up in ['QCDB', 'PSI4', 'CFOUR', 'DFTD3', 'NWCHEM', 'GAMESS', 'RESP']:
             self.scroll[up][opt.keyword] = opt
         else:
             raise ValidationError('Domain not supported: {}'.format(package))

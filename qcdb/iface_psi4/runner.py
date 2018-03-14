@@ -41,6 +41,7 @@ def run_psi4(name, molecule, options, **kwargs):
     jobrec['driver'] = kwargs['ptype']
     jobrec['kwargs'] = kwargs
     jobrec['options'] = copy.deepcopy(options)
+    jobrec['hooks'] = kwargs.get('hooks', {})
 
     jobrec = psi4_driver(jobrec)
     return jobrec
@@ -106,6 +107,11 @@ def psi4_plant(jobrec):  # jobrec@i -> psi4@i
     #psi4rec['json']['scratch_location'] = 
     psi4rec['json']['return_output'] = True
 
+    #for hookkey, hookfunc in jobrec['hooks']['pre'].items():
+    #    psi4rec['json']['in_' + hookkey] = hookfunc()
+    if opts.scroll['PSI4']['GRIDDAT'].value != '':
+        psi4rec['json']['infile_' + 'grid.dat'] = opts.scroll['PSI4']['GRIDDAT'].value
+    
     popts = {}
     for k, v in opts.scroll['QCDB'].items():
         if v.disputed():
@@ -134,7 +140,7 @@ def psi4_plant(jobrec):  # jobrec@i -> psi4@i
 def psi4_harvest(jobrec, psi4rec):  # jobrec@i, psi4rec@io -> jobrec@io
     """Processes raw results from read-only `psi4rec` into QCAspect fields in returned `jobrec`."""
 
-    psi4rec = psi4rec['json']  # TODO figure out 1-tier/2-tier
+    psi4rec = psi4rec['json']  # TODO NOT how this should be done figure out 1-tier/2-tier
 
     try:
         pass
@@ -155,6 +161,17 @@ def psi4_harvest(jobrec, psi4rec):  # jobrec@i, psi4rec@io -> jobrec@io
     if psi4rec['error']:
         raise RuntimeError(psi4rec['error'])
 
+    #c4files = {}
+    for fl in psi4rec.keys():
+        if fl.startswith('outfile_'):
+            jobrec[fl] = psi4rec[fl]
+    #for fl in ['GRD', 'FCMFINAL', 'DIPOL']:
+    #    field = 'output_' + fl.lower()
+    #    if field in cfourrec:
+    #        text += '  Cfour scratch file {} has been read\n'.format(fl)
+    #        text += cfourrec[field]
+    #        c4files[fl] = cfourrec[field]
+
     # Absorb results into qcdb data structures
     progvars = PreservingDict(psi4rec['psivars'])
     import psi4
@@ -163,7 +180,7 @@ def psi4_harvest(jobrec, psi4rec):  # jobrec@i, psi4rec@io -> jobrec@io
     qcvars.build_out(progvars)
     calcinfo = qcvars.certify(progvars)
 
-    #jobrec['raw_output'] = text
+    jobrec['raw_output'] = psi4rec['raw_output']
     jobrec['qcvars'] = calcinfo
 
     #prov = {}

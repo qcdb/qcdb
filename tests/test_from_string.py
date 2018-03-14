@@ -510,6 +510,10 @@ def test_psi4_qmefp_6d():
     assert compare_molrecs(fullans['qm'], final['qm'], 4, sys._getframe().f_code.co_name + ': full qm')
     assert compare_molrecs(fullans['efp'], efpfinal, 4, sys._getframe().f_code.co_name + ': full efp')
 
+    import json
+    from qcdb.util import unnp
+    print(json.dumps(unnp(final['qm']), sort_keys=True, indent=4))
+    print(json.dumps(unnp(efpfinal), sort_keys=True, indent=4))
 
 subject7 = """\
 5

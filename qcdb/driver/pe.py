@@ -19,6 +19,12 @@ def load_nu_options():
     load_nwchem_defaults_from_psi4(nu_options)
     load_gamess_defaults_from_psi4(nu_options)
     load_psi4_defaults(nu_options)
+    try:
+        import resp_qcdp
+    except ImportError:
+        print('import resp_qcdb FAIL')
+    else:
+        resp_qcdp.load_defaults(nu_options)
     #print('OPTIONS LOADED')
     #print(nu_options)
 
