@@ -1376,6 +1376,33 @@ class BasisSet(object):
             with open(out, mode='w') as handle:
                 handle.write(text)
 
+    def print_detail_nwchem(self, out=None, numbersonly=False):
+        """Prints a detailed NWChem-style summary of the basis (per-atom)
+        *  @param out The file stream to use for printing. Defaults to outfile.
+
+        """
+        text = ''
+
+        for uA in range(self.molecule.nunique()):
+            A = self.molecule.unique(uA)
+            text += """#Psi4 basis %s for element %s atom %d\n""" % \
+                (self.name.upper(), self.molecule.symbol(A), A + 1)
+
+            first_shell = self.center_to_shell[A]
+            n_shell = self.center_to_nshell[A]
+
+            for Q in range(n_shell):
+                if not numbersonly:
+                    text += """%2s """ % (self.molecule.symbol(A))
+                text += self.shells[Q + first_shell].pyprint_nwchem(outfile=None)
+        text += """\n"""
+
+        if out is None:
+            return text
+        else:
+            with open(out, mode='w') as handle:
+                handle.write(text)
+
     # <<< Misc. Methods >>>
 
     def refresh(self):

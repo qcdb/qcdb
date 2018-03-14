@@ -121,8 +121,10 @@ def _cbs_gufunc(func, total_method_name, molecule, **kwargs):
     cbs_kwargs['verbose'] = cbs_verbose
 
     # Find method and basis
+    pkgmtd = method_list[0].split('-', 1)
     if (method_list[0] in ['scf', 'hf'] or
-        method_list[0][3:] in ['scf', 'hf'] and method_list[0][:3] in pkgprefix):
+        (len(pkgmtd) > 1 and (pkgmtd[1] in ['scf', 'hf'] and (pkgmtd[0] + '-' in pkgprefix)))):
+        #method_list[0][3:] in ['scf', 'hf'] and method_list[0][:3] in pkgprefix):
     #if method_list[0] in ['scf', 'hf', 'c4-scf', 'c4-hf', 'p4-scf', 'p4-hf']:
         cbs_kwargs['scf_wfn'] = method_list[0]
         cbs_kwargs['scf_basis'] = basis_list[0]
@@ -512,10 +514,10 @@ def cbs(func, label, **kwargs):
         default_scf = 'c4-hf' 
     elif do_corl and cbs_corl_wfn.startswith('p4-'):
         default_scf = 'p4-hf' 
-    elif do_corl and cbs_corl_wfn.startswith('nw-'):
-        default_scf = 'nw-hf' 
-    elif do_corl and cbs_corl_wfn.startswith('gm-'):
-        default_scf = 'gm-hf' 
+    elif do_corl and cbs_corl_wfn.startswith('nwc-'):
+        default_scf = 'nwc-hf' 
+    elif do_corl and cbs_corl_wfn.startswith('gms-'):
+        default_scf = 'gms-hf' 
     else:
         default_scf = 'hf'
     cbs_scf_wfn = kwargs.pop('scf_wfn', default_scf).lower()
@@ -964,14 +966,20 @@ def cbs(func, label, **kwargs):
             MODELCHEM.append(lvl[1])
 
             for job in JOBS_EXT:
+                pkgmtdlvl = lvl[1]['f_wfn'].split('-', 1)
+                pkgmtdjob = job['f_wfn'].split('-', 1)
 
-                if lvl[1]['f_wfn'][:3] in pkgprefix:
-                    rawlvl = lvl[1]['f_wfn'][3:]
+                #if lvl[1]['f_wfn'][:3] in pkgprefix:
+                #    rawlvl = lvl[1]['f_wfn'][3:]
+                if (pkgmtdlvl[0] + '-') in pkgprefix:
+                    rawlvl = pkgmtdlvl[1]
                 else:
                     rawlvl = lvl[1]['f_wfn']
 
-                if job['f_wfn'][:3] in pkgprefix:
-                    rawjob = job['f_wfn'][3:]
+                #if job['f_wfn'][:3] in pkgprefix:
+                #    rawjob = job['f_wfn'][3:]
+                if (pkgmtdjob[0] + '-') in pkgprefix:
+                    rawjob = pkgmtdjob[1]
                 else:
                     rawjob = job['f_wfn']
 

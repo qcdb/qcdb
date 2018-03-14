@@ -2,6 +2,7 @@ from .proc_table import procedures
 from .. import iface_psi4
 from .. import iface_cfour
 from .. import iface_dftd3
+from .. import iface_nwchem
 
 #from .util import pl
 #
@@ -56,5 +57,16 @@ if True:
     procedures['energy']['dftd3'] = {}
     for mtd in iface_dftd3.dftd3_list():
         procedures['energy']['dftd3'][mtd.lower()] = iface_dftd3.alt_run_dftd3
+
+if True:
+    
+    # integrate NWChem with driver routines
+    procedures['energy']['nwchem'] = {}
+    for mtd in iface_nwchem.nwchem_list():
+        procedures['energy']['nwchem'][mtd.lower()] = iface_nwchem.run_nwchem
+
+    procedures['gradient']['nwchem'] = {}
+    for mtd in iface_nwchem.nwchem_gradient_list():
+       procedures['gradient']['nwchem'][mtd.lower()] = iface_nwchem.run_nwchem
 
 

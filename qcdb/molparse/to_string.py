@@ -92,20 +92,25 @@ def to_string(molrec, dtype, units='Angstrom', atom_format=None, ghost_format=No
         smol = [tagline]
         smol.extend(atoms)
 
-#        options = collections.defaultdict(lambda: collections.defaultdict(dict))
-#        options['CFOUR']['CFOUR_CHARGE']['value'] = int(molrec['molecular_charge'])
-#        options['CFOUR']['CFOUR_MULTIPLICITY']['value'] = molrec['molecular_multiplicity']
-#        options['CFOUR']['CFOUR_UNITS']['value'] = units.upper()
-#        options['CFOUR']['CFOUR_COORDINATES']['value'] = 'CARTESIAN'
-#
-#        options['CFOUR']['CFOUR_CHARGE']['clobber'] = True
-#        options['CFOUR']['CFOUR_MULTIPLICITY']['clobber'] = True
-#        options['CFOUR']['CFOUR_UNITS']['clobber'] = True
-#        options['CFOUR']['CFOUR_COORDINATES']['clobber'] = True
-#
-#    if return_options:
-#        return '\n'.join(smol), options
-#    else:
+    elif dtype == 'nwchem':
+
+        atom_format = '{elem}'
+        ghost_format = 'GH'
+
+        atoms = _atoms_formatter(molrec, geom, atom_format, ghost_format, width, prec, 2)
+
+        first_line = """geometry units {}""".format(units.lower())
+        # noautosym nocenter  # no reorienting input geometry
+        fix_symm = molrec.get('fix_symmetry', None)
+        symm_line = ''
+        if fix_symm:
+            symm_line = 'symmetry {}'.format(fix_symm)  # not quite what Jiyoung had
+        last_line = """end"""
+        smol = [first_line]
+        smol.extend(atoms)
+        smol.append(symm_line)
+        smol.append(last_line)
+
     return '\n'.join(smol)
 
 

@@ -83,3 +83,6 @@ using_pylibefp = pytest.mark.skipif(_plugin_import('pylibefp') is False,
 
 using_cfour = pytest.mark.skipif(_which('xcfour') is False,
                                 reason='Not detecting executable xcfour. Install program if necessary and add to envvar PATH')
+
+using_nwchem = pytest.mark.skipif(_which('nwchem') is False,
+                                reason='Not detecting executable nwchem. Install program if necessary and add to envvar PATH')

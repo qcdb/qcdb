@@ -728,6 +728,85 @@ class Molecule(LibmintsMolecule):
         return text, options
 
     def format_molecule_for_nwchem(self):
+        """Function to print Molecule in a form readable by NWChem.
+        text is the same format of nwchem geometry directive
+        """
+        from collections import defaultdict
+
+        self.update_geometry()
+        factor = 1.0 
+
+        #text = 'geometry units %s\n' %(self.PYunits)
+        text = 'geometry noautosym nocenter units %s\n' %(self.PYunits) # No reorienting input geometry 
+
+        # append atoms and coordentries
+        for i in range(self.natom()):
+            [x, y, z] = self.atoms[i].compute()
+            text += '%-2s %17.12f %17.12f %17.12f\n' % ((self.symbol(i) if self.Z(i) else "GH"), \
+                x * factor, y * factor, z * factor)
+        if (self.symmetry_from_input() == None):
+            text += 'symmetry c1\n'
+            text += 'end\n'        
+        else:
+            text += 'symmetry %s\n' %(self.symmetry_from_input())
+            text += 'end\n'
+        #print (text)
+
+         # prepare molecule keywords to be set as c-side keywords
+        options = defaultdict(lambda: defaultdict(dict))
+        options['NWCHEM']['NWCHEM_CHARGE']['value'] = self.molecular_charge()
+        options['NWCHEM']['NWCHEM_CHARGE']['clobber'] = True
+        
+        if (self.multiplicity() != 1):
+            options['NWCHEM']['NWCHEM_SCF_NOPEN']['value'] = self.multiplicity()-1
+            options['NWCHEM']['NWCHEM_DFT_MULT']['value'] = self.multiplicity()
+
+            options['NWCHEM']['NWCHEM_SCF_NOPEN']['clobber'] = True
+            options['NWCHEM']['NWCHEM_DFT_MULT']['clobber'] = True
+
+        return text, options
+
+
+    def format_basis_for_nwchem(self, basopt):
+        """Function to print NWChem-style basis sets into [basis block] according
+        to the active atoms in Molecule. Basis sets are loaded from Psi4 basis sets library. 
+
+        """
+        from collections import defaultdict
+
+        text = ''
+        for fr in range(self.nfragments()):
+            if self.fragment_types[fr] == 'Absent':
+                pass
+            else:
+                text += basopt.print_detail_nwchem()
+
+        text += 'end \n'
+
+        options = defaultdict(lambda: defaultdict(dict))
+
+        return text, options
+
+    def format_basis_for_nwchem_puream(self, puream):
+        """Function to recognize puream for NWChem 
+
+        """
+        from collections import defaultdict
+        text = ''
+
+        if (puream == True):
+     #       print ('I am spherical')
+            text += "basis spherical \n"
+        else:
+     #       print ('I am cartesian')
+            text += "basis \n" #Default : cartesian
+
+        options = defaultdict(lambda: defaultdict(dict))
+
+        return text, options
+
+
+    def old_format_molecule_for_nwchem(self):
         """
 
         """

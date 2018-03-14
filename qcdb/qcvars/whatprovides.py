@@ -179,6 +179,8 @@ def return_energy_components():
     # TODO rearrange imports
     from ..iface_cfour.harvester import cfour_psivar_list
     VARH.update(cfour_psivar_list())
+    from ..iface_nwchem.harvester import nwchem_psivar_list
+    VARH.update(nwchem_psivar_list())
     return VARH
 
 VARH = return_energy_components()

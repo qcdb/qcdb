@@ -372,6 +372,18 @@ class ShellInfo(object):
             with open(outfile, mode='w') as handle:
                 handle.write(text)
 
+    def pyprint_nwchem(self, outfile=None):
+        """Print out the shell in NWChem format"""
+        text = """  %c \n""" % (self.AMCHAR())
+        for K in range(self.nprimitive()):
+            text += """%15.8f %15.8f\n""" % (self.PYexp[K], self.PYoriginal_coef[K])
+
+        if outfile is None:
+            return text
+        else:
+            with open(outfile, mode='w') as handle:
+                handle.write(text)
+
     def __str__(self):
         """String representation of shell"""
         return self.pyprint(outfile=None)
