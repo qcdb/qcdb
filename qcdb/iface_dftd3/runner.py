@@ -31,18 +31,11 @@ from __future__ import print_function
 import re
 import sys
 import copy
+import json
+import pprint
+pp = pprint.PrettyPrinter(width=120)
 import collections
 from decimal import Decimal
-
-#try:
-#    from psi4.driver.p4util.exceptions import *
-#    from psi4 import core
-#    isP4regime = True
-#except ImportError:
-#    from .exceptions import *
-#    isP4regime = False
-#from .dashparam import *
-#from .molecule import Molecule
 
 import numpy as np
 
@@ -56,8 +49,6 @@ from .. import molparse
 from .. import qcvars
 from .. import __version__
 from ..driver.driver_helpers import print_variables
-
-import pprint
 
 
 """Compute dispersion correction using Grimme's DFTD3 executable.
@@ -237,51 +228,37 @@ def from_arrays_qc(functional=None,
 
 
 def dftd3_driver(jobrec):
-    print('INDRIV')
-# DRIVER
+
+    print('[1] DFTD3 JOBREC PRE-PLANT (j@i) <<<')
+    pp.pprint(jobrec)
+    print('>>>')
+
     dftd3rec = dftd3_plant(jobrec)
-#    #cfourrec['scratch_messy'] = True
-#
-#    # test json roundtrip
-#    jcfourrec = json.dumps(cfourrec)
-#    cfourrec = json.loads(jcfourrec)
-#
-#    print('CFOURREC')
-#    pp.pprint(cfourrec)
-#    cfour_subprocess(cfourrec)  # updates cfourrec
-#
-#    cfour_harvest(jobrec, cfourrec)  # ? updates jobrec ?
-#
-#    print('QC', jobrec['qcvars'])
-#    return jobrec
 
     # test json roundtrip
-#    jdftd3rec = json.dumps(dftd3rec)
-#    dftd3rec = json.loads(jdftd3rec)
+    jdftd3rec = json.dumps(dftd3rec)
+    dftd3rec = json.loads(jdftd3rec)
 
-    print('DFTD3REC')
-    print(dftd3rec)
-    subprocess_dftd3(dftd3rec)  # updates dftd3rec
+    print('[2] DFTD3REC PRE-SUBPROCESS (x@i) <<<')
+    pp.pprint(dftd3rec)
+    print('>>>\n')
 
-    print('OUT')
-    #    pprint.pprint(dftd3rec)
+    dftd3_subprocess(dftd3rec)  # updates dftd3rec
 
-    #if maxder == 1:
-    #require 'dftd3grad'
-    #    derivfile = './dftd3_gradient'
+    print('[3] DFTD3REC POST-SUBPROCESS (x@io) <<<')
+    pp.pprint(dftd3rec)
+    print('>>>\n')
 
-    #for reqd in ['stdout'
-    #try:
-    dftd3_harvest(jobrec, dftd3rec)  # ? updates jobrec ?
+    dftd3_harvest(jobrec, dftd3rec)  # updates jobrec
 
-    print('CALC')
-    pprint.pprint(jobrec)
+    print('[4] DFTD3 JOBREC POST-HARVEST (j@io) <<<')
+    pp.pprint(jobrec)
+    print('>>>')
 
     return jobrec
 
 
 def dftd3_plant(jobrec):
-    import json
 
     try:
         jobrec['dashlevel']
@@ -410,7 +387,7 @@ def dftd3_plant(jobrec):
 #    sys.exit()
 
 
-def subprocess_dftd3(dftd3rec):
+def dftd3_subprocess(dftd3rec):
     """Minimal localized DFTD3 call and harvest from and into `dftd3rec`.
 
     Required Input Fields

@@ -205,7 +205,7 @@ def test_sp_rhf_ccsd_t_fc():
         'cfour_dropmo' : [1],
         'cfour_SCF_CONV': 12,
         'cfour_CC_CONV': 12,
-        'cfour_cc_program': 'ecc'
+#        'cfour_cc_program': 'ecc'
     })
 
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=h2o)

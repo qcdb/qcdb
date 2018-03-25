@@ -152,7 +152,7 @@ def nwchem_plant(jobrec):  # jobrec@i -> engine@i
     #zmat = memcmd + molcmd + optcmd + mdccmd + psicmd + bascmd + litcmd
     #zmat = molcmd + optcmd + bascmd
     nwchemrec['nwchemnw'] = write_input(jobrec['method'], jobrec['dertype'], jobrec['molecule'], jobrec['options']) #molecule)
-    print('<<< ZMAT||{}||>>>\n'.format(nwchemrec['nwchemnw']))
+    #print('<<< ZMAT||{}||>>>\n'.format(nwchemrec['nwchemnw']))
     nwchemrec['command'] = ['nwchem']  # subnw?
 
     return nwchemrec

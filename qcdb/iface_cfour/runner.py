@@ -83,24 +83,52 @@ def cfour_driver(jobrec):
         jobrec['error'] += repr(err) + 'Required fields missing from ({})'.format(jobrec.keys())
         return jobrec
 
-    print('CFOUR_DRIVER jr', jobrec)
-    # this is what the cfour program needs, not what the job needs
-    # *
+    #print('CFOUR_DRIVER jr', jobrec)
+    ## this is what the cfour program needs, not what the job needs
+    ## *
+
+    #cfourrec = cfour_plant(jobrec)
+    ##cfourrec['scratch_messy'] = True
+
+    ## test json roundtrip
+    #jcfourrec = json.dumps(cfourrec)
+    #cfourrec = json.loads(jcfourrec)
+
+    #print('CFOURREC')
+    #pp.pprint(cfourrec)
+    #cfour_subprocess(cfourrec)  # updates cfourrec
+
+    #cfour_harvest(jobrec, cfourrec)  # ? updates jobrec ?
+
+    #print('QC', jobrec['qcvars'])
+    #return jobrec
+
+    print('[1] CFOUR JOBREC PRE-PLANT (j@i) <<<')
+    pp.pprint(jobrec)
+    print('>>>')
 
     cfourrec = cfour_plant(jobrec)
-    #cfourrec['scratch_messy'] = True
 
     # test json roundtrip
     jcfourrec = json.dumps(cfourrec)
     cfourrec = json.loads(jcfourrec)
 
-    print('CFOURREC')
+    print('[2] CFOURREC PRE-SUBPROCESS (x@i) <<<')
     pp.pprint(cfourrec)
+    print('>>>\n')
+
     cfour_subprocess(cfourrec)  # updates cfourrec
 
-    cfour_harvest(jobrec, cfourrec)  # ? updates jobrec ?
+    print('[3] CFOURREC POST-SUBPROCESS (x@io) <<<')
+    pp.pprint(cfourrec)
+    print('>>>\n')
 
-    print('QC', jobrec['qcvars'])
+    cfour_harvest(jobrec, cfourrec)  # updates jobrec
+
+    print('[4] CFOUR JOBREC POST-HARVEST (j@io) <<<')
+    pp.pprint(jobrec)
+    print('>>>')
+
     return jobrec
 
 
@@ -263,7 +291,6 @@ def cfour_harvest(jobrec, cfourrec):  # jobrec@i, cfourrec@io -> jobrec@io
     # c4mol, if it exists, is dinky, just a clue to geometry of cfour results
     psivar, c4hess, c4grad, c4mol, version, errorTMP = harvester.harvest(qmol, cfourrec['stdout'], **c4files)
 
-    print ('errorTMP', errorTMP)
     jobrec['error'] += errorTMP
     # Absorb results into psi4 data structures
     #for key in psivar.keys():
