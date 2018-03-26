@@ -1,18 +1,24 @@
 import collections
 
-#QCAspect = collections.namedtuple('QCAspect', 'lbl unit data comment')
-
-
 class QCAspect(collections.namedtuple('QCAspect', 'lbl units data comment doi glossary')):
-    #"""Facilitates the application of the simple transformation operations
-    #defined by namedtuple of arrays as recipe to the data structures
-    #describing Cartesian molecular coordinates. Attaches functions to
-    #transform the geometry, element list, gradient, etc. to the
-    #AlignmentRecipe. When `mirror` attribute (defaults to False) active,
-    #then molecular system can be substantively changed by procedure.
+    """Generic value plus metadata storage.
 
-    #"""
+    Attributes
+    ----------
+    lbl : str
+        Official label for `data`, often qcvar. May contain spaces.
+    units : str
+        ASCII, LaTeX-like representation of units, without square brackets.
+    data : float or :py:class:`numpy.ndarray`
+        Value for `lbl`.
+    comment : str, optional
+        Additional notes.
+    doi : str, optional
+        Literature citation or definition DOI link.
+    glossary : str, optional
+        Extended description or definition.
 
+    """
     def __new__(cls, lbl, units, data, comment='', doi=None, glossary=''):
         return super(QCAspect, cls).__new__(cls, lbl, units, data, comment, doi, glossary)
 
@@ -29,8 +35,6 @@ class QCAspect(collections.namedtuple('QCAspect', 'lbl units data comment doi gl
         text.append('doi:      {}'.format(self.doi))
         text.append('Comment:  {}'.format(self.comment))
         text.append('Glossary: {}'.format(self.glossary))
-        #text.append('Rotation:')
-        #text.append('{}'.format(self.rotation))
         text.append('-' * width)
         return ('\n'.join(text))
 

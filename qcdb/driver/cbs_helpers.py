@@ -23,11 +23,32 @@ _zeta_val2sym = {k + 2: v for k, v in enumerate(_zeta_values)}
 _zeta_sym2val = {v: k for k, v in _zeta_val2sym.items()}
 
 
-def xtpl_highest_1(functionname, zHI, valueHI, verbose=True):
+def xtpl_highest_1(mtdname, zHI, valueHI, verbose=1):
     r"""Scheme for total or correlation energies with a single basis or the highest
-    zeta-level among an array of bases. Used by :py:func:`~psi4.cbs`.
+    zeta-level among an array of bases. Used by :py:func:`qcdb.cbs`.
 
-    .. math:: E_{total}^X = E_{total}^X
+    .. math:: E_{\textrm{total}}^X = E_{\textrm{total}}^X
+
+    Parameters
+    ----------
+    mtdname : str
+        Method name (e.g., 'mp2') used in summary printing.
+    zHI : int
+        Zeta number of the basis set.
+    valueHI : float or numpy.ndarray
+        Energy, gradient, or Hessian value at the basis set.
+    verbose : int, optional
+        Controls volume of printing.
+
+    Returns
+    -------
+    float or numpy.ndarray
+        Eponymous function applied to input zetas and values; type from `valueHI`.
+
+    Examples
+    --------
+    >>> # [1] Fancy way to get HF/cc-pCVQZ
+    >>> qcdb.energy(qcdb.cbs, scf_wfn='hf', scf_basis='cc-pcvqz', scf_scheme=qcdb.xtpl_highest_1)
 
     """
     if isinstance(valueHI, float):
@@ -35,7 +56,7 @@ def xtpl_highest_1(functionname, zHI, valueHI, verbose=True):
         if verbose:
             # Output string with extrapolation parameters
             cbsscheme = ''
-            cbsscheme += """\n   ==> {} <==\n\n""".format(functionname.upper())
+            cbsscheme += """\n   ==> {} <==\n\n""".format(mtdname.upper())
             cbsscheme += """   HI-zeta ({}) Energy:               {:16.12f}\n""".format(zHI, valueHI)
 
             print(cbsscheme)
@@ -51,15 +72,45 @@ def xtpl_highest_1(functionname, zHI, valueHI, verbose=True):
         return valueHI
 
 
-def scf_xtpl_helgaker_2(functionname, zLO, valueLO, zHI, valueHI, verbose=True, alpha=1.63):
+def scf_xtpl_helgaker_2(mtdname, zLO, valueLO, zHI, valueHI, alpha=1.63, verbose=1):
     r"""Extrapolation scheme for reference energies with two adjacent zeta-level bases.
-    Used by :py:func:`~psi4.cbs`.
-    Halkier, Helgaker, Jorgensen, Klopper, & Olsen, Chem. Phys. Lett. 302 (1999) 437-446.
+    Used by :py:func:`qcdb.cbs`.
+    `Halkier, Helgaker, Jorgensen, Klopper, & Olsen, Chem. Phys. Lett. 302 (1999) 437-446
+    <https://doi.org/10.1016/S0009-2614(99)00179-7>`_
 
-    .. math:: E_{total}^X = E_{total}^{\infty} + \beta e^{-\alpha X}, \alpha = 1.63
+    .. math:: E_{\textrm{total}}^X = E_{\textrm{total}}^{\infty} + \beta e^{-\alpha X}, \alpha = 1.63
+
+    Parameters
+    ----------
+    mtdname : str
+        Method name (e.g., 'HF') used in summary printing.
+    zLO : int
+        Zeta number of the smaller basis set in 2-point extrapolation.
+    valueLO : float or numpy.ndarray
+        Energy, gradient, or Hessian value at the smaller basis set in 2-point
+        extrapolation.
+    zHI : int
+        Zeta number of the larger basis set in 2-point extrapolation.
+        Must be `zLO + 1`.
+    valueHI : float or numpy.ndarray
+        Energy, gradient, or Hessian value at the larger basis set in 2-point
+        extrapolation.
+    verbose : int, optional
+        Controls volume of printing.
+    alpha : float, optional
+        Fitted 2-point parameter.
+
+    Returns
+    -------
+    float or numpy.ndarray
+        Eponymous function applied to input zetas and values; type from `valueLO`.
+
+    Examples
+    --------
+    >>> # [1] Hartree-Fock extrapolation
+    >>> qcdb.energy(qcdb.cbs, scf_wfn='hf', scf_basis='cc-pV[DT]Z', scf_scheme=qcdb.scf_xtpl_helgaker_2)
 
     """
-
     if type(valueLO) != type(valueHI):
         raise ValidationError("scf_xtpl_helgaker_2: Inputs must be of the same datatype! (%s, %s)"
                               % (type(valueLO), type(valueHI)))
@@ -74,13 +125,13 @@ def scf_xtpl_helgaker_2(functionname, zLO, valueLO, zHI, valueHI, verbose=True, 
         if verbose:
             # Output string with extrapolation parameters
             cbsscheme = ''
-            cbsscheme += """\n   ==> Helgaker 2-point SCF extrapolation for method: %s <==\n\n""" % (functionname.upper())
+            cbsscheme += """\n   ==> Helgaker 2-point SCF extrapolation for method: %s <==\n\n""" % (mtdname.upper())
             cbsscheme += """   LO-zeta (%s) Energy:               % 16.12f\n""" % (str(zLO), valueLO)
             cbsscheme += """   HI-zeta (%s) Energy:               % 16.12f\n""" % (str(zHI), valueHI)
             cbsscheme += """   Alpha (exponent) Value:           % 16.12f\n""" % (alpha)
             cbsscheme += """   Beta (coefficient) Value:         % 16.12f\n\n""" % (beta)
 
-            name_str = "%s/(%s,%s)" % (functionname.upper(), _zeta_val2sym[zLO].upper(), _zeta_val2sym[zHI].upper())
+            name_str = "%s/(%s,%s)" % (mtdname.upper(), _zeta_val2sym[zLO].upper(), _zeta_val2sym[zHI].upper())
             cbsscheme += """   @Extrapolated """
             cbsscheme += name_str + ':'
             cbsscheme += " " * (18 - len(name_str))
@@ -96,7 +147,7 @@ def scf_xtpl_helgaker_2(functionname, zLO, valueLO, zHI, valueHI, verbose=True, 
         #value.name = 'Helgaker SCF (%s, %s) data' % (zLO, zHI)
 
         if verbose > 2:
-            core.print_out("""\n   ==> Helgaker 2-point SCF extrapolation for method: %s <==\n\n""" % (functionname.upper()))
+            core.print_out("""\n   ==> Helgaker 2-point SCF extrapolation for method: %s <==\n\n""" % (mtdname.upper()))
             core.print_out("""   LO-zeta ({})""".format(zLO))
             core.print_out("""   LO-zeta Data""")
             print(valueLO)
@@ -115,14 +166,49 @@ def scf_xtpl_helgaker_2(functionname, zLO, valueLO, zHI, valueHI, verbose=True, 
         raise ValidationError("scf_xtpl_helgaker_2: datatype is not recognized '%s'." % type(valueLO))
 
 
-def scf_xtpl_helgaker_3(functionname, zLO, valueLO, zMD, valueMD, zHI, valueHI, verbose=True):
+def scf_xtpl_helgaker_3(mtdname, zLO, valueLO, zMD, valueMD, zHI, valueHI, verbose=1):
     r"""Extrapolation scheme for reference energies with three adjacent zeta-level bases.
-    Used by :py:func:`~psi4.cbs`.
-    Halkier, Helgaker, Jorgensen, Klopper, & Olsen, Chem. Phys. Lett. 302 (1999) 437-446.
+    Used by :py:func:`qcdb.cbs`.
+    `Halkier, Helgaker, Jorgensen, Klopper, & Olsen, Chem. Phys. Lett. 302 (1999) 437-446
+    <https://doi.org/10.1016/S0009-2614(99)00179-7>`_
 
-    .. math:: E_{total}^X = E_{total}^{\infty} + \beta e^{-\alpha X}
+    .. math:: E_{\textrm{total}}^X = E_{\textrm{total}}^{\infty} + \beta e^{-\alpha X}
+
+    Parameters
+    ----------
+    mtdname : str
+        Method name (e.g., 'HF') used in summary printing.
+    zLO : int
+        Zeta number of the smaller basis set in 3-point extrapolation.
+    valueLO : float or numpy.ndarray
+        Energy, gradient, or Hessian value at the smaller basis set in 3-point
+        extrapolation.
+    zMD : int
+        Zeta number of the medium basis set in 3-point extrapolation.
+        Must be `zLO + 1`.
+    valueMD : float or numpy.ndarray
+        Energy, gradient, or Hessian value at the medium basis set in 3-point
+        extrapolation.
+    zHI : int
+        Zeta number of the larger basis set in 3-point extrapolation.
+        Must be `zLO + 2`.
+    valueHI : float or numpy.ndarray
+        Energy, gradient, or Hessian value at the larger basis set in 3-point
+        extrapolation.
+    verbose : int, optional
+        Controls volume of printing.
+
+    Returns
+    -------
+    float or numpy.ndarray
+        Eponymous function applied to input zetas and values; type from `valueLO`.
+
+    Examples
+    --------
+    >>> # [1] Hartree-Fock extrapolation
+    >>> qcdb.energy(qcdb.cbs, scf_wfn='hf', scf_basis='cc-pV[DTQ]Z', scf_scheme=qcdb.scf_xtpl_helgaker_3)
+
     """
-
     if (type(valueLO) != type(valueMD)) or (type(valueMD) != type(valueHI)):
         raise ValidationError("scf_xtpl_helgaker_3: Inputs must be of the same datatype! (%s, %s, %s)"
                               % (type(valueLO), type(valueMD), type(valueHI)))
@@ -137,14 +223,14 @@ def scf_xtpl_helgaker_3(functionname, zLO, valueLO, zMD, valueMD, zHI, valueHI, 
         if verbose:
             # Output string with extrapolation parameters
             cbsscheme = ''
-            cbsscheme += """\n   ==> Helgaker 3-point SCF extrapolation for method: %s <==\n\n""" % (functionname.upper())
+            cbsscheme += """\n   ==> Helgaker 3-point SCF extrapolation for method: %s <==\n\n""" % (mtdname.upper())
             cbsscheme += """   LO-zeta (%s) Energy:               % 16.12f\n""" % (str(zLO), valueLO)
             cbsscheme += """   MD-zeta (%s) Energy:               % 16.12f\n""" % (str(zMD), valueMD)
             cbsscheme += """   HI-zeta (%s) Energy:               % 16.12f\n""" % (str(zHI), valueHI)
             cbsscheme += """   Alpha (exponent) Value:           % 16.12f\n""" % (alpha)
             cbsscheme += """   Beta (coefficient) Value:         % 16.12f\n\n""" % (beta)
 
-            name_str = "%s/(%s,%s,%s)" % (functionname.upper(), _zeta_val2sym[zLO].upper(), _zeta_val2sym[zMD].upper(),
+            name_str = "%s/(%s,%s,%s)" % (mtdname.upper(), _zeta_val2sym[zLO].upper(), _zeta_val2sym[zMD].upper(),
                                                              _zeta_val2sym[zHI].upper())
             cbsscheme += """   @Extrapolated """
             cbsscheme += name_str + ':'
@@ -181,12 +267,41 @@ def scf_xtpl_helgaker_3(functionname, zLO, valueLO, zMD, valueMD, zHI, valueHI, 
         raise ValidationError("scf_xtpl_helgaker_3: datatype is not recognized '%s'." % type(valueLO))
 
 
-def corl_xtpl_helgaker_2(functionname, zLO, valueLO, zHI, valueHI, verbose=True):
+def corl_xtpl_helgaker_2(mtdname, zLO, valueLO, zHI, valueHI, verbose=1):
     r"""Extrapolation scheme for correlation energies with two adjacent zeta-level bases.
-    Used by :py:func:`~psi4.cbs`.
-    Halkier, Helgaker, Jorgensen, Klopper, Koch, Olsen, & Wilson, Chem. Phys. Lett. 286 (1998) 243-252.
+    Used by :py:func:`qcdb.cbs`.
+    `Halkier, Helgaker, Jorgensen, Klopper, Koch, Olsen, & Wilson, Chem. Phys. Lett. 286 (1998) 243-252
+    <https://doi.org/10.1016/S0009-2614(98)00111-0>`_
 
-    .. math:: E_{corl}^X = E_{corl}^{\infty} + \beta X^{-3}
+    .. math:: E_{\textrm{corl}}^X = E_{\textrm{corl}}^{\infty} + \beta X^{-3}
+
+    Parameters
+    ----------
+    mtdname : str
+        Method name (e.g., 'MP2') used in summary printing.
+    zLO : int
+        Zeta number of the smaller basis set in 2-point extrapolation.
+    valueLO : float or numpy.ndarray
+        Energy, gradient, or Hessian value at the smaller basis set in 2-point
+        extrapolation.
+    zHI : int
+        Zeta number of the larger basis set in 2-point extrapolation.
+        Must be `zLO + 1`.
+    valueHI : float or numpy.ndarray
+        Energy, gradient, or Hessian value at the larger basis set in 2-point
+        extrapolation.
+    verbose : int, optional
+        Controls volume of printing.
+
+    Returns
+    -------
+    float or numpy.ndarray
+        Eponymous function applied to input zetas and values; type from `valueLO`.
+
+    Examples
+    --------
+    >>> # [1] CISD extrapolation
+    >>> qcdb.energy(qcdb.cbs, corl_wfn='cisd', corl_basis='cc-pV[DT]Z', corl_scheme=qcdb.corl_xtpl_helgaker_2)
 
     """
     if type(valueLO) != type(valueHI):
@@ -201,7 +316,7 @@ def corl_xtpl_helgaker_2(functionname, zLO, valueLO, zHI, valueHI, verbose=True)
         final = value
         if verbose:
             # Output string with extrapolation parameters
-            cbsscheme = """\n\n   ==> Helgaker 2-point correlated extrapolation for method: %s <==\n\n""" % (functionname.upper())
+            cbsscheme = """\n\n   ==> Helgaker 2-point correlated extrapolation for method: %s <==\n\n""" % (mtdname.upper())
 #            cbsscheme += """   HI-zeta (%1s) SCF Energy:           % 16.12f\n""" % (str(zHI), valueSCF)
             cbsscheme += """   LO-zeta (%s) Energy:               % 16.12f\n""" % (str(zLO), valueLO)
             cbsscheme += """   HI-zeta (%s) Energy:               % 16.12f\n""" % (str(zHI), valueHI)
@@ -212,7 +327,7 @@ def corl_xtpl_helgaker_2(functionname, zLO, valueLO, zHI, valueHI, verbose=True)
             #cbsscheme += """   Beta (coefficient) Value:         % 16.12f\n""" % beta
             #cbsscheme += """   Extrapolated Correlation Energy:  % 16.12f\n\n""" % value
 
-            name_str = "%s/(%s,%s)" % (functionname.upper(), _zeta_val2sym[zLO].upper(), _zeta_val2sym[zHI].upper())
+            name_str = "%s/(%s,%s)" % (mtdname.upper(), _zeta_val2sym[zLO].upper(), _zeta_val2sym[zHI].upper())
             cbsscheme += """   @Extrapolated """
             cbsscheme += name_str + ':'
             cbsscheme += " " * (19 - len(name_str))
@@ -230,7 +345,7 @@ def corl_xtpl_helgaker_2(functionname, zLO, valueLO, zHI, valueHI, verbose=True)
 
         if verbose > 2:
             core.print_out("""\n   ==> Helgaker 2-point correlated extrapolation for """
-                           """method: %s <==\n\n""" % (functionname.upper()))
+                           """method: %s <==\n\n""" % (mtdname.upper()))
             core.print_out("""   LO-zeta (%s) Data\n""" % (str(zLO)))
             valueLO.print_out()
             core.print_out("""   HI-zeta (%s) Data\n""" % (str(zHI)))
