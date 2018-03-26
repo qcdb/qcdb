@@ -32,7 +32,7 @@ message(STATUS "${Cyan}Found Python ${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MIN
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-#add_subdirectory(doc)
+add_subdirectory(docs)
 
 # <<<  Version  >>>
 add_custom_target(update_version ALL
