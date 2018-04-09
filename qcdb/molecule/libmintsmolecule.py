@@ -210,7 +210,9 @@ class LibmintsMolecule(object):
         >>> H2OH2O.set_molecular_charge(-2)
 
         """
-        self.PYmolecular_charge = charge
+        if not float(charge).is_integer():
+            raise ValidationError('System charge must be integer: {}'.format(charge))
+        self.PYmolecular_charge = int(charge)
 
     def multiplicity(self):
         """Get the multiplicity (defined as 2Ms + 1)
@@ -226,7 +228,9 @@ class LibmintsMolecule(object):
         >>> H2OH2O.set_multiplicity(3)
 
         """
-        self.PYmultiplicity = mult
+        if not float(mult).is_integer() or float(mult) < 0.0:
+            raise ValidationError('System multiplicity must be positive integer: {}'.format(mult))
+        self.PYmultiplicity = int(mult)
 
     def units(self):
         """Gets the geometry units
@@ -238,8 +242,20 @@ class LibmintsMolecule(object):
         return self.PYunits
 
     def set_units(self, units):
-        """Sets the geometry units
+        """Sets the geometry units (constructor use).
 
+        Parameters
+        ----------
+        units : {'Angstrom', 'Bohr'}
+            Units of input geometry.
+
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+        # [1]
         >>> H2OH2O.set_units('Angstrom')
 
         """
@@ -366,7 +382,23 @@ class LibmintsMolecule(object):
         return z2mass[int(self.atoms[atom].Z())]
 
     def set_mass(self, atom, mass):
-        """Set the mass of a particular atom (good for isotopic substitutions)"""
+        """Set the mass of a particular atom (good for isotopic substitutions).
+
+        Parameters
+        ----------
+        atom : int
+            0-indexed, dummy-inclusive atom index to set.
+        mass : float
+            Non-negative mass in [u] for `atom`.
+
+        Returns
+        -------
+        None
+
+        """
+        mass = float(mass)
+        if mass < 0.0:
+            raise ValidationError('Mass must be positive: {}'.format(mass))
         self.lock_frame = False
         self.full_atoms[atom].set_mass(mass)
         self.full_atoms[atom].set_A(-1)
@@ -608,19 +640,47 @@ class LibmintsMolecule(object):
         return subset
 
     def get_fragments(self):
-        """The list of atom ranges defining each fragment from parent molecule"""
+        """The list of atom ranges defining each fragment from parent molecule.
+
+        Returns
+        -------
+        list of lists
+            (nfr, 2) actual member data, for constructor use only.
+
+        """
         return self.fragments
 
     def get_fragment_types(self):
-        """A list describing how to handle each fragment"""
+        """A list describing how to handle each fragment.
+
+        Returns
+        -------
+        list
+            (nfr, ) actual member data, for constructor use only.
+
+        """
         return self.fragment_types
 
     def get_fragment_charges(self):
-        """The charge of each fragment"""
+        """The charge of each fragment.
+
+        Returns
+        -------
+        list
+            (nfr, ) actual member data, for constructor use only.
+
+        """
         return self.fragment_charges
 
     def get_fragment_multiplicities(self):
-        """The multiplicity of each fragment"""
+        """The multiplicity of each fragment.
+
+        Returns
+        -------
+        list
+            (nfr, ) actual member data, for constructor use only.
+
+        """
         return self.fragment_multiplicities
 
     # <<< Methods for Construction >>>

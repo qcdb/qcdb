@@ -50,6 +50,9 @@ class Molecule(LibmintsMolecule):
     """Class to store python extensions to the MoleculeLibmints class.
     Multiple classes allows separation of libmints and extension methods.
 
+    This class extends `qcdb.LibmintsMolecule` and occasionally
+    `psi4.core.Molecule` itself.
+
     """
     def __init__(self,
                  molinit=None,
