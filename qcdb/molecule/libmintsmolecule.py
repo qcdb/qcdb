@@ -56,10 +56,11 @@ class LibmintsMolecule(object):
     """Class to store the elements, coordinates, fragmentation pattern,
     charge, multiplicity of a molecule. Largely replicates psi4's libmints
     Molecule class, developed by Justin M. Turney and Andy M. Simmonett
-    with incremental improvements by other psi4 developers. Major
-    differences from the C++ class are: no basisset handling, no symmetry,
-    no pubchem, no efp, no discarding dummies. This class translated so
-    that databases can function independently of psi4.
+    with incremental improvements by other psi4 developers.
+
+    Roughly, this class mirrors `psi4.core.Molecule`; however, it's never
+    used directly and instead serves as a base class for `qcdb.Molecule`
+    in alongside-file molecule.py.
 
     >>> H2OH2O = qcdb.Molecule(\"\"\"
         0 1

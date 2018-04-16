@@ -1,7 +1,9 @@
 import collections
 
+import numpy as np
+
 class QCAspect(collections.namedtuple('QCAspect', 'lbl units data comment doi glossary')):
-    """Generic value plus metadata storage.
+    """Facilitates the storage of quantum chemical results by labeling them with basic metadata.
 
     Attributes
     ----------
@@ -39,3 +41,16 @@ class QCAspect(collections.namedtuple('QCAspect', 'lbl units data comment doi gl
         return ('\n'.join(text))
 
 
+    def to_dict(self):
+        dicary = dict(self._asdict())  # dict, not OrderedDict
+        for d in ['doi', 'comment', 'glossary']:
+            dicary.pop(d)
+        if isinstance(self.data, (np.ndarray, np.number)):
+            if self.data.dtype == np.complex:
+                dicary['data'] = [dicary['data'].real.tolist(), dicary['data'].imag.tolist()]
+            else:
+                dicary['data'] = dicary['data'].tolist()
+        elif isinstance(self.data, (complex, np.complex)):
+            dicary['data'] = [self.data.real, self.data.imag]
+
+        return dicary
