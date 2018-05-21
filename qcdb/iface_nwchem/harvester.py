@@ -312,8 +312,14 @@ def harvest_outfile_pass(outtext):
                             ext_energy_list[nroot] #in hartree
                         psivar ['EOM-%s ROOT 0 -> ROOT %d TOTAL ENERGY - %s SYMMETRY' %(cc_name, nroot+1, symm)] = \
                             psivar['%s TOTAL ENERGY' %(cc_name)] + Decimal(ext_energy_list[nroot]) #in hartree
-
-                # No symmetry
+        #TCE_CR_EOMCCSD(T) information
+        mobj = re.findall(
+        r'^\s+' + r'CR-' + r'(w+)' + r'\s+' + r'total energy / hartree' + r'\s+' + r'=' + r'\s+' + NUMBER + r'\s*' +  r'^\s+' + r'CR-' + r'(w+)' + r'\s+' + r'excitation energy \(eV\)' + r'\s+' + r'=' +r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE) 
+        if mobj:
+            print(mobj) #will print list of mobj ATL
+            print("matched CR =")
+          
+                 # No symmetry
 #                psivar ['EOM-%s ROOT 0 -> ROOT %d EXCITATION ENERGY' %(cc_name, nroot+1)] = \
 #                    ext_energy_list[nroot] #in hartree
 #                psivar ['EOM-%s ROOT 0 -> ROOT %d TOTAL ENERGY' %(cc_name, nroot+1)] = \
@@ -367,7 +373,12 @@ def harvest_outfile_pass(outtext):
                 psivar ['TDDFT ROOT %s %s %s EXCITATION ENERGY' %(mobj_list[0],mobj_list[1],mobj_list[2])] = mobj_list[3]  # in a.u.
                 psivar ['TDDFT ROOT %s %s %s EXCITED STATE ENERGY' %(mobj_list[0],mobj_list[1],mobj_list[2])] = \
                     psivar ['DFT TOTAL ENERGY'] + Decimal(mobj_list[3])
-
+#       3) Spin orbit (SO) DFT ATL 
+        mobj = re.findall(
+        r'^\s+' +  r'Nonvariational intial energy' + r'\s*' + r'------------------------------' + r'^\s*' + r'(\w+)' + r'\s+' + r'=' + r'\s+' + NUMBER + r'\s*' + r'(\w+)' + r'\s+' + r'=' + r'\s+' + NUMBER + r'\s*' + r'(\w+)' + r'\s+' + r'=' + NUMBER  + r'\s*' +r'(\w+)' + r'\s+' + r'=' + r'\s+' + NUMBER + r'\s*' +r'(\w+)' + r'\s+' + r'=' + r'\s+' + NUMBER + r'\s*$', outtext, re. MULTILINE)
+            if mobj:
+                print('Non-variation initial energy') #prints out energy, 5 counts
+    
         #Process geometry
         # 1) CHARGE
         # Read charge from SCF module
