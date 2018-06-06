@@ -1,4 +1,3 @@
-#
 # @BEGIN LICENSE
 #
 # Psi4: an open-source quantum chemistry software package
@@ -126,7 +125,7 @@ def harvest_outfile_pass(outtext):
             #print (mobj.group(1)) 
             psivar['NUCLEAR REPULSION ENERGY'] = mobj.group(1)
 
-        #Process DFT (RDFT, RODFT,UDFT)
+        #Process DFT (RDFT, RODFT,UDFT, SODFT)
         mobj = re.search(
             r'^\s+' + r'(?:Total DFT energy)' + r'\s+=\s*' + NUMBER + r'\s*$',
             outtext, re.MULTILINE)
@@ -134,6 +133,19 @@ def harvest_outfile_pass(outtext):
             print ('matched DFT')
             #print (mobj.group(1))
             psivar ['DFT TOTAL ENERGY'] = mobj.group(1)
+
+    #MCSCF ATL
+        mobj = re.search(
+            r'^\s+' + r'Total SCF energy' + r'\s+' + NUMBER + r'\s*'+
+            r'^\s+' + r'One-electron energy' + r'\s+' + NUMBER + r'\s*'+
+            r'^\s+' + r'Two-electron energy' + r'\s+' + NUMBER + r'\s*'+
+            r'^\s+' + r'Total MCSCF energy' + r'\s+' + NUMBER + r'\s*' +
+            r'^\s+' + r'Gradient norm' + r'\s+' + NUMBER + r'\s*$', outext, re.MULTILINE) #MCSCF
+        if mobj:
+            print('Total MCSCF energy') #MCSCF energy calculation ATL; Need to add psivar
+            psivar ['SCF TOTAL ENERGY'] = mobj.group(1)
+            psivar ['MCSCF TOTAL ENERGY'] = mobj.group(4)
+            #check if grab all from NWCHEM if working with Psi4
 
         #Process MP2 (Restricted, Unrestricted(RO n/a))
         #1)SCF-MP2
@@ -373,9 +385,6 @@ def harvest_outfile_pass(outtext):
                 psivar ['TDDFT ROOT %s %s %s EXCITATION ENERGY' %(mobj_list[0],mobj_list[1],mobj_list[2])] = mobj_list[3]  # in a.u.
                 psivar ['TDDFT ROOT %s %s %s EXCITED STATE ENERGY' %(mobj_list[0],mobj_list[1],mobj_list[2])] = \
                     psivar ['DFT TOTAL ENERGY'] + Decimal(mobj_list[3])
-#       3) Spin orbit (SO) DFT ATL 
-        mobj = re.findall(
-        r'^\s+' +  r'Nonvariational intial energy' + r'\s*' + r'------------------------------' + r'^\s*' + r'(\w+)' + r'\s+' + r'=' + r'\s+' + NUMBER + r'\s*' + r'(\w+)' + r'\s+' + r'=' + r'\s+' + NUMBER + r'\s*' + r'(\w+)' + r'\s+' + r'=' + NUMBER  + r'\s*' +r'(\w+)' + r'\s+' + r'=' + r'\s+' + NUMBER + r'\s*' +r'(\w+)' + r'\s+' + r'=' + r'\s+' + NUMBER + r'\s*$', outtext, re. MULTILINE)
             if mobj:
                 print('Non-variation initial energy') #prints out energy, 5 counts
     
