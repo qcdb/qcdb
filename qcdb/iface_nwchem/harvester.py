@@ -145,7 +145,6 @@ def harvest_outfile_pass(outtext):
             print('Total MCSCF energy') #MCSCF energy calculation ATL; Need to add psivar
             psivar ['SCF TOTAL ENERGY'] = mobj.group(1)
             psivar ['MCSCF TOTAL ENERGY'] = mobj.group(4)
-            #check if grab all from NWCHEM if working with Psi4
 
         #Process MP2 (Restricted, Unrestricted(RO n/a))
         #1)SCF-MP2
