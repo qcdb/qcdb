@@ -1,29 +1,14 @@
 #
-# @BEGIN LICENSE
+# @BEGINLICENSE
 #
-# Psi4: an open-source quantum chemistry software package
+# QCDB: quantum chemistry common driver and databases
 #
-# Copyright (c) 2007-2017 The Psi4 Developers.
+# Copyright (c) 2013-2018 The QCDB Developers.
 #
-# The copyrights for code used from other parties are included in
-# the corresponding files.
+# All rights reserved. Use of this source code is governed by a
+# BSD-style license that can be found in the LICENSE file.
 #
-# This file is part of Psi4.
-#
-# Psi4 is free software; you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, version 3.
-#
-# Psi4 is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License along
-# with Psi4; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-#
-# @END LICENSE
+# @ENDLICENSE
 #
 
 from __future__ import absolute_import
@@ -34,6 +19,7 @@ import numpy as np
 
 from .exceptions import *
 
+# This file has considerable history in the quantum chemistry package Psi4
 
 class PreservingDict(dict):
     """Class to store quantum chemical quantities extracted from output

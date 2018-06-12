@@ -1511,11 +1511,6 @@ class Molecule(LibmintsMolecule):
         if 'input_units_to_au' in molrec:
             self.set_input_units_to_au(molrec['input_units_to_au'])
 
-        self.fix_com(molrec['fix_com'])
-        self.fix_orientation(molrec['fix_orientation'])
-        if 'fix_symmetry' in molrec:
-            self.reset_point_group(molrec['fix_symmetry'])
-
         if 'geom_unsettled' in molrec:
             nat = len(molrec['geom_unsettled'])
             unsettled = True
@@ -1556,6 +1551,11 @@ class Molecule(LibmintsMolecule):
 
         self.set_molecular_charge(int(molrec['molecular_charge']))
         self.set_multiplicity(molrec['molecular_multiplicity'])
+
+        self.fix_com(molrec['fix_com'])
+        self.fix_orientation(molrec['fix_orientation'])
+        if 'fix_symmetry' in molrec:
+            self.reset_point_group(molrec['fix_symmetry'])
 
         ## hack to prevent update_geometry termination upon no atoms
         #if nat == 0:
