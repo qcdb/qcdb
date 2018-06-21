@@ -30,6 +30,7 @@ def test_1b():
     assert compare_values(nucenergy, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")    #TEST
     assert compare_values(refenergy, qcdb.get_variable("CURRENT ENERGY"), 4, "Reference energy") #TEST
 
+@using_geometric
 def test_2a():
     h2o = qcdb.set_molecule("""
       O
@@ -42,6 +43,7 @@ def test_2a():
     assert compare_values(nucenergy, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")    #TEST
     assert compare_values(refenergy, qcdb.get_variable("CURRENT ENERGY"), 4, "Reference energy") #TEST
 
+@using_geometric
 def test_2b():
     h2o = qcdb.set_molecule("""
       O
@@ -55,6 +57,7 @@ def test_2b():
     assert compare_values(refenergy, qcdb.get_variable("CURRENT ENERGY"), 4, "Reference energy") #TEST
 
 
+@using_geometric
 def test_2c():
     h2o = qcdb.set_molecule("""
 O 0.          0.         -0.12
@@ -68,6 +71,7 @@ units au
     assert compare_values(nucenergy, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")    #TEST
     assert compare_values(refenergy, qcdb.get_variable("CURRENT ENERGY"), 4, "Reference energy") #TEST
 
+@using_geometric
 def test_2d():
     h2o = qcdb.set_molecule("""
 O 0.          0.         -0.12

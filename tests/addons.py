@@ -86,3 +86,7 @@ using_cfour = pytest.mark.skipif(_which('xcfour') is False,
 
 using_nwchem = pytest.mark.skipif(_which('nwchem') is False,
                                 reason='Not detecting executable nwchem. Install program if necessary and add to envvar PATH')
+
+using_geometric = pytest.mark.skipif(_plugin_import('geometric') is False,
+                                reason='Not detecting module geomeTRIC. Install package if necessary and add to envvar PYTHONPATH')
+

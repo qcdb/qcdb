@@ -1170,7 +1170,7 @@ def _contract_scheme_orders(needdict, datakey='f_energy'):
 
     """
     largs = {}
-    largs['functionname'] = needdict['HI']['f_wfn']
+    largs['mtdname'] = needdict['HI']['f_wfn']
     Nxtpl = len(needdict)
     zlabels = _lmh_labels[Nxtpl]  # e.g., ['LO', 'HI']
 
