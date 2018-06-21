@@ -134,15 +134,14 @@ def harvest_outfile_pass(outtext):
             #print (mobj.group(1))
             psivar ['DFT TOTAL ENERGY'] = mobj.group(1)
 
-    #MCSCF ATL
+    #MCSCF 
         mobj = re.search(
             r'^\s+' + r'Total SCF energy' + r'\s+' + NUMBER + r'\s*'+
             r'^\s+' + r'One-electron energy' + r'\s+' + NUMBER + r'\s*'+
             r'^\s+' + r'Two-electron energy' + r'\s+' + NUMBER + r'\s*'+
-            r'^\s+' + r'Total MCSCF energy' + r'\s+' + NUMBER + r'\s*' +
-            r'^\s+' + r'Gradient norm' + r'\s+' + NUMBER + r'\s*$', outext, re.MULTILINE) #MCSCF
+            r'^\s+' + r'Total MCSCF energy' + r'\s+' + NUMBER + r'\s*$', outext, re.MULTILINE) #MCSCF
         if mobj:
-            print('Total MCSCF energy') #MCSCF energy calculation ATL; Need to add psivar
+            print('Total MCSCF energy') #MCSCF energy calculation 
             psivar ['SCF TOTAL ENERGY'] = mobj.group(1)
             psivar ['MCSCF TOTAL ENERGY'] = mobj.group(4)
 
@@ -325,9 +324,11 @@ def harvest_outfile_pass(outtext):
                             psivar['%s TOTAL ENERGY' %(cc_name)] + Decimal(ext_energy_list[nroot]) #in hartree
         #TCE_CR_EOMCCSD(T) information
         mobj = re.findall(
-        r'^\s+' + r'CR-' + r'(w+)' + r'\s+' + r'total energy / hartree' + r'\s+' + r'=' + r'\s+' + NUMBER + r'\s*' +  r'^\s+' + r'CR-' + r'(w+)' + r'\s+' + r'excitation energy \(eV\)' + r'\s+' + r'=' +r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE) 
+        r'^\s+' + r'CR-' + r'(w+)' + r'\s+' + r'total energy / hartree' + r'\s+' + NUMBER +
+        r'\s*' +  r'^\s+' + r'CR-' + r'(w+)' + r'\s+' + r'excitation energy \(eV\)' +r'\s+' + NUMBER + r'\s*$',
+        outtext, re.MULTILINE) 
         if mobj:
-            print(mobj) #will print list of mobj ATL
+            print(mobj) #will print list of mobj 
             print("matched CR =")
           
                  # No symmetry
