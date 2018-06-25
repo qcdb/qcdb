@@ -330,7 +330,22 @@ def harvest_outfile_pass(outtext):
         if mobj:
             print(mobj) #will print list of mobj 
             print("matched CR =")
-          
+        #TCE_EOMCC
+        mobj = re.findall(
+        r'^\s+' + r'Excitation energy / hartree' + r'\s+' + NUMBER +
+        r'^\s*' + 'r\^s+' + r'/ eV' + r'^\s+' + NUMBER + r's*$', outtext, re.MULTILINE)
+        if mobj:
+            print('Excitation energy') #print list of mobj
+        #TCE_LR_CCSD
+        mobj = re.findall(
+        r'^\s+' + r'CCSD correlation energy / hartree' + r'\s+' + NUMBER +
+        r'^\s*' + r'\s+' + r'CCSD total energy / hartree' + r'\s+' NUMBER + r's*$', outtext, re.MULTILINE)
+        if mobj:
+            print('CCSD energy')
+            psivar['CCSD CORRELATION ENERGY'] = mobj.group(1)
+            psivar['CCSD TOTAL ENERGY'] = mobj.group(2)
+
+
                  # No symmetry
 #                psivar ['EOM-%s ROOT 0 -> ROOT %d EXCITATION ENERGY' %(cc_name, nroot+1)] = \
 #                    ext_energy_list[nroot] #in hartree
