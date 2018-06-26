@@ -208,6 +208,19 @@ def harvest_outfile_pass(outtext):
             psivar ['MP2 CORRELATION ENERGY'] = mobj.group(2) 
             psivar ['MP2 TOTAL ENERGY'] = mobj.group(3) 
  
+        #4)SCS-MP2
+        mobj = re.search(
+            r'^\s+' + r'Spin Component Scaled (SCS) MP2' +r'^\s*' +
+            r'^\s+' + r'Same spin pairs' + r'^\s+'  + NUMBER + r'^\s*'
+            r'^\s+' + r'Same spin scaling factor' + r'^\s+'  + NUMBER + r'^\s*'
+            r'^\s+' + r'Opposite spin pairs' + r'^\s+'  + NUMBER + r'^\s*'
+            r'^\s+' + r'Opposite spin scaling fact.' + r'^\s+'  + NUMBER + r'^\s*'
+            r'^\s+' + r'SCS-MP2 correlation energy' + r'^\s+'  + NUMBER + r'^\s*'
+            r'^\s+' + r'Total SCS-MP2 energy' + r'^\s+'  + NUMBER + r'^\s*',
+            outtext, re.MULTILINE)
+        if mobj:
+            print('Spin Component Scaled (SCS) MP2')
+
         #Process CC calculation through tce [dertype] command
         cc_name = ''
         mobj = re.search(
@@ -323,27 +336,40 @@ def harvest_outfile_pass(outtext):
                         psivar ['EOM-%s ROOT 0 -> ROOT %d TOTAL ENERGY - %s SYMMETRY' %(cc_name, nroot+1, symm)] = \
                             psivar['%s TOTAL ENERGY' %(cc_name)] + Decimal(ext_energy_list[nroot]) #in hartree
         #TCE_CR_EOMCCSD(T) information
-        mobj = re.findall(
-        r'^\s+' + r'CR-' + r'(w+)' + r'\s+' + r'total energy / hartree' + r'\s+' + NUMBER +
-        r'\s*' +  r'^\s+' + r'CR-' + r'(w+)' + r'\s+' + r'excitation energy \(eV\)' +r'\s+' + NUMBER + r'\s*$',
-        outtext, re.MULTILINE) 
+        mobj = re.search(
+            r'^\s+' + r'CR-' + r'(w+)' + r'\s+' + r'total energy / hartree' + r'\s+' + NUMBER +
+            r'\s*' +  r'^\s+' + r'CR-' + r'(w+)' + r'\s+' + r'excitation energy \(eV\)' +r'\s+' + NUMBER + r'\s*$',
+            outtext, re.MULTILINE) 
         if mobj:
             print(mobj) #will print list of mobj 
             print("matched CR =")
         #TCE_EOMCC
-        mobj = re.findall(
-        r'^\s+' + r'Excitation energy / hartree' + r'\s+' + NUMBER +
-        r'^\s*' + 'r\^s+' + r'/ eV' + r'^\s+' + NUMBER + r's*$', outtext, re.MULTILINE)
+        mobj = re.search(
+            r'^\s+' + r'Excitation energy / hartree' + r'\s+' + NUMBER +
+            r'^\s*' + 'r\^s+' + r'/ eV' + r'^\s+' + NUMBER + r's*$', outtext, re.MULTILINE)
         if mobj:
-            print('Excitation energy') #print list of mobj
+            print('Excitation energy = ') #print list of mobj
         #TCE_LR_CCSD
-        mobj = re.findall(
-        r'^\s+' + r'CCSD correlation energy / hartree' + r'\s+' + NUMBER +
-        r'^\s*' + r'\s+' + r'CCSD total energy / hartree' + r'\s+' NUMBER + r's*$', outtext, re.MULTILINE)
+        mobj = re.search(
+            r'^\s+' + r'CCSD correlation energy / hartree' + r'\s+' + NUMBER +
+            r'^\s*' + r'\s+' + r'CCSD total energy / hartree' + r'\s+' NUMBER + r's*$', outtext, re.MULTILINE)
         if mobj:
-            print('CCSD energy')
+            print('CCSD energy = ')
             psivar['CCSD CORRELATION ENERGY'] = mobj.group(1)
             psivar['CCSD TOTAL ENERGY'] = mobj.group(2)
+        #TCE- ROHF and UHF #ATL
+        mobj = re.findall(
+            r'^\s+' + 'Total SCF energy' + '^\s+' + NUMBER +
+            r'^\s*' + r'^\s+' + r'One-electron energy' + NUMBER +
+            r'^\s*' + r'^\s+' + r'Two-electron energy' + NUMBER +
+            r'^\s*' + r'^\s+' + r'Nuclear repulsion energy' + NUMBER +
+            r'^\s*' + r'^\s+' + r'CCSD correlation energy / hartree' + r'\s+' + NUMBER +
+            r'^\s*' + r'\s+' + r'CCSD total energy / hartree' + r'\s+' NUMBER + r's*$', outtext, re.MULTILINE)
+        if mobj:
+            print(mobj) #print list
+            print('CCSD Energy = ')
+            psivar['CCSD CORRELATION ENERGY'] = mobj.group(5)
+            psivar['CCSD TOTAL ENERGY'] = mobj.group(6)
 
 
                  # No symmetry
