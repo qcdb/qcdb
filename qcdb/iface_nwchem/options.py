@@ -6,12 +6,12 @@ import uuid
 
 from ..exceptions import *
 from . import parsers
-
+#Need to check if nwchem or nwc is option?
 ### Example of options 
 #options.add('nwchem', RottenOption(
     #keyword = name within NWCHEM documentation
     #default = psi4 options from common-driver-psi4
-    #validator = either a parser or lambda transforming it to uppercase or something similar
+    #validator = either a parser or lambda transforming it to uppercase or something similar- check the parsers.py file
     #glossary = description
 
 #NWCHEM only working to translate with Psi4 at the moment via QCDB
@@ -50,7 +50,7 @@ def load_nwchem_defaults(options):
         keyword='scf_nopen',
         default= 0,
         validator= lambda x: float(x)
-        glossary='Specifies the number of open shells in wave function.'))
+        glossary = 'Specifies the number of open shells in wave function.'))
 
     options.add('nwchem', RottenOption(
         keyword='scf_thresh',
