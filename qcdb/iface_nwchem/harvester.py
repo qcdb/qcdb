@@ -352,7 +352,7 @@ def harvest_outfile_pass(outtext):
         #TCE_LR_CCSD
         mobj = re.search(
             r'^\s+' + r'CCSD correlation energy / hartree' + r'\s+' + NUMBER +
-            r'^\s*' + r'\s+' + r'CCSD total energy / hartree' + r'\s+' NUMBER + r's*$', outtext, re.MULTILINE)
+            r'^\s*' + r'\s+' + r'CCSD total energy / hartree' + r'\s+'+ NUMBER + r's*$', outtext, re.MULTILINE)
         if mobj:
             print('CCSD energy = ')
             psivar['CCSD CORRELATION ENERGY'] = mobj.group(1)
@@ -364,7 +364,7 @@ def harvest_outfile_pass(outtext):
             r'^\s*' + r'^\s+' + r'Two-electron energy' + NUMBER +
             r'^\s*' + r'^\s+' + r'Nuclear repulsion energy' + NUMBER +
             r'^\s*' + r'^\s+' + r'CCSD correlation energy / hartree' + r'\s+' + NUMBER +
-            r'^\s*' + r'\s+' + r'CCSD total energy / hartree' + r'\s+' NUMBER + r's*$', outtext, re.MULTILINE)
+            r'^\s*' + r'\s+' + r'CCSD total energy / hartree' + r'\s+'+ NUMBER + r's*$', outtext, re.MULTILINE)
         if mobj:
             print(mobj) #print list
             print('CCSD Energy = ')
