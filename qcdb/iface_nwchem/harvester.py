@@ -208,19 +208,6 @@ def harvest_outfile_pass(outtext):
             psivar ['MP2 CORRELATION ENERGY'] = mobj.group(2) 
             psivar ['MP2 TOTAL ENERGY'] = mobj.group(3) 
  
-        #4)SCS-MP2
-        mobj = re.search(
-            r'^\s+' + r'Spin Component Scaled (SCS) MP2' +r'^\s*' +
-            r'^\s+' + r'Same spin pairs' + r'^\s+'  + NUMBER + r'^\s*'
-            r'^\s+' + r'Same spin scaling factor' + r'^\s+'  + NUMBER + r'^\s*'
-            r'^\s+' + r'Opposite spin pairs' + r'^\s+'  + NUMBER + r'^\s*'
-            r'^\s+' + r'Opposite spin scaling fact.' + r'^\s+'  + NUMBER + r'^\s*'
-            r'^\s+' + r'SCS-MP2 correlation energy' + r'^\s+'  + NUMBER + r'^\s*'
-            r'^\s+' + r'Total SCS-MP2 energy' + r'^\s+'  + NUMBER + r'^\s*',
-            outtext, re.MULTILINE)
-        if mobj:
-            print('Spin Component Scaled (SCS) MP2')
-
         #Process CC calculation through tce [dertype] command
         cc_name = ''
         mobj = re.search(
@@ -343,20 +330,6 @@ def harvest_outfile_pass(outtext):
         if mobj:
             print(mobj) #will print list of mobj 
             print("matched CR =")
-        #TCE_EOMCC
-        mobj = re.search(
-            r'^\s+' + r'Excitation energy / hartree' + r'\s+' + NUMBER +
-            r'^\s*' + 'r\^s+' + r'/ eV' + r'^\s+' + NUMBER + r's*$', outtext, re.MULTILINE)
-        if mobj:
-            print('Excitation energy = ') #print list of mobj
-        #TCE_LR_CCSD
-        mobj = re.search(
-            r'^\s+' + r'CCSD correlation energy / hartree' + r'\s+' + NUMBER +
-            r'^\s*' + r'\s+' + r'CCSD total energy / hartree' + r'\s+'+ NUMBER + r's*$', outtext, re.MULTILINE)
-        if mobj:
-            print('CCSD energy = ')
-            psivar['CCSD CORRELATION ENERGY'] = mobj.group(1)
-            psivar['CCSD TOTAL ENERGY'] = mobj.group(2)
         #TCE- ROHF and UHF #ATL
         mobj = re.findall(
             r'^\s+' + 'Total SCF energy' + '^\s+' + NUMBER +
@@ -650,7 +623,7 @@ def muster_memory(mem):
 
     return text, options
     
-
+#May need to adjust options for qcdb driver ATL
 def muster_psi4options(opt, mol):
     """Translate psi4 keywords *opt* that have been explicitly set into
     their NWChem counterparts. Since explicitly set NWChem module keyword
