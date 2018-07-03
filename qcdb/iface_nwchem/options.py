@@ -49,7 +49,7 @@ def load_nwchem_defaults(options):
     options.add('nwchem', RottenOption(
         keyword='scf_nopen',
         default= 0,
-        validator= lambda x: float(x)
+        validator= lambda x: float(x),
         glossary='Specifies the number of open shells in wave function.'))
 
     options.add('nwchem', RottenOption(
@@ -98,7 +98,7 @@ def load_nwchem_defaults(options):
 
     options.add('nwchem', RottenOption(
         keyword='scf_tol2e',
-        default= 1.e-7
+        default= 1.e-7,
         validator= parsers.parse_convergence,
         glossary='Integral screening threshold for the evaluation of the energy and related Fock-like matrices'))
 ### Specifies the source and destination of the molecular orbital vectors.
@@ -163,9 +163,9 @@ def load_nwchem_defaults(options):
         keyword='mp2_scs',
         default= True,
         validator=parsers.boolean,
-        glossary='' #TODO  #Description needed
+        glossary='')) #TODO  #Description needed
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', RottenOption(        
         keyword='mp2_fss',
         default= 1.2,
         validator=lambda x: float(x),
@@ -187,9 +187,9 @@ def load_nwchem_defaults(options):
 #TODO #Array block for DFT - dft_xc, dft_grid, dft_convergence
 
     options.add('nwchem', RottenOption(
-        keyword='dft_iterations'
-        default= 30
-        validator= parsers.postive_integer
+        keyword='dft_iterations',
+        default= 30,
+        validator= parsers.postive_integer,
         glossary='Specify DFT iterations'))
 
     options.add('nwchem', RottenOption(
@@ -203,7 +203,18 @@ def load_nwchem_defaults(options):
   #      default='',
    #     validator='',
     #    glossary=''
-options.add('nwchem', RottenOption( keyword='dft_max_ovl', default= False, validator= parsers.boolean, glossary='Lock the ordering of orbitals on/off. Default is off.')) options.add('nwchem', RottenOption( keyword='dft_smear', default= 0.001, validator= lambda x: float (x), glossary='Smear keyword allows fractional occuption of the MOs.')) 
+    options.add('nwchem', RottenOption( 
+        keyword='dft_max_ovl', 
+        default= False, 
+        validator= parsers.boolean, 
+        glossary='Lock the ordering of orbitals on/off. Default is off.'))
+    
+    options.add('nwchem', RottenOption( 
+        keyword='dft_smear', 
+        default= 0.001, 
+        validator= lambda x: float (x), 
+        glossary='Smear keyword allows fractional occuption of the MOs.')) 
+    
     options.add('nwchem', RottenOption(
         keyword='dft_mulliken',
         default= False,
