@@ -34,16 +34,11 @@ def load_nwchem_defaults(options):
         validator=parsers.parse_memory,
         glossary='Total memory allocation, which can be specified furth to stack, heap, and global.'))
 
-    options.add('nwchem', RottenOption(
-        keyword='charge',
-        default= 0,
-        validator= parsers.parse_charge,
-        glossary='charge from active molecule'))
 #SCF block
     options.add('nwchem', RottenOption(
         keyword='scf',
         default='RHF',
-        validator=parsers.enum,
+        validator=parsers.enum("RHF UHF ROHF"),
         glossary='Reference wave function: RHF, UHF, ROHF'))
 
     options.add('nwchem', RottenOption(
@@ -181,7 +176,7 @@ def load_nwchem_defaults(options):
     options.add('nwchem', RottenOption(
         keyword='dft',
         default='',
-        validator= parsers.enum,
+        validator= parsers.enum("RDFT RODFT UDFT ODFT"),
         glossary='Defining DFT wavefunction: RDFT, RODFT, UDFT, ODFT (Open shell, singlet).'))
 
 #TODO #Array block for DFT - dft_xc, dft_grid, dft_convergence
@@ -251,7 +246,7 @@ def load_nwchem_defaults(options):
     options.add('nwchem', RottenOption(
         keyword='tce',
         default='',
-        validator= parsers.enum,
+        validator= parsers.enum("LCCD CCD LCCSD CCSD CCSD_ACT LR-CCSD EACCSD IPCCSD CC2 CCSDT CCSDTA CCSDTQ CCSDTQ CCSD(T) CCSD[T] CR-CCSD[T] CR-CCSD(T) CCSD(2)_T CCSD(2)_TQ CCSDT(2)_Q LR-CCSD(T) LR-CCSD(TQ)-1 CREOMSD(T) CREOM(T)AC QCISD CISD CISDT CISDTQ MBPT2 MBPT3 MBPT4 MP2 MP3 MP4"),
         glossary='''Specify TCE correlation models. Options include:
         LCCD, CCD, LCCSD, CCSD, CCSD_ACT, LR-CCSD, EACCSD, IPCCSD, CC2, CCSDT, CCSDTA, CCSDTQ, CCSD(T), CCSD[T]
         CR-CCSD[T], CR-CCSD(T), CCSD(2)_T, CCSD(2)_TQ, CCSDT(2)_Q, LR-CCSD(T), LR-CCSD(TQ)-1, CREOMSD(T),
