@@ -22,6 +22,7 @@ def load_nwchem_defaults(options):
         #default= 1
         #validator=
         #glossary='Sets OMP_NUM_THREADS environment variable before calling NWCHEM'
+   #option for NWChem may be 'nwchem' or 'nwc'
     options.add('nwchem', RottenOption(
         keyword='translate_psi4',
         default= True,
@@ -158,7 +159,7 @@ def load_nwchem_defaults(options):
         keyword='mp2_scs',
         default= True,
         validator=parsers.boolean,
-        glossary='')) #TODO  #Description needed
+        glossary='Spin Component Scaled MP2 calculations. Default is on.')) #TODO  #Description needed
 
     options.add('nwchem', RottenOption(        
         keyword='mp2_fss',

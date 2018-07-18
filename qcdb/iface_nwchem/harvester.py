@@ -330,6 +330,11 @@ def harvest_outfile_pass(outtext):
         if mobj:
             print(mobj) #will print list of mobj 
             print("matched CR =")
+       
+        #TCE_LCCD
+        mobj = re.search(
+            r'^\s+' +
+        
         #TCE- ROHF and UHF #ATL
         mobj = re.findall(
             r'^\s+' + 'Total SCF energy' + '^\s+' + NUMBER +
@@ -517,7 +522,7 @@ def harvest_outfile_pass(outtext):
             r'^\s+' + r'Dipole moment' + r'\s+' + NUMBER + r'\s' + r'A\.U\.'+ r'\s*' + 
             r'^\s+' + r'DMX' + r'\s+' + NUMBER + r'.*' + r'\s*' +
             r'^\s+' + r'DMY' + r'\s+' + NUMBER + r'.*' + r'\s*' +
-            r'^\s+' + r'DMZ' + r'\s+' + NUMBER + r'.*' + r'\s*' + 
+            r'^\s+' + r'DMZ' + r'\s+' + NUMBER + r'.' + r'\s*' + 
             r'^\s+' + r'.*' + r'\s*' + 
             r'^\s+' + r'Total dipole' + r'\s+' + NUMBER + r'\s' + r'A\.U\.'+ r'\s*'+
             r'^\s+' + r'Dipole moment' + r'\s+' + NUMBER + r'\s' + r'Debye\(s\)' + r'\s*'+
@@ -572,7 +577,7 @@ def harvest_outfile_pass(outtext):
       # Need to be fixed  
       # HOW TO KNOW options['NWCHEM']['NWCHEM_TCE']['value']?
       # TODO: CURRENT ENERGY = TCE ENERGY
-    if ('%s TOTAL ENERGY' % (cc_name) in psivar) and \
+    if ('%s TOTAL ENERGY' % (cc_name) in psivar and \
        ('%s CORRELATION ENERGY' % (cc_name) in psivar):
         psivar['CURRENT CORRELATION ENERGY'] = psivar['%s CORRELATION ENERGY' % (cc_name)]
         psivar['CURRENT ENERGY'] = psivar['%s TOTAL ENERGY' % (cc_name)]
@@ -581,6 +586,36 @@ def harvest_outfile_pass(outtext):
         psivar['CURRENT CORRELATION ENERGY'] = psivar['CCSD(T) CORRELATION ENERGY']
         psivar['CURRENT ENERGY'] = psivar['CCSD(T) TOTAL ENERGY']
     
+    if 'CISD CORRELATION ENERGY' in psivar:
+        psivar['CISD CORRELATION ENERGY'] = psivar['CISD CORRELATION ENERGY']
+    
+    if 'CISD TOTAL ENERGY' in psivar:
+        psivar['CISD TOTAL ENERGY'] = psivar['CISD TOTAL ENERGY']
+   
+    if 'CISDT CORRELATION ENERGY' in psivar:
+        psivar['CISDT CORRELATION ENERGY'] = psivar['CISDT CORRELATION ENERGY']
+               
+    if 'CISDT TOTAL ENERGY' in psivar:
+        psivar['CISDT TOTAL ENERGY'] = psivar['CISDT TOTAL ENERGY']
+
+    if 'MP2 CORRELATION ENERGY' in psivar:
+        psivar['MP2 CORRELATION ENERGY'] = psivar['MP2 CORRELATION ENERGY']
+
+    if 'MP2 TOTAL ENERGY' in psivar:
+        psivar['MP2 TOTAL ENERGY'] = psivar['MP2 TOTAL ENERGY']
+
+    if 'MP3 CORRELATION ENERGY' in psivar:
+        psivar['MP3 CORRELATION ENERGY'] = psivar['MP3 CORRELATION ENERGY']
+
+    if 'MP3 TOTAL ENERGY' in psivar:
+        psivar['MP3 TOTAL ENERGY'] = psivar['MP3 TOTAL ENERGY']
+
+    if 'MP4 CORRELATION ENERGY' in psivar:
+        psivar['MP4 CORRELATION ENERGY'] = psivar['MP4 CORRELATION ENERGY']
+
+    if 'MP4 TOTAL ENERGY' in psivar:
+        psivar['MP4 TOTAL ENERGY'] = psivar['MP4 TOTAL ENERGY']
+
 #    if ('EOM-%s TOTAL ENERGY' % (cc_name) in psivar) and \
 #   ('%s EXCITATION ENERGY' %(cc_name) in psivar):
 #   psivar['CURRENT ENERGY'] = psivar['EOM-%s TOTAL ENERGY' %(cc_name)]
@@ -594,7 +629,7 @@ def harvest_hessian(hess):
 
     """
     hess = hess.splitlines() 
-    
+        
 
 #def muster_inherited_options(ropts, verbose=1):
 #    accession = sys._getframe().f_code.co_name + '_' + str(uuid.uuid4())
