@@ -129,11 +129,41 @@ def load_nwchem_defaults(options):
    #     validator='',
     #    glossary=''
 
-   # options.add('nwchem', RottenOption(
-    #    keyword='scf_print',
-     #   default='',
-      #  validator='',
-       # glossary=''
+    options.add('nwchem', RottenOption(
+        keyword= 'scf_print__level',
+        default= 'default',
+        validator= parsers.enum('default debug low high never'),
+        glossary='Options of output in SCF module controlled by PRINT directive'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'scf_print__debugname',
+        default= '',
+        validator= parsers.enum('"atomic guess density" "atomic scf" "initial vectors" "intermediate vectors" "final vectors" "intermediate evals" "screening statistics" "symmetry" "geombas"'), #white space?
+        glossary='debug options'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'scf_print__defaultname',
+        default= ''
+        validator= parsers.enum('"mo guess" "final vectors analysis" "final evals" "vectors i/o" parameters convergence timing '), #Not sure if this will be parsed out correctly
+        glossary= 'default options'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'scf_print__lowname',
+        default= '',
+        validator= parsers.enum('information'),
+        glossary= 'will print information if choose low print level'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'scf_print__highname',
+        default= '',
+        validator= parsers.enum('schwarz geometry basis'),
+        glossary= 'options to print in the high level'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'scf_print__nevername',
+        default= '',
+        validator= parsers.enum(' "initial vectors analysis" "mulliken ao" ')
+        glossary= 'options in the never level'))
 
 #    options.add('nwchem', RottenOption(
  #       keyword='scf_noprint',
