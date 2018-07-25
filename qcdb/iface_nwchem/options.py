@@ -8,11 +8,11 @@ from ..exceptions import *
 from . import parsers
 #Need to check if nwchem or nwc is option?
 ### Example of options 
-#options.add('nwchem', RottenOption(
-    #keyword = name within NWCHEM documentation
-    #default = psi4 options from common-driver-psi4
-    #validator = either a parser or lambda transforming it to uppercase or something similar- check the parsers.py file
-    #glossary = description
+    #options.add('nwchem', RottenOption( 
+        #keyword = name within NWCHEM documentation, 
+        #default = psi4 options from common-driver-psi4, 
+        #validator = either a parser or lambda transforming it to uppercase or something similar- check the parsers.py file,
+        #glossary = description))
 
 #NWCHEM only working to translate with Psi4 at the moment via QCDB
 def load_nwchem_defaults(options):
@@ -28,12 +28,27 @@ def load_nwchem_defaults(options):
         default= True,
         validator= parsers.boolean,
         glossary='Will translate Psi4 options to NWCHEM counterparts'))
-
+#Memory specifications
     options.add('nwchem', RottenOption(
-        keyword='memory',
+        keyword='total_memory',
         default='total 400 mb',
         validator=parsers.parse_memory,
         glossary='Total memory allocation, which can be specified furth to stack, heap, and global.'))
+    options.add('nwchem', RottenOption(
+        keyword='stack_memory',
+        default='',
+        validator=parsers.parse_memory,
+        glossary= 'Stack memory allocation that can be specified beyond the total memory.'))
+    options.add('nwchem', RottenOption(
+        keyword='heap_memory',
+        default='',
+        validator=parsers.parse_memory,
+        glossary= 'Heap memory allocation that can be specified beyond the total memory allocation.'))
+    options.add('nwchem', RottenOption(
+        keyword='global_memory',
+        default='',
+        validator=parsers.parse_memory,
+        glossary='Global memory allocation.'
 
 #SCF block
     options.add('nwchem', RottenOption(
@@ -71,14 +86,27 @@ def load_nwchem_defaults(options):
         default= False,
         validator= parsers.boolean,
         glossary='SCF Direct calculation on/off'))
-
-#    options.add('nwchem', RottenOption(
- #       keyword='scf_semidirect',
-  #      default= '',
-   #     validator= , #validator type?
-    #    glossary='''Semidirection calculation which defines amount of disk space and cache memory size. 
-     #   Filesize, memsize, and filename can be specified in array type. 
-      #  Check NWCHEM manual for details.'''))
+    
+    #SCF semidirect options- Array okay? Check with LB
+    options.add('nwchem', RottenOption(
+        keyword='scfsd__filesize',
+        default= 0,
+        validator= parsers.postive_integer,
+        glossary= '''SCF Semidirect options: File size allows the user to specify the amount of disk space used per process for storing the integrals in 64-bit words. 
+        Default of semidirect leads to directive DIRECT.'''))
+    options.add('nwchem', RottenOption(
+        keyword='scfsd__memsize',
+        default= 0,
+        validator= parsers.positive_integer,
+        glossary= '''SCF Semidirect options: Memory size allows user to specify the number of 64-bit words to be used per process for caching integrals in memory.
+        If the amount of storage space is not available, the code cuts the value in half and checks again, and will continue to do so until request is satisfied.'''))
+    options.add('nwchem', RottenOption(
+        keyword= 'scfsd__filename',
+        default='',
+        validator= lambda x: x.lower(), #need to specify file extensions?
+        glossary= '''SCF Semidirect options: 
+        File name default for integral files are placed into scratch directory (see NWChem manual for details). 
+        User-specified string in File name keyword will override default.'''))
 
     options.add('nwchem', RottenOption(
         keyword='scf_sym',
@@ -211,7 +239,74 @@ def load_nwchem_defaults(options):
         glossary='Defining DFT wavefunction: RDFT, RODFT, UDFT, ODFT (Open shell, singlet).'))
 
 #TODO #Array block for DFT - dft_xc, dft_grid, dft_convergence
+#DFT Convergence block
+    options.add('nwchem', RottenOption(
+        keyword='dft_convergence',
+        default= '',
+        validator= parsers.enum('energy density, gradient hl_tol dampon dampoff ncydp ncyds ncysh damp diison diisoff diis levlon levloff lshift rabuck'),
+        glossary='DFT Convergence options to specify.'))
+    options.add('nwchem', RottenOption(
+        keyword='convergence__energy',
+        default= 1.e-6,
+        validator= parsers.parse_convergence,
+        glossary= 'total energy convergence DFT'))
+    options.add('nwchem', RottenOption(
+        keyword='convergence__density',
+        default= 1.e-5,
+        validator= parsers.parse_convergence,
+        glossary= 'DFT convergence of total density.'))
+    options.add('nwchem', RottenOption(
+        keyword= 'convergence__gradient',
+        default= 5.e-4,
+        validator= parsers.parse_convergence,
+        glossary=''))
+    options.add('nwchem', RottenOption(
+        keyword='convergence__hltol',
+        default= 0.1
+        validator= parsers.postive_integers,
+        glossary=''))
+    options.add('nwchem', RottenOption(
+        keyword='convergence__damp', #check if separate from dampoff option
+        default=True,
+        validator= parsers.boolean,
+        glossary='Turn on to specify what percentage of previous iterations density mixed with current iterations density.'))
+    options.add('nwchem', RottenOption(
+        keyword='damp__value',
+        default= 0,
+        validator=parsers.positive_integers,
+        glossary='Percent of previous iterations mixed with current iterations density.'))
+    options.add('nwchem', RottenOption(
+        keyword='convergence__ncydp',
+        default= 2,
+        validator= parsers.positive_integers,
+        glossary= 'Specifies number of damping cycles. Default is 2.'))
+    options.add('nwchem', RottenOption(
+        keyword='convergence__diis', #check if on/off separate options
+        default= False,
+        validator= parsers.boolean,
+        glossary='')) #add diis_integer option? in manual it is diis
+    options.add('nwchem', RottenOption(
+        keyword='convergence__ncyds',
+        default= 30,
+        validator= parsers.positive_integers,
+        glossary='Specifies number of DIIS [Direct inversion of iterative subspace] cycles needed. Default is 30.'))
+    options.add('nwchem', RottenOption(
+        keyword='convergence__levl',
+        default=False,
+        validator=parsers.boolean,
+        glossary=''))
+    options.add('nwchem', RottenOption(
+        keyword='convergence__ncysh',
+        default= 0,
+        validator= parsers.positive_integers,
+        glossary= 'Specifies the number of level-shifting cycles are used in the input. Default is 0.'))
+    options.add('nwchem', RottenOption(
+        keyword='convergence__rabuck'
+        default= 25,
+        validator= parsers.positive_integers,
+        glossary=''))
 
+#DFT block [continued]
     options.add('nwchem', RottenOption(
         keyword='dft_iterations',
         default= 30,
@@ -252,8 +347,29 @@ def load_nwchem_defaults(options):
         default= False,
         validator= parsers.boolean,
         glossary='Direct calculation of DFT: on/off. Default is off.'))
-#DFT_Semidirect is an array #TODO 
-#Add here
+#DFT_Semidirect #Check ATL 
+    options.add('nwchem', RottenOption(
+        keyword='dft__semidirect',
+        default= '',
+        validator= parsers.enum('filesize memsize filename'),
+        glossary= '''DFT Semidirect options: File size allows the user to specify the amount of disk space used per process for storing the integrals in 64-bit words. 
+        Default of semidirect leads to directive DIRECT.'''))
+   options.add('nwchem', RottenOption(
+       keyword='semidirect__filesize',
+       default= '', #default is disksize
+       validator=parsers.positive_integers,
+       glossary=''))
+   options.add('nwchem', RottenOption(
+       keyword='semidirect__memsize',
+       default='',
+       validator=parsers.parse_memory,
+       glossary=''))
+   options.add('nwchem', RottenOption(
+       keyword='semidirect__filename',
+       default= ''
+       validator= lambda x
+       glosary=''))
+
     options.add('nwchem', RottenOption(
         keyword='dft_cgmin',
         default= False,
