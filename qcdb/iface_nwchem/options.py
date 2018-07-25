@@ -266,12 +266,17 @@ def load_nwchem_defaults(options):
         validator= parsers.postive_integers,
         glossary=''))
     options.add('nwchem', RottenOption(
-        keyword='convergence__damp', #check if separate from dampoff option
-        default=True,
-        validator= parsers.boolean,
-        glossary='Turn on to specify what percentage of previous iterations density mixed with current iterations density.'))
+        keyword='convergence__dampon' 
+        default=0.0
+        validator= lambda x: float(x),
+        glossary='Turns on damping when reaching user-specified energy level.'))
     options.add('nwchem', RottenOption(
-        keyword='damp__value',
+        keyword='convergence__dampoff',
+        default= 0.0,
+        validator= lambda x: float(x),
+        glossary= 'Turns off damping when reaching user-specified energy level.'))
+    options.add('nwchem', RottenOption(
+        keyword='convergence__damp',
         default= 0,
         validator=parsers.positive_integers,
         glossary='Percent of previous iterations mixed with current iterations density.'))
@@ -281,20 +286,40 @@ def load_nwchem_defaults(options):
         validator= parsers.positive_integers,
         glossary= 'Specifies number of damping cycles. Default is 2.'))
     options.add('nwchem', RottenOption(
-        keyword='convergence__diis', #check if on/off separate options
-        default= False,
-        validator= parsers.boolean,
-        glossary='')) #add diis_integer option? in manual it is diis
+        keyword='convergence__diison'
+        default= 0.0,
+        validator= lambda x: float(x),
+        glossary='')) 
+    options.add('nwchem', RottenOption(
+        keyword='convergence__diisoff',
+        default=  0.0,
+        validator= lambda x: float(x),
+        glossary= ''))
+    options.add('nwchem', RottenOption(
+        keyword='convergence__diis',
+        default= 10,
+        validator= lambda x: float(x),
+        glossary= 'Number of Fock matrices used in direct inversion of iterative subspace [DIIS] extrapolation'))
     options.add('nwchem', RottenOption(
         keyword='convergence__ncyds',
         default= 30,
         validator= parsers.positive_integers,
         glossary='Specifies number of DIIS [Direct inversion of iterative subspace] cycles needed. Default is 30.'))
     options.add('nwchem', RottenOption(
-        keyword='convergence__levl',
-        default=False,
-        validator=parsers.boolean,
+        keyword='convergence__levlon',
+        default=0.0,
+        validator=lambda x: float (x),
         glossary=''))
+    options.add('nwchem', RottenOption(
+        keyword='convergence__levloff',
+        default= 0.0,
+        validator= lambda x: float(x),
+        glossary=''))
+    options.add('nwchem', RottenOption(
+        keyword='convergence__lshift',
+        default= 0.5,
+        validator= lambda x: float(x),
+        glossary= ''))
     options.add('nwchem', RottenOption(
         keyword='convergence__ncysh',
         default= 0,
