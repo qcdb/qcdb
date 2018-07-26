@@ -49,6 +49,12 @@ def load_nwchem_defaults(options):
         default='',
         validator=parsers.parse_memory,
         glossary='Global memory allocation.'
+#Top level print options
+    options.add('nwchem', RottenOption(
+        keyword='print',
+        default='medium',
+        validator= parsers.enum('debug high medium low none'),
+        glossary='Top level print options which can be divided from most specific to least: debug, high, low, and none. Default is medium.'))
 
 #SCF block
     options.add('nwchem', RottenOption(
@@ -157,42 +163,6 @@ def load_nwchem_defaults(options):
    #     validator='',
     #    glossary=''
 
-    options.add('nwchem', RottenOption(
-        keyword= 'scf_print__level',
-        default= 'default',
-        validator= parsers.enum('default debug low high never'),
-        glossary='Options of output in SCF module controlled by PRINT directive'))
-
-    options.add('nwchem', RottenOption(
-        keyword= 'scf_print__debugname',
-        default= '',
-        validator= parsers.enum('"atomic guess density" "atomic scf" "initial vectors" "intermediate vectors" "final vectors" "intermediate evals" "screening statistics" "symmetry" "geombas"'), #white space?
-        glossary='debug options'))
-
-    options.add('nwchem', RottenOption(
-        keyword= 'scf_print__defaultname',
-        default= ''
-        validator= parsers.enum('"mo guess" "final vectors analysis" "final evals" "vectors i/o" parameters convergence timing '), #Not sure if this will be parsed out correctly
-        glossary= 'default options'))
-
-    options.add('nwchem', RottenOption(
-        keyword= 'scf_print__lowname',
-        default= '',
-        validator= parsers.enum('information'),
-        glossary= 'will print information if choose low print level'))
-
-    options.add('nwchem', RottenOption(
-        keyword= 'scf_print__highname',
-        default= '',
-        validator= parsers.enum('schwarz geometry basis'),
-        glossary= 'options to print in the high level'))
-
-    options.add('nwchem', RottenOption(
-        keyword= 'scf_print__nevername',
-        default= '',
-        validator= parsers.enum(' "initial vectors analysis" "mulliken ao" ')
-        glossary= 'options in the never level'))
-
 #    options.add('nwchem', RottenOption(
  #       keyword='scf_noprint',
   #      default='',
@@ -217,7 +187,7 @@ def load_nwchem_defaults(options):
         keyword='mp2_scs',
         default= True,
         validator=parsers.boolean,
-        glossary='Spin Component Scaled MP2 calculations. Default is on.')) #TODO  #Description needed
+        glossary='Spin Component Scaled MP2 calculations. Default is on.'))
 
     options.add('nwchem', RottenOption(        
         keyword='mp2_fss',
