@@ -209,97 +209,99 @@ def load_nwchem_defaults(options):
         glossary='Defining DFT wavefunction: RDFT, RODFT, UDFT, ODFT (Open shell, singlet).'))
 
 #TODO #Array block for DFT - dft_xc, dft_grid, dft_convergence
-#DFT Convergence block
-    options.add('nwchem', RottenOption(
+#DFT Convergence block #remove top level and create nesting at each option
+#set to delete    options.add('nwchem', RottenOption(
         keyword='dft_convergence',
         default= '',
         validator= parsers.enum('energy density, gradient hl_tol dampon dampoff ncydp ncyds ncysh damp diison diisoff diis levlon levloff lshift rabuck'),
         glossary='DFT Convergence options to specify.'))
     options.add('nwchem', RottenOption(
-        keyword='convergence__energy',
+        keyword='dft__convergence__energy',
         default= 1.e-6,
-        validator= parsers.parse_convergence,
-        glossary= 'total energy convergence DFT'))
+        validator= lambda x: float(x),
+        glossary= 'total energy convergence within the DFT block'))
     options.add('nwchem', RottenOption(
-        keyword='convergence__density',
+        keyword='dft__convergence__density',
         default= 1.e-5,
-        validator= parsers.parse_convergence,
-        glossary= 'DFT convergence of total density.'))
+        validator= lambda x: float(x),
+        glossary= 'Total density convergence within DFT block that has RMS difference N and N-1 iterations'))
     options.add('nwchem', RottenOption(
-        keyword= 'convergence__gradient',
+        keyword= 'dft__convergence__gradient',
         default= 5.e-4,
-        validator= parsers.parse_convergence,
-        glossary=''))
+        validator= lambda x: float(x),
+        glossary='Convergence of the orbital gradient, defined as the DIIS error vector becomes less than a certain value. Default is 5.e-4.'))
     options.add('nwchem', RottenOption(
-        keyword='convergence__hltol',
+        keyword='dft__convergence__hltol',
         default= 0.1
-        validator= parsers.postive_integers,
-        glossary=''))
+        validator= lambda x: float(x),
+        glossary='HUMO LUMO gap tolerance. Default 0.1 au.'))
     options.add('nwchem', RottenOption(
-        keyword='convergence__dampon' 
+        keyword='dft__convergence__dampon' 
         default=0.0
         validator= lambda x: float(x),
         glossary='Turns on damping when reaching user-specified energy level.'))
     options.add('nwchem', RottenOption(
-        keyword='convergence__dampoff',
+        keyword='dft__convergence__dampoff',
         default= 0.0,
         validator= lambda x: float(x),
         glossary= 'Turns off damping when reaching user-specified energy level.'))
     options.add('nwchem', RottenOption(
-        keyword='convergence__damp',
+        keyword='dft__convergence__damp',
         default= 0,
-        validator=parsers.positive_integers,
+        validator=parsers.parse_convergence,
         glossary='Percent of previous iterations mixed with current iterations density.'))
     options.add('nwchem', RottenOption(
-        keyword='convergence__ncydp',
+        keyword='dft__convergence__ncydp',
         default= 2,
         validator= parsers.positive_integers,
         glossary= 'Specifies number of damping cycles. Default is 2.'))
     options.add('nwchem', RottenOption(
-        keyword='convergence__diison'
+        keyword='dft__convergence__diison'
         default= 0.0,
         validator= lambda x: float(x),
-        glossary='')) 
+        glossary='Direct inversion of the iterative space can turned on at a user-specified energy.') 
     options.add('nwchem', RottenOption(
-        keyword='convergence__diisoff',
+        keyword='dft__convergence__diisoff',
         default=  0.0,
         validator= lambda x: float(x),
-        glossary= ''))
+        glossary= 'Direct inversion of the iterative space can be turned off at a user-specified energy. '))
     options.add('nwchem', RottenOption(
-        keyword='convergence__diis',
+        keyword='dft__convergence__diis',
         default= 10,
         validator= lambda x: float(x),
         glossary= 'Number of Fock matrices used in direct inversion of iterative subspace [DIIS] extrapolation'))
     options.add('nwchem', RottenOption(
-        keyword='convergence__ncyds',
+        keyword='dft__convergence__ncyds',
         default= 30,
         validator= parsers.positive_integers,
         glossary='Specifies number of DIIS [Direct inversion of iterative subspace] cycles needed. Default is 30.'))
     options.add('nwchem', RottenOption(
-        keyword='convergence__levlon',
+        keyword='dft__convergence__levlon',
         default=0.0,
         validator=lambda x: float (x),
-        glossary=''))
+        glossary='Turning on the level shifting, which is the amount of shift applied to diagonal elements of the unoccupied block in the Fock matrix.'))
     options.add('nwchem', RottenOption(
-        keyword='convergence__levloff',
+        keyword='dft__convergence__levloff',
         default= 0.0,
         validator= lambda x: float(x),
-        glossary=''))
+        glossary='Turning off the level shifting function'))
     options.add('nwchem', RottenOption(
-        keyword='convergence__lshift',
+        keyword='dft__convergence__lshift',
         default= 0.5,
         validator= lambda x: float(x),
-        glossary= ''))
+        glossary= 'Specify the amount of shift applied to diagonal elements of the unoccupied block in the Fock matrix. Default is 0.5 a.u.'))
     options.add('nwchem', RottenOption(
-        keyword='convergence__ncysh',
+        keyword='dft__convergence__ncysh',
         default= 0,
-        validator= parsers.positive_integers,
+        validator= lambda x: float(x),
         glossary= 'Specifies the number of level-shifting cycles are used in the input. Default is 0.'))
     options.add('nwchem', RottenOption(
-        keyword='convergence__rabuck'
+        keyword='dft__convergence__rabuck'
         default= 25,
         validator= parsers.positive_integers,
-        glossary=''))
+        glossary='''The Rabuck method can be implemented when the initial guess is poor. 
+        Will use fractional occupation of the orbital levels during the initial cycles of SCF convergence (A.D. Rabuck and G. Scuseria, J. Chem. Phys 110, 695(1999). 
+        This option specifies the number of cycles the Rabuck method is active.'''))
 
 #DFT block [continued]
     options.add('nwchem', RottenOption(
