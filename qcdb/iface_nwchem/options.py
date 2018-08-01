@@ -208,13 +208,8 @@ def load_nwchem_defaults(options):
         validator= parsers.enum("RDFT RODFT UDFT ODFT"),
         glossary='Defining DFT wavefunction: RDFT, RODFT, UDFT, ODFT (Open shell, singlet).'))
 
-#TODO #Array block for DFT - dft_xc, dft_grid, dft_convergence
-#DFT Convergence block #remove top level and create nesting at each option
-#set to delete    options.add('nwchem', RottenOption(
-        keyword='dft_convergence',
-        default= '',
-        validator= parsers.enum('energy density, gradient hl_tol dampon dampoff ncydp ncyds ncysh damp diison diisoff diis levlon levloff lshift rabuck'),
-        glossary='DFT Convergence options to specify.'))
+#TODO #Array block for DFT - dft_xc, dft_grid
+#DFT Convergence 
     options.add('nwchem', RottenOption(
         keyword='dft__convergence__energy',
         default= 1.e-6,
