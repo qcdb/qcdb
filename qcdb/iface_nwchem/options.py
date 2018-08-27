@@ -1,18 +1,12 @@
 import collections
 
-from ..moptions.read_options2 import RottenOption
+from ..moptions.read_options2 
+import RottenOption
 import copy
 import uuid
 
 from ..exceptions import *
 from . import parsers
-#Need to check if nwchem or nwc is option?
-### Example of options 
-    #options.add('nwchem', RottenOption( 
-        #keyword = name within NWCHEM documentation, 
-        #default = psi4 options from common-driver-psi4, 
-        #validator = either a parser or lambda transforming it to uppercase or something similar- check the parsers.py file,
-        #glossary = description))
 
 #NWCHEM only working to translate with Psi4 at the moment via QCDB
 def load_nwchem_defaults(options):
@@ -28,12 +22,18 @@ def load_nwchem_defaults(options):
         default= True,
         validator= parsers.boolean,
         glossary='Will translate Psi4 options to NWCHEM counterparts'))
+    options.add('nwchem', RottenOption(
+        keyword='echo',
+        default=True,
+        validator=parsers.boolean,
+        glossary='Echo prints out the input file at the beginning of the output file. Default is on.'))
+
 #Memory specifications
     options.add('nwchem', RottenOption(
         keyword='total_memory',
         default='total 400 mb',
         validator=parsers.parse_memory,
-        glossary='Total memory allocation, which can be specified furth to stack, heap, and global.'))
+        glossary='Total memory allocation, which can be specified further to stack, heap, and global.'))
     options.add('nwchem', RottenOption(
         keyword='stack_memory',
         default='',
@@ -48,14 +48,43 @@ def load_nwchem_defaults(options):
         keyword='global_memory',
         default='',
         validator=parsers.parse_memory,
-        glossary='Global memory allocation.'
+        glossary='Global memory allocation.'))
+#Geometry options
+    options.add('nwchem', RottenOption(
+        keyword='geometry_center',
+        default=True,
+        validator=parsers.boolean,
+        glossary='Enables or disables the translation of the center of nuclear charge to the origin. Default is move the center of nuclear charge to the origin (center or True).'))
+    options.add('nwchem', RottenOption(
+        keyword='geometry_units',
+        default='Angstroms',
+        validator=parsers.enum('au atomic bohr nm nanometers pm picometers'),
+        glossary='''keyword specifying the <units> string variable. Default for geometry input is Angstroms. 
+        Other options include atomic units (au, atomic or bohr are acceptable keywords), nanometers (nm), or picometers (pm)
+        '''))
+    options.add('nwchem', RottenOption(
+        keyword='geometry_autosym',
+        default=True,
+        validator=parsers.boolean,
+        glossary='The option to automatically determine the symmetry of the geometric system. Default is on.'))
+    options.add('nwchem', RottenOption(
+        keyword='geometry_autoz',
+        default=True,
+        validator=parsers.boolean,
+        glossary='NWChem generates redundant internal coordinates from user input Cartesian coordinates. Default is on.'))
 #Top level print options
     options.add('nwchem', RottenOption(
         keyword='print',
         default='medium',
         validator= parsers.enum('debug high medium low none'),
         glossary='Top level print options which can be divided from most specific to least: debug, high, low, and none. Default is medium.'))
-
+#Basis block
+###Need to figure out how to delineate per atom basis attribution #TODO
+    options.add('nwchem', RottenOption(
+        keyword="basis_library_all",
+        default="",
+        validator= lambda x: x.lower(),
+        glossary=''))
 #SCF block
     options.add('nwchem', RottenOption(
         keyword='scf',
@@ -155,16 +184,22 @@ def load_nwchem_defaults(options):
         default= 0.1,
         validator= lambda x: float(x),
         glossary='Control Netwon-Raphson value.'))
+    
+    options.add('nwchem', RottenOption(
+        keyword='scf_print',
+        default='medium',
+        validator= parsers.enum('none low medium high debug'),
+        glossary='Print options within the SCF block. Default is medium.'))
+    
+    options.add('nwchem', RottenOption(
+        keyword='scf_noprint',
+        default='none',
+        validator=parsers.enum('none low medium high debug'),
+        glossary='Options to not print into output file within the SCF block. Default is none.'))
 
 #TODO #Array block in SCF
 #    options.add('nwchem', RottenOption(
  #       keyword='scf_level',
-  #      default='',
-   #     validator='',
-    #    glossary=''
-
-#    options.add('nwchem', RottenOption(
- #       keyword='scf_noprint',
   #      default='',
    #     validator='',
     #    glossary=''
@@ -297,7 +332,7 @@ def load_nwchem_defaults(options):
         glossary='''The Rabuck method can be implemented when the initial guess is poor. 
         Will use fractional occupation of the orbital levels during the initial cycles of SCF convergence (A.D. Rabuck and G. Scuseria, J. Chem. Phys 110, 695(1999). 
         This option specifies the number of cycles the Rabuck method is active.'''))
-
+        
 #DFT block [continued]
     options.add('nwchem', RottenOption(
         keyword='dft_iterations',
@@ -339,27 +374,21 @@ def load_nwchem_defaults(options):
         default= False,
         validator= parsers.boolean,
         glossary='Direct calculation of DFT: on/off. Default is off.'))
-#DFT_Semidirect #Check ATL 
-    options.add('nwchem', RottenOption(
-        keyword='dft__semidirect',
-        default= '',
-        validator= parsers.enum('filesize memsize filename'),
-        glossary= '''DFT Semidirect options: File size allows the user to specify the amount of disk space used per process for storing the integrals in 64-bit words. 
-        Default of semidirect leads to directive DIRECT.'''))
+#DFT_Semidirect 
    options.add('nwchem', RottenOption(
-       keyword='semidirect__filesize',
+       keyword='dft__semidirect__filesize',
        default= '', #default is disksize
        validator=parsers.positive_integers,
        glossary=''))
    options.add('nwchem', RottenOption(
-       keyword='semidirect__memsize',
+       keyword='dft__semidirect__memsize',
        default='',
        validator=parsers.parse_memory,
        glossary=''))
    options.add('nwchem', RottenOption(
-       keyword='semidirect__filename',
-       default= ''
-       validator= lambda x
+       keyword='dft__semidirect__filename',
+       default= '',
+       validator= lambda x,
        glosary=''))
 
     options.add('nwchem', RottenOption(
@@ -374,7 +403,19 @@ def load_nwchem_defaults(options):
         validator= parsers.boolean,
         glossary='Fukui indices analysis: on/off. Default is off(false).'))
 #DFT Arrays- dft_disp, dft_print, dft_noprint #TODO
-
+    options.add('nwchem', RottenOption(
+        keyword='dft_print',
+        default='medium',
+        validator=parsers.enum('none low medium high debug'),
+        glossary='''Print level options within the DFT block.
+        Default is medium, which prints out convergence, final vector symmetries, multipole, parameters,
+        and semidirect information.'''))
+    options.add('nwchem', RottenOption(
+        keyword='dft_noprint',
+        default='none',
+        validator=parsers.enum('none low medium high debug'),
+        glossary='No print options for the DFT block. Default is none.'))
+        
 #TCE block
     options.add('nwchem', RottenOption(
         keyword='tce_dft',
