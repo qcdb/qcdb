@@ -1,0 +1,26 @@
+#! single-point HF/cc-pVDZ (Cartesian) on NH2 
+
+banner('ROHF energy calculation')
+
+molecule {
+0 2
+N
+H 1 R
+H 1 R 2 A
+
+R=1.008
+A=105.0
+}
+
+set {
+basis cc-pVDZ
+puream false
+reference rohf
+d_convergence 8
+df_scf_guess false 
+scf_type direct  
+}
+
+energy('scf')
+
+

@@ -1,0 +1,22 @@
+echo
+memory 300 mb
+geometry
+zmat
+ N
+ H 1 1.008 
+ H 1 1.008 2 105.0
+end
+end
+
+basis cartesian
+* library cc-pVDZ
+end
+
+scf
+rohf
+nopen 1
+thresh 1.0e-8
+end
+
+task scf energy
+

@@ -1,0 +1,58 @@
+#! single-point CCSD(T)/cc-pvdz on water
+# CCSD(T) calculation through "task ccsd(t)" is cheaper than "task tce" 
+# and able to harvest MP2 energy as well. 
+
+print '        <<< Literal input to NWChem >>>'
+
+memory 600 mb
+
+nwchem {
+geometry
+O     0.000000000000    0.000000000000   -0.065638538099
+H     0.000000000000   -0.757480611647    0.520865616174
+H     0.000000000000    0.757480611647    0.520865616174
+end
+
+basis spherical
+* library cc-pvdz
+end
+
+scf
+ rhf
+ thresh 1.0e-12 #Not the same as e_convergence and d_convergence
+end
+tce
+ scf
+ ccsd(t)
+ thresh 1.0e-12
+end
+
+task ccsd(t) energy
+}
+
+energy('nwchem')
+
+clean()
+clean_variables()
+nwchem {}
+
+print '        <<< Translation of NWChem input to Psi4 format to NWChem >>>'
+
+molecule {
+O
+H 1 R
+H 1 R 2 A
+
+R=0.958
+A=104.5
+}
+
+set {
+basis cc-pvdz
+reference rhf
+nwchem_scf_thresh 1.0e-12
+nwchem_tce_thresh 1.0e-12
+nwchem_tce ccsd(t)
+}
+
+energy('nwchem-ccsd(t)')

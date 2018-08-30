@@ -1,0 +1,133 @@
+
+    -----------------------------------------------------------------------
+          Psi4: An Open-Source Ab Initio Electronic Structure Package
+                               Psi4 1.1 release
+
+                         Git: Rev {HEAD} add49b9 
+
+
+    R. M. Parrish, L. A. Burns, D. G. A. Smith, A. C. Simmonett,
+    A. E. DePrince III, E. G. Hohenstein, U. Bozkaya, A. Yu. Sokolov,
+    R. Di Remigio, R. M. Richard, J. F. Gonthier, A. M. James,
+    H. R. McAlexander, A. Kumar, M. Saitow, X. Wang, B. P. Pritchard,
+    P. Verma, H. F. Schaefer III, K. Patkowski, R. A. King, E. F. Valeev,
+    F. A. Evangelista, J. M. Turney, T. D. Crawford, and C. D. Sherrill,
+    J. Chem. Theory Comput. in press (2017).
+    (doi: 10.1021/acs.jctc.7b00174)
+
+    -----------------------------------------------------------------------
+
+
+    Psi4 started on: Friday, 11 May 2018 02:51PM
+
+    Process ID:  44823
+    PSIDATADIR: /Users/alolinco/miniconda3/envs/p4dev36/share/psi4
+    Memory:     500.0 MiB
+    Threads:    1
+    
+  ==> Input File <==
+
+--------------------------------------------------------------------------
+#! pbe/sto-3g H2O DFT energy  
+
+print '        <<< Literal nwchem.nw to NWChem >>>'
+
+memory 300 mb
+
+nwchem {
+geometry units Angstrom
+O     0.000000000000    0.000000000000   -0.068516219310
+H     0.000000000000   -0.790689573744    0.543701060724
+H     0.000000000000    0.790689573744    0.543701060724
+end
+basis spherical
+ * library sto-3g
+end
+charge 0
+
+dft
+direct
+xc xpbe96 cpbe96
+grid lebedev 99 14
+convergence energy 1e-7 density 1e-7
+end
+
+task dft energy
+}
+
+energy ('nwchem')
+
+nwchem {}
+clean ()
+clean_variables()
+
+print '        <<< Thorough Psi4 format >>>'
+
+memory 300 mb
+
+molecule h2o {
+0 1
+O
+H 1 1.0
+H 1 1.0 2 104.5
+}
+
+set {
+print 2
+basis sto-3g
+
+df_scf_guess false #Doing nothing 
+scf_type direct
+e_convergence 7
+d_convergence 7
+dft_spherical_points 590
+dft_radial_points 99
+reference rks
+}
+
+set dft_functional pbe
+
+nwchem {}
+
+energy ('nwchem-dft')
+
+clean()
+clean_variables()
+nwchem {}
+
+# these make a clean slate for the next job
+revoke_global_option_changed('NWCHEM_DFT_DIRECT')
+revoke_global_option_changed('NWCHEM_DFT')
+revoke_global_option_changed('NWCHEM_DFT_XC')
+revoke_global_option_changed('NWCHEM_DFT_GRID')
+revoke_global_option_changed('NWCHEM_DFT_CONVERGENCE')
+
+print '        <<< Translation of nwchem.nw to Psi4 format to NWChem >>>'
+
+memory 300 mb
+
+molecule h2o {
+0 1
+O
+H 1 1.0
+H 1 1.0 2 104.5
+}
+
+set {
+print 2
+basis sto-3g
+
+df_scf_guess false
+nwchem_dft_direct true
+nwchem_dft_grid [lebedev, 99, 14]
+nwchem_dft_convergence [energy, 1.e-7, density, 1.e-7]
+}
+
+set nwchem_dft_xc [xpbe96, cpbe96]
+
+nwchem {}
+
+energy ('nwchem-dft')
+--------------------------------------------------------------------------
+
+*** Psi4 exiting successfully. Buy a developer a beer!
