@@ -1,0 +1,74 @@
+#! single-point UHF/cc-pVDZ  on NH2 
+
+print '        <<< Literal nwchem.nw to NWChem >>>'
+
+nwchem {
+memory 400 mb
+
+geometry
+zmat
+ N
+ H 1 1.008
+ H 1 1.008 2 105.0
+end
+end
+
+basis spherical
+* library cc-pVDZ
+end
+
+scf
+uhf
+nopen 1
+thresh 1.0e-8
+end
+
+task scf energy
+}
+
+energy('nwchem')
+
+compare_values(-55.566884487411, get_variable('scf total energy'), 6, 'SCF')  #TEST
+compare_values(-55.566884487411, get_variable('current energy'), 6, 'Current')  #TEST
+compare_values(-55.566884487411, get_variable('current reference energy'), 6, 'Current ref')  #TEST
+
+clean()
+clean_variables()
+nwchem {}
+
+print '        <<< Translation of nwchem.nw to Psi4 format to NWChem >>>'
+
+banner('UHF-SCF energy calculation')
+
+memory 400 mb
+
+molecule {
+0 2
+N
+H 1 R
+H 1 R 2 A
+
+R=1.008
+A=105.0
+}
+
+set {
+basis cc-pVDZ
+nwchem_scf uhf
+nwchem_scf_nopen 1
+nwchem_scf_thresh 1.0e-8
+#To get the same energy from Psi4, add commands below
+#df_scf_guess false #Doing nothing for NWChem
+#scf_type direct  
+}
+
+energy('nwchem-scf')
+
+compare_values(-55.566884487411, get_variable('scf total energy'), 6, 'SCF')  #TEST
+compare_values(-55.566884487411, get_variable('current energy'), 6, 'Current')  #TEST
+compare_values(-55.566884487411, get_variable('current reference energy'), 6, 'Current ref')  #TEST
+
+clean()
+clean_variables()
+nwchem {}
+

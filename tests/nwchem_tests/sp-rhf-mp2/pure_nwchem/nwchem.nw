@@ -1,0 +1,25 @@
+echo
+memory 400 mb
+
+geometry
+O     0.000000000000    0.000000000000   -0.065638538099
+H     0.000000000000   -0.757480611647    0.520865616174
+H     0.000000000000    0.757480611647    0.520865616174
+end
+
+basis spherical
+* library cc-pvdz
+end
+
+scf
+ rhf
+ thresh 1.0e-8 
+ nopen 0 
+end
+
+mp2
+tight
+end
+
+task mp2 energy
+

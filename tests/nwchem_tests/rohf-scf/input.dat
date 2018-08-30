@@ -1,0 +1,91 @@
+#! single-point HF/cc-pVDZ (Cartesian) on NH2 
+
+print '        <<< Literal nwchem.nw to NWChem >>>'
+
+memory 300 mb
+
+nwchem {
+geometry
+zmat
+ N
+ H 1 1.008
+ H 1 1.008 2 105.0
+end
+end
+
+basis cartesian
+* library cc-pVDZ
+end
+
+scf
+rohf
+nopen 1
+thresh 1.0e-8
+end
+
+task scf energy
+}
+
+energy('nwchem')
+
+
+clean()
+clean_variables()
+nwchem {}
+
+print '        <<< Translation of nwchem.nw to Psi4 format to NWChem >>>'
+
+banner('ROHF energy calculation')
+
+molecule {
+0 2
+N
+H 1 R
+H 1 R 2 A
+
+R=1.008
+A=105.0
+}
+
+set {
+basis cc-pVDZ
+puream false
+nwchem_scf rohf
+nwchem_scf_thresh 1.0e-8
+#To get the same energy from Psi4, add commands below
+df_scf_guess false #Doing nothing for NWChem
+scf_type direct 
+}
+
+energy('nwchem-scf')
+
+
+clean()
+clean_variables()
+nwchem {}
+
+print '        <<< Thorough Psi4 format >>>'
+
+banner('ROHF energy calculation')
+
+molecule {
+0 2
+N
+H 1 R
+H 1 R 2 A
+
+R=1.008
+A=105.0
+}
+
+set {
+basis cc-pvdz
+puream false
+reference rohf 
+e_convergence 8
+scf_type direct
+}
+
+energy('nwchem-scf')
+
+

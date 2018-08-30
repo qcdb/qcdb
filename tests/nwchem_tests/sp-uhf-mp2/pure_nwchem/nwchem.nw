@@ -1,0 +1,22 @@
+echo
+memory 300 mb
+geometry units Angstrom
+N     0.000000000000    0.000000000000   -0.077213791074
+H     0.000000000000   -0.799700167014    0.536417729366
+H     0.000000000000    0.799700167014    0.536417729366
+end
+charge 0
+
+basis spherical
+* library cc-pVDZ
+end
+
+scf
+uhf
+nopen 1
+thresh 1.0e-8
+maxiter 80
+end
+
+task mp2 energy
+
