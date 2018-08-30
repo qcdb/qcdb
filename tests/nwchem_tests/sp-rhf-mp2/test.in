@@ -1,0 +1,105 @@
+#! single-point MP2/cc-pvdz on water
+
+print '        <<< Literal nwchem.nw to NWChem >>>'
+
+nwchem {
+memory 400 mb
+geometry
+O     0.000000000000    0.000000000000   -0.065638538099
+H     0.000000000000   -0.757480611647    0.520865616174
+H     0.000000000000    0.757480611647    0.520865616174
+end
+
+basis spherical
+* library cc-pvdz
+end
+
+scf
+ rhf
+ thresh 1.0e-8 
+ nopen 0 
+end
+
+mp2
+tight
+end
+
+task mp2 energy
+}
+
+energy('nwchem')
+
+compare_values(-76.026760737446, get_variable('scf total energy'), 6, 'SCF')  #TEST
+compare_values(-0.204016996305, get_variable('mp2 correlation energy'), 6, 'MP2 corl')  #TEST
+compare_values(-76.230777733750, get_variable('mp2 total energy'), 6, 'MP2')  #TEST
+
+
+clean()
+clean_variables()
+
+print '        <<< Translation of nwchem.nw to Psi4 format to NWChem >>>'
+
+memory 400 mb
+
+molecule {
+O
+H 1 R
+H 1 R 2 A
+
+R=0.958
+A=104.5
+}
+
+set {
+basis cc-pvdz
+nwchem_scf_thresh 1.0e-8 
+nwchem_scf rhf 
+nwchem_scf_nopen 0
+nwchem_mp2_tight true
+}
+
+nwchem {}  # clear literal block since running sequentially
+
+energy('nwchem-mp2')
+
+compare_values(-76.026760737446, get_variable('scf total energy'), 6, 'SCF')  #TEST
+compare_values(-0.204016996305, get_variable('mp2 correlation energy'), 6, 'MP2 corl')  #TEST
+compare_values(-76.230777733750, get_variable('mp2 total energy'), 6, 'MP2')  #TEST
+
+clean()
+clean_variables()
+nwchem {}
+
+# these make a clean slate for the next job
+revoke_global_option_changed('NWCHEM_SCF_THRESH')
+revoke_global_option_changed('NWCHEM_SCF')
+revoke_global_option_changed('NWCHEM_SCF_NOPEN')
+revoke_global_option_changed('NWCHEM_MP2_TIGHT')
+
+print '        <<< Thorough Psi4 format >>>'
+
+memory 400 mb
+
+molecule {
+O
+H 1 R
+H 1 R 2 A
+
+R=0.958
+A=104.5
+}
+
+set basis cc-pvdz
+set nwchem_scf_thresh 1.0e-8 
+set reference rhf
+set nwchem_mp2_tight true 
+
+energy('nwchem-mp2')
+
+compare_values(-76.026760737446, get_variable('scf total energy'), 6, 'SCF')  #TEST
+compare_values(-0.204016996305, get_variable('mp2 correlation energy'), 6, 'MP2 corl')  #TEST
+compare_values(-76.230777733750, get_variable('mp2 total energy'), 6, 'MP2')  #TEST
+
+clean()
+clean_variables()
+

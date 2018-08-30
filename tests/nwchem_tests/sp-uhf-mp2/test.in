@@ -1,0 +1,104 @@
+#! single-point UHF-MP2/cc-pVDZ  on NH2 
+
+print '        <<< Literal nwchem.nw to NWChem >>>'
+
+
+nwchem {
+memory 300 mb 
+geometry 
+N     0.000000000000    0.000000000000   -0.077213791074
+H     0.000000000000   -0.799700167014    0.536417729366
+H     0.000000000000    0.799700167014    0.536417729366
+end
+
+basis spherical
+* library cc-pVDZ
+end
+
+scf
+uhf
+nopen 1
+thresh 1.0e-8
+maxiter 80
+end
+
+task mp2 energy
+}
+
+energy('nwchem')
+
+compare_values(-55.566884487411, get_variable('scf total energy'), 6, 'SCF')  #TEST
+compare_values(-55.711750186515, get_variable('mp2 total energy'), 6, 'MP2')  #TEST
+compare_values(-0.144865699104, get_variable('mp2 correlation energy'), 6, 'MP2 corl')  #TEST
+compare_values(-0.01082066392, get_variable('mp2 same-spin correlation energy'), 6, 'MP2 SS corl')  #TEST
+compare_values(-0.1348844488, get_variable('mp2 opposite-spin correlation energy'), 6, 'MP2 OS corl')  #TEST
+
+clean()
+clean_variables()
+nwchem {}
+
+print '        <<< Translation of nwchem.nw to Psi4 format to NWChem >>>'
+
+banner('UHF-MP2 energy calculation')
+
+molecule {
+0 2
+N
+H 1 R
+H 1 R 2 A
+
+R=1.008
+A=105.0
+}
+
+set {
+basis cc-pVDZ
+nwchem_scf uhf
+nwchem_scf_nopen 1
+nwchem_scf_maxiter 80
+nwchem_scf_thresh 1.0e-8
+}
+
+energy('nwchem-mp2')
+
+compare_values(-55.566884487411, get_variable('scf total energy'), 6, 'SCF')  #TEST
+compare_values(-55.711750186515, get_variable('mp2 total energy'), 6, 'MP2')  #TEST
+compare_values(-0.144865699104, get_variable('mp2 correlation energy'), 6, 'MP2 corl')  #TEST
+compare_values(-0.01082066392, get_variable('mp2 same-spin correlation energy'), 6, 'MP2 SS corl')  #TEST
+compare_values(-0.1348844488, get_variable('mp2 opposite-spin correlation energy'), 6, 'MP2 OS corl')  #TEST
+
+
+clean()
+clean_variables()
+nwchem {}
+
+print '        <<< Translation of nwchem.nw to Psi4 format to NWChem >>>'
+
+banner('UHF-MP2 energy calculation')
+
+molecule {
+0 2
+N
+H 1 R
+H 1 R 2 A
+
+R=1.008
+A=105.0
+}
+
+set {
+basis cc-pvdz
+reference uhf
+maxiter 80 
+nwchem_scf_nopen 1
+nwchem_scf_thresh 1.0e-8
+}
+
+energy('nwchem-mp2')
+
+compare_values(-55.566884487411, get_variable('scf total energy'), 6, 'SCF')  #TEST
+compare_values(-55.711750186515, get_variable('mp2 total energy'), 6, 'MP2')  #TEST
+compare_values(-0.144865699104, get_variable('mp2 correlation energy'), 6, 'MP2 corl')  #TEST
+compare_values(-0.01082066392, get_variable('mp2 same-spin correlation energy'), 6, 'MP2 SS corl')  #TEST
+compare_values(-0.1348844488, get_variable('mp2 opposite-spin correlation energy'), 6, 'MP2 OS corl')  #TEST
+

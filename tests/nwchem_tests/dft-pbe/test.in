@@ -1,71 +1,49 @@
 #! pbe/sto-3g H2O DFT energy  
-import os
-import sys
-import qcdb
-import utils
-import addons
 
-h2o = qcdb.set_molecule("""
-        O 0.000000000000    0.000000000000   -0.068516219310
-        H 0.000000000000   -0.790689573744    0.543701060724
-        H 0.000000000000    0.790689573744    0.543701060724
-        """)
+print '        <<< Literal nwchem.nw to NWChem >>>'
 
-print('        <<< Literal nwchem.nw to NWChem >>>')
 
-@using_nwchem
-qcdb.set_options({
-    'total_memory': '300 mb',
-    'geometry_units': ' Angstrom'
-    })
-    #ATL What the NWChem input should look like if code was to work\:
-#memory 300 mb
-#geometry units Angstrom
-#O     0.000000000000    0.000000000000   -0.068516219310
-#H     0.000000000000   -0.790689573744    0.543701060724
-#H     0.000000000000    0.790689573744    0.543701060724
-#end
-#basis spherical
-# * library sto-3g
-#end
-#charge 0
-def dft_block():
-    qcdb.set_options({
-        'dft__convergence__energy': 1e-7,
-        'dft__convergence__density': 1e-7,
-        'dft_direct': True
-        #xc and grid options need implementation
-        })
+nwchem {
+memory 300 mb
+geometry units Angstrom
+O     0.000000000000    0.000000000000   -0.068516219310
+H     0.000000000000   -0.790689573744    0.543701060724
+H     0.000000000000    0.790689573744    0.543701060724
+end
+basis spherical
+ * library sto-3g
+end
+charge 0
 
-qcdb.energy('nwchem-dft')
-#dft
-#direct
-#xc xpbe96 cpbe96
-#grid lebedev 99 14
-#convergence energy 1e-7 density 1e-7
-#end
+dft
+direct
+xc xpbe96 cpbe96
+grid lebedev 99 14
+convergence energy 1e-7 density 1e-7
+end
 
 task dft energy
 }
 
 energy ('nwchem')
 
-assert compare_values(-75.234018772562, qcdb.get_variable('dft total energy'), 5, 'DFT')  #TEST
-assert compare_values(-75.234018772562, qcdb.get_variable('current energy'), 5, 'DFT')  #TEST
+compare_values(-75.234018772562, get_variable('dft total energy'), 5, 'DFT')  #TEST
+compare_values(-75.234018772562, get_variable('current energy'), 5, 'DFT')  #TEST
 
 nwchem {}
 clean ()
 clean_variables()
 
-print('        <<< Thorough Psi4 format >>>')
+print '        <<< Thorough Psi4 format >>>'
 
 memory 300 mb
 
-h2o = qcdb.set_molecule("""
-O 1
+molecule h2o {
+0 1
+O
 H 1 1.0
 H 1 1.0 2 104.5
-""")
+}
 
 set {
 print 2

@@ -1,0 +1,93 @@
+
+    -----------------------------------------------------------------------
+          Psi4: An Open-Source Ab Initio Electronic Structure Package
+                               Psi4 1.1 release
+
+                         Git: Rev {HEAD} add49b9 
+
+
+    R. M. Parrish, L. A. Burns, D. G. A. Smith, A. C. Simmonett,
+    A. E. DePrince III, E. G. Hohenstein, U. Bozkaya, A. Yu. Sokolov,
+    R. Di Remigio, R. M. Richard, J. F. Gonthier, A. M. James,
+    H. R. McAlexander, A. Kumar, M. Saitow, X. Wang, B. P. Pritchard,
+    P. Verma, H. F. Schaefer III, K. Patkowski, R. A. King, E. F. Valeev,
+    F. A. Evangelista, J. M. Turney, T. D. Crawford, and C. D. Sherrill,
+    J. Chem. Theory Comput. in press (2017).
+    (doi: 10.1021/acs.jctc.7b00174)
+
+    -----------------------------------------------------------------------
+
+
+    Psi4 started on: Monday, 09 April 2018 03:13PM
+
+    Process ID:   5447
+    PSIDATADIR: /Users/alolinco/miniconda3/envs/p4dev36/share/psi4
+    Memory:     500.0 MiB
+    Threads:    1
+    
+  ==> Input File <==
+
+--------------------------------------------------------------------------
+#! single-point CCSDTQ/6-31g* on water
+
+print '        <<< Literal input to NWChem >>>'
+
+nwchem {
+memory total 2000 global 1700 mb verify
+geometry nocenter noautosym
+O     0.000000000000    0.000000000000   -0.065638538099
+H     0.000000000000   -0.757480611647    0.520865616174
+H     0.000000000000    0.757480611647    0.520865616174
+symmetry c2v
+end
+
+basis
+* library 6-31g*
+end
+
+scf
+ rhf
+ thresh 1.0e-7 #Not the same as e_convergence and d_convergence
+end
+tce
+ scf
+ ccsdtq
+ thresh 1.0e-7
+end
+
+task tce energy
+}
+
+energy('nwchem')
+
+clean()
+clean_variables()
+nwchem {}
+
+print '        <<< Translation of NWChem input to Psi4 format to NWChem >>>'
+
+molecule {
+O
+H 1 R
+H 1 R 2 A
+
+R=0.958
+A=104.5
+symmetry c2v
+}
+
+set {
+basis 6-31g*
+reference rhf
+nwchem_memory [total,2000,global,1700,mb,verify]
+nwchem_scf_thresh 1.0e-7
+nwchem_tce_thresh 1.0e-7
+nwchem_tce ccsdtq
+}
+
+energy('nwchem-tce')
+
+
+--------------------------------------------------------------------------
+
+*** Psi4 exiting successfully. Buy a developer a beer!
