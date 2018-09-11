@@ -72,6 +72,12 @@ def load_nwchem_defaults(options):
         default=True,
         validator=parsers.boolean,
         glossary='NWChem generates redundant internal coordinates from user input Cartesian coordinates. Default is on.'))
+#Symmetry options
+    options.add('nwchem', RottenOption(
+        keyword='symmetry',
+        default= '',
+        validator= lambda x,
+        glossary='Optional symmetry directive that specifies the group of the molecule, which can be automatically determined via the geometry autosym function'))
 #Top level print options
     options.add('nwchem', RottenOption(
         keyword='print',
