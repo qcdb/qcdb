@@ -139,7 +139,7 @@ def harvest_outfile_pass(outtext):
             r'^\s+' + r'Total SCF energy' + r'\s+' + NUMBER + r'\s*'+
             r'^\s+' + r'One-electron energy' + r'\s+' + NUMBER + r'\s*'+
             r'^\s+' + r'Two-electron energy' + r'\s+' + NUMBER + r'\s*'+
-            r'^\s+' + r'Total MCSCF energy' + r'\s+' + NUMBER + r'\s*$', outext, re.MULTILINE) #MCSCF
+            r'^\s+' + r'Total MCSCF energy' + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE) #MCSCF
         if mobj:
             print('Total MCSCF energy') #MCSCF energy calculation 
             psivar ['SCF TOTAL ENERGY'] = mobj.group(1)
@@ -332,22 +332,22 @@ def harvest_outfile_pass(outtext):
             print("matched CR =")
        
         #TCE_LCCD
-        mobj = re.search(
-            r'^\s+' +
+        #mobj = re.search(
+        #    r'^\s+' +
         
-        #TCE- ROHF and UHF #ATL
-        mobj = re.findall(
-            r'^\s+' + 'Total SCF energy' + '^\s+' + NUMBER +
-            r'^\s*' + r'^\s+' + r'One-electron energy' + NUMBER +
-            r'^\s*' + r'^\s+' + r'Two-electron energy' + NUMBER +
-            r'^\s*' + r'^\s+' + r'Nuclear repulsion energy' + NUMBER +
-            r'^\s*' + r'^\s+' + r'CCSD correlation energy / hartree' + r'\s+' + NUMBER +
-            r'^\s*' + r'\s+' + r'CCSD total energy / hartree' + r'\s+'+ NUMBER + r's*$', outtext, re.MULTILINE)
-        if mobj:
-            print(mobj) #print list
-            print('CCSD Energy = ')
-            psivar['CCSD CORRELATION ENERGY'] = mobj.group(5)
-            psivar['CCSD TOTAL ENERGY'] = mobj.group(6)
+        #TCE- ROHF and UHF
+       # mobj = re.findall(
+       #     r'^\s+' + 'Total SCF energy' + '^\s+' + NUMBER +
+       #     r'^\s*' + r'^\s+' + r'One-electron energy' + NUMBER +
+       #     r'^\s*' + r'^\s+' + r'Two-electron energy' + NUMBER +
+        #    r'^\s*' + r'^\s+' + r'Nuclear repulsion energy' + NUMBER +
+        #    r'^\s*' + r'^\s+' + r'CCSD correlation energy / hartree' + r'\s+' + NUMBER +
+        #    r'^\s*' + r'\s+' + r'CCSD total energy / hartree' + r'\s+'+ NUMBER + r's*$', outtext, re.MULTILINE)
+       # if mobj:
+        #    print(mobj) #print list
+         #   print('CCSD Energy = ')
+          #  psivar['CCSD CORRELATION ENERGY'] = mobj.group(5)
+           # psivar['CCSD TOTAL ENERGY'] = mobj.group(6)
 
 
                  # No symmetry
@@ -578,43 +578,43 @@ def harvest_outfile_pass(outtext):
       # HOW TO KNOW options['NWCHEM']['NWCHEM_TCE']['value']?
       # TODO: CURRENT ENERGY = TCE ENERGY
     if ('%s TOTAL ENERGY' % (cc_name) in psivar and \
-       ('%s CORRELATION ENERGY' % (cc_name) in psivar):
+       ('%s CORRELATION ENERGY' % (cc_name) in psivar)):
         psivar['CURRENT CORRELATION ENERGY'] = psivar['%s CORRELATION ENERGY' % (cc_name)]
         psivar['CURRENT ENERGY'] = psivar['%s TOTAL ENERGY' % (cc_name)]
   
-    if 'CCSD(T) TOTAL ENERGY' in psivar and 'CCSD(T) CORRELATION ENERGY' in psivar:
-        psivar['CURRENT CORRELATION ENERGY'] = psivar['CCSD(T) CORRELATION ENERGY']
-        psivar['CURRENT ENERGY'] = psivar['CCSD(T) TOTAL ENERGY']
+ #   if 'CCSD(T) TOTAL ENERGY' in psivar and 'CCSD(T) CORRELATION ENERGY' in psivar:
+  #      psivar['CURRENT CORRELATION ENERGY'] = psivar['CCSD(T) CORRELATION ENERGY']
+   #     psivar['CURRENT ENERGY'] = psivar['CCSD(T) TOTAL ENERGY']
     
-    if 'CISD CORRELATION ENERGY' in psivar:
-        psivar['CISD CORRELATION ENERGY'] = psivar['CISD CORRELATION ENERGY']
+   # if 'CISD CORRELATION ENERGY' in psivar:
+   #     psivar['CISD CORRELATION ENERGY'] = psivar['CISD CORRELATION ENERGY']
     
-    if 'CISD TOTAL ENERGY' in psivar:
-        psivar['CISD TOTAL ENERGY'] = psivar['CISD TOTAL ENERGY']
+   # if 'CISD TOTAL ENERGY' in psivar:
+    #    psivar['CISD TOTAL ENERGY'] = psivar['CISD TOTAL ENERGY']
    
-    if 'CISDT CORRELATION ENERGY' in psivar:
-        psivar['CISDT CORRELATION ENERGY'] = psivar['CISDT CORRELATION ENERGY']
+   # if 'CISDT CORRELATION ENERGY' in psivar:
+    #    psivar['CISDT CORRELATION ENERGY'] = psivar['CISDT CORRELATION ENERGY']
                
-    if 'CISDT TOTAL ENERGY' in psivar:
-        psivar['CISDT TOTAL ENERGY'] = psivar['CISDT TOTAL ENERGY']
+   # if 'CISDT TOTAL ENERGY' in psivar:
+    #    psivar['CISDT TOTAL ENERGY'] = psivar['CISDT TOTAL ENERGY']
 
-    if 'MP2 CORRELATION ENERGY' in psivar:
-        psivar['MP2 CORRELATION ENERGY'] = psivar['MP2 CORRELATION ENERGY']
+   # if 'MP2 CORRELATION ENERGY' in psivar:
+    #    psivar['MP2 CORRELATION ENERGY'] = psivar['MP2 CORRELATION ENERGY']
 
-    if 'MP2 TOTAL ENERGY' in psivar:
-        psivar['MP2 TOTAL ENERGY'] = psivar['MP2 TOTAL ENERGY']
+   # if 'MP2 TOTAL ENERGY' in psivar:
+    #    psivar['MP2 TOTAL ENERGY'] = psivar['MP2 TOTAL ENERGY']
 
-    if 'MP3 CORRELATION ENERGY' in psivar:
-        psivar['MP3 CORRELATION ENERGY'] = psivar['MP3 CORRELATION ENERGY']
+   # if 'MP3 CORRELATION ENERGY' in psivar:
+    #    psivar['MP3 CORRELATION ENERGY'] = psivar['MP3 CORRELATION ENERGY']
 
-    if 'MP3 TOTAL ENERGY' in psivar:
-        psivar['MP3 TOTAL ENERGY'] = psivar['MP3 TOTAL ENERGY']
+   # if 'MP3 TOTAL ENERGY' in psivar:
+    #    psivar['MP3 TOTAL ENERGY'] = psivar['MP3 TOTAL ENERGY']
 
-    if 'MP4 CORRELATION ENERGY' in psivar:
-        psivar['MP4 CORRELATION ENERGY'] = psivar['MP4 CORRELATION ENERGY']
+   # if 'MP4 CORRELATION ENERGY' in psivar:
+    #    psivar['MP4 CORRELATION ENERGY'] = psivar['MP4 CORRELATION ENERGY']
 
-    if 'MP4 TOTAL ENERGY' in psivar:
-        psivar['MP4 TOTAL ENERGY'] = psivar['MP4 TOTAL ENERGY']
+   # if 'MP4 TOTAL ENERGY' in psivar:
+    #    psivar['MP4 TOTAL ENERGY'] = psivar['MP4 TOTAL ENERGY']
 
 #    if ('EOM-%s TOTAL ENERGY' % (cc_name) in psivar) and \
 #   ('%s EXCITATION ENERGY' %(cc_name) in psivar):
