@@ -38,13 +38,15 @@ h2o= qcdb.set_molecule('''
         H 1 0.96 2 104.5
         ''')
 print(h2o)
-print(qcdb.get_active_options().print_changed())
+#print(qcdb.get_active_options().print_changed())
 
 qcdb.set_options({'basis': 'cc-pVDZ',
                  'memory': '300 mb',
-                 'nwchem__scf': 'ROHF',
-                 'nwchem__scf__nopen': 1,
-                 'nwchem__scf__thresh': 1.0e-8})
+                 'nwchem_scf': 'ROHF',
+                 'nwchem_scf_nopen': 1,
+                 'nwchem_scf_thresh': 1.0e-8})
+
+print(qcdb.get_active_options().print_changed())
 def check_rohf(return_value, is_df):
     if is_df:
         ref= -76.010538615956
@@ -59,13 +61,13 @@ def check_rohf(return_value, is_df):
     assert compare_values(two, qcdb.get_variable('Two-electron energy'), 5, 'two electron')
     assert compare_values(nre, qcdb.get_variable('Nuclear repulsion energy'), 5, 'nuclear repulsion')
 
-clean()
-clean_variables()
+#clean()
+#clean_variables()
 #nwchem {}
 
 print('        <<< Translation of nwchem.nw to Psi4 format to NWChem >>>')
 
-banner('ROHF energy calculation')
+#banner('ROHF energy calculation')
 print('''
 molecule {
 0 2
@@ -92,13 +94,13 @@ nwchem_scf_thresh 1.0e-8
 qcdb.energy('nwchem-scf')
 
 
-clean()
-clean_variables()
+#clean()
+#clean_variables()
 #nwchem {}
 
 print( '        <<< Thorough Psi4 format >>>')
 
-banner('ROHF energy calculation')
+#banner('ROHF energy calculation')
 print('''
 molecule {
 0 2
@@ -121,3 +123,4 @@ scf_type direct
 energy('nwchem-scf')
 
 ''') #energy might not be needed in print here
+
