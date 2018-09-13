@@ -52,18 +52,19 @@ qcdb.set_options({
     #'nwchem_tce_job': 'scf ccsdtq',
     #'nwchem_tce_thresh': 1.0e-7,
     'nwchem_task_tce': 'energy'})
-print(qcdb.get_active_options().print_changed()
+print(qcdb.get_active_options().print_changed())
+
 def check_rhf_ccsdtq(return_value, is_df):
     if is_df:
-        ref=
-        ccsdtq=
-        ccsdtq_corl=
+        ref=-76.010496307065
+        ccsdtq=-76.210368642101955
+        ccsdtq_corl=-0.199872335037341
     else:
         print("Does not match")
         
-    assert compare_values(-76.010496307065, qcdb.get_variable('scf total energy'), 6, 'SCF')  #TEST
-    assert compare_values(-76.210368642101955, qcdb.get_variable('ccsdtq total energy'), 6, 'CCSDTQ')  #TEST
-    assert compare_values(-0.199872335037341, qcdb.get_variable('ccsdtq correlation energy'), 6, 'CCSDTQ corl')  #TEST
+    assert compare_values(ref, qcdb.get_variable('SCF TOTAL ENERGY'), 6, 'SCF')  #TEST
+    assert compare_values(ccsdtq, qcdb.get_variable('CCSDTQ TOTAL ENERGY'), 6, 'CCSDTQ')  #TEST
+    assert compare_values(ccsdtq_corl, qcdb.get_variable('CCSDTQ CORRELATION ENERGY'), 6, 'CCSDTQ corl')  #TEST
 
 #clean()
 #clean_variables()
@@ -92,9 +93,3 @@ nwchem_tce ccsdtq
 
 energy('nwchem-tce')
 ''')
-
-assert compare_values(-76.010496307065, qcdb.get_variable('scf total energy'), 6, 'SCF')  #TEST
-assert compare_values(-76.210368642101955, qcdb.get_variable('ccsdtq total energy'), 6, 'CCSDTQ')  #TEST
-assert compare_values(-0.199872335037341, qcdb.get_variable('ccsdtq correlation energy'), 6, 'CCSDTQ corl')  #TEST
-
-

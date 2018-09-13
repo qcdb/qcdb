@@ -58,39 +58,22 @@ print(qcdb.get_active_options().print_changed())
 def check_mp2(return_value, is_df):
     if is_df:
         ref=-76.026760737428
+        one=-123.137568018334
+        two=37.923473040741
         mp2_total=-76.230777733733
         scs_mp2_total=-76.226922314540
     else:
         ref=-76.026760737428
+        one=-123.137568018334
+        two=37.923473040741
         mp2_total=-76.230777733733
         scs_mp2_total=-76.226922314540
 
     assert compare_values(ref, qcdb.get_variable('Total SCF energy'), 5, 'scf total')
+    assert compare_values(one, qcdb.get_variable('One-electron energy'), 5, 'one electron scf energy')
+    assert compare_values(two, qcdb.get_variable('Two-electron energy'), 5, 'two electron scf energy')
     assert compare_values(mp2_total, qcdb.get_variable('Total MP2 energy'), 5, 'mp2 energy')
     assert compare_values(scs_mp2_total, qcdb.get_variable('Total SCS-MP2 energy'), 5, 'scs-mp2 energy')
-
-#@using_nwchem
-def test_1_df_mp2():
-    qcdb.set_options({
-        'basis': 'cc-pvdz',
-        'memory': '400 mb',
-        'nwchem_mp2_tight': True,
-        'nwchem_task_mp2': 'energy'
-        })
-    print('Testing mp2(df)...')
-    val = qcdb.energy('nwc-mp2')
-    check_mp2_total(val, is_df=True)
-
-def test_2_df_scsmp2():
-    qcdb.set_options({
-        'basis': 'cc-pvdz',
-        'memory': '400 mb',
-        'nwchem_mp2_tight': True,
-        'nwchem_task_mp2': 'energy'
-        })
-    print('Testing scs-mp2(df)...')
-    val= qcdb.energy('nwc-mp2')
-    check_scs_mp2_total(val, is_df=True)
 
 print("        <<< Translation of nwchem.nw to Psi4 format to NWChem >>>")
 print("""
