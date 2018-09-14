@@ -40,27 +40,25 @@ h2o= qcdb.set_molecule('''
 print(h2o)
 #print(qcdb.get_active_options().print_changed())
 
-qcdb.set_options({'basis': 'cc-pVDZ',
-                 'memory': '300 mb',
-                 'nwchem_scf': 'ROHF',
-                 'nwchem_scf_nopen': 1,
-                 'nwchem_scf_thresh': 1.0e-8})
-
 print(qcdb.get_active_options().print_changed())
 def check_rohf(return_value, is_df):
     if is_df:
         ref= -76.010538615956
-        one= -123.058841737821
-        two= 37.851104681667
-        nre= 9.197198440198
     else:
         print("Does not match")
 
     assert compare_values(ref, qcdb.get_variable('Total SCF energy'), 5, 'scf total')
-    assert compare_values(one, qcdb.get_variable('One-electron energy'), 5, 'one electron')
-    assert compare_values(two, qcdb.get_variable('Two-electron energy'), 5, 'two electron')
-    assert compare_values(nre, qcdb.get_variable('Nuclear repulsion energy'), 5, 'nuclear repulsion')
 
+def test_1_rohf():
+    qcdb.set_options({
+        'basis': 'cc-pVDZ',
+        'memory': '300 mb',
+        'nwchem_scf': 'ROHF',
+        'nwchem_scf_nopen': 1,
+        'nwchem_scf_thresh': 1.0e-8})
+    print('Testing HF energy ...')
+    val = qcdb.energy('nwc-hf')
+    check_hf(val, is_df=True)
 #clean()
 #clean_variables()
 #nwchem {}
