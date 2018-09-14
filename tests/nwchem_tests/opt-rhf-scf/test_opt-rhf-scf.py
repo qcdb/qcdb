@@ -35,7 +35,7 @@ energy('nwchem')
 
 clean()
 clean_variables()
-nwchem {}  ''') # clear literal block since running sequentially
+nwchem {}  ''') 
 
 h2o=qcdb.set_molecule('''
         O     0.000000000000    0.000000000000   -0.065638538099
@@ -43,17 +43,6 @@ h2o=qcdb.set_molecule('''
         H     0.000000000000    0.757480611647    0.520865616174
         ''')
 print(h2o)
-qcdb.set_options({
-    'basis':'6-31g*',
-    'memory': '400 mb',
-    'nwchem_geometry_center': False,
-    'nwchem_geometry_autosym': False,
-    'nwchem_symmetry': 'c2v',
-    'nwchem_scf': 'RHF',
-    'nwchem_scf_thresh':1.0e-8, 
-    'nwchem_scf_direct': True,
-    'nwchem_task_scf': 'optimize'
-    })
 print(qcdb.get_active_options().print_changed())
 
 def check_rhf_scf(return_value, is_df):
@@ -65,6 +54,23 @@ def check_rhf_scf(return_value, is_df):
 
     assert compare_values(ref, qcdb.get_variable('SCF TOTAL ENERGY'), 5, 'rhf ref')
     assert compare_values(opt, qcdb.get_variable('OPTIMIZED ENERGY'), 4, 'opt') #is there something paralell in psi4? or NWChem specific?
+
+#@using_nwchem
+def test_1_scf():
+    qcdb.set_options({
+        'basis':'6-31g*',
+        'memory': '400 mb',
+        'nwchem_geometry_center': False,
+        'nwchem_geometry_autosym': False,
+        'nwchem_symmetry': 'c2v',
+        'nwchem_scf': 'RHF',
+        'nwchem_scf_thresh':1.0e-8,
+        'nwchem_scf_direct': True,
+        'nwchem_task_scf': 'optimize'
+        })
+    print('Testing SCF...')
+    val = qcdb.energy('nwc-scf')
+    check_scf(val, is_df=True)
 
 print('        <<< Translation of nwchem.nw to Psi4 format to NWChem >>>')
 print('''

@@ -38,16 +38,6 @@ h2o= qcdb.set_molecule('''
         H     0.000000000000    0.790689573744    0.543701060724
         ''')
 print(h2o)
-qcdb.set_options({
-    'basis': 'sto-3g',
-    'memory': '300 mb',
-    'nwchem_charge': 0,
-    'nwchem_dft_direct': True,
-    'nwchem_dft__convergence__energy': 1.0e-7,
-    'nwchem_dft__convergence__density': 1.0e-7,
-    #need to add XC and grid
-    'nwchem_task_dft': 'energy'
-    })
 print(qcdb.get_active_options().print_changed())
 
 def check_dft_pbe(return_value, is_df):
@@ -57,8 +47,27 @@ def check_dft_pbe(return_value, is_df):
     else:
         print("Does not match")
         
-    assert compare_values(dft, qcdb.get_variable('dft total energy'), 5, 'DFT')  #TEST
-    assert compare_values(current, qcdb.get_variable('current energy'), 5, 'DFT')  #TEST
+    assert compare_values(dft, qcdb.get_variable('dft total energy'), 5, 'DFT total')  #TEST
+    assert compare_values(current, qcdb.get_variable('current energy'), 5, 'DFT current')  #TEST
+
+#@using_nwchem
+def test_1_dft_tot():
+    qcdb.set_options({
+        'basis': 'sto-3g',
+        'memory': '300 mb',
+        'nwchem_charge': 0,
+        'nwchem_dft_direct': True,
+        'nwchem_dft__convergence__energy': 1.0e-7,
+        'nwchem_dft__convergence__density': 1.0e-7,
+        'nwchem_task_dft':'energy'
+        })
+    print('Testing DFT total energy...')
+    val = qcdb.energy('nwc-dft')
+    check_dft(val, is_df=True)
+    print('Testing DFT current energy...')
+    val2 = qcdb.energy('nwc-dft')
+    check_dft(val2, is_df=True)
+
 
 #nwchem {}
 #clean ()
