@@ -42,16 +42,6 @@ h2o= qcdb.set_molecule('''
         H 0.000000000000    0.757480611647    0.520865616174
         ''')
 print(h2o)
-qcdb.set_options({
-    'basis': '6-31g',
-    'nwchem_total_memory': '2000 mb',
-    'nwchem_global_memory': '1700 mb',
-    'nwchem_symmetry': 'c2v',
-    'nwchem_scf': 'RHF',
-    'nwchem_scf_thresh': 1.0e-7,
-    #'nwchem_tce_job': 'scf ccsdtq',
-    #'nwchem_tce_thresh': 1.0e-7,
-    'nwchem_task_tce': 'energy'})
 print(qcdb.get_active_options().print_changed())
 
 def check_rhf_ccsdtq(return_value, is_df):
@@ -65,6 +55,36 @@ def check_rhf_ccsdtq(return_value, is_df):
     assert compare_values(ref, qcdb.get_variable('SCF TOTAL ENERGY'), 6, 'SCF')  #TEST
     assert compare_values(ccsdtq, qcdb.get_variable('CCSDTQ TOTAL ENERGY'), 6, 'CCSDTQ')  #TEST
     assert compare_values(ccsdtq_corl, qcdb.get_variable('CCSDTQ CORRELATION ENERGY'), 6, 'CCSDTQ corl')  #TEST
+
+#@using_nwchem
+def test_1_scf():
+    qcdb.set_options({
+        'basis': '6-31g*',
+        'memory': '2000 mb',
+        #'nwchem_total_memory': '2000 mb',
+        #'nwchem_global_memory': '1700 mb',
+        #'nwchem_symmetry': 'c2v',
+        'nwchem_scf': 'RHF',
+        'nwchem_scf_thresh': 1.0e-7
+        })
+    print("Testing SCF energy (df)...")
+    val = qcdb.energy('nwc-hff')
+    check_hf(val, is_df=True)
+
+def test_2_ccsdtq():
+    qcdb.set_options({
+        'basis': '6-31g*',
+        'memory': '2000 mb',
+        #'nwchem_total_memory': '2000 mb',
+        #'nwchem_global_memory': '1700 mb',
+        #'nwchem_symmetry': 'c2v',
+        'nwchem_tce_dft': False,
+        'nwchem_tce': 'CCSDTQ',
+        'nwchem_tce_thresh': 1.0e-7
+        })
+    print('Testing CCSDTQ (df)...')
+    val = qcdb.energy('nwc-ccsdtq')
+    check_ccstdq(val, is_df=True)
 
 #clean()
 #clean_variables()
