@@ -1,6 +1,6 @@
 import collections
 
-from ..moptions.read_options2 
+from ..moptions.read_options2 import * 
 import RottenOption
 import copy
 import uuid
@@ -62,35 +62,42 @@ def load_nwchem_defaults(options):
         glossary='''keyword specifying the <units> string variable. Default for geometry input is Angstroms. 
         Other options include atomic units (au, atomic or bohr are acceptable keywords), nanometers (nm), or picometers (pm)
         '''))
+    
     options.add('nwchem', RottenOption(
         keyword='geometry_autosym',
         default=True,
         validator=parsers.boolean,
         glossary='The option to automatically determine the symmetry of the geometric system. Default is on.'))
+    
     options.add('nwchem', RottenOption(
         keyword='geometry_autoz',
         default=True,
         validator=parsers.boolean,
         glossary='NWChem generates redundant internal coordinates from user input Cartesian coordinates. Default is on.'))
+
 #Symmetry options
     options.add('nwchem', RottenOption(
-        keyword='symmetry',
-        default= '',
-        validator= lambda x,
-        glossary='Optional symmetry directive that specifies the group of the molecule, which can be automatically determined via the geometry autosym function'))
+        keyword   ='symmetry',
+        default   = '',
+        validator = lambda x: x.upper(), 
+        glossary  ='''Optional symmetry directive that specifies the group of the molecule,
+        which can be automatically determined via the geometry autosym function.''' ))
+
 #Top level print options
     options.add('nwchem', RottenOption(
         keyword='print',
         default='medium',
         validator= parsers.enum('debug high medium low none'),
         glossary='Top level print options which can be divided from most specific to least: debug, high, low, and none. Default is medium.'))
+
 #Basis block
 ###Need to figure out how to delineate per atom basis attribution #TODO
     options.add('nwchem', RottenOption(
         keyword="basis_library_all",
         default="",
         validator= lambda x: x.lower(),
-        glossary=''))
+        glossary='Specifies which basis the atoms are assigned. Can generalize for all atoms or specify different libraries for each atom (i.e. using 6-31g for H but using cc-pvdz for O.)'))
+
 #SCF block
     options.add('nwchem', RottenOption(
         keyword='scf',
@@ -249,96 +256,120 @@ def load_nwchem_defaults(options):
         validator= parsers.enum("RDFT RODFT UDFT ODFT"),
         glossary='Defining DFT wavefunction: RDFT, RODFT, UDFT, ODFT (Open shell, singlet).'))
 
-#TODO #Array block for DFT - dft_xc, dft_grid
+#TODO #Array block for dft_grid, dft_vectors
 #DFT Convergence 
     options.add('nwchem', RottenOption(
         keyword='dft__convergence__energy',
         default= 1.e-6,
         validator= lambda x: float(x),
         glossary= 'total energy convergence within the DFT block'))
+    
     options.add('nwchem', RottenOption(
         keyword='dft__convergence__density',
         default= 1.e-5,
         validator= lambda x: float(x),
         glossary= 'Total density convergence within DFT block that has RMS difference N and N-1 iterations'))
+    
     options.add('nwchem', RottenOption(
         keyword= 'dft__convergence__gradient',
         default= 5.e-4,
         validator= lambda x: float(x),
         glossary='Convergence of the orbital gradient, defined as the DIIS error vector becomes less than a certain value. Default is 5.e-4.'))
+    
     options.add('nwchem', RottenOption(
         keyword='dft__convergence__hltol',
-        default= 0.1
+        default= 0.1,
         validator= lambda x: float(x),
         glossary='HUMO LUMO gap tolerance. Default 0.1 au.'))
+    
     options.add('nwchem', RottenOption(
-        keyword='dft__convergence__dampon' 
-        default=0.0
+        keyword='dft__convergence__dampon', 
+        default=0.0,
         validator= lambda x: float(x),
         glossary='Turns on damping when reaching user-specified energy level.'))
+    
     options.add('nwchem', RottenOption(
         keyword='dft__convergence__dampoff',
         default= 0.0,
         validator= lambda x: float(x),
         glossary= 'Turns off damping when reaching user-specified energy level.'))
+    
     options.add('nwchem', RottenOption(
         keyword='dft__convergence__damp',
         default= 0,
         validator=parsers.parse_convergence,
         glossary='Percent of previous iterations mixed with current iterations density.'))
+    
     options.add('nwchem', RottenOption(
         keyword='dft__convergence__ncydp',
         default= 2,
         validator= parsers.positive_integers,
         glossary= 'Specifies number of damping cycles. Default is 2.'))
+    
     options.add('nwchem', RottenOption(
-        keyword='dft__convergence__diison'
+        keyword='dft__convergence__diison',
         default= 0.0,
         validator= lambda x: float(x),
-        glossary='Direct inversion of the iterative space can turned on at a user-specified energy.') 
+        glossary='Direct inversion of the iterative space can turned on at a user-specified energy.')) 
+    
     options.add('nwchem', RottenOption(
         keyword='dft__convergence__diisoff',
         default=  0.0,
         validator= lambda x: float(x),
         glossary= 'Direct inversion of the iterative space can be turned off at a user-specified energy. '))
+    
     options.add('nwchem', RottenOption(
         keyword='dft__convergence__diis',
         default= 10,
         validator= lambda x: float(x),
         glossary= 'Number of Fock matrices used in direct inversion of iterative subspace [DIIS] extrapolation'))
+    
     options.add('nwchem', RottenOption(
         keyword='dft__convergence__ncyds',
         default= 30,
         validator= parsers.positive_integers,
         glossary='Specifies number of DIIS [Direct inversion of iterative subspace] cycles needed. Default is 30.'))
+    
     options.add('nwchem', RottenOption(
         keyword='dft__convergence__levlon',
         default=0.0,
         validator=lambda x: float (x),
         glossary='Turning on the level shifting, which is the amount of shift applied to diagonal elements of the unoccupied block in the Fock matrix.'))
+    
     options.add('nwchem', RottenOption(
         keyword='dft__convergence__levloff',
         default= 0.0,
         validator= lambda x: float(x),
         glossary='Turning off the level shifting function'))
+    
     options.add('nwchem', RottenOption(
         keyword='dft__convergence__lshift',
         default= 0.5,
         validator= lambda x: float(x),
         glossary= 'Specify the amount of shift applied to diagonal elements of the unoccupied block in the Fock matrix. Default is 0.5 a.u.'))
+    
     options.add('nwchem', RottenOption(
         keyword='dft__convergence__ncysh',
         default= 0,
         validator= lambda x: float(x),
         glossary= 'Specifies the number of level-shifting cycles are used in the input. Default is 0.'))
+    
     options.add('nwchem', RottenOption(
-        keyword='dft__convergence__rabuck'
+        keyword='dft__convergence__rabuck',
         default= 25,
         validator= parsers.positive_integers,
         glossary='''The Rabuck method can be implemented when the initial guess is poor. 
         Will use fractional occupation of the orbital levels during the initial cycles of SCF convergence (A.D. Rabuck and G. Scuseria, J. Chem. Phys 110, 695(1999). 
         This option specifies the number of cycles the Rabuck method is active.'''))
-        
+#DFT XC array
+    
+    options.add('nwchem', RottenOption(
+        keyword='dft_xc',
+        default='',
+        validator= parsers.enum('''acm b3lyp beckehandh pbe0 becke97 becke97-1 becke97-2 becke97-3 becke98 hcth hcth120 hcth 147 hcth407
+        becke97ggal hcth407p optx hcthp14 mpw91 mpwlk xft97 cft97 ft97 op bop pbeop HFexch becke88 xperdew91 xpbe96 gill96 lyp perdew81
+        perdew86 perdew 91 cpbe96 pw91lda slater vwn_1 vwn_2 vwn_3 vwn_4 vwn_5 vwn_1_rpa'''),
+        glossary='Can specify the exchange-correlation functionals in the DFT Module. See NWChem manual for the full list of options.'))
 #DFT block [continued]
     options.add('nwchem', RottenOption(
         keyword='dft_iterations',
@@ -352,11 +383,6 @@ def load_nwchem_defaults(options):
         validator= lambda x: float(x),
         glossary='DFT Mulitiplicity'))
 
-#    options.add('nwchem', RottenOption(
- #       keyword='dft_vectors',
-  #      default='',
-   #     validator='',
-    #    glossary=''
     options.add('nwchem', RottenOption( 
         keyword='dft_max_ovl', 
         default= False, 
@@ -380,21 +406,23 @@ def load_nwchem_defaults(options):
         default= False,
         validator= parsers.boolean,
         glossary='Direct calculation of DFT: on/off. Default is off.'))
-#DFT_Semidirect 
-   options.add('nwchem', RottenOption(
+    
+    options.add('nwchem', RottenOption(
        keyword='dft__semidirect__filesize',
        default= '', #default is disksize
        validator=parsers.positive_integers,
        glossary=''))
-   options.add('nwchem', RottenOption(
+   
+    options.add('nwchem', RottenOption(
        keyword='dft__semidirect__memsize',
        default='',
        validator=parsers.parse_memory,
        glossary=''))
-   options.add('nwchem', RottenOption(
+    
+    options.add('nwchem', RottenOption(
        keyword='dft__semidirect__filename',
        default= '',
-       validator= lambda x,
+       validator= lambda x: x.lower(),
        glosary=''))
 
     options.add('nwchem', RottenOption(
@@ -408,7 +436,7 @@ def load_nwchem_defaults(options):
         default= False,
         validator= parsers.boolean,
         glossary='Fukui indices analysis: on/off. Default is off(false).'))
-#DFT Arrays- dft_disp, dft_print, dft_noprint #TODO
+#DFT Arrays- dft_disp
     options.add('nwchem', RottenOption(
         keyword='dft_print',
         default='medium',
