@@ -20,6 +20,14 @@ def load_hessian(shess, dtype):
     return nhess
 
 
+def to_string(hess, handle, dtype):
+    nat = hess.shape[0] // 3
+    assert hess.shape == (3 * nat, 3 * nat)
+
+    header = '{:5}{:5}'.format(nat, 6 * nat)
+    np.savetxt(handle, hess.reshape((-1, 3)), fmt='%20.10f', delimiter='', newline='\n', header=header, comments='')
+
+
 #    fcm = fcm.splitlines()
 #    Nat = int(fcm[0].split()[0])
 #    Ndof = int(fcm[0].split()[1])
