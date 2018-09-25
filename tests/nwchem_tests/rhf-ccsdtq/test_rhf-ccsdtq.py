@@ -44,11 +44,11 @@ h2o= qcdb.set_molecule('''
 print(h2o)
 print(qcdb.get_active_options().print_changed())
 
-def check_rhf_ccsdtq(return_value, is_df):
+def check_ccsdtq(return_value, is_df):
     if is_df:
-        ref=-76.010496307065
-        ccsdtq=-76.210368642101955
-        ccsdtq_corl=-0.199872335037341
+        ref         =       -76.010496307018
+        ccsdtq      =       -76.210368642101955
+        ccsdtq_corl =        -0.199872335037341
     else:
         print("Does not match")
         
@@ -57,7 +57,7 @@ def check_rhf_ccsdtq(return_value, is_df):
     assert compare_values(ccsdtq_corl, qcdb.get_variable('CCSDTQ CORRELATION ENERGY'), 6, 'CCSDTQ corl')  #TEST
 
 #@using_nwchem
-def test_1_scf():
+def test_1_hf():
     qcdb.set_options({
         'basis': '6-31g*',
         'memory': '2000 mb',
@@ -68,8 +68,8 @@ def test_1_scf():
         'nwchem_scf_thresh': 1.0e-7
         })
     print("Testing SCF energy (df)...")
-    val = qcdb.energy('nwc-hff')
-    check_hf(val, is_df=True)
+    val = qcdb.energy('nwc-hf')
+    check_ccsdtq(val, is_df=True)
 
 def test_2_ccsdtq():
     qcdb.set_options({

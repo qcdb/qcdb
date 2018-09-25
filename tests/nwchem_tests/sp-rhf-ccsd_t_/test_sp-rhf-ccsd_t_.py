@@ -48,17 +48,7 @@ h2o= qcdb.set_molecule('''
 
 print(h2o)
 
-qcdb.set_options({
-    'basis': 'cc-pvdz',
-    'memory': '600 mb',
-    'nwchem_scf': 'rhf',
-    'nwchem_scf_thresh': 1.0e-12,
-    'nwchem_tce_dft': False,
-    'nwchem_tce': 'ccsd(t)',
-    'nwchem_tce_thresh': 1.0e-12,
-    'nwchem_task_tce': 'energy'
-    })
-def check_rhf_ccsd_t_(return_value, is_df):
+def check_ccsd_t_(return_value, is_df):
     if is_df:
         ref         =   -76.026744421192
         ccsdcorl    =   -0.213350416141872
@@ -85,8 +75,8 @@ def test_1_df_rhf():
         'nwchem_scf_thresh': 1.0e-12
         })
     print('     Testing rhf ...')
-    val = qcdb.energy('nwchem-scf')
-    check_scf(val, is_df=True) #where to find check functions #TODO
+    val = qcdb.energy('nwchem-hf')
+    check_ccsd_t_(val, is_df=True)
 def test_2_df_ccsd():
     qcdb.set_options({
         'basis': 'cc-pvdz',
@@ -97,10 +87,21 @@ def test_2_df_ccsd():
         'nwchem_task_tce': 'energy'
         })
     print('Testing ccsd...')
-    val=qcdb.energy('nwchem-tce-ccsd')
-    check_ccsd(val, is_df=True)
-    print('Testing ccsd(t)')
-    check_ccsdt(val, is_df=True)
+    val=qcdb.energy('nwchem-ccsd')
+    check_ccsd_t_(val, is_df=True)
+    
+def test_3_df_ccsd():
+    qcdb.set_options({
+        'basis': 'cc-pvdz',
+        'memory': '600 mb',
+        'nwchem_tce_dft': False,
+        'nwchem_tce': 'ccsd(t)',
+        'nwchem_tce_thresh': 1.0e-12,
+        'nwchem_task_tce': 'energy'
+        })
+    print('Testing ccsd(t)...')
+    val=qcdb.energy('nwchem-ccsd(t)')
+    check_ccsd_t_(val, is_df=True)
 
 
 print( '        <<< Translation of NWChem input to Psi4 format to NWChem >>>')

@@ -45,29 +45,19 @@ h2o= qcdb.set_molecule('''
         H     0.000000000000    0.757480611647    0.520865616174
         ''')
 print(h2o)
-qcdb.set_options({
-    'basis': 'cc-pvdz',
-    'memory': '400 mb',
-    'nwchem_scf': 'RHF',
-    'nwchem_scf_thresh': '1.0e-8',
-    'nwchem_scf_nopen': 0,
-    'nwchem_mp2_tight': True,
-    'nwchem_task_mp2': 'energy'
-    })
-print(qcdb.get_active_options().print_changed())
 def check_mp2(return_value, is_df):
     if is_df:
         ref=-76.026760737428
-        mp2_total=-76.230777733733
-        scs_mp2_total=-76.226922314540
+        mp2_tot=-76.230777733733
+        scs_mp2_tot=-76.226922314540
     else:
         ref=-76.026760737428
-        mp2_total=-76.230777733733
-        scs_mp2_total=-76.226922314540
+        mp2_tot=-76.230777733733
+        scs_mp2_tot=-76.226922314540
 
     assert compare_values(ref, qcdb.get_variable('Total SCF energy'), 5, 'scf total')
-    assert compare_values(mp2_total, qcdb.get_variable('Total MP2 energy'), 5, 'mp2 energy')
-    assert compare_values(scs_mp2_total, qcdb.get_variable('Total SCS-MP2 energy'), 5, 'scs-mp2 energy')
+    assert compare_values(mp2_tot, qcdb.get_variable('Total MP2 energy'), 5, 'mp2 energy')
+    assert compare_values(scs_mp2_tot, qcdb.get_variable('Total SCS-MP2 energy'), 5, 'scs-mp2 energy')
 
 #@using_nwchem
 def test_1_df_mp2():
@@ -91,6 +81,18 @@ def test_2_df_scsmp2():
     print('Testing scs-mp2(df)...')
     val= qcdb.energy('nwc-mp2')
     check_scs_mp2_total(val, is_df=True)
+
+def test_3_hf():
+    qcdb.set_options({
+        'basis'     :   'cc-pvdz',
+        'memory'    :   '400 mb',
+        'nwchem_scf':   'rhf',
+        'nwchem_scf_thresh': 1.0e-8,
+        'nwchem_scf_nopen' : 0
+        })
+    print("Testing hf...")
+    val = qcdb.energy('nwc-hf')
+    check_hf(val, is_df=True)
 
 print("        <<< Translation of nwchem.nw to Psi4 format to NWChem >>>")
 print("""

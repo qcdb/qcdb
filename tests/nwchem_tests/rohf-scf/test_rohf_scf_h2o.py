@@ -33,15 +33,13 @@ task scf energy
 energy('nwchem')
 ''')
 h2o= qcdb.set_molecule('''
-        O
-        H 1 0.96
-        H 1 0.96 2 104.5
+        O     0.000000000000    0.000000000000   -0.068516219310
+        H     0.000000000000   -0.790689573744    0.543701060724
+        H     0.000000000000    0.790689573744    0.543701060724
         ''')
 print(h2o)
-#print(qcdb.get_active_options().print_changed())
 
-print(qcdb.get_active_options().print_changed())
-def check_rohf(return_value, is_df):
+def check_hf(return_value, is_df):
     if is_df:
         ref= -76.010538615956
     else:
@@ -88,8 +86,6 @@ nwchem_scf_thresh 1.0e-8
 #df_scf_guess false #Doing nothing for NWChem
 #scf_type direct 
 #}
-
-qcdb.energy('nwchem-scf')
 
 
 #clean()
