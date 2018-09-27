@@ -87,7 +87,7 @@ def test_2_df_ccsd():
         'nwchem_task_tce': 'energy'
         })
     print('Testing ccsd...')
-    val=qcdb.energy('nwchem-ccsd')
+    val=qcdb.energy('nwc-ccsd')
     check_ccsd_t_(val, is_df=True)
     
 def test_3_df_ccsd():
@@ -100,7 +100,7 @@ def test_3_df_ccsd():
         'nwchem_task_tce': 'energy'
         })
     print('Testing ccsd(t)...')
-    val=qcdb.energy('nwchem-ccsd(t)')
+    val=qcdb.energy('nwc-ccsd(t)')
     check_ccsd_t_(val, is_df=True)
 
 
