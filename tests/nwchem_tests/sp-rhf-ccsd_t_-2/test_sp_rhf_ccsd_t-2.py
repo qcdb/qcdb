@@ -75,7 +75,62 @@ def check_ccsd_t_2(return_value, is_df, is_5050=False):
     assert compare_values(mp2tot, return_value, 5, 'mp2 return')
     assert compare_values(ref, qcdb.get_variable('CURRENT REFERENCE ENERGY'), 5, 'mp2 ref')
    
-#@using_nwchem:
+#@using_nwchem
+def test_1_hf():
+    qcdb.set_options({
+        'basis'     :   'cc-pvdz',
+        'memory'    :   '600 mb',
+        'nwchem_scf':   'rhf',
+        'nwchem_scf_thresh': 1.0e-12
+        })
+    print("Testing hf...")
+    val = qcdb.energy('nwc-hf')
+    check_ccsd_t_2(val, is_df=True)
+
+def test_2_mp2():
+    qcdb.set_options({
+        'basis'     :   'cc-pvdz',
+        'memory'    :   '600 mb'
+        })
+    print("Testing MP2...")
+    val = qcdb.energy('nwc-mp2')
+    check_ccsd_t_2(val, is_df=True)
+
+def test_3_ccsd():
+    qcdb.set_options({
+        'basis'     :   'cc-pvdz',
+        'memory'    :   '600 mb',
+        'nwchem_tce_dft'    :   False,
+        'nwchem_tce':   'ccsd(t)',
+        'nwchem_tce_thresh' :   1.0e-12
+        })
+    print("Testing CCSD energy ...")
+    val = qcdb.energy('nwc-ccsd')
+    check_ccsd_t_2(val, is_df=True)
+
+def test_4_ccsd_t():
+    qcdb.set_options({
+        'basis'     :   'cc-pvdz',
+        'memory'    :   '600 mb',
+        'nwchem_tce_dft'    :   False,
+        'nwchem_tce':   'ccsd(t)',
+        'nwchem_tce_thresh' :   1.0e-12
+        })
+    print("Testing CCSD(T) energy ...")
+    val = qcdb.energy('nwc-ccsd(t)')
+    check_ccsd_t_2(val, is_df=True)
+
+def test_5_custom_ccsd():
+    qcdb.set_options({
+        'basis'     :   'cc-pvdz',
+        'memory'    :   '600 mb',
+        'nwchem_tce_dft'    :   False,
+        'nwchem_tce':   'ccsd(t)',
+        'nwchem_tce_thresh' :   1.0e-12
+        })
+    print("Testing custom SCS MP2 energy ...")
+    val = qcdb.energy('nwc-ccsd(t)')
+    check_ccsd_t_2(val, is_df=False, is5050=True)
 
 
 #energy('nwchem')
@@ -85,7 +140,7 @@ def check_ccsd_t_2(return_value, is_df, is_5050=False):
 #nwchem {}
 
 
-print('        <<< Translation of NWChem input to Psi4 format to NWChem >>>'
+print('''        <<< Translation of NWChem input to Psi4 format to NWChem >>>'
 
 molecule {
 O
@@ -104,4 +159,4 @@ nwchem_tce_thresh 1.0e-12
 nwchem_tce ccsd(t)
 }
 
-energy('nwchem-ccsd(t)')
+energy('nwchem-ccsd(t)')''')
