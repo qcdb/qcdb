@@ -67,9 +67,10 @@ def check_dft(return_value, is_df):
 def test_1_dft():
     qcdb.set_options({
         'memory': '600 mb',
-        'basis': 'sto-3g',
+        'basis' : 'sto-3g',
         'nwchem_dft__convergence__density': 1.0e-12,
-        #add xc, grid options
+        'nwchem_dft_xc': 'b3lyp'
+        #add grid options
         })
     print('Testing DFT energy...')
     val = qcdb.energy('nwc-dft')
