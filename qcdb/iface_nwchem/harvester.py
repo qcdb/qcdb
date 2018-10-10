@@ -33,10 +33,10 @@ import struct
 from collections import defaultdict
 from decimal import Decimal
 
-from ..pdict import PreservingDict
-#from .periodictable import *
-#from .physconst import *
-#from .exceptions import *
+from ..pdict import PreservingDict 
+from ..periodictable import *
+from ..physconst import *
+from ..exceptions import *
 from ..molecule import Molecule
 #from .orient import OrientMols
 #from .options import conv_float2negexp
@@ -172,15 +172,15 @@ def harvest_outfile_pass(outtext):
             print('matched scs-mp2')
             psivar['MP2 SAME-SPIN CORRELATION ENERGY'] = Decimal(mobj.group(1)) * Decimal(mobj.group(2))
             psivar['MP2 OPPOSITE-SPIN CORRELATION ENERGY'] = Decimal(mobj.group(3)) * Decimal(mobj.group(4))
-#           psivar['SCS-MP2 CORRELATION ENERGY'] = mobj.group(5)
-#           psivar['SCS-MP2 TOTAL ENERGY'] = mobj.group(6)
-
-#           print (mobj.group(1)) #ess
-#           print (mobj.group(2)) #fss
-#           print (mobj.group(3)) #eos
-#           print (mobj.group(4)) #fos
-#           print (mobj.group(5)) #scs corl
-#           print (mobj.group(6)) #scs-mp2
+            psivar['SCS-MP2 CORRELATION ENERGY'] = mobj.group(5)
+            psivar['SCS-MP2 TOTAL ENERGY'] = mobj.group(6)
+            
+            print (mobj.group(1)) #ess
+            print (mobj.group(2)) #fss
+            print (mobj.group(3)) #eos
+            print (mobj.group(4)) #fos
+            print (mobj.group(5)) #scs corl
+            print (mobj.group(6)) #scs-mp2
 
         #2) DFT-MP2
         mobj = re.search(
@@ -219,9 +219,9 @@ def harvest_outfile_pass(outtext):
         if mobj:
             cc_name = mobj.group(1)
             print('matched %s' % (mobj.group(1))) 
-#           print (mobj.group(1)) #cc_name
-#           print (mobj.group(2)) #cc_name corl. energy
-#           print (mobj.group(4)) #cc_name total energy
+            print (mobj.group(1)) #cc_name
+            print (mobj.group(2)) #cc_name corl. energy
+            print (mobj.group(4)) #cc_name total energy
 
             psivar['%s CORRELATION ENERGY' % (mobj.group(1))] = mobj.group(2)
             psivar['%s TOTAL ENERGY' % (mobj.group(1))] = mobj.group(4)
@@ -295,13 +295,13 @@ def harvest_outfile_pass(outtext):
             
             ext_energy_list = []
             for mobj_list in mobj:
-#                print ('matched EOM-%s - %s symmetry' %(cc_name, mobj_list[0])) #cc_name, symmetry
-#                print (mobj_list)
+                print ('matched EOM-%s - %s symmetry' %(cc_name, mobj_list[0])) #cc_name, symmetry
+                print (mobj_list)
                 count = 0
                 for line in mobj_list[1].splitlines():
                     lline = line.split()
-#                    print (lline[1]) #in hartree
-#                    print (lline[2]) #in eV
+                    print (lline[1]) #in hartree
+                    print (lline[2]) #in eV
                     count +=1
 
                     print ('matched excitation energy #%d - %s symmetry' %(count, mobj_list[0]))
@@ -324,23 +324,17 @@ def harvest_outfile_pass(outtext):
                             psivar['%s TOTAL ENERGY' %(cc_name)] + Decimal(ext_energy_list[nroot]) #in hartree
         #TCE_CR_EOMCCSD(T) information
         mobj = re.search(
-            r'^\s+' + r'CR-' + r'(w+)' + r'\s+' + r'total energy / hartree' + r'\s+' + NUMBER +
-            r'\s*' +  r'^\s+' + r'CR-' + r'(w+)' + r'\s+' + r'excitation energy \(eV\)' +r'\s+' + NUMBER + r'\s*$',
+            r'^\s+' + r'CR-' + r'(w+)' + r'\s+' + r'total energy / hartree' + r'\s+' + NUMBER + r'\s*' +  
+            r'^\s+' + r'CR-' + r'(w+)' + r'\s+' + r'excitation energy \(eV\)' +r'\s+' + NUMBER + r'\s*$',
             outtext, re.MULTILINE) 
         if mobj:
-            print(mobj) #will print list of mobj 
+            print(mobj)
             print("matched CR =")
        
-        #TCE_LCCD
-        #mobj = re.search(
-        #    r'^\s+' +
         
         #TCE- ROHF and UHF
-       # mobj = re.findall(
+        # mobj = re.findall(
        #     r'^\s+' + 'Total SCF energy' + '^\s+' + NUMBER +
-       #     r'^\s*' + r'^\s+' + r'One-electron energy' + NUMBER +
-       #     r'^\s*' + r'^\s+' + r'Two-electron energy' + NUMBER +
-        #    r'^\s*' + r'^\s+' + r'Nuclear repulsion energy' + NUMBER +
         #    r'^\s*' + r'^\s+' + r'CCSD correlation energy / hartree' + r'\s+' + NUMBER +
         #    r'^\s*' + r'\s+' + r'CCSD total energy / hartree' + r'\s+'+ NUMBER + r's*$', outtext, re.MULTILINE)
        # if mobj:
@@ -582,44 +576,44 @@ def harvest_outfile_pass(outtext):
         psivar['CURRENT CORRELATION ENERGY'] = psivar['%s CORRELATION ENERGY' % (cc_name)]
         psivar['CURRENT ENERGY'] = psivar['%s TOTAL ENERGY' % (cc_name)]
   
- #   if 'CCSD(T) TOTAL ENERGY' in psivar and 'CCSD(T) CORRELATION ENERGY' in psivar:
-  #      psivar['CURRENT CORRELATION ENERGY'] = psivar['CCSD(T) CORRELATION ENERGY']
-   #     psivar['CURRENT ENERGY'] = psivar['CCSD(T) TOTAL ENERGY']
+    if 'CCSD(T) TOTAL ENERGY' in psivar and 'CCSD(T) CORRELATION ENERGY' in psivar:
+        psivar['CURRENT CORRELATION ENERGY'] = psivar['CCSD(T) CORRELATION ENERGY']
+        psivar['CURRENT ENERGY'] = psivar['CCSD(T) TOTAL ENERGY']
     
-   # if 'CISD CORRELATION ENERGY' in psivar:
-   #     psivar['CISD CORRELATION ENERGY'] = psivar['CISD CORRELATION ENERGY']
+    if 'CISD CORRELATION ENERGY' in psivar:
+        psivar['CISD CORRELATION ENERGY'] = psivar['CISD CORRELATION ENERGY']
     
-   # if 'CISD TOTAL ENERGY' in psivar:
-    #    psivar['CISD TOTAL ENERGY'] = psivar['CISD TOTAL ENERGY']
+    if 'CISD TOTAL ENERGY' in psivar:
+        psivar['CISD TOTAL ENERGY'] = psivar['CISD TOTAL ENERGY']
    
-   # if 'CISDT CORRELATION ENERGY' in psivar:
-    #    psivar['CISDT CORRELATION ENERGY'] = psivar['CISDT CORRELATION ENERGY']
+    if 'CISDT CORRELATION ENERGY' in psivar:
+        psivar['CISDT CORRELATION ENERGY'] = psivar['CISDT CORRELATION ENERGY']
                
-   # if 'CISDT TOTAL ENERGY' in psivar:
-    #    psivar['CISDT TOTAL ENERGY'] = psivar['CISDT TOTAL ENERGY']
+    if 'CISDT TOTAL ENERGY' in psivar:
+        psivar['CISDT TOTAL ENERGY'] = psivar['CISDT TOTAL ENERGY']
 
-   # if 'MP2 CORRELATION ENERGY' in psivar:
-    #    psivar['MP2 CORRELATION ENERGY'] = psivar['MP2 CORRELATION ENERGY']
+    if 'MP2 CORRELATION ENERGY' in psivar:
+        psivar['MP2 CORRELATION ENERGY'] = psivar['MP2 CORRELATION ENERGY']
 
-   # if 'MP2 TOTAL ENERGY' in psivar:
-    #    psivar['MP2 TOTAL ENERGY'] = psivar['MP2 TOTAL ENERGY']
+    if 'MP2 TOTAL ENERGY' in psivar:
+        psivar['MP2 TOTAL ENERGY'] = psivar['MP2 TOTAL ENERGY']
 
-   # if 'MP3 CORRELATION ENERGY' in psivar:
-    #    psivar['MP3 CORRELATION ENERGY'] = psivar['MP3 CORRELATION ENERGY']
+    if 'MP3 CORRELATION ENERGY' in psivar:
+        psivar['MP3 CORRELATION ENERGY'] = psivar['MP3 CORRELATION ENERGY']
 
-   # if 'MP3 TOTAL ENERGY' in psivar:
-    #    psivar['MP3 TOTAL ENERGY'] = psivar['MP3 TOTAL ENERGY']
+    if 'MP3 TOTAL ENERGY' in psivar:
+        psivar['MP3 TOTAL ENERGY'] = psivar['MP3 TOTAL ENERGY']
 
-   # if 'MP4 CORRELATION ENERGY' in psivar:
-    #    psivar['MP4 CORRELATION ENERGY'] = psivar['MP4 CORRELATION ENERGY']
+    if 'MP4 CORRELATION ENERGY' in psivar:
+        psivar['MP4 CORRELATION ENERGY'] = psivar['MP4 CORRELATION ENERGY']
 
-   # if 'MP4 TOTAL ENERGY' in psivar:
-    #    psivar['MP4 TOTAL ENERGY'] = psivar['MP4 TOTAL ENERGY']
+    if 'MP4 TOTAL ENERGY' in psivar:
+        psivar['MP4 TOTAL ENERGY'] = psivar['MP4 TOTAL ENERGY']
 
-#    if ('EOM-%s TOTAL ENERGY' % (cc_name) in psivar) and \
-#   ('%s EXCITATION ENERGY' %(cc_name) in psivar):
-#   psivar['CURRENT ENERGY'] = psivar['EOM-%s TOTAL ENERGY' %(cc_name)]
-#   psivar['CURRENT EXCITATION ENERGY'] = psivar['%s EXCITATION ENERGY' %(cc_name)] 
+    if ('EOM-%s TOTAL ENERGY' % (cc_name) in psivar) and \
+       ('%s EXCITATION ENERGY' %(cc_name) in psivar):
+        psivar['CURRENT ENERGY'] = psivar['EOM-%s TOTAL ENERGY' %(cc_name)]
+        psivar['CURRENT EXCITATION ENERGY'] = psivar['%s EXCITATION ENERGY' %(cc_name)] 
 
     return psivar, psivar_coord, psivar_grad, version, error
 
@@ -631,18 +625,18 @@ def harvest_hessian(hess):
     hess = hess.splitlines() 
         
 
-#def muster_inherited_options(ropts, verbose=1):
-#    accession = sys._getframe().f_code.co_name + '_' + str(uuid.uuid4())
-#    kwgs = {'accession': accession, 'verbose': verbose}
-#
-#    do_translate = ropts.scroll['QCDB']['TRANSLATE_QCDB'].value
-#
-#    # qcdb/memory [B] --> cfour/memory_size [MB]
-#    qopt = ropts.scroll['QCDB']['MEMORY']
-#    if do_translate or qopt.is_required():
-#        mem = [int(0.000001 * qopt.value), 'mb']
-#        print('\n\nMEMORY', mem, '\n\n')
-#        ropts.suggest('NWCHEM', 'MEMORY', mem, **kwgs)
+def muster_inherited_options(ropts, verbose=1):
+    accession = sys._getframe().f_code.co_name + '_' + str(uuid.uuid4())
+    kwgs = {'accession': accession, 'verbose': verbose}
+
+    do_translate = ropts.scroll['QCDB']['TRANSLATE_QCDB'].value
+
+    # qcdb/memory [B] --> cfour/memory_size [MB]
+    qopt = ropts.scroll['QCDB']['MEMORY']
+    if do_translate or qopt.is_required():
+        mem = [int(0.000001 * qopt.value), 'mb']
+        print('\n\nMEMORY', mem, '\n\n')
+        ropts.suggest('NWCHEM', 'MEMORY', mem, **kwgs)
 
 
 def muster_memory(mem):
@@ -896,28 +890,28 @@ def muster_dft_functionals(opt):
             ['xwpbe', 1.0, 'cpbe96', 1.0, 'HFexch', 1.0,\
              '\ncam', 0.40, 'cam_alpha', 0.0, 'cam_beta', 1.0]
 
-#    elif (val == 'SB98-1A'):
-#        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = \
-#            ['becke98','HFexch',0.229]
-# 
-#    elif (val == 'PBEH3C'):
-#        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96',0.58,'HFexch', 0.42,'cpbe96']
-#    elif (val == 'PBE1W'):
-#        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96','vwn_5', 0.26,'cpbe96',0.74]
-#    elif (val == 'PBE0-2'):
-#        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96',0.2063,'HFexch',0.7937,'cpbe96',0.5,'mp2',0.5]
-#    elif (val == 'O3LYP'):
-#        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['slater',0.0706,'optx',0.8133,'HFexch',0.1161,'vwn_5', 0.19,'lyp',0.81]
-#    elif (val == 'HSE03'):
-#        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96',1.0,'xcampbe96','-0.25','cpbe96','1.0\n',\
-#          'cam',0.1061,'cam_alpha',0.0,'cam_beta',0.25]
-#    elif (val == 'HSE06'):
-#        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96',1.0,'xcampbe96','-0.25','cpbe96',1.0,'srhfexch','0.25\n',\
-#          'cam',0.11,'cam_alpha',0.0,'cam_beta',1.0]    
-#    elif (val == 'WPBE0'):
-#        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = \
-#            ['xwpbe', 1.0, 'cpbe96', 1.0, 'HFexch', 1.0, \
-#            '\ncam', 0.30, 'cam_alpha', 0.25, 'cam_beta', 0.75] 
+    elif (val == 'SB98-1A'):
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = \
+            ['becke98','HFexch',0.229]
+ 
+    elif (val == 'PBEH3C'):
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96',0.58,'HFexch', 0.42,'cpbe96']
+    elif (val == 'PBE1W'):
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96','vwn_5', 0.26,'cpbe96',0.74]
+    elif (val == 'PBE0-2'):
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96',0.2063,'HFexch',0.7937,'cpbe96',0.5,'mp2',0.5]
+    elif (val == 'O3LYP'):
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['slater',0.0706,'optx',0.8133,'HFexch',0.1161,'vwn_5', 0.19,'lyp',0.81]
+    elif (val == 'HSE03'):
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96',1.0,'xcampbe96','-0.25','cpbe96','1.0\n',\
+          'cam',0.1061,'cam_alpha',0.0,'cam_beta',0.25]
+    elif (val == 'HSE06'):
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96',1.0,'xcampbe96','-0.25','cpbe96',1.0,'srhfexch','0.25\n',\
+          'cam',0.11,'cam_alpha',0.0,'cam_beta',1.0]    
+    elif (val == 'WPBE0'):
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = \
+            ['xwpbe', 1.0, 'cpbe96', 1.0, 'HFexch', 1.0, \
+            '\ncam', 0.30, 'cam_alpha', 0.25, 'cam_beta', 0.75] 
 
     else:
         val = str(val)

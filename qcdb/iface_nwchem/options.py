@@ -8,7 +8,6 @@ import uuid
 from ..exceptions import *
 from . import parsers
 
-#NWCHEM only working to translate with Psi4 at the moment via QCDB
 def load_nwchem_defaults(options):
     #Haven't added NCHEM_OMP_NUM_THREADS
     #options.add('nwchem', RottenOption(
@@ -210,13 +209,6 @@ def load_nwchem_defaults(options):
         validator=parsers.enum('none low medium high debug'),
         glossary='Options to not print into output file within the SCF block. Default is none.'))
 
-#TODO #Array block in SCF
-#    options.add('nwchem', RottenOption(
- #       keyword='scf_level',
-  #      default='',
-   #     validator='',
-    #    glossary=''
-
 #MP2 block
     options.add('nwchem', RottenOption(
         keyword='mp2_tight',
@@ -224,7 +216,7 @@ def load_nwchem_defaults(options):
         validator= parsers.boolean,
         glossary='''Increase precision of MP2 energy and gradients. Will also change SCF and CPHF precision.
         Tightens thresholds for AO and MO integrals within MP2 code. Default is off'''))
-
+    
 #   options.add('nwchem', RottenOption(
 #        keyword='mp2_freeze',
  #       default='',
@@ -361,8 +353,7 @@ def load_nwchem_defaults(options):
         glossary='''The Rabuck method can be implemented when the initial guess is poor. 
         Will use fractional occupation of the orbital levels during the initial cycles of SCF convergence (A.D. Rabuck and G. Scuseria, J. Chem. Phys 110, 695(1999). 
         This option specifies the number of cycles the Rabuck method is active.'''))
-#DFT XC array
-    
+
     options.add('nwchem', RottenOption(
         keyword='dft_xc',
         default='',
@@ -370,6 +361,7 @@ def load_nwchem_defaults(options):
         becke97ggal hcth407p optx hcthp14 mpw91 mpwlk xft97 cft97 ft97 op bop pbeop HFexch becke88 xperdew91 xpbe96 gill96 lyp perdew81
         perdew86 perdew 91 cpbe96 pw91lda slater vwn_1 vwn_2 vwn_3 vwn_4 vwn_5 vwn_1_rpa'''),
         glossary='Can specify the exchange-correlation functionals in the DFT Module. See NWChem manual for the full list of options.'))
+
 #DFT block [continued]
     options.add('nwchem', RottenOption(
         keyword='dft_iterations',
