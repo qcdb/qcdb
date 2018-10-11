@@ -1,8 +1,8 @@
 #! single-point CCSD(T)/cc-pvdz on water
 import os
 import sys
-import utils
-import addons
+from utils import *
+from addons import *
 import qcdb
 
 print('        <<< Literal input to NWChem >>>')
@@ -75,7 +75,7 @@ def test_1_df_rhf():
         'nwchem_scf_thresh': 1.0e-12
         })
     print('     Testing rhf ...')
-    val = qcdb.energy('nwchem-hf')
+    val = qcdb.energy('nwc-hf')
     check_ccsd_t_(val, is_df=True)
 def test_2_df_ccsd():
     qcdb.set_options({

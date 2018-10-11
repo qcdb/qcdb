@@ -1,8 +1,8 @@
 #! Geometry optimization HF/6-31g* on water
 import os
 import sys
-import utils
-import addons
+from utils import *
+from addons import *
 import qcdb
 
 print('        <<< Literal nwchem input to NWChem >>>')
@@ -49,16 +49,16 @@ def check_rhf(return_value, is_df):
         ref     =   -76.010746508391
     else:
         ref     =   -76.01074651
-    assert compare_values(ref, qcdb.get_variable('SCF TOTAL ENERGY'), 5, 'rhf ref')
+    assert compare_values(ref, qcdb.get_variable('CURRENT ENERGY'), 5, 'rhf ref')
 
-#@using_nwchem
+@using_nwchem
 def test_1_scf():
     qcdb.set_options({
         'basis'     :   '6-31g*',
         'memory'    :   '400 mb',
-        'nwchem_geometry_center'    : False,
-        'nwchem_geometry_autosym'   : False,
-        'nwchem_symmetry'   :   'c2v',
+        #'nwchem_geometry_center'    : False,
+        #'nwchem_geometry_autosym'   : False,
+        #'symmetry'   :   'c2v',
         'nwchem_scf'        :   'RHF',
         'nwchem_scf_thresh' :   1.0e-8,
         'nwchem_scf_direct' :   True,
