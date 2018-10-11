@@ -2,7 +2,7 @@
 import os
 import sys
 import utils
-import addons
+from addons import *
 import qcdb
 
 print("        <<< Literal nwchem.nw to NWChem >>>")
@@ -59,7 +59,7 @@ def check_mp2(return_value, is_df):
     assert compare_values(mp2_tot, qcdb.get_variable('Total MP2 energy'), 5, 'mp2 energy')
     assert compare_values(scs_mp2_tot, qcdb.get_variable('Total SCS-MP2 energy'), 5, 'scs-mp2 energy')
 
-#@using_nwchem
+@using_nwchem
 def test_1_df_mp2():
     qcdb.set_options({
         'basis': 'cc-pvdz',
@@ -69,7 +69,7 @@ def test_1_df_mp2():
         })
     print('Testing mp2(df)...')
     val = qcdb.energy('nwc-mp2')
-    check_mp2_total(val, is_df=True)
+    check_mp2(val, is_df=True)
 
 def test_2_df_scsmp2():
     qcdb.set_options({
@@ -80,7 +80,7 @@ def test_2_df_scsmp2():
         })
     print('Testing scs-mp2(df)...')
     val= qcdb.energy('nwc-mp2')
-    check_scs_mp2_total(val, is_df=True)
+    check_mp2(val, is_df=True)
 
 def test_3_hf():
     qcdb.set_options({
@@ -92,7 +92,7 @@ def test_3_hf():
         })
     print("Testing hf...")
     val = qcdb.energy('nwc-hf')
-    check_hf(val, is_df=True)
+    check_mp2(val, is_df=True)
 
 print("        <<< Translation of nwchem.nw to Psi4 format to NWChem >>>")
 print("""

@@ -1,8 +1,8 @@
 #! single-point CCSDTQ/6-31g* on water
 import os
 import sys
-import utils
-import addons
+from utils import *
+from addons import *
 import qcdb
 
 
@@ -42,7 +42,6 @@ h2o= qcdb.set_molecule('''
         H 0.000000000000    0.757480611647    0.520865616174
         ''')
 print(h2o)
-print(qcdb.get_active_options().print_changed())
 
 def check_ccsdtq(return_value, is_df):
     if is_df:
@@ -56,7 +55,7 @@ def check_ccsdtq(return_value, is_df):
     assert compare_values(ccsdtq, qcdb.get_variable('CCSDTQ TOTAL ENERGY'), 6, 'CCSDTQ')  #TEST
     assert compare_values(ccsdtq_corl, qcdb.get_variable('CCSDTQ CORRELATION ENERGY'), 6, 'CCSDTQ corl')  #TEST
 
-#@using_nwchem
+@using_nwchem
 def test_1_hf():
     qcdb.set_options({
         'basis': '6-31g*',

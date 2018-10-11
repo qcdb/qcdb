@@ -1,8 +1,8 @@
 #! single-point HF/cc-pVDZ (Cartesian) on NH2 
 import os
 import sys
-import utils
-import addons
+from utils import *
+from addons import *
 import qcdb
 
 print('        <<< Literal nwchem.nw to NWChem >>>')
@@ -43,10 +43,9 @@ def check_hf(return_value, is_df):
     if is_df:
         ref= -76.010538615956
     else:
-        print("Does not match")
-
-    assert compare_values(ref, qcdb.get_variable('Total SCF energy'), 5, 'scf total')
-
+        assert compare_values(ref, qcdb.get_variable('TOTAL SCF ENERGY'), 5, 'scf total') 
+        
+@using_nwchem
 def test_1_rohf():
     qcdb.set_options({
         'basis': 'cc-pVDZ',
