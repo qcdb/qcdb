@@ -3,8 +3,8 @@
 # and able to harvest MP2 energy as well. 
 import os
 import sys
-import utils
-import addons
+from utils import *
+from addons import *
 import qcdb
 
 print( '        <<< Literal input to NWChem >>>' )

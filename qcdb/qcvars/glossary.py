@@ -987,6 +987,35 @@ qcvardefs['CCSD CORRELATION ENERGY'] = {
 
 """}
 
+qcvardefs['CCSDT TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total electronic energy 
+   for the coupled cluster singles, doubles, and triples level of theory.
+"""}
+
+qcvardefs['CCSDT CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The correlation energy component
+   for the coupled cluster singles, doubles, and triples level of theory.
+
+.. psivar:: CCSD CORRELATION ENERGY
+
+   The CCSD correlation energy for the requested DFT method, 
+   :math:`E_{\text{CCSDcorl}}` in Eq. :eq:`CCSDcorl`.
+
+   .. math:: 
+      :nowrap:
+      :label: CCSDcorl
+
+         \begin{align*}
+#            E_{\text{CCSDcorl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
+#                               & = E_{\text{S}} + E_{\text{D}} \\
+         \end{align*}
+
+"""}
+
 qcvardefs['CCSD SAME-SPIN CORRELATION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""

@@ -127,7 +127,7 @@ def harvest_outfile_pass(outtext):
 
         #Process DFT (RDFT, RODFT,UDFT, SODFT)
         mobj = re.search(
-            r'^\s+' + r'(?:Total DFT energy)' + r'\s+=\s*' + NUMBER + r'\s*$',
+            r'^\s+' + r'Total DFT energy' + r'\s' + NUMBER + r'\s*$',
             outtext, re.MULTILINE)
         if mobj:
             print ('matched DFT')
