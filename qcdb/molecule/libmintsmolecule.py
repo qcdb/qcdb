@@ -35,12 +35,12 @@ import math
 import collections
 
 import numpy as np
+import qcelemental as qcel
 
 from ..periodictable import *
 from ..physconst import *
 from ..vecutil import *
 from ..exceptions import *
-from ..util import distance_matrix
 from .libmintscoordentry import NumberValue, VariableValue, CartesianEntry, ZMatrixEntry
 from .libmintspointgrp import SymmOps, similar, SymmetryOperation, PointGroup
 
@@ -1238,7 +1238,7 @@ class LibmintsMolecule(object):
           [6]         3.32935     3.86422     2.43843     0.95895     1.51712     0.00000
 
         """
-        distm = distance_matrix(self.geometry(np_out=True), self.geometry(np_out=True))
+        distm = qcel.util.distance_matrix(self.geometry(np_out=True), self.geometry(np_out=True))
         distm *= psi_bohr2angstroms
 
         text = "        Interatomic Distances (Angstroms)\n\n          "

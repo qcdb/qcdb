@@ -20,8 +20,9 @@ import collections
 
 import numpy as np
 
+import qcelemental as qcel
+
 from .molecule import Molecule
-from .util import *
 from .testutil import compare_values, compare_integers
 from .physconst import psi_bohr2angstroms
 

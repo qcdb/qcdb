@@ -35,10 +35,10 @@ import hashlib
 import collections
 
 import numpy as np
+from qcelemental.util import unnp
 
 from .libmintsmolecule import *
 from ..testutil import compare_values, compare_integers, compare_molrecs
-from ..util import unnp
 from .. import molparse
 from ..bfs import BFS
 
