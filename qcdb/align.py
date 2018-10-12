@@ -494,9 +494,13 @@ def _plausible_atom_orderings(ref, current, rgeom, cgeom, algo='hunguno', verbos
 
         # find _a_ best match btwn R & C atoms through Kuhn-Munkres (Hungarian) algorithm
         t00 = time.time()
-        lapCR = hungarian.lap(cost)
-        ptsCR = list(zip(lapCR[1], range(len(rgp))))
-        sumCR = sum(costcopy[lapCR[1], range(len(rgp))])
+        # exactly like `scipy.optimize.linear_sum_assignment(cost)` only with extra return
+        #    import scipy.optimize
+        #    raise ImportError("""Python module scipy >=0.17 not found. Solve by installing it: `conda install scipy` or `pip install scipy`""")
+        (row_ind, col_ind), reducedcost = linear_sum_assignment(cost, return_cost=True)
+        ptsCR = list(zip(row_ind, col_ind))
+        ptsCR = sorted(ptsCR, key=lambda tup: tup[1])
+        sumCR = costcopy[row_ind, col_ind].sum()
         t01 = time.time()
         if verbose >= 2:
             print('Reduced cost:\n', cost)
@@ -504,7 +508,7 @@ def _plausible_atom_orderings(ref, current, rgeom, cgeom, algo='hunguno', verbos
             print('Hungarian time [s] for space:         {:.3}'.format(t01 - t00))
 
         # final _all_ best matches btwn R & C atoms through Uno algorithm, seeded from Hungarian sol'n
-        edges = np.argwhere(cost < uno_cutoff)
+        edges = np.argwhere(reducedcost < uno_cutoff)
         gooduns = uno(edges, ptsCR)
         t02 = time.time()
         if verbose >= 1:
@@ -521,17 +525,17 @@ def _plausible_atom_orderings(ref, current, rgeom, cgeom, algo='hunguno', verbos
             yield ans
 
     if algo == 'perm':
-        ccdistmat = distance_matrix(cgeom, cgeom)
-        rrdistmat = distance_matrix(rgeom, rgeom)
+        ccdistmat = qcel.util.distance_matrix(cgeom, cgeom)
+        rrdistmat = qcel.util.distance_matrix(rgeom, rgeom)
         algofn = filter_permutative
 
     if algo == 'hung':
-        crdistmat = distance_matrix(cgeom, rgeom)
+        crdistmat = qcel.util.distance_matrix(cgeom, rgeom)
         algofn = filter_hungarian
 
     if algo == 'hunguno':
-        ccdistmat = distance_matrix(cgeom, cgeom)
-        rrdistmat = distance_matrix(rgeom, rgeom)
+        ccdistmat = qcel.util.distance_matrix(cgeom, cgeom)
+        rrdistmat = qcel.util.distance_matrix(rgeom, rgeom)
         # TODO investigate soundness
         with np.errstate(divide='ignore'):
             ccnremat = np.reciprocal(ccdistmat)
@@ -539,10 +543,7 @@ def _plausible_atom_orderings(ref, current, rgeom, cgeom, algo='hunguno', verbos
         ccnremat[ccnremat == np.inf] = 0.
         rrnremat[rrnremat == np.inf] = 0.
         algofn = filter_hungarian_uno
-        try:
-            import hungarian
-        except ImportError:
-            raise ImportError("Install this repository: https://github.com/hrldcpr/hungarian (tag v0.3.0)")
+        from .util.scipy_hungarian import linear_sum_assignment
         from .util.gph_uno_bipartite import uno
 
     # collect candidate atom orderings from algofn for each of the atom classes,
