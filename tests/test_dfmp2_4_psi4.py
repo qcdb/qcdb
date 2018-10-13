@@ -1,8 +1,5 @@
 import os
 import sys
-
-import numpy as np
-
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from utils import *
 from addons import *
@@ -49,112 +46,101 @@ def check_mp2(return_value, is_df, is_5050=False):
     assert compare_values(mp2tot, qcdb.get_variable('CURRENT ENERGY'), 5, 'mp2 tot')
     assert compare_values(mp2tot, return_value, 5, 'mp2 return')
 
-h2o = qcdb.set_molecule("""
+@pytest.fixture
+def h2o():
+    return """
 O
 H 1 1.0
 H 1 1.0 2 90.0
-""")
-h2o_y = qcdb.set_molecule("""
-H 0 0 1
-O 0 0 0
-H 1 0 0
-no_com
-no_reorient
-""")
-h2o_z = qcdb.set_molecule("""
-O 0 0 0
-H 0 1 0
-H 1 0 0
-no_com
-no_reorient
-""")
-
-dip_z = np.array([   1.52054865,  1.52054865,  0.])
-grad_z = np.array([[-0.04159183, -0.04159183, -0.        ],
-                   [ 0.01821547,  0.02337636,  0.        ],
-                   [ 0.02337636,  0.01821547,  0.        ]])
-dip_y = np.array([   1.52054865, 0.,  1.52054865])
-grad_y = np.array([[ 0.01821547, 0.,  0.02337636],
-                   [-0.04159183, 0., -0.04159183],
-                   [ 0.02337636, 0.,  0.01821547]])
+"""
 
 
+@using_psi4
+def test_1_df_mp2(h2o):
+    qcdb.set_molecule(h2o)
+    qcdb.set_options({
+        'basis': 'cc-pvdz'
+    })
 
-@using_cfour
-def test_2_conv_mp2():
+    print('   Testing mp2 (df) ...')
+    val = qcdb.energy('mp2')
+    check_mp2(val, is_df=True)
+
+
+@using_psi4
+def test_2_conv_mp2(h2o):
+    qcdb.set_molecule(h2o)
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'psi4_mp2_type': 'conv'
     })
 
     print('   Testing mp2 (conv) ...')
-    val = qcdb.energy('c4-mp2')
+    val = qcdb.energy('mp2')
     check_mp2(val, is_df=False)
 
 
-@using_cfour
-def test_4_conv_scs_mp2():
+@using_psi4
+def test_3_df_scs_mp2(h2o):
+    qcdb.set_molecule(h2o)
     qcdb.set_options({
         'basis': 'cc-pvdz',
-        'mp2_os_scale': 1.2,
-        'mp2_ss_scale': 0.33333333333333333,
+        'psi4_mp2_os_scale': 1.2,
+        'psi4_mp2_ss_scale': 0.33333333333333333,
+        'psi4_mp2_type': 'df',
+    })
+
+#set mp2_type df
+
+    print('   Testing explicit scs mp2 (df) ...')
+    val = qcdb.energy('mp2')
+    check_mp2(val, is_df=True)
+
+
+@using_psi4
+def test_4_conv_scs_mp2(h2o):
+    qcdb.set_molecule(h2o)
+    qcdb.set_options({
+        'basis': 'cc-pvdz',
+        'psi4_mp2_os_scale': 1.2,
+        'psi4_mp2_ss_scale': 0.33333333333333333,
         'psi4_mp2_type': 'conv',
     })
 
     print('   Testing explicit scs mp2 (conv) ...')
-    val = qcdb.energy('c4-mp2')
+    val = qcdb.energy('mp2')
     check_mp2(val, is_df=False)
 
 
-@using_cfour
-def test_scale():
+@using_psi4
+def test_5_df_custom_scs_mp2(h2o):
+    qcdb.set_molecule(h2o)
     qcdb.set_options({
         'basis': 'cc-pvdz',
-        'cfour_spin_scal': 'on',
-        'cfour_reference': 'uhf',
-        'cfour_calc_level': 'mp2',
-        'cfour_deriv_level': 'first',
-        'CFOUR_DIFF_TYPE': 'relaxed',
+        'psi4_mp2_os_scale':  0.5,
+        'psi4_mp2_ss_scale':  0.5,
     })
 
-    val, jrec = qcdb.energy('c4-cfour', return_wfn=True, molecule=h2o_z)
-    dip = np.array([float(jrec['qcvars']['CURRENT DIPOLE {}'.format(i)].data) for i in 'XYZ'])
+#set mp2_type df
 
-    tnm = sys._getframe().f_code.co_name
-    assert compare_arrays(grad_z, jrec['qcvars']['CURRENT GRADIENT'].data, 5, tnm + ' grad')
-    assert compare_arrays(dip_z, dip, 5, tnm + ' dipole')
+    print('   Testing user-def scs mp2 (df) ...')
+    val = qcdb.energy('mp2')
+    check_mp2(val, is_df=True, is_5050=True)
 
-@using_cfour
-def test_scale_2():
+
+@using_psi4
+def test_6_conv_custom_scs_mp2(h2o):
+    qcdb.set_molecule(h2o)
     qcdb.set_options({
         'basis': 'cc-pvdz',
-        'cfour_spin_scal': 'on',
-        'cfour_reference': 'uhf',
-        'cfour_calc_level': 'mp2',
-        'cfour_deriv_level': 'first',
-        'CFOUR_DIFF_TYPE': 'relaxed',
-    })
-
-    val, jrec = qcdb.energy('c4-cfour', return_wfn=True, molecule=h2o_y)
-    dip = np.array([float(jrec['qcvars']['CURRENT DIPOLE {}'.format(i)].data) for i in 'XYZ'])
-
-    tnm = sys._getframe().f_code.co_name
-    assert compare_arrays(grad_y, jrec['qcvars']['CURRENT GRADIENT'].data, 5, tnm + ' grad')
-    assert compare_arrays(dip_y, dip, 5, tnm + ' dipole')
-
-
-
-@using_cfour
-def test_6_conv_custom_scs_mp2():
-    qcdb.set_options({
-        'basis': 'cc-pvdz',
-#        'mp2_os_scale':  0.5,
-#        'mp2_ss_scale':  0.5,
+        'psi4_mp2_os_scale':  0.5,
+        'psi4_mp2_ss_scale':  0.5,
         'psi4_mp2_type': 'conv',
     })
+#
+#set mp2_type conv
 
     print('   Testing user-def scs mp2 (conv) ...')
-    val = qcdb.energy('c4-mp2')
+    val = qcdb.energy('mp2')
     check_mp2(val, is_df=False, is_5050=True)
-#    assert False
 

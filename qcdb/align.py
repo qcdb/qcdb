@@ -22,6 +22,7 @@ import numpy as np
 
 import qcelemental as qcel
 
+from .util import blockwise_contract, blockwise_expand
 from .molecule import Molecule
 from .testutil import compare_values, compare_integers
 from .physconst import psi_bohr2angstroms
