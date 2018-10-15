@@ -104,3 +104,4 @@ ENV/
 timer.dat
 install*/
 build*/
+psi.*.clean

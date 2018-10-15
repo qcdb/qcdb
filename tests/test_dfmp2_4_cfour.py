@@ -49,11 +49,12 @@ def check_mp2(return_value, is_df, is_5050=False):
     assert compare_values(mp2tot, qcdb.get_variable('CURRENT ENERGY'), 5, 'mp2 tot')
     assert compare_values(mp2tot, return_value, 5, 'mp2 return')
 
-h2o = qcdb.set_molecule("""
+def h2o():
+    return """
 O
 H 1 1.0
 H 1 1.0 2 90.0
-""")
+"""
 
 @pytest.fixture
 def h2o_y():

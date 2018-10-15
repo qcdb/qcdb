@@ -3,8 +3,8 @@ from addons import *
 
 import qcdb
 
-nucenergy =   9.3007948234239  #TEST
-refenergy = -76.0270535127645  #TEST
+nucenergy =   9.3007948234239
+refenergy = -76.0270535127645
 
 def test_1a():
     h2o = qcdb.set_molecule("""
@@ -15,8 +15,8 @@ def test_1a():
 
     qcdb.optking('scf/cc-pvdz')
 
-    assert compare_values(nucenergy, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")    #TEST
-    assert compare_values(refenergy, qcdb.get_variable("CURRENT ENERGY"), 4, "Reference energy") #TEST
+    assert compare_values(nucenergy, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")
+    assert compare_values(refenergy, qcdb.get_variable("CURRENT ENERGY"), 4, "Reference energy")
 
 def test_1b():
     h2o = qcdb.set_molecule("""
@@ -27,8 +27,8 @@ def test_1b():
 
     qcdb.optking('c4-scf/cc-pvdz')
 
-    assert compare_values(nucenergy, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")    #TEST
-    assert compare_values(refenergy, qcdb.get_variable("CURRENT ENERGY"), 4, "Reference energy") #TEST
+    assert compare_values(nucenergy, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")
+    assert compare_values(refenergy, qcdb.get_variable("CURRENT ENERGY"), 4, "Reference energy")
 
 @using_geometric
 def test_2a():
@@ -40,8 +40,8 @@ def test_2a():
 
     qcdb.geometric('scf/cc-pvdz')
 
-    assert compare_values(nucenergy, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")    #TEST
-    assert compare_values(refenergy, qcdb.get_variable("CURRENT ENERGY"), 4, "Reference energy") #TEST
+    assert compare_values(nucenergy, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")
+    assert compare_values(refenergy, qcdb.get_variable("CURRENT ENERGY"), 4, "Reference energy")
 
 @using_geometric
 def test_2b():
@@ -53,8 +53,8 @@ def test_2b():
 
     qcdb.geometric('c4-scf/cc-pvdz')
 
-    assert compare_values(nucenergy, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")    #TEST
-    assert compare_values(refenergy, qcdb.get_variable("CURRENT ENERGY"), 4, "Reference energy") #TEST
+    assert compare_values(nucenergy, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")
+    assert compare_values(refenergy, qcdb.get_variable("CURRENT ENERGY"), 4, "Reference energy")
 
 
 @using_geometric
@@ -68,8 +68,8 @@ units au
 
     qcdb.geometric('scf/cc-pvdz')
 
-    assert compare_values(nucenergy, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")    #TEST
-    assert compare_values(refenergy, qcdb.get_variable("CURRENT ENERGY"), 4, "Reference energy") #TEST
+    assert compare_values(nucenergy, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")
+    assert compare_values(refenergy, qcdb.get_variable("CURRENT ENERGY"), 4, "Reference energy")
 
 @using_geometric
 def test_2d():
@@ -82,7 +82,7 @@ units au
 
     qcdb.geometric('c4-scf/cc-pvdz')
 
-    assert compare_values(nucenergy, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")    #TEST
-    assert compare_values(refenergy, qcdb.get_variable("CURRENT ENERGY"), 4, "Reference energy") #TEST
+    assert compare_values(nucenergy, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")
+    assert compare_values(refenergy, qcdb.get_variable("CURRENT ENERGY"), 4, "Reference energy")
 
 
