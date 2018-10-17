@@ -987,14 +987,14 @@ qcvardefs['CCSD CORRELATION ENERGY'] = {
 
 """}
 
-qcvardefs['CCSDT TOTAL ENERGY'] = {
+qcvardefs['CCSDT (PBE) TOTAL ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    The total electronic energy 
    for the coupled cluster singles, doubles, and triples level of theory.
 """}
 
-qcvardefs['CCSDT CORRELATION ENERGY'] = {
+qcvardefs['CCSDT (PBE) CORRELATION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    The correlation energy component
