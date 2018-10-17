@@ -16,7 +16,7 @@ def check_uhf_hf(return_value, is_df=True):
     else:
         print("Does not match")
 
-    assert compare_values(ref, qcdb.get_variable('TOTAL SCF ENERGY'), 5, 'scf')
+    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'scf')
 
 #@using_nwchem:
 def test_1_hf():
@@ -29,7 +29,7 @@ def test_1_hf():
         })
     print('Testing hf...')
     val = qcdb.energy('nwc-hf')
-    check_hf(val, is_df=True)
+    check_uhf_hf(val, is_df=True)
 print('''        <<< Literal nwchem.nw to NWChem >>>'
 
 nwchem {
