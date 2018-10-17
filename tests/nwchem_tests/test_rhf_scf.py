@@ -20,7 +20,7 @@ def check_hf(return_value, is_df):
     else:
         ref         =       -76.026760737428
     
-    assert compare_values(ref, qcdb.get_molecule('TOTAL SCF ENERGY'), 5, 'total scf')
+    assert compare_value(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'total scf')
 
 #@using_nwchem:
 def test_1_hf():
