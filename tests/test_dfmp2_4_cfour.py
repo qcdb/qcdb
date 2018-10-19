@@ -49,25 +49,32 @@ def check_mp2(return_value, is_df, is_5050=False):
     assert compare_values(mp2tot, qcdb.get_variable('CURRENT ENERGY'), 5, 'mp2 tot')
     assert compare_values(mp2tot, return_value, 5, 'mp2 return')
 
-h2o = qcdb.set_molecule("""
+def h2o():
+    return """
 O
 H 1 1.0
 H 1 1.0 2 90.0
-""")
-h2o_y = qcdb.set_molecule("""
+"""
+
+@pytest.fixture
+def h2o_y():
+    return """
 H 0 0 1
 O 0 0 0
 H 1 0 0
 no_com
 no_reorient
-""")
-h2o_z = qcdb.set_molecule("""
+"""
+
+@pytest.fixture
+def h2o_z():
+    return """
 O 0 0 0
 H 0 1 0
 H 1 0 0
 no_com
 no_reorient
-""")
+"""
 
 dip_z = np.array([   1.52054865,  1.52054865,  0.])
 grad_z = np.array([[-0.04159183, -0.04159183, -0.        ],
@@ -81,7 +88,8 @@ grad_y = np.array([[ 0.01821547, 0.,  0.02337636],
 
 
 @using_cfour
-def test_2_conv_mp2():
+def test_2_conv_mp2(h2o_z):
+    qcdb.set_molecule(h2o_z)
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'psi4_mp2_type': 'conv'
@@ -93,7 +101,8 @@ def test_2_conv_mp2():
 
 
 @using_cfour
-def test_4_conv_scs_mp2():
+def test_4_conv_scs_mp2(h2o_z):
+    qcdb.set_molecule(h2o_z)
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'mp2_os_scale': 1.2,
@@ -107,7 +116,8 @@ def test_4_conv_scs_mp2():
 
 
 @using_cfour
-def test_scale():
+def test_scale(h2o_z):
+    h2o_z = qcdb.Molecule(h2o_z)
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'cfour_spin_scal': 'on',
@@ -125,7 +135,8 @@ def test_scale():
     assert compare_arrays(dip_z, dip, 5, tnm + ' dipole')
 
 @using_cfour
-def test_scale_2():
+def test_scale_2(h2o_y):
+    h2o_y = qcdb.Molecule(h2o_y)
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'cfour_spin_scal': 'on',
@@ -145,11 +156,12 @@ def test_scale_2():
 
 
 @using_cfour
-def test_6_conv_custom_scs_mp2():
+def test_6_conv_custom_scs_mp2(h2o_z):
+    qcdb.set_molecule(h2o_z)
     qcdb.set_options({
         'basis': 'cc-pvdz',
-#        'mp2_os_scale':  0.5,
-#        'mp2_ss_scale':  0.5,
+        'mp2_os_scale':  0.5,
+        'mp2_ss_scale':  0.5,
         'psi4_mp2_type': 'conv',
     })
 

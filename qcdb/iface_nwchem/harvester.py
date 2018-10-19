@@ -522,6 +522,7 @@ def harvest_outfile_pass(outtext):
 
     # Process CURRENT energies (TODO: needs better way)
     if 'HF TOTAL ENERGY' in psivar:
+        psivar['SCF TOTAL ENERGY'] = psivar['HF TOTAL ENERGY']
         psivar['CURRENT REFERENCE ENERGY'] = psivar['HF TOTAL ENERGY']
         psivar['CURRENT ENERGY'] = psivar['HF TOTAL ENERGY']
 

@@ -46,15 +46,18 @@ def check_mp2(return_value, is_df, is_5050=False):
     assert compare_values(mp2tot, qcdb.get_variable('CURRENT ENERGY'), 5, 'mp2 tot')
     assert compare_values(mp2tot, return_value, 5, 'mp2 return')
 
-h2o = qcdb.set_molecule("""
+@pytest.fixture
+def h2o():
+    return """
 O
 H 1 1.0
 H 1 1.0 2 90.0
-""")
+"""
 
 
 @using_psi4
-def test_1_df_mp2():
+def test_1_df_mp2(h2o):
+    qcdb.set_molecule(h2o)
     qcdb.set_options({
         'basis': 'cc-pvdz'
     })
@@ -65,7 +68,8 @@ def test_1_df_mp2():
 
 
 @using_psi4
-def test_2_conv_mp2():
+def test_2_conv_mp2(h2o):
+    qcdb.set_molecule(h2o)
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'psi4_mp2_type': 'conv'
@@ -77,7 +81,8 @@ def test_2_conv_mp2():
 
 
 @using_psi4
-def test_3_df_scs_mp2():
+def test_3_df_scs_mp2(h2o):
+    qcdb.set_molecule(h2o)
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'psi4_mp2_os_scale': 1.2,
@@ -93,7 +98,8 @@ def test_3_df_scs_mp2():
 
 
 @using_psi4
-def test_4_conv_scs_mp2():
+def test_4_conv_scs_mp2(h2o):
+    qcdb.set_molecule(h2o)
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'psi4_mp2_os_scale': 1.2,
@@ -107,7 +113,8 @@ def test_4_conv_scs_mp2():
 
 
 @using_psi4
-def test_5_df_custom_scs_mp2():
+def test_5_df_custom_scs_mp2(h2o):
+    qcdb.set_molecule(h2o)
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'psi4_mp2_os_scale':  0.5,
@@ -122,7 +129,8 @@ def test_5_df_custom_scs_mp2():
 
 
 @using_psi4
-def test_6_conv_custom_scs_mp2():
+def test_6_conv_custom_scs_mp2(h2o):
+    qcdb.set_molecule(h2o)
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'psi4_mp2_os_scale':  0.5,

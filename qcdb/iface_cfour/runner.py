@@ -3,6 +3,7 @@ import copy
 import pprint
 pp = pprint.PrettyPrinter(width=120)
 import inspect
+from decimal import Decimal
 
 from .. import __version__
 from .. import molparse
@@ -103,9 +104,12 @@ def cfour_driver(jobrec):
     #print('QC', jobrec['qcvars'])
     #return jobrec
 
-    print('[1] CFOUR JOBREC PRE-PLANT (j@i) <<<')
-    pp.pprint(jobrec)
-    print('>>>')
+    verbose = 1
+
+    if verbose >= 3:
+        print('[1] {} JOBREC PRE-PLANT (j@i) <<<'.format('CFOUR'))
+        pp.pprint(jobrec)
+        print('>>>')
 
     cfourrec = cfour_plant(jobrec)
 
@@ -113,21 +117,24 @@ def cfour_driver(jobrec):
     jcfourrec = json.dumps(cfourrec)
     cfourrec = json.loads(jcfourrec)
 
-    print('[2] CFOURREC PRE-SUBPROCESS (x@i) <<<')
-    pp.pprint(cfourrec)
-    print('>>>\n')
+    if verbose >= 4:
+        print('[2] {}REC PRE-SUBPROCESS (m@i) <<<'.format('CFOUR'))
+        pp.pprint(cfourrec)
+        print('>>>\n')
 
     cfour_subprocess(cfourrec)  # updates cfourrec
 
-    print('[3] CFOURREC POST-SUBPROCESS (x@io) <<<')
-    pp.pprint(cfourrec)
-    print('>>>\n')
+    if verbose >= 4:
+        print('[3] {}REC POST-SUBPROCESS (m@io) <<<'.format('CFOUR'))
+        pp.pprint(cfourrec)
+        print('>>>\n')
 
     cfour_harvest(jobrec, cfourrec)  # updates jobrec
 
-    print('[4] CFOUR JOBREC POST-HARVEST (j@io) <<<')
-    pp.pprint(jobrec)
-    print('>>>')
+    if verbose >= 2:
+        print('[4] {} JOBREC POST-HARVEST (j@io) <<<'.format('CFOUR'))
+        pp.pprint(jobrec)
+        print('>>>')
 
     return jobrec
 
@@ -314,6 +321,19 @@ def cfour_harvest(jobrec, cfourrec):  # jobrec@i, cfourrec@io -> jobrec@io
 
     if c4hess is not None:
         progvars['CURRENT HESSIAN'] = c4hess
+
+    # badly placed
+    # Cfour's SCS-MP2 is non adjustible and only valid for UHF
+    # ROMP2 doesn't print SS & OS
+    if "MP2 OPPOSITE-SPIN CORRELATION ENERGY" in progvars and "MP2 SAME-SPIN CORRELATION ENERGY" in progvars:
+        oss_opt = jobrec['options'].scroll['QCDB']['MP2_OS_SCALE']
+        sss_opt = jobrec['options'].scroll['QCDB']['MP2_SS_SCALE']
+        custom_scsmp2_corl = \
+            Decimal(oss_opt.value) * progvars["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] + \
+            Decimal(sss_opt.value) * progvars["MP2 SAME-SPIN CORRELATION ENERGY"]
+        if "MP2 SINGLES ENERGY" in progvars:
+            custom_scsmp2_corl += progvars["MP2 SINGLES ENERGY"]
+        progvars["CUSTOM SCS-MP2 CORRELATION ENERGY"] = custom_scsmp2_corl
 
     qcvars.build_out(progvars)
     calcinfo = qcvars.certify(progvars)

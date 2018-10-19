@@ -5,16 +5,20 @@ from utils import *
 from addons import *
 
 
-h2o = qcdb.set_molecule("""
+@pytest.fixture
+def h2o():
+    return """
     O
     H 1 R
     H 1 R 2 A
     
     R=0.958
     A=104.5
-""")
+"""
 
-nh2 = qcdb.set_molecule("""
+@pytest.fixture
+def nh2():
+    return """
 0 2
 N
 H 1 R
@@ -22,14 +26,15 @@ H 1 R 2 A
 
 R=1.008
 A=105.0
-""")
+"""
 
 @using_cfour
-def test_sp_rhf_mp2():
+def test_sp_rhf_mp2(h2o):
     """cfour/sp-rhf-mp2/input.dat 
     #! single-point MP2/qz2p on water
 
     """
+    h2o = qcdb.set_molecule(h2o)
     qcdb.set_options({
         'cfour_BASIS': 'qz2p',
         'd_convergence': 12
@@ -50,8 +55,9 @@ def test_sp_rhf_mp2():
 
 
 @using_cfour
-def test_sp_uhf_mp2():
+def test_sp_uhf_mp2(nh2):
 
+    nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options({
         #'cfour_CALC_level': 'MP2',
         'cfour_BASIS': 'qz2p',
@@ -73,8 +79,9 @@ def test_sp_uhf_mp2():
 
 
 @using_cfour
-def test_sp_rohf_mp2_sc():
+def test_sp_rohf_mp2_sc(nh2):
 
+    nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options({
         #cfour_CALC_level=MP2
         'cfour_BASIS': 'qz2p',

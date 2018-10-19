@@ -175,6 +175,7 @@ def test_23a():
     assert subjects.scroll['QCDB']['SCF_E_CONV'].value == 1.e-6
 
 
+@pytest.mark.xfail(True, reason='have not yet healed namespaced options', run=True, strict=True)
 def test_23b():
     subjects = RottenOptions()
     subjects.add('qcdb', RottenOption(keyword='scf_e_conv', default=5, validator=parsers.parse_convergence))
@@ -183,6 +184,7 @@ def test_23b():
     assert subjects.scroll['QCDB']['SCF_E_CONV'].value == 1.e-5
 
 
+@pytest.mark.xfail(True, reason='have not yet healed namespaced options', run=True, strict=True)
 def test_23c():
     subjects = RottenOptions()
     subjects.add('qcdb', RottenOption(keyword='scf_e_conv', default=5, validator=parsers.parse_convergence))
@@ -191,6 +193,7 @@ def test_23c():
     assert subjects.scroll['QCDB']['SCF_E_CONV'].value == 1.e-6
 
 
+@pytest.mark.xfail(True, reason='have not yet healed namespaced options', run=True, strict=True)
 def test_23d():
     subjects = RottenOptions()
     subjects.add('qcdb', RottenOption(keyword='scf_e_conv', default=5, validator=parsers.parse_convergence))

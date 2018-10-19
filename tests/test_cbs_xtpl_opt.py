@@ -45,7 +45,6 @@ def system1():
     R = 1
     """)
     
-    # Get a reasonable guess, to save some iterations
     qcdb.set_options({
         'scf_type': 'pk',
         'mp2_type': 'conv',
@@ -89,6 +88,7 @@ def test_1a():
     h2 = system1()
     refene = test1_ene
     tnm = sys._getframe().f_code.co_name + ' [1] SCF/cc-pVDZ Optimized R'
+    assert compare_values(0.529177208590000, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
 
     ene, jrec = qcdb.optking('SCF/cc-pVDZ', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -105,6 +105,7 @@ def test_1b():
     h2 = system1()
     refene = test1_ene
     tnm = sys._getframe().f_code.co_name + ' [1] SCF/cc-pVDZ Optimized R'
+    assert compare_values(0.529177208590000, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
 
     ene, jrec = qcdb.optking('c4-SCF/cc-pVDZ', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -121,6 +122,7 @@ def test_2a():
     h2 = system1()
     refene = test2_ene
     tnm = sys._getframe().f_code.co_name + ' [2] SCF/cc-pV[DT]Z Optimized R'
+    assert compare_values(0.529177208590000, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
 
     ene, jrec = qcdb.optking('SCF/cc-pV[DT]Z', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -137,6 +139,7 @@ def test_2b():
     h2 = system1()
     refene = test2_ene
     tnm = sys._getframe().f_code.co_name + ' [2] SCF/cc-pV[DT]Z Optimized R'
+    assert compare_values(0.529177208590000, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
 
     ene, jrec = qcdb.optking('c4-SCF/cc-pV[DT]Z', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -153,6 +156,7 @@ def test_3a():
     h2 = system1()
     refene = test3_ene
     tnm = sys._getframe().f_code.co_name + " [3] SCF/cc-pV[DTQ]Z Optimized R"
+    assert compare_values(0.529177208590000, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
 
     ene, jrec = qcdb.optking('SCF/cc-pV[DTQ]Z', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -169,6 +173,7 @@ def test_3b():
     h2 = system1()
     refene = test3_ene
     tnm = sys._getframe().f_code.co_name + " [3] SCF/cc-pV[DTQ]Z Optimized R"
+    assert compare_values(0.529177208590000, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
 
     ene, jrec = qcdb.optking('c4-SCF/cc-pV[DTQ]Z', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -184,6 +189,7 @@ def test_4a():
     h2 = system1()
     refene = test4_ene
     tnm = sys._getframe().f_code.co_name + " [4] MP2/cc-pVDZ Optimized R"
+    assert compare_values(0.529177208590000, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
 
     ene, jrec = qcdb.optking('MP2/cc-pVDZ', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -200,6 +206,7 @@ def test_4b():
     h2 = system1()
     refene = test4_ene
     tnm = sys._getframe().f_code.co_name + " [4] MP2/cc-pVDZ Optimized R"
+    assert compare_values(0.529177208590000, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
 
     ene, jrec = qcdb.optking('c4-MP2/cc-pVDZ', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -215,6 +222,7 @@ def test_5a():
     h2 = system1()
     refene = test5_ene
     tnm = sys._getframe().f_code.co_name + " [5] MP2/cc-pV[DT]Z Optimized R"
+    assert compare_values(0.529177208590000, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
 
     ene, jrec = qcdb.optking('MP2/cc-pV[DT]Z', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -231,6 +239,7 @@ def test_5b():
     h2 = system1()
     refene = test5_ene
     tnm = sys._getframe().f_code.co_name + " [5] MP2/cc-pV[DT]Z Optimized R"
+    assert compare_values(0.529177208590000, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
 
     ene, jrec = qcdb.optking('c4-MP2/cc-pV[DT]Z', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -246,6 +255,7 @@ def test_6a():
     h2 = system1()
     refene = test6_ene
     tnm = sys._getframe().f_code.co_name + " [6] MP2/cc-pV[TQ]Z Optimized R"
+    assert compare_values(0.529177208590000, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
 
     ene, jrec = qcdb.optking('MP2/cc-pV[TQ]Z', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -262,6 +272,7 @@ def test_6b():
     h2 = system1()
     refene = test6_ene
     tnm = sys._getframe().f_code.co_name + " [6] MP2/cc-pV[TQ]Z Optimized R"
+    assert compare_values(0.529177208590000, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
 
     ene, jrec = qcdb.optking('c4-MP2/cc-pV[TQ]Z', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
