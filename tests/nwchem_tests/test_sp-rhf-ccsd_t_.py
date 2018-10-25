@@ -51,22 +51,26 @@ print(h2o)
 def check_ccsd_t_(return_value, is_df):
     if is_df:
         ref         =   -76.026744421192
-        ccsdcorl    =   -0.213350416141872
+        nre         =     9.187334240165
+        ccsdcorl    =    -0.213350416141872
         ccsdtot     =   -76.240094837333771
-        ccsd_t_corr =   -0.003062727448805
-        ccsd_t_corl =   -0.216413143590677
+        ccsd_t_corr =    -0.003062727448805
+        ccsd_t_corl =    -0.216413143590677
         ccsd_t_tot  =   -76.243157564782578
     else:
-        print("Does not match- Test fail")
+        ccsd_t_corr =    -0.003144681965512 #ccsd[t]
+        ccsd_t_corl =    -0.216495098107383 
+        ccsd_t_tot  =   -76.243239519299280 
 
-    assert compare_values(ref, qcdb.get_variable('SCF TOTAL ENERGY'), 5, 'rhf ref')
+    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'rhf ref')
     assert compare_values(ccsdcorl, qcdb.get_variable('CCSD CORRELATION ENERGY'), 5, 'ccsd corl')
     assert compare_values(ccsdtot, qcdb.get_variable('CCSD TOTAL ENERGY'), 5, 'ccsd total')
-    assert compare_values(ccsd_t_corr, qcdb.get_variable('CCSD(T) CORRECTION ENERGY'), 5, 'ccsd(t) corr')
+    assert compare_values(ccsd_t_corr, qcdb.get_variable('(T) CORRECTION ENERGY'), 5, 'ccsd(t) corr')
     assert compare_values(ccsd_t_corl, qcdb.get_variable('CCSD(T) CORRELATION ENERGY'), 5, 'ccsd(t) corl')
     assert compare_values(ccsd_t_tot, qcdb.get_variable('CCSD(T) TOTAL ENERGY'), 5, 'ccsd(t) tot')
+    assert compare_values(nre, qcdb.get_variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
 
-#@using_nwchem
+@using_nwchem
 def test_1_df_rhf():
     qcdb.set_options({
         'basis': 'cc-pvdz',
@@ -77,6 +81,7 @@ def test_1_df_rhf():
     print('     Testing rhf ...')
     val = qcdb.energy('nwc-hf')
     check_ccsd_t_(val, is_df=True)
+
 def test_2_df_ccsd():
     qcdb.set_options({
         'basis': 'cc-pvdz',
@@ -90,7 +95,7 @@ def test_2_df_ccsd():
     val=qcdb.energy('nwc-ccsd')
     check_ccsd_t_(val, is_df=True)
     
-def test_3_df_ccsd():
+def test_3_df_ccsd_t_():
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'memory': '600 mb',

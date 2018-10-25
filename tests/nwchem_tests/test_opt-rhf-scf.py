@@ -1,4 +1,4 @@
-#! Geometry optimization HF/6-31g* on water
+#! Geometry optimization HF/6-31g* on water  
 import os
 import sys
 from utils import *
@@ -46,13 +46,17 @@ print(h2o)
 
 def check_rhf(return_value, is_df):
     if is_df:
-        ref     =   -76.010746508391
+        ref     =   -76.010496306999
+        nre     =     9.187334240165
     else:
-        ref     =   -76.01074651
-    assert compare_values(ref, qcdb.get_variable('CURRENT ENERGY'), 5, 'rhf ref')
+        ref     =   -76.010738270124
+        nre     =     9.347020370478
+    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
+    assert compare_values(nre, qcdb.get_variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
+
 
 @using_nwchem
-def test_1_scf():
+def test_1_hf():
     qcdb.set_options({
         'basis'     :   '6-31g*',
         'memory'    :   '400 mb',
@@ -67,7 +71,6 @@ def test_1_scf():
     print('Testing HF...')
     val = qcdb.energy('nwc-hf')
     check_rhf(val, is_df=True)
-
 
 print('        <<< Translation of nwchem.nw to Psi4 format to NWChem >>>')
 print('''
