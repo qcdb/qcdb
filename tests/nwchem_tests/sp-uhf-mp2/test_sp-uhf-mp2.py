@@ -2,13 +2,8 @@
 # ROHF-MP2 is not available in NWChem 
 import os
 import sys
-<<<<<<< HEAD
 from addons import *
 from utils import *
-=======
-import addons
-import utils
->>>>>>> 8e2836deccb73a9c57c3c18440e0dc9e6fea94de
 import qcdb
 
 print('        <<< Literal nwchem.nw to NWChem >>>')

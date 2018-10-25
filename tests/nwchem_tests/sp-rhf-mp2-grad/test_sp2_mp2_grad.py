@@ -1,13 +1,8 @@
 #! Gradient MP2/cc-pvdz on water
 import os
 import sys
-<<<<<<< HEAD
 from utils import *
 from addons import *
-=======
-import utils
-import addons
->>>>>>> 8e2836deccb73a9c57c3c18440e0dc9e6fea94de
 import qcdb
 
 print('''        <<< Literal nwchem.nw to NWChem >>>'
