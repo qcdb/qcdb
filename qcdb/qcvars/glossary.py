@@ -1000,9 +1000,9 @@ qcvardefs['CCSDT (PBE) CORRELATION ENERGY'] = {
    The correlation energy component
    for the coupled cluster singles, doubles, and triples level of theory.
 
-.. psivar:: CCSD CORRELATION ENERGY
+.. psivar:: CCSDT CORRELATION ENERGY
 
-   The CCSD correlation energy for the requested DFT method, 
+   The CCSDT correlation energy for the requested DFT method, 
    :math:`E_{\text{CCSDcorl}}` in Eq. :eq:`CCSDcorl`.
 
    .. math:: 
@@ -1042,6 +1042,20 @@ qcvardefs['CCSD(T) TOTAL ENERGY'] = {
 """}
 
 qcvardefs['CCSD(T) CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The correlation energy component
+   for the coupled cluster singles and doubles plus perturbative triples level of theory.
+"""}
+
+qcvardefs['CCSDT TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total electronic energy 
+   for the coupled cluster singles and doubles plus perturbative triples level of theory.
+"""}
+
+qcvardefs['CCSDT CORRELATION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    The correlation energy component
