@@ -1,8 +1,8 @@
 #! single-point UHF/cc-pVDZ  on NH2 
 import os
 import sys
-import addons
-import utils
+from addons import *
+from utils import *
 import qcdb
 nh2= qcdb.set_molecule('''
            N        0.08546       -0.00020       -0.05091
@@ -16,9 +16,9 @@ def check_uhf_hf(return_value, is_df=True):
     else:
         print("Does not match")
 
-    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'scf')
+    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 2, 'scf')
 
-#@using_nwchem:
+@using_nwchem
 def test_1_hf():
     qcdb.set_options({
         'basis'     : 'cc-pvdz',
