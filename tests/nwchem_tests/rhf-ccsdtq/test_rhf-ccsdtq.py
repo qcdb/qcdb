@@ -69,7 +69,7 @@ def test_1_hf():
     print("Testing SCF energy (df)...")
     val = qcdb.energy('nwc-hf')
     check_ccsdtq(val, is_df=True)
-
+@using_nwchem
 def test_2_ccsdtq():
     qcdb.set_options({
         'basis': '6-31g*',
