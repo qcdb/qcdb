@@ -4,16 +4,20 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from utils import *
 from addons import *
 
-h2o = qcdb.set_molecule("""
+@pytest.fixture
+def h2o():
+    return """
     O
     H 1 R
     H 1 R 2 A
     
     R=0.958
     A=104.5
-""")
+"""
 
-nh2 = qcdb.set_molecule("""
+@pytest.fixture
+def nh2():
+    return """
 0 2
 N
 H 1 R
@@ -21,14 +25,15 @@ H 1 R 2 A
 
 R=1.008
 A=105.0
-""")
+"""
 
 @using_cfour
-def test_sp_rhf_ccsd():
+def test_sp_rhf_ccsd(h2o):
     """cfour/sp-rhf-ccsd/input.dat 
     #! single point CCSD/qz2p on water
 
     """
+    h2o = qcdb.set_molecule(h2o)
     qcdb.set_options({
         #'cfour_CALC_level': 'CCSD',
         'cfour_BASIS': 'qz2p',
@@ -50,11 +55,12 @@ def test_sp_rhf_ccsd():
 
 
 @using_cfour
-def test_sp_rhf_ccsd_ao():
+def test_sp_rhf_ccsd_ao(h2o):
     """cfour/sp-rhf-ccsd-ao/input.dat 
     #! single point CCSD/qz2p on water
 
     """
+    h2o = qcdb.set_molecule(h2o)
     qcdb.set_options({
         #'cfour_CALC_level': 'CCSD',
         'cfour_BASIS': 'qz2p',
@@ -77,11 +83,12 @@ def test_sp_rhf_ccsd_ao():
 
 
 @using_cfour
-def test_sp_uhf_ccsd():
+def test_sp_uhf_ccsd(nh2):
     """cfour/sp-uhf-ccsd/input.dat
     #! single-point CCSD/qz2p on NH2
 
     """
+    nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options({
         #'cfour_CALC_level': 'CCSD',
         'cfour_BASIS': 'qz2p',
@@ -103,8 +110,9 @@ def test_sp_uhf_ccsd():
 
 
 @using_cfour
-def test_sp_rohf_ccsd():
+def test_sp_rohf_ccsd(nh2):
 
+    nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options({
         #cfour_CALC_level': 'CCSD',
         'cfour_BASIS': 'qz2p',

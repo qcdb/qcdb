@@ -98,7 +98,7 @@ def load_qcdb_defaults(options):
             keyword='scf__damping_percentage',
             default=0.0,
             validator=parsers.percentage,
-            glossary="""The amount (percentage) of damping to apply to the early density updates.
+            glossary=r"""The amount (percentage) of damping to apply to the early density updates.
         0 will result in a full update, 100 will completely stall the update. A
         value around 20 (which corresponds to 20\% of the previous iteration's
         density being mixed into the current density)

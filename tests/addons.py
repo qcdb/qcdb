@@ -52,8 +52,8 @@ def is_psi4_new_enough(version_feature_introduced):
 #    import numpy
 #    from pkg_resources import parse_version
 #    return parse_version(numpy.version.version) >= parse_version(version_feature_introduced)
-#
-#
+
+
 #using_scipy = pytest.mark.skipif(_plugin_import('scipy') is False,
 #                                reason='Not detecting module scipy. Install package if necessary and add to envvar PYTHONPATH')
 
@@ -86,3 +86,9 @@ using_cfour = pytest.mark.skipif(_which('xcfour') is False,
 
 using_nwchem = pytest.mark.skipif(_which('nwchem') is False,
                                 reason='Not detecting executable nwchem. Install program if necessary and add to envvar PATH')
+
+using_geometric = pytest.mark.skipif(_plugin_import('geometric') is False,
+                                reason='Not detecting module geomeTRIC. Install package if necessary and add to envvar PYTHONPATH')
+
+using_dftd3 = pytest.mark.skipif(_which('dftd3') is False,
+                                reason='Not detecting executable dftd3. Install package if necessary and add to envvar PATH')

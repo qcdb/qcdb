@@ -2,8 +2,13 @@
 
 import os
 import sys
+<<<<<<< HEAD
 from utils import *
 from addons import *
+=======
+import utils
+import addons
+>>>>>>> 8e2836deccb73a9c57c3c18440e0dc9e6fea94de
 import qcdb
 
 print('''        <<< Literal nwchem.nw to NWChem >>>'
@@ -47,7 +52,11 @@ def check_hf(return_value, is_df):
 
     assert compare_values(ref, qcdb.get_variable('TOTAL SCF ENERGY'), 5, 'scf')
 
+<<<<<<< HEAD
 #@using_nwchem:
+=======
+@using_nwchem
+>>>>>>> 8e2836deccb73a9c57c3c18440e0dc9e6fea94de
 def test_1_hf():
     qcdb.set_options({
         'basis'     :   'cc-pvdz',

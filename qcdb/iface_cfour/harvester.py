@@ -197,7 +197,7 @@ def harvest_outfile_pass(outtext):
 
     mobj = re.search(
         r'^\s+' + r'(?:S-MBPT\(2\))' + r'\s+' + r'(?P<sgl>' + NUMBER + r')' + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'(?:D-MBPT\(2\))' + r'\s+' + r'(?P<dbl>' + NUMBER + r')' + r'\s+' + 
+        r'^\s+' + r'(?:D-MBPT\(2\))' + r'\s+' + r'(?P<dbl>' + NUMBER + r')' + r'\s+' +
                                                 r'(?P<mp2tot>' + NUMBER + r')' + r'\s*$',
         outtext, re.MULTILINE)
     if mobj:
@@ -333,12 +333,12 @@ def harvest_outfile_pass(outtext):
         psivar['%s TOTAL ENERGY' % (mobj.group('iterCC'))] = mobj.group(4)
 
     mobj = re.search(
-        r'^\s+' + r'(?:\d+)' + r'\s+' + r'(?P<corl>' + NUMBER + r')\s+' + 
+        r'^\s+' + r'(?:\d+)' + r'\s+' + r'(?P<corl>' + NUMBER + r')\s+' +
                   NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
         r'^\s*' +
         r'^\s*' + r'(?:\w+ iterations converged .*?)' +
         r'^\s*' +
-        r'^\s*' + r'(?:Total (?P<iterCC>\w+) energy:)' + r'\s+' + r'(?P<tot>' + NUMBER + ')\s*$',
+        r'^\s*' + r'(?:Total (?P<iterCC>\w+) energy:)' + r'\s+' + r'(?P<tot>' + NUMBER + r')\s*$',
         outtext, re.MULTILINE | re.DOTALL)
     if mobj:
         print('matched ncc cc iter')
@@ -435,9 +435,9 @@ def harvest_outfile_pass(outtext):
         r'^\s+' + r'(?P<fullCC>(?P<iterCC>CC(?:\w+))(?:\(T\))?)' + r'\s+(?:energy will be calculated.)\s*' +
         r'(?:.*?)' +
         r'^\s*' + r'(?:@CCENRG-I, Correlation energies.)' + r'\s+(?:ECCAA)\s+' + NUMBER + r'\s*' +
-        r'^\s+(?:ECCBB)\s+' + NUMBER + '\s*' +
-        r'^\s+(?:ECCAB)\s+' + NUMBER + '\s*' +
-        r'^\s+(?:Total)\s+' + NUMBER + '\s*',
+        r'^\s+(?:ECCBB)\s+' + NUMBER + r'\s*' +
+        r'^\s+(?:ECCAB)\s+' + NUMBER + r'\s*' +
+        r'^\s+(?:Total)\s+' + NUMBER + r'\s*',
         outtext, re.MULTILINE | re.DOTALL)
     if mobj:  # PRINT=2 to get SCS-CC components
         print('matched scscc')
@@ -1029,7 +1029,7 @@ def nu_muster_modelchem(name, dertype, ropts, verbose=1):
     elif lowername == 'c4-ccsdt(q)':
         ropts.require('CFOUR', 'CALC_LEVEL', 'CCSDT(Q)', accession=accession, verbose=verbose)
         ropts.suggest('CFOUR', 'CC_PROGRAM', 'NCC', accession=accession, verbose=verbose)
- 
+
     elif lowername == 'c4-ccsdtq':
         ropts.require('CFOUR', 'CALC_LEVEL', 'CCSDTQ', accession=accession, verbose=verbose)
         ropts.suggest('CFOUR', 'CC_PROGRAM', 'NCC', accession=accession, verbose=verbose)
@@ -1117,7 +1117,7 @@ def muster_modelchem(name, dertype):
     elif lowername == 'c4-ccsdt(q)':
         options['CFOUR']['CFOUR_CALC_LEVEL']['value'] = 'CCSDT(Q)'
         options['CFOUR']['CFOUR_CC_PROGRAM']['value'] = 'NCC'
- 
+
     elif lowername == 'c4-ccsdtq':
         options['CFOUR']['CFOUR_CALC_LEVEL']['value'] = 'CCSDTQ'
         options['CFOUR']['CFOUR_CC_PROGRAM']['value'] = 'NCC'
@@ -1304,18 +1304,41 @@ def backtransform(chgeMol, permMol, chgeGrad=None, chgeDip=None):
     """Here, *chgeMol* and *chgeGrd* need to be turned into the native Cfour
     orientation embodied by *permMol*. Currently for vpt2.
 
+<         p4c4 = OrientMols(p4Mol, outMol)
+<         oriCoord = p4c4.transform_coordinates2(outMol)
+---
+>         # TODO watch out - haven't seen atom_map=False yet
+>         rmsd, mill, amol = outMol.B787(p4Mol, atoms_map=True, mols_align=True, verbose=0)
+>         oriCoord = mill.align_coordinates(outMol.geometry(np_out=True))
+
+
+       rmsd, mill, amol = grdMol.B787(p4Mol, atoms_map=False, mols_align=True, verbose=0)
+
+        oriCoord = mill.align_coordinates(grdMol.geometry(np_out=True))
+        oriGrad = mill.align_gradient(np.array(grdGrad))
+        if dipolDip is None:
+            oriDip = None
+        else:
+            oriDip = mill.align_vector(np.array(dipolDip))
+
+        if fcmHess is None:
+            oriHess = None
+        else:
+            oriHess = mill.align_hessian(np.array(fcmHess))
+
+
     """
-    # Set up array reorientation object
-    p4c4 = OrientMols(permMol, chgeMol)  # opposite than usual
-    oriCoord = p4c4.transform_coordinates2(chgeMol)
+    # Set up array reorientation object -- opposite than usual
+    rmsd, mill, amol = chgeMol.B787(permMol, atoms_map=True, mols_align=True, verbose=0)
+    oriCoord = mill.align_coordinates(chgeMol.geometry(np_out=False))
     p4Elem = []
     for at in range(chgeMol.natom()):
         p4Elem.append(chgeMol.Z(at))
-    oriElem = p4c4.transform_elementlist(p4Elem)
-    oriElemMap = p4c4.Catommap
+    oriElem = mill.align_atoms(np.array(p4Elem))
+    oriElemMap = mill.atommap
 
-    oriGrad = None if chgeGrad is None else p4c4.transform_gradient(chgeGrad)
-    oriDip = None if chgeDip is None else p4c4.transform_vector(chgeDip)
+    oriGrad = None if chgeGrad is None else mill.align_gradient(np.array(chgeGrad))
+    oriDip = None if chgeDip is None else mill.align_vector(np.array(chgeDip))
 
     if chgeGrad and chgeDip:
         return oriElemMap, oriElem, oriCoord, oriGrad, oriDip

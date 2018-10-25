@@ -1,8 +1,13 @@
 #! Gradient MP2/cc-pvdz on water
 import os
 import sys
+<<<<<<< HEAD
 from utils import *
 from addons import *
+=======
+import utils
+import addons
+>>>>>>> 8e2836deccb73a9c57c3c18440e0dc9e6fea94de
 import qcdb
 
 print('''        <<< Literal nwchem.nw to NWChem >>>'
@@ -66,7 +71,11 @@ def check_mp2(return_value, is_df, a5050=True):
     assert compare_values(scs_corl, qcdb.get_variable('SCS-MP2 CORRELATION ENERGY'), 5, 'scs mp2 corl')
     assert compare_values(a5050, qcdb.get_variable('custom SCS-MP2 TOTAL ENERGY'), 5, 'custom scs mp2')
 
+<<<<<<< HEAD
 #@using_nwchem:
+=======
+@using_nwchem
+>>>>>>> 8e2836deccb73a9c57c3c18440e0dc9e6fea94de
 def test_1_mp2():
     qcdb.set_options({
         'basis'         :       'cc-pvdz',

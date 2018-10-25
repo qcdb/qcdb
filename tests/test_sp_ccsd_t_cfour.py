@@ -1,20 +1,24 @@
 import os
 import sys
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
+#sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from utils import *
 from addons import *
 
 
-h2o = qcdb.set_molecule("""
+@pytest.fixture
+def h2o():
+    return """
     O
     H 1 R
     H 1 R 2 A
     
     R=0.958
     A=104.5
-""")
+"""
 
-nh2 = qcdb.set_molecule("""
+@pytest.fixture
+def nh2():
+    return """
 0 2
 N
 H 1 R
@@ -22,7 +26,7 @@ H 1 R 2 A
 
 R=1.008
 A=105.0
-""")
+"""
 
 
 def check_rhf(tnm, fc=False):
@@ -124,9 +128,10 @@ def check_rohf(tnm, fc, prog):
 
 
 @using_cfour
-def test_sp_rhf_ccsd_t_ao_ecc():
+def test_sp_rhf_ccsd_t_ao_ecc(h2o):
     """cfour/sp-rhf-ccsd_t_-ao-ecc/input.dat"""
 
+    h2o = qcdb.set_molecule(h2o)
     qcdb.set_options({
         #'cfour_CALC_level': 'CCSD(T)',
         'cfour_BASIS': 'qz2p',
@@ -145,8 +150,9 @@ def test_sp_rhf_ccsd_t_ao_ecc():
 
 
 @using_cfour
-def test_sp_rhf_ccsd_t_ao():
+def test_sp_rhf_ccsd_t_ao(h2o):
 
+    h2o = qcdb.set_molecule(h2o)
     qcdb.set_options({
         'cfour_BASIS': 'qz2p',
         'cfour_abcdtype': 'aobasis',
@@ -163,8 +169,9 @@ def test_sp_rhf_ccsd_t_ao():
 
 
 @using_cfour
-def test_sp_rhf_ccsd_t_ecc():
+def test_sp_rhf_ccsd_t_ecc(h2o):
 
+    h2o = qcdb.set_molecule(h2o)
     qcdb.set_options({
         'cfour_BASIS': 'qz2p',
         'cfour_SCF_CONV': 12,
@@ -180,8 +187,9 @@ def test_sp_rhf_ccsd_t_ecc():
 
 
 @using_cfour
-def test_sp_rhf_ccsd_t_():
+def test_sp_rhf_ccsd_t_(h2o):
 
+    h2o = qcdb.set_molecule(h2o)
     qcdb.set_options({
         'cfour_BASIS': 'qz2p',
         'cfour_SCF_CONV': 12,
@@ -197,8 +205,9 @@ def test_sp_rhf_ccsd_t_():
 
 
 @using_cfour
-def test_sp_rhf_ccsd_t_fc():
+def test_sp_rhf_ccsd_t_fc(h2o):
 
+    h2o = qcdb.set_molecule(h2o)
     qcdb.set_options({
         'cfour_BASIS': 'qz2p',
         'cfour_abcdtype': 'aobasis',
@@ -216,8 +225,9 @@ def test_sp_rhf_ccsd_t_fc():
 
 
 @using_cfour
-def test_sp_rhf_ccsd_t_ncc():
+def test_sp_rhf_ccsd_t_ncc(h2o):
 
+    h2o = qcdb.set_molecule(h2o)
     qcdb.set_options({
         'cfour_BASIS': 'qz2p',
         'cfour_abcdtype': 'aobasis',
@@ -234,8 +244,9 @@ def test_sp_rhf_ccsd_t_ncc():
 
 
 @using_cfour
-def test_sp_uhf_ccsd_t_ao_ecc():
+def test_sp_uhf_ccsd_t_ao_ecc(nh2):
 
+    nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options({
         'cfour_BASIS': 'qz2p',
         'cfour_abcdtype': 'aobasis',
@@ -254,8 +265,9 @@ def test_sp_uhf_ccsd_t_ao_ecc():
 
 
 @using_cfour
-def test_sp_uhf_ccsd_t_ao():
+def test_sp_uhf_ccsd_t_ao(nh2):
 
+    nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options({
         'cfour_BASIS': 'qz2p',
         'cfour_abcdtype': 'aobasis',
@@ -274,8 +286,9 @@ def test_sp_uhf_ccsd_t_ao():
 
 
 @using_cfour
-def test_sp_uhf_ccsd_t_ecc():
+def test_sp_uhf_ccsd_t_ecc(nh2):
 
+    nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options({
         'cfour_BASIS': 'qz2p',
         'cfour_reference': 'uhf',
@@ -293,8 +306,9 @@ def test_sp_uhf_ccsd_t_ecc():
 
 
 @using_cfour
-def test_sp_uhf_ccsd_t_():
+def test_sp_uhf_ccsd_t_(nh2):
 
+    nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options({
         'cfour_BASIS': 'qz2p',
         'cfour_reference': 'uhf',
@@ -312,8 +326,9 @@ def test_sp_uhf_ccsd_t_():
 
 
 @using_cfour
-def test_sp_rohf_ccsd_t_():
+def test_sp_rohf_ccsd_t_(nh2):
 
+    nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options({
         'cfour_BASIS': 'qz2p',
         'cfour_reference': 'rohf',
@@ -332,8 +347,9 @@ def test_sp_rohf_ccsd_t_():
 
 
 @using_cfour
-def test_sp_rohf_ccsd_t_ao():
+def test_sp_rohf_ccsd_t_ao(nh2):
 
+    nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options({
         'cfour_BASIS': 'qz2p',
         'cfour_reference': 'rohf',
@@ -353,8 +369,9 @@ def test_sp_rohf_ccsd_t_ao():
 
 
 @using_cfour
-def test_sp_rohf_ccsd_t_ao_ecc():
+def test_sp_rohf_ccsd_t_ao_ecc(nh2):
 
+    nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options({
         'cfour_BASIS': 'qz2p',
         'cfour_reference': 'rohf',
@@ -373,8 +390,9 @@ def test_sp_rohf_ccsd_t_ao_ecc():
 
 
 @using_cfour
-def test_sp_rohf_ccsd_t_fc():
+def test_sp_rohf_ccsd_t_fc(nh2):
 
+    nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options({
         'cfour_BASIS': 'qz2p',
         'cfour_reference': 'rohf',
