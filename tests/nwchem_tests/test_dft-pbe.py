@@ -46,7 +46,7 @@ def check_dft(return_value, is_df):
         ref     =   -74.964662543238
         
     assert compare_values(ref, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'DFT total')  #TEST
-    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'SCF total')  #TEST
+    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'HF total')  #TEST
 
 @using_nwchem
 def test_1_dft_tot():
@@ -62,7 +62,7 @@ def test_1_dft_tot():
     print('Testing DFT total energy...')
     val = qcdb.energy('nwc-dft')
     check_dft(val, is_df=True)
-    
+@using_nwchem    
 def test_2_dft():
     qcdb.set_options({
         'basis'         : 'sto-3g',
@@ -72,9 +72,9 @@ def test_2_dft():
         #'nwchem_dft__convergence__energy': 1.0e-7,
         #'nwchem_dft__convergence__density': 1.0e-7
         })
-    print('Testing DFT current energy...')
+    print('Testing HF energy...')
     val2 = qcdb.energy('nwc-hf')
-    check_dft(val, is_df=True)
+    check_dft(val2, is_df=False)
 
 #nwchem {}
 #clean ()
