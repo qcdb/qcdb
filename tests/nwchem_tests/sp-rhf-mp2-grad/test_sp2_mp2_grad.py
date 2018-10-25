@@ -66,7 +66,7 @@ def check_mp2(return_value, is_df, a5050=True):
     assert compare_values(scs_corl, qcdb.get_variable('SCS-MP2 CORRELATION ENERGY'), 5, 'scs mp2 corl')
     assert compare_values(a5050, qcdb.get_variable('custom SCS-MP2 TOTAL ENERGY'), 5, 'custom scs mp2')
 
-#@using_nwchem:
+@using_nwchem
 def test_1_mp2():
     qcdb.set_options({
         'basis'         :       'cc-pvdz',

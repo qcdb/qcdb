@@ -47,7 +47,7 @@ def check_hf(return_value, is_df):
 
     assert compare_values(ref, qcdb.get_variable('TOTAL SCF ENERGY'), 5, 'scf')
 
-#@using_nwchem:
+@using_nwchem
 def test_1_hf():
     qcdb.set_options({
         'basis'     :   'cc-pvdz',
