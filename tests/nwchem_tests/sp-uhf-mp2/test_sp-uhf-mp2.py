@@ -74,7 +74,7 @@ def check_uhf_mp2(return_value, is_df, is_5050=False):
         assert compare_values(a5050corl, qcdb.get_variable('custom SCS-MP2 CORRELATION ENERGY'), 5, 'mp2 scscorl')
         assert compare_values(a5050tot, qcdb.get_variable('custom SCS-MP2 TOTAL ENERGY'), 5, 'mp2 scstot')
     
-#@using_nwchem
+@using_nwchem
 def test_1_hf():
     qcdb.set_options({
         'basis'     :   'cc-pvdz',
