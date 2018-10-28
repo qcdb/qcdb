@@ -94,7 +94,7 @@ from .vib import compare_vibinfos
 from .testutil import compare_values, compare_integers, compare_strings
 from .testutil import compare_dicts, compare_molrecs, compare_matrices, compare_arrays
 
-from .physconst import *
+#from .physconst import *
 from .exceptions import *
 
 #from .util import *

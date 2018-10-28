@@ -1,5 +1,7 @@
 from utils import *
 
+import qcelemental as qcel
+
 import qcdb
 
 
@@ -61,9 +63,9 @@ def test_mints4():
     """)
     dimer.update_geometry()
 
-    assert compare_values(refENuc, dimer.nuclear_repulsion_energy(), 9, "Bz-H3O+: nuclear repulsion energy")
+    assert compare_values(refENuc * a2a, dimer.nuclear_repulsion_energy(), 9, "Bz-H3O+: nuclear repulsion energy")
 
-    geom_now = qcdb.vecutil.mscale(dimer.geometry(), qcdb.psi_bohr2angstroms)
+    geom_now = qcdb.vecutil.mscale(dimer.geometry(), qcel.constants.bohr2angstroms)
     assert compare_matrices(refGEOM, geom_now, 6, "Bz-H3O+: geometry and orientation")
 
 
@@ -99,7 +101,7 @@ def test_scf4():
         for A in Avals:
             h2o.A = A  # alternately, h2o.set_variable('A', A)
             h2o.update_geometry()
-            assert compare_values(refENuc[count],
+            assert compare_values(refENuc[count] * a2a,
                                   h2o.nuclear_repulsion_energy(), 10, "Nuclear repulsion energy %d" % count)
             count = count + 1
 
@@ -125,6 +127,6 @@ def test_scf4():
             h2o.RSinA = R * math.sin(math.radians(A))
             h2o.update_geometry()
 
-            assert compare_values(refENuc[count],
+            assert compare_values(refENuc[count] * a2a,
                                   h2o.nuclear_repulsion_energy(), 10, "Nuclear repulsion energy %d" % count)
             count = count + 1

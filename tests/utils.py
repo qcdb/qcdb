@@ -1,9 +1,10 @@
 import pprint
 pp = pprint.PrettyPrinter(width=120)
 
-
 import qcdb
 
+
+a2a = 0.52917721067 / 0.52917720859
 
 def true_false_decorator(compare_fn, *args, **kwargs):
     """Turns `compare_fn` that returns `None` on success and raises

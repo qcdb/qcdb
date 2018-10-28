@@ -36,7 +36,7 @@ ref_mp2_dtz_y = ref_mp2_dtz[:, permuted_indices_col][permuted_indices_row, :]
 #               [[ 0.0,  0.02466190,   0.0],
 #                [ 0.0,  0.0,          0.0]])
 
-nucenergy_ref = 1.17594935242
+nucenergy_ref = 1.17594935242 * a2a
 
 
 def system1():

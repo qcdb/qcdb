@@ -5,7 +5,6 @@ pp = pprint.PrettyPrinter(width=120)
 import inspect
 
 from .. import __version__
-from .. import molparse
 from .. import moptions
 from .. import qcvars
 from ..driver.driver_helpers import print_variables

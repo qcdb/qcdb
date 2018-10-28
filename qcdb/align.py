@@ -25,7 +25,6 @@ import qcelemental as qcel
 from .util import blockwise_contract, blockwise_expand
 from .molecule import Molecule
 from .testutil import compare_values, compare_integers
-from .physconst import psi_bohr2angstroms
 
 try:
     from itertools import izip as zip  # py2
@@ -291,7 +290,7 @@ def B787(cgeom,
             print(atomfmt2.format(cuniq[at][:6], *cgeom[at]))
 
     # start_rmsd is nonsense if not atoms_map
-    start_rmsd = np.linalg.norm(cgeom - rgeom) * psi_bohr2angstroms / np.sqrt(nat)
+    start_rmsd = np.linalg.norm(cgeom - rgeom) * qcel.constants.bohr2angstroms / np.sqrt(nat)
     if verbose >= 1:
         print('Start RMSD = {:8.4f} [A] (naive)'.format(start_rmsd))
 
@@ -319,7 +318,7 @@ def B787(cgeom,
         tgeom = temp_solution.align_coordinates(cgeom, reverse=False)
         if verbose >= 4:
             print('temp geom diff\n', tgeom - rgeom)
-        temp_rmsd = np.linalg.norm(tgeom - rgeom) * psi_bohr2angstroms / np.sqrt(rgeom.shape[0])
+        temp_rmsd = np.linalg.norm(tgeom - rgeom) * qcel.constants.bohr2angstroms / np.sqrt(rgeom.shape[0])
         temp_rmsd = np.around(temp_rmsd, decimals=8)
         t2 = time.time()
         tc += t2 - t1
@@ -347,7 +346,7 @@ def B787(cgeom,
             tgeom = temp_solution.align_coordinates(cgeom, reverse=False)
             if verbose >= 4:
                 print('temp geom diff\n', tgeom - rgeom)
-            temp_rmsd = np.linalg.norm(tgeom - rgeom) * psi_bohr2angstroms / np.sqrt(rgeom.shape[0])
+            temp_rmsd = np.linalg.norm(tgeom - rgeom) * qcel.constants.bohr2angstroms / np.sqrt(rgeom.shape[0])
             temp_rmsd = np.around(temp_rmsd, decimals=8)
             t2 = time.time()
             tc += t2 - t1
@@ -370,7 +369,7 @@ def B787(cgeom,
         print('Kabsch time [s] for mol alignment:    {:.3}'.format(tc))
 
     ageom, auniq = hold_solution.align_mini_system(cgeom, cuniq, reverse=False)
-    final_rmsd = np.linalg.norm(ageom - rgeom) * psi_bohr2angstroms / np.sqrt(nat)
+    final_rmsd = np.linalg.norm(ageom - rgeom) * qcel.constants.bohr2angstroms / np.sqrt(nat)
     assert (abs(best_rmsd - final_rmsd) < 1.e-3)
 
     if verbose >= 1:
@@ -626,7 +625,7 @@ def kabsch_align(rgeom, cgeom, weight=None):
     TT = Ccentroid - RR.dot(Rcentroid)
 
     C = C.dot(RR)
-    rmsd = np.linalg.norm(R - C) * psi_bohr2angstroms / np.sqrt(np.sum(w))
+    rmsd = np.linalg.norm(R - C) * qcel.constants.bohr2angstroms / np.sqrt(np.sum(w))
 
     return rmsd, RR, TT
 

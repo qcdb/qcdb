@@ -39,13 +39,14 @@ from decimal import Decimal
 
 import numpy as np
 
+import qcelemental as qcel
+
 #from ..datastructures import *
 from ..util import update_with_error, der0th, der1st
 from ..exceptions import *
 from ..pdict import PreservingDict
 #from .dashparam import dash_server, dashcoeff
 from . import dashparam
-from .. import molparse
 from .. import qcvars
 from .. import __version__
 from ..driver.driver_helpers import print_variables
@@ -280,7 +281,7 @@ def dftd3_plant(jobrec):
                                                jobrec['dashparams'])
     dftd3rec['dftd3par'] = dftd3par
 
-    dftd3_geometry = molparse.to_string(
+    dftd3_geometry = qcel.molparse.to_string(
         jobrec['molecule'], dtype='xyz', units='Angstrom', ghost_format='')
     dftd3rec['dftd3_geometry'] = dftd3_geometry
 
