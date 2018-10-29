@@ -450,6 +450,12 @@ def load_nwchem_defaults(options):
         glossary='Use DFT as TCE reference wave function. If not specified, default is SCF(HF).'))
 
     options.add('nwchem', RottenOption(
+        keyword='tce_on',
+        default=True,
+        validator= parsers.boolean,
+        glossary='The switch for turning on the Tensor Contraction Engine (TCE). Not necessarily needed for couple cluster methods of singles and doubles (CCSD), but necessary for couple cluster theory for singles, doubles, and triples (CCSDT) and couple cluster theory for singles, doubles, triples, and quadruples (CCSDTQ). Default is on.'))
+
+    options.add('nwchem', RottenOption(
         keyword='tce',
         default='',
         validator= parsers.enum("LCCD CCD LCCSD CCSD CCSD_ACT LR-CCSD EACCSD IPCCSD CC2 CCSDT CCSDTA CCSDTQ CCSDTQ CCSD(T) CCSD[T] CR-CCSD[T] CR-CCSD(T) CCSD(2)_T CCSD(2)_TQ CCSDT(2)_Q LR-CCSD(T) LR-CCSD(TQ)-1 CREOMSD(T) CREOM(T)AC QCISD CISD CISDT CISDTQ MBPT2 MBPT3 MBPT4 MP2 MP3 MP4"),
@@ -458,7 +464,6 @@ def load_nwchem_defaults(options):
         CR-CCSD[T], CR-CCSD(T), CCSD(2)_T, CCSD(2)_TQ, CCSDT(2)_Q, LR-CCSD(T), LR-CCSD(TQ)-1, CREOMSD(T),
         CREOM(T)AC, QCISD, CISD, CISDT, CISDTQ, MBPT2, MBPT3, MBPT4.
         MBP2= MP2, MBPT3= MP3, MBPT4= MP4.'''))
-
 
     options.add('nwchem', RottenOption(
         keyword='tce_thresh',
