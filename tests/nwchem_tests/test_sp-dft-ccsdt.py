@@ -5,6 +5,7 @@ import sys
 from utils import *
 from addons import *
 import qcdb
+
 h2o= qcdb.set_molecule('''
         O     0.000000000000    0.000000000000   -0.065638538099
         H     0.000000000000   -0.757480611647    0.520865616174
@@ -42,12 +43,14 @@ def test_1_dft():
     print('Testing DFT energy...')
     val = qcdb.energy('nwc-dft')#, return_wfn=True)
     check_dft(val, is_dft=True)
+
 @using_nwchem
 def test_2_ccsdt():
     qcdb.set_options({
         'basis': 'sto-3g',
         'memory': '600 mb',
         'nwchem_tce_dft': True,
+        'nwchem_tce_on' : True,
         'nwchem_tce': 'CCSDT',
         'nwchem_tce_thresh': 1.0e-12,
         'nwchem_task_tce': 'energy'

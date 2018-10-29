@@ -5,41 +5,6 @@ from utils import *
 from addons import *
 import qcdb
 
-print('        <<< Literal input to NWChem >>>')
-print('''
-memory 600 mb
-
-nwchem {
-geometry
-O     0.000000000000    0.000000000000   -0.065638538099
-H     0.000000000000   -0.757480611647    0.520865616174
-H     0.000000000000    0.757480611647    0.520865616174
-end
-
-basis spherical
-* library cc-pvdz
-end
-
-scf
- rhf
- thresh 1.0e-12 #Not the same as e_convergence and d_convergence
-end
-tce
- scf
- ccsd(t)
- thresh 1.0e-12
-end
-
-task tce energy
-}
-
-energy('nwchem')
-
-clean()
-clean_variables()
-nwchem {}
-''')
-
 h2o= qcdb.set_molecule('''
         O     0.000000000000    0.000000000000   -0.065638538099
         H     0.000000000000   -0.757480611647    0.520865616174
@@ -92,6 +57,7 @@ def test_2_df_ccsd():
         'memory':'600 mb',
         'nwchem_tce_dft': False,
         'nwchem_tce': 'ccsd(t)',
+        'nwchem_tce_on': True,
         'nwchem_tce_thresh': 1.0e-12,
         'nwchem_task_tce': 'energy'
         })
@@ -105,6 +71,7 @@ def test_3_df_ccsd_t_():
         'memory': '600 mb',
         'nwchem_tce_dft': False,
         'nwchem_tce': 'ccsd(t)',
+        'nwchem_tce_on': True,
         'nwchem_tce_thresh': 1.0e-12,
         'nwchem_task_tce': 'energy'
         })
@@ -118,31 +85,10 @@ def test_4_nodf_ccsd_t_():
         'memory': '600 mb',
         'nwchem_tce_dft': False,
         'nwchem_tce': 'ccsd(t)',
+        'nwchem_tce_on': True,
         'nwchem_tce_thresh': 1.0e-12,
         'nwchem_task_tce': 'energy'
         })
     print('Testing ccsd(t)...')
     val=qcdb.energy('nwc-ccsd(t)')
     check_ccsd_t_(val, is_df=False)
-
-
-print( '        <<< Translation of NWChem input to Psi4 format to NWChem >>>')
-print('''
-molecule {
-O
-H 1 R
-H 1 R 2 A
-
-R=0.958
-A=104.5
-}
-
-set {
-basis cc-pvdz
-reference rhf
-nwchem_scf_thresh 1.0e-12
-nwchem_tce_thresh 1.0e-12
-nwchem_tce ccsd(t)
-}
-
-energy('nwchem-tce')''')
