@@ -53,45 +53,42 @@ class Molecule(LibmintsMolecule):
     `psi4.core.Molecule` itself.
 
     """
-    def __init__(self,
-                 molinit=None,
-                 dtype=None,
 
-                 geom=None,
-                 elea=None,
-                 elez=None,
-                 elem=None,
-                 mass=None,
-                 real=None,
-                 elbl=None,
-
-                 name=None,
-                 units='Angstrom',
-                 input_units_to_au=None,
-                 fix_com=None,
-                 fix_orientation=None,
-                 fix_symmetry=None,
-
-                 fragment_separators=None,
-                 fragment_charges=None,
-                 fragment_multiplicities=None,
-
-                 molecular_charge=None,
-                 molecular_multiplicity=None,
-                 comment=None,
-                 provenance=None,
-                 #connectivity=None,
-                 enable_qm=True,
-                 enable_efp=True,
-                 missing_enabled_return_qm='none',
-                 missing_enabled_return_efp='none',
-
-                 missing_enabled_return='error',
-                 tooclose=0.1,
-                 zero_ghost_fragments=False,
-                 nonphysical=False,
-                 mtol=1.e-3,
-                 verbose=1):
+    def __init__(
+            self,
+            molinit=None,
+            dtype=None,
+            geom=None,
+            elea=None,
+            elez=None,
+            elem=None,
+            mass=None,
+            real=None,
+            elbl=None,
+            name=None,
+            units='Angstrom',
+            input_units_to_au=None,
+            fix_com=None,
+            fix_orientation=None,
+            fix_symmetry=None,
+            fragment_separators=None,
+            fragment_charges=None,
+            fragment_multiplicities=None,
+            molecular_charge=None,
+            molecular_multiplicity=None,
+            comment=None,
+            provenance=None,
+            #connectivity=None,
+            enable_qm=True,
+            enable_efp=True,
+            missing_enabled_return_qm='none',
+            missing_enabled_return_efp='none',
+            missing_enabled_return='error',
+            tooclose=0.1,
+            zero_ghost_fragments=False,
+            nonphysical=False,
+            mtol=1.e-3,
+            verbose=1):
         """Initialize Molecule object from LibmintsMolecule"""
         super(Molecule, self).__init__()
 
@@ -152,7 +149,6 @@ class Molecule(LibmintsMolecule):
         # The comment line
         self.tagline = ""
 
-
     def __str__(self):
         text = """  ==> qcdb Molecule %s <==\n\n""" % (self.name())
         text += """   => %s <=\n\n""" % (self.tagline)
@@ -193,7 +189,8 @@ class Molecule(LibmintsMolecule):
         >>> H2O = qcdb.Molecule.init_with_xyz('h2o.xyz')
 
         """
-        raise FeatureDeprecated("""qcdb.Molecule.init_with_xyz. Replace with: qcdb.Molecule.from_string(..., dtype='xyz+')""")
+        raise FeatureDeprecated(
+            """qcdb.Molecule.init_with_xyz. Replace with: qcdb.Molecule.from_string(..., dtype='xyz+')""")
 
     @classmethod
     def init_with_mol2(cls, xyzfilename, no_com=False, no_reorient=False, contentsNotFilename=False):
@@ -222,8 +219,8 @@ class Molecule(LibmintsMolecule):
             try:
                 infile = open(xyzfilename, 'r')
             except IOError:
-                raise ValidationError("""Molecule::init_with_mol2: given filename '%s' does not exist.""" %
-                                      (xyzfilename))
+                raise ValidationError(
+                    """Molecule::init_with_mol2: given filename '%s' does not exist.""" % (xyzfilename))
             if os.stat(xyzfilename).st_size == 0:
                 raise ValidationError("""Molecule::init_with_mol2: given filename '%s' is blank.""" % (xyzfilename))
             text = infile.readlines()
@@ -232,8 +229,9 @@ class Molecule(LibmintsMolecule):
         v2000 = re.compile(r'^((?=[ ]*\d+)[ \d]{3})((?=[ ]*\d+)[ \d]{3})(.*)V2000\s*$')
         vend = re.compile(r'^\s*M\s+END\s*$')
         NUMBER = "((?:[-+]?\\d*\\.\\d+(?:[DdEe][-+]?\\d+)?)|(?:[-+]?\\d+\\.\\d*(?:[DdEe][-+]?\\d+)?))"
-        xyzM = re.compile(r'^(?:\s*)' + NUMBER + r'(?:\s+)' + NUMBER + r'(?:\s+)' + NUMBER +
-                          r'(?:\s+)([A-Z](?:[a-z])?)(?:\s+)(.*)', re.IGNORECASE)
+        xyzM = re.compile(
+            r'^(?:\s*)' + NUMBER + r'(?:\s+)' + NUMBER + r'(?:\s+)' + NUMBER + r'(?:\s+)([A-Z](?:[a-z])?)(?:\s+)(.*)',
+            re.IGNORECASE)
 
         ## now charge and multiplicity
         #   $chargem = 0  ; $multm = 1 ;
@@ -288,8 +286,8 @@ class Molecule(LibmintsMolecule):
                     raise ValidationError("Molecule::init_with_mol2: Malformed atom information line %d." % (i + 5))
 
             except IndexError:
-                raise ValidationError("Molecule::init_with_mol2: Expected atom in file at line %d.\n%s" %
-                                      (i + 5, text[i + 4]))
+                raise ValidationError(
+                    "Molecule::init_with_mol2: Expected atom in file at line %d.\n%s" % (i + 5, text[i + 4]))
 
         # We need to make 1 fragment with all atoms
         instance.fragments.append([0, fileNatom - 1])
@@ -369,7 +367,6 @@ class Molecule(LibmintsMolecule):
         nparr = np.array(geo)
         return nparr if npobj else np.array_repr(nparr)
 
-
     def format_molecule_for_psi4(self):
         """Returns string of molecule definition block."""
         text = 'molecule mol {\n'
@@ -435,10 +432,9 @@ class Molecule(LibmintsMolecule):
             for fr in range(self.nfragments()):
                 if self.fragment_types[fr] == 'Absent' and not self.has_zmatrix():
                     continue
-                text += "%s%s%d %d\n" % (
-                    "" if Pfr == 0 else "--\n",
-                    "#" if self.fragment_types[fr] == 'Ghost' or self.fragment_types[fr] == 'Absent' else "",
-                    self.fragment_charges[fr], self.fragment_multiplicities[fr])
+                text += "%s%s%d %d\n" % ("" if Pfr == 0 else "--\n", "#" if self.fragment_types[fr] == 'Ghost'
+                                         or self.fragment_types[fr] == 'Absent' else "", self.fragment_charges[fr],
+                                         self.fragment_multiplicities[fr])
                 Pfr += 1
                 for at in range(self.fragments[fr][0], self.fragments[fr][1] + 1):
                     if self.fragment_types[fr] == 'Absent' or self.fsymbol(at) == "X":
@@ -519,11 +515,11 @@ class Molecule(LibmintsMolecule):
         options['CFOUR']['CFOUR_CHARGE']['value'] = self.molecular_charge()
         options['CFOUR']['CFOUR_MULTIPLICITY']['value'] = self.multiplicity()
         options['CFOUR']['CFOUR_UNITS']['value'] = 'ANGSTROM'
-#        options['CFOUR']['CFOUR_UNITS']['value'] = 'BOHR'
+        #options['CFOUR']['CFOUR_UNITS']['value'] = 'BOHR'
         options['CFOUR']['CFOUR_COORDINATES']['value'] = 'CARTESIAN'
-#        options['CFOUR']['CFOUR_SUBGROUP']['value'] = self.symmetry_from_input().upper()
-#        print self.inertia_tensor()
-#        print self.inertial_system()
+        #options['CFOUR']['CFOUR_SUBGROUP']['value'] = self.symmetry_from_input().upper()
+        #print self.inertia_tensor()
+        #print self.inertial_system()
 
         options['CFOUR']['CFOUR_CHARGE']['clobber'] = True
         options['CFOUR']['CFOUR_MULTIPLICITY']['clobber'] = True
@@ -611,7 +607,7 @@ class Molecule(LibmintsMolecule):
             # any general starting notation here <<<
             text += '$molecule\n'
             text += '%d %d\n' % (self.molecular_charge(), self.multiplicity())
-                                               # >>>
+            # >>>
             for fr in range(self.nfragments()):
                 if self.fragment_types[fr] == 'Absent' and not self.has_zmatrix():
                     continue
@@ -620,13 +616,12 @@ class Molecule(LibmintsMolecule):
                     # this only distinguishes Real frags so Real/Ghost don't get
                     #   fragmentation. may need to change
                     text += """--\n"""
-                                         # >>>
+                    # >>>
                 # any fragment chgmult here <<<
                 if self.nactive_fragments() > 1:
-                    text += """{}{} {}\n""".format(
-                        '!' if self.fragment_types[fr] in ['Ghost', 'Absent'] else '',
-                        self.fragment_charges[fr], self.fragment_multiplicities[fr])
-                                          # >>>
+                    text += """{}{} {}\n""".format('!' if self.fragment_types[fr] in ['Ghost', 'Absent'] else '',
+                                                   self.fragment_charges[fr], self.fragment_multiplicities[fr])
+                    # >>>
                 Pfr += 1
                 for at in range(self.fragments[fr][0], self.fragments[fr][1] + 1):
                     if self.fragment_types[fr] == 'Absent' or self.fsymbol(at) == "X":
@@ -635,20 +630,18 @@ class Molecule(LibmintsMolecule):
                         if self.fZ(at):
                             # label for real live atom <<<
                             text += """{:>3s} """.format(self.fsymbol(at))
-                                                     # >>>
+                            # >>>
                         else:
                             # label for ghost atom <<<
-                            text += """{:>3s} """.format(
-                                'Gh' if mixedbas else ('@' + self.fsymbol(at)))
-                                                 # >>>
+                            text += """{:>3s} """.format('Gh' if mixedbas else ('@' + self.fsymbol(at)))
+                            # >>>
                         [x, y, z] = self.full_atoms[at].compute()
                         # Cartesian coordinates <<<
-                        text += """{:>17.12f} {:>17.12f} {:>17.12f}\n""".format(
-                            x * factor, y * factor, z * factor)
-                                              # >>>
+                        text += """{:>17.12f} {:>17.12f} {:>17.12f}\n""".format(x * factor, y * factor, z * factor)
+                        # >>>
             # any general finishing notation here <<<
             text += '$end\n\n'
-                                                # >>>
+            # >>>
 
         # prepare molecule keywords to be set as c-side keywords
         options = collections.defaultdict(lambda: collections.defaultdict(dict))
@@ -681,12 +674,12 @@ class Molecule(LibmintsMolecule):
         text = ''
         text += 'auto-generated by qcdb from molecule %s\n' % (self.tagline)
 
-#        # append units and any other non-default molecule keywords
-#        text += "    units %-s\n" % ("Angstrom" if self.units() == 'Angstrom' else "Bohr")
-#        if not self.PYmove_to_com:
-#            text += "    no_com\n"
-#        if self.PYfix_orientation:
-#            text += "    no_reorient\n"
+        ## append units and any other non-default molecule keywords
+        #text += "    units %-s\n" % ("Angstrom" if self.units() == 'Angstrom' else "Bohr")
+        #if not self.PYmove_to_com:
+        #    text += "    no_com\n"
+        #if self.PYfix_orientation:
+        #    text += "    no_reorient\n"
 
         # append atoms and coordentries and fragment separators with charge and multiplicity
         Pfr = 0
@@ -741,10 +734,10 @@ class Molecule(LibmintsMolecule):
         from collections import defaultdict
 
         self.update_geometry()
-        factor = 1.0 
+        factor = 1.0
 
         #text = 'geometry units %s\n' %(self.PYunits)
-        text = 'geometry noautosym nocenter units %s\n' %(self.PYunits) # No reorienting input geometry 
+        text = 'geometry noautosym nocenter units %s\n' % (self.PYunits)  # No reorienting input geometry
 
         # append atoms and coordentries
         for i in range(self.natom()):
@@ -753,26 +746,25 @@ class Molecule(LibmintsMolecule):
                 x * factor, y * factor, z * factor)
         if (self.symmetry_from_input() == None):
             text += 'symmetry c1\n'
-            text += 'end\n'        
+            text += 'end\n'
         else:
-            text += 'symmetry %s\n' %(self.symmetry_from_input())
+            text += 'symmetry %s\n' % (self.symmetry_from_input())
             text += 'end\n'
         #print (text)
 
-         # prepare molecule keywords to be set as c-side keywords
+        # prepare molecule keywords to be set as c-side keywords
         options = defaultdict(lambda: defaultdict(dict))
         options['NWCHEM']['NWCHEM_CHARGE']['value'] = self.molecular_charge()
         options['NWCHEM']['NWCHEM_CHARGE']['clobber'] = True
-        
+
         if (self.multiplicity() != 1):
-            options['NWCHEM']['NWCHEM_SCF_NOPEN']['value'] = self.multiplicity()-1
+            options['NWCHEM']['NWCHEM_SCF_NOPEN']['value'] = self.multiplicity() - 1
             options['NWCHEM']['NWCHEM_DFT_MULT']['value'] = self.multiplicity()
 
             options['NWCHEM']['NWCHEM_SCF_NOPEN']['clobber'] = True
             options['NWCHEM']['NWCHEM_DFT_MULT']['clobber'] = True
 
         return text, options
-
 
     def format_basis_for_nwchem(self, basopt):
         """Function to print NWChem-style basis sets into [basis block] according
@@ -802,16 +794,13 @@ class Molecule(LibmintsMolecule):
         text = ''
 
         if (puream == True):
-     #       print ('I am spherical')
             text += "basis spherical \n"
         else:
-     #       print ('I am cartesian')
-            text += "basis \n" #Default : cartesian
+            text += "basis \n"  #Default : cartesian
 
         options = defaultdict(lambda: defaultdict(dict))
 
         return text, options
-
 
     def old_format_molecule_for_nwchem(self):
         """
@@ -964,14 +953,14 @@ class Molecule(LibmintsMolecule):
         #print summ
         text += """\n  ==> 1 (%s) vs. 2 (%s) <==\n\n""" % (summ[0]['dim'], summ[1]['dim'])
 
-#        if summ[0]['dim'] == 'plane' and summ[1]['dim'] == 'point':
-#            cent = summ[1]['geo']
-#            plane = summ[0]['geo']
-#            print cent, plane
-#
-#            D = math.fabs(plane[0] * cent[0] + plane[1] * cent[1] + plane[2] * cent[2] + plane[3]) / \
-#                math.sqrt(plane[0] * plane[0] + plane[1] * plane[1] + plane[2] * plane[2])
-#            text += '  Pt to Plane: %14.8f [Angstrom]\n' % (D * psi_bohr2angstroms)
+        #if summ[0]['dim'] == 'plane' and summ[1]['dim'] == 'point':
+        #    cent = summ[1]['geo']
+        #    plane = summ[0]['geo']
+        #    print cent, plane
+        #
+        #    D = math.fabs(plane[0] * cent[0] + plane[1] * cent[1] + plane[2] * cent[2] + plane[3]) / \
+        #        math.sqrt(plane[0] * plane[0] + plane[1] * plane[1] + plane[2] * plane[2])
+        #    text += '  Pt to Plane: %14.8f [Angstrom]\n' % (D * qcel.constants.bohr2angstroms)
 
         #if summ[0]['dim'] == 'plane' and summ[1]['dim'] == 'plane':
         if summ[0]['dim'] == 'plane' and (summ[1]['dim'] == 'plane' or summ[1]['dim'] == 'point'):
@@ -1014,9 +1003,10 @@ class Molecule(LibmintsMolecule):
         evals, evecs = diagonalize3x3symmat(self.inertia_tensor())
         evals = sorted(evals)
 
-        rot_const = [1.0 / evals[0] if evals[0] > 1.0e-6 else 0.0,
-                     1.0 / evals[1] if evals[1] > 1.0e-6 else 0.0,
-                     1.0 / evals[2] if evals[2] > 1.0e-6 else 0.0]
+        rot_const = [
+            1.0 / evals[0] if evals[0] > 1.0e-6 else 0.0, 1.0 / evals[1] if evals[1] > 1.0e-6 else 0.0,
+            1.0 / evals[2] if evals[2] > 1.0e-6 else 0.0
+        ]
 
         # Determine degeneracy of rotational constants.
         degen = 0
@@ -1035,19 +1025,25 @@ class Molecule(LibmintsMolecule):
         #print "\tDegeneracy is %d\n" % (degen)
 
         # Determine rotor type
+        # RT_LINEAR                 0  <  IB == IC      inf > B == C
+        # RT_SPHERICAL_TOP          IA == IB == IC       A == B == C
+        # RT_PROLATE_SYMMETRIC_TOP  IA <  IB == IC       A >  B == C
+        # RT_OBLATE_SYMMETRIC_TOP   IA == IB <  IC       A == B >  C
+        # RT_ASYMMETRIC_TOP         IA <  IB <  IC       A  > B >  C
+
         if self.natom() == 1:
             rotor_type = 'RT_ATOM'
         elif rot_const[0] == 0.0:
-            rotor_type = 'RT_LINEAR'                     # 0  <  IB == IC      inf > B == C
+            rotor_type = 'RT_LINEAR'
         elif degen == 2:
-            rotor_type = 'RT_SPHERICAL_TOP'              # IA == IB == IC       A == B == C
+            rotor_type = 'RT_SPHERICAL_TOP'
         elif degen == 1:
             if (rot_const[1] - rot_const[2]) < 1.0e-6:
-                rotor_type = 'RT_PROLATE_SYMMETRIC_TOP'  # IA <  IB == IC       A >  B == C
+                rotor_type = 'RT_PROLATE_SYMMETRIC_TOP'
             elif (rot_const[0] - rot_const[1]) < 1.0e-6:
-                rotor_type = 'RT_OBLATE_SYMMETRIC_TOP'   # IA == IB <  IC       A == B >  C
+                rotor_type = 'RT_OBLATE_SYMMETRIC_TOP'
         else:
-            rotor_type = 'RT_ASYMMETRIC_TOP'             # IA <  IB <  IC       A  > B >  C
+            rotor_type = 'RT_ASYMMETRIC_TOP'
         return rotor_type
 
     def center_of_charge(self):
@@ -1210,39 +1206,35 @@ class Molecule(LibmintsMolecule):
         else:
             return Molecule.from_dict(molrec['qm'])
 
-    def from_arrays(geom=None,
-
-                    elea=None,
-                    elez=None,
-                    elem=None,
-                    mass=None,
-                    real=None,
-                    elbl=None,
-
-                    name=None,
-                    units='Angstrom',
-                    input_units_to_au=None,
-                    fix_com=False,
-                    fix_orientation=False,
-                    fix_symmetry=None,
-
-                    fragment_separators=None,
-                    fragment_charges=None,
-                    fragment_multiplicities=None,
-
-                    molecular_charge=None,
-                    molecular_multiplicity=None,
-                    comment=None,
-                    provenance=None,
-                    #connectivity=None,
-                    missing_enabled_return='error',
-                    tooclose=0.1,
-                    zero_ghost_fragments=False,
-                    nonphysical=False,
-                    mtol=1.e-3,
-                    verbose=1,
-
-                    return_dict=False):
+    def from_arrays(
+            geom=None,
+            elea=None,
+            elez=None,
+            elem=None,
+            mass=None,
+            real=None,
+            elbl=None,
+            name=None,
+            units='Angstrom',
+            input_units_to_au=None,
+            fix_com=False,
+            fix_orientation=False,
+            fix_symmetry=None,
+            fragment_separators=None,
+            fragment_charges=None,
+            fragment_multiplicities=None,
+            molecular_charge=None,
+            molecular_multiplicity=None,
+            comment=None,
+            provenance=None,
+            #connectivity=None,
+            missing_enabled_return='error',
+            tooclose=0.1,
+            zero_ghost_fragments=False,
+            nonphysical=False,
+            mtol=1.e-3,
+            verbose=1,
+            return_dict=False):
         """Construct Molecule from unvalidated arrays and variables.
 
         Light wrapper around :py:func:`~qcdb.molparse.from_arrays`
@@ -1502,11 +1494,10 @@ class Molecule(LibmintsMolecule):
 
     @classmethod
     def from_dict(cls, molrec, verbose=1):
-    
+
         mol = cls()
         mol._internal_from_dict(molrec=molrec, verbose=verbose)
         return mol
-
 
     def _internal_from_dict(self, molrec, verbose=1):
         """Constructs instance from fully validated and defaulted dictionary `molrec`."""
@@ -1537,8 +1528,8 @@ class Molecule(LibmintsMolecule):
                 entry = molrec['geom_unsettled'][iat]
                 label = molrec['elem'][iat] + molrec['elbl'][iat]
                 Z = molrec['elez'][iat] * int(molrec['real'][iat])
-                self.add_unsettled_atom(Z, entry, molrec['elem'][iat], molrec['mass'][iat],
-                                       Z, label, molrec['elea'][iat])
+                self.add_unsettled_atom(Z, entry, molrec['elem'][iat], molrec['mass'][iat], Z, label,
+                                        molrec['elea'][iat])
             for var in molrec['variables']:
                 self.set_geometry_variable(var[0], var[1])
 
@@ -1551,8 +1542,7 @@ class Molecule(LibmintsMolecule):
                 x, y, z = geom[iat]
                 label = molrec['elem'][iat] + molrec['elbl'][iat]
                 Z = molrec['elez'][iat] * int(molrec['real'][iat])
-                self.add_atom(Z, x, y, z, molrec['elem'][iat], molrec['mass'][iat],
-                             Z, label, molrec['elea'][iat])
+                self.add_atom(Z, x, y, z, molrec['elem'][iat], molrec['mass'][iat], Z, label, molrec['elea'][iat])
                 # TODO charge and 2nd elez site
                 # TODO real back to type Ghost?
 
@@ -1562,10 +1552,8 @@ class Molecule(LibmintsMolecule):
         fragment_separators = np.append(fragment_separators, nat)
         fragments = [[fragment_separators[ifr], fr - 1] for ifr, fr in enumerate(fragment_separators[1:])]
 
-        self.set_fragment_pattern(fragments,
-                                 ['Real'] * len(fragments),
-                                 [int(f) for f in molrec['fragment_charges']],
-                                 molrec['fragment_multiplicities'])
+        self.set_fragment_pattern(fragments, ['Real'] * len(fragments), [int(f) for f in molrec['fragment_charges']],
+                                  molrec['fragment_multiplicities'])
 
         self.set_molecular_charge(int(molrec['molecular_charge']))
         self.set_multiplicity(molrec['molecular_multiplicity'])
@@ -1593,12 +1581,13 @@ class Molecule(LibmintsMolecule):
         from ..iface_dftd3 import run_dftd3
 
         molrec = self.to_dict(np_out=False)
-        jrec = run_dftd3(molrec=molrec,
-                         functional=functional,
-                         dashlevel=dashlevel,
-                         dashparams=dashparams,
-                         dertype=dertype,
-                         verbose=verbose)
+        jrec = run_dftd3(
+            molrec=molrec,
+            functional=functional,
+            dashlevel=dashlevel,
+            dashparams=dashparams,
+            dertype=dertype,
+            verbose=verbose)
         print('M-ANS', jrec)
         import pprint
         #return pprint.pprint(ans)
@@ -1611,11 +1600,11 @@ class Molecule(LibmintsMolecule):
 #        print(jrec['qcvars']['DISPERSION CORRECTION ENERGY'].data)
 #        print(jrec['qcvars']['DISPERSION CORRECTION GRADIENT'].data)
 
-    ## Prepare results for Psi4
-    #if isP4regime and dertype != 0:
-    #    print('P4-2?', isP4regime)
-    #    core.set_variable('DISPERSION CORRECTION ENERGY', dashd)
-    #    psi_dashdderiv = core.Matrix.from_list(dashdderiv)
+## Prepare results for Psi4
+#if isP4regime and dertype != 0:
+#    print('P4-2?', isP4regime)
+#    core.set_variable('DISPERSION CORRECTION ENERGY', dashd)
+#    psi_dashdderiv = core.Matrix.from_list(dashdderiv)
 
     def BFS(self,
             seed_atoms=None,
@@ -1835,17 +1824,24 @@ class Molecule(LibmintsMolecule):
             from psi4 import core
             amol = core.Molecule.from_dict(adict)
 
-        compare_values(concern_mol.nuclear_repulsion_energy(),
-                       amol.nuclear_repulsion_energy(), 4, 'Q: concern_mol-->returned_mol NRE uncorrupted',
-                       verbose=verbose-1)
+        compare_values(
+            concern_mol.nuclear_repulsion_energy(),
+            amol.nuclear_repulsion_energy(),
+            4,
+            'Q: concern_mol-->returned_mol NRE uncorrupted',
+            verbose=verbose - 1)
         if mols_align:
-            compare_values(ref_mol.nuclear_repulsion_energy(),
-                           amol.nuclear_repulsion_energy(), 4, 'Q: concern_mol-->returned_mol NRE matches ref_mol',
-                           verbose=verbose-1)
-            compare_integers(True,
-                             np.allclose(ref_mol.geometry(), amol.geometry(), atol=4),
-                             'Q: concern_mol-->returned_mol geometry matches ref_mol',
-                             verbose=verbose-1)
+            compare_values(
+                ref_mol.nuclear_repulsion_energy(),
+                amol.nuclear_repulsion_energy(),
+                4,
+                'Q: concern_mol-->returned_mol NRE matches ref_mol',
+                verbose=verbose - 1)
+            compare_integers(
+                True,
+                np.allclose(ref_mol.geometry(), amol.geometry(), atol=4),
+                'Q: concern_mol-->returned_mol geometry matches ref_mol',
+                verbose=verbose - 1)
 
         return rmsd, solution, amol
 
@@ -1935,11 +1931,16 @@ class Molecule(LibmintsMolecule):
             run_mirror=do_mirror,
             verbose=verbose)
 
-        compare_integers(True, np.allclose(solution.shift, perturbation.shift, atol=6), 'shifts equiv', verbose=verbose-1)
+        compare_integers(
+            True, np.allclose(solution.shift, perturbation.shift, atol=6), 'shifts equiv', verbose=verbose - 1)
         if not do_resort:
-            compare_integers(True, np.allclose(solution.rotation.T, perturbation.rotation), 'rotations transpose', verbose=verbose-1)
+            compare_integers(
+                True,
+                np.allclose(solution.rotation.T, perturbation.rotation),
+                'rotations transpose',
+                verbose=verbose - 1)
         if solution.mirror:
-            compare_integers(True, do_mirror, 'mirror allowed', verbose=verbose-1)
+            compare_integers(True, do_mirror, 'mirror allowed', verbose=verbose - 1)
 
     def set_fragment_pattern(self, frl, frt, frc, frm):
         """Set fragment member data through public method analogous to psi4.core.Molecule"""
