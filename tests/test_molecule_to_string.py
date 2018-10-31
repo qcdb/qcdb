@@ -114,7 +114,7 @@ def test_to_string_error(inp):
         mol.to_string(**inp[1])
 
 
-
+@using_psi4
 @pytest.mark.parametrize("inp,expected", [
     (("subject1", {'dtype': 'xyz', 'units': 'Bohr'}), "ans1_au"),
     (("subject1", {'dtype': 'xyz', 'units': 'Angstrom'}), "ans1_ang"),
