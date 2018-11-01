@@ -52,13 +52,14 @@ def test_1_hf():
         'memory'    :   '300 mb',
         'nwchem_scf':   'UHF',
         'nwchem_scf_nopen': 1,
-        'nwchem_scf_mixiter': 80,
-        'nwchem_scf_thresh': 1.0e-8
+        #'nwchem_scf_mixiter': 80,
+        'nwchem_scf_thresh': 1.0e-8,
+        #'nwchem_task_hf'   : 'energy'
         })
     print('Testing hf...')
     val = qcdb.energy('nwc-hf')
     check_uhf_mp2(val, is_df=True)
-
+@using_nwchem
 def test_2_mp2():
     qcdb.set_options({
         'basis'     :    'cc-pvdz',
@@ -68,7 +69,7 @@ def test_2_mp2():
     print('Testing mp2...')
     val  = qcdb.energy('nwc-mp2')
     check_uhf_mp2(val, is_df=True)
-
+@using_nwchem
 def test_3_mp2_a5050():
     qcdb.set_options({
         'basis'     : 'cc-pvdz',

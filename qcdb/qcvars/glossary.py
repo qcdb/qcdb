@@ -1003,14 +1003,45 @@ qcvardefs['CCSDT (PBE) CORRELATION ENERGY'] = {
 .. psivar:: CCSDT CORRELATION ENERGY
 
    The CCSDT correlation energy for the requested DFT method, 
-   :math:`E_{\text{CCSDcorl}}` in Eq. :eq:`CCSDcorl`.
+   :math:`E_{\text{CCSDTcorl}}` in Eq. :eq:`CCSDTcorl`.
 
    .. math:: 
       :nowrap:
-      :label: CCSDcorl
+      :label: CCSDTcorl
 
          \begin{align*}
-#            E_{\text{CCSDcorl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
+#            E_{\text{CCSDTcorl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
+#                               & = E_{\text{S}} + E_{\text{D}} \\
+         \end{align*}
+
+"""}
+
+qcvardefs['CCSDTQ TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total electronic energy 
+   for the coupled cluster singles, doubles, triples, and quadruples level of theory.
+
+   .. psivar:: CCSDTQ TOTAL ENERGY
+"""}
+
+qcvardefs['CCSDTQ CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The correlation energy component
+   for the coupled cluster singles, doubles, triples, and quadruples level of theory.
+
+.. psivar:: CCSDTQ CORRELATION ENERGY
+
+   The CCSDTQ correlation energy for the requested DFT method, 
+   :math:`E_{\text{CCSDTQcorl}}` in Eq. :eq:`CCSDTQcorl`.
+
+   .. math:: 
+      :nowrap:
+      :label: CCSDTQcorl
+
+         \begin{align*}
+#            E_{\text{CCSDTQcorl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
 #                               & = E_{\text{S}} + E_{\text{D}} \\
          \end{align*}
 
