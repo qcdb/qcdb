@@ -50,7 +50,7 @@ def test_2_ccsdt():
         'basis': 'sto-3g',
         'memory': '600 mb',
         'nwchem_tce_dft': True,
-        'nwchem_tce_on' : True,
+        #'nwchem_tce_on' : True,
         'nwchem_tce': 'CCSDT',
         'nwchem_tce_thresh': 1.0e-12,
         'nwchem_task_tce': 'energy'

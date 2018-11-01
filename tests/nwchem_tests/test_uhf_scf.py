@@ -19,8 +19,8 @@ def check_uhf_hf(return_value, is_df=True):
         ref     =       -55.566057523877
         nre     =         7.580905897627
 
-    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 2, 'scf')
-    assert compare_values(nre, qcdb.get_variable('NUCLEAR REPULSION ENERGY', 5, 'nre')
+    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'scf')
+    assert compare_values(nre, qcdb.get_variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
 
 @using_nwchem
 def test_1_hf():

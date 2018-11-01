@@ -522,10 +522,10 @@ def load_nwchem_defaults(options):
 
 #TASK block
     options.add('nwchem', RottenOption(
-        keyword='task_scf',
+        keyword='task_hf',
         default='energy',
         validator= lambda x: x.upper(),
-        glossary='Specify scf task between: energy, gradient, and hessian. Default is energy.'))
+        glossary='Specify HF (via SCF) task between: energy, gradient, and hessian. Default is energy.'))
 
     options.add('nwchem', RottenOption(
         keyword='task_mp2',
