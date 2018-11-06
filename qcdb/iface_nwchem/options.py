@@ -21,11 +21,6 @@ def load_nwchem_defaults(options):
         default= True,
         validator= parsers.boolean,
         glossary='Will translate Psi4 options to NWCHEM counterparts'))
-    options.add('nwchem', RottenOption(
-        keyword='echo',
-        default=True,
-        validator=parsers.boolean,
-        glossary='Echo prints out the input file at the beginning of the output file. Default is on.'))
 
 #Memory specifications
     options.add('nwchem', RottenOption(
@@ -550,6 +545,12 @@ def load_nwchem_defaults(options):
         default='energy',
         validator= lambda x: x.upper(),
         glossary='Specify DFT task between: energy, gradient, and hessian. Default is energy.'))
+
+    options.add('nwchem', RottenOption(
+        keyword='task_sodft',
+        default='energy',
+        validator= lambda x: x.upper(),
+        glossary='Specify SODFT task between: energy, gradient, and hessian. Default is energy.'))
 
     options.add('nwchem', RottenOption(
         keyword='task_tce',

@@ -38,7 +38,7 @@ from ..periodictable import *
 from ..physconst import *
 from ..exceptions import *
 from ..molecule import Molecule
-#from .orient import OrientMols
+from ..orient import OrientMols
 #from .options import conv_float2negexp
 #from . import nwc_movecs
 
@@ -127,22 +127,38 @@ def harvest_outfile_pass(outtext):
 
         #Process DFT (RDFT, RODFT,UDFT, SODFT)
         mobj = re.search(
-            r'^\s+' + r'Total DFT energy' + r'\s' + NUMBER + r'\s*$',
+            r'^\s+' + r'Total DFT energy' + r'\s+' + NUMBER + r'\s*' +
+            r'^\s+' + r'Nuclear repulsion energy' + r'\s+' + NUMBER + '\s*$',
             outtext, re.MULTILINE)
         if mobj:
             print ('matched DFT')
             #print (mobj.group(1))
             psivar ['DFT TOTAL ENERGY'] = mobj.group(1)
+            psivar ['NUCLEAR REPULSION ENERGY'] = mobj.group(2)
+    
+        #SODFT
+        mobj = re.search(
+            r'^\s+' + r'Total SO-DFT energy' + r'\s+' + NUMBER + r'\s*' +
+            r'^\s+' + r'Nuclear repulsion energy' + r'\s+' + NUMBER + '\s*$',
+            outtext, re.MULTILINE)
+        if mobj:
+            print ('matched DFT')
+            #print (mobj.group(1))
+            psivar ['DFT TOTAL ENERGY'] = mobj.group(1)
+            psivar ['NUCLEAR REPULSION ENERGY'] = mobj.group(2)
 
-    #MCSCF 
+
+        #MCSCF 
         mobj = re.search(
             r'^\s+' + r'Total SCF energy' + r'\s+' + NUMBER + r'\s*'+
             r'^\s+' + r'One-electron energy' + r'\s+' + NUMBER + r'\s*'+
             r'^\s+' + r'Two-electron energy' + r'\s+' + NUMBER + r'\s*'+
             r'^\s+' + r'Total MCSCF energy' + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE) #MCSCF
         if mobj:
-            print('Total MCSCF energy') #MCSCF energy calculation 
-            psivar ['SCF TOTAL ENERGY'] = mobj.group(1)
+            print('Total mcscf energy') #MCSCF energy calculation 
+            psivar ['HF TOTAL ENERGY'] = mobj.group(1)
+            psivar ['ONE-ELECTRON ENERGY'] = mobj.group(2)
+            psivar ['TWO-ELECTRON ENERGY'] = mobj.group(3)
             psivar ['MCSCF TOTAL ENERGY'] = mobj.group(4)
 
         #Process MP2 (Restricted, Unrestricted(RO n/a))
@@ -156,7 +172,7 @@ def harvest_outfile_pass(outtext):
         ,outtext, re.MULTILINE) #MP2
         if mobj:
             print ('matched scf-mp2')
-            psivar ['CURRENT REFERENCE ENERGY'] = mobj.group(1) 
+            psivar ['HF TOTAL ENERGY'] = mobj.group(1) 
             psivar ['MP2 CORRELATION ENERGY'] = mobj.group(2)
             psivar ['MP2 TOTAL ENERGY'] = mobj.group(5) 
 
@@ -185,12 +201,12 @@ def harvest_outfile_pass(outtext):
         #2) DFT-MP2
         mobj = re.search(
             r'^\s+' + r'DFT energy' + r'\s+' + NUMBER + r'\s*'+
-            r'^\s+' + r'Unscaled MP2 energy' + r'\s+' + NUMBER + r'\s*'+
+            r'^\s+' + r'Unscaled MP2 energy' + r'\s+' + NUMBER + r'\s*'+ 
             r'^\s+' + r'Total DFT+MP2 energy' + r'\s+' + NUMBER + r'\s*$'
             ,outtext, re.MULTILINE) 
         if mobj:
             print ('matched dft-mp2')
-            psivar ['CURRENT REFERENCE ENERGY'] = mobj.group(1)
+            psivar ['DFT TOTAL ENERGY'] = mobj.group(1)
             psivar ['MP2 CORRELATION ENERGY'] = mobj.group(2)
             psivar ['MP2 TOTAL ENERGY'] = mobj.group(3)
 
@@ -273,6 +289,24 @@ def harvest_outfile_pass(outtext):
             psivar['(T) CORRECTION ENERGY'] = mobj.group(1)
             psivar['CCSD(T) CORRELATION ENERGY'] = Decimal(mobj.group(2)) - psivar['HF TOTAL ENERGY'] 
             psivar['CCSD(T) TOTAL ENERGY'] = mobj.group(2)
+        
+        mobj = re.search(
+                r'^\s+' + r'Spin Component Scaled (SCS) CCSD' + r'\s*' +
+                r'(?:.*?)' +
+                r'^\s+' + r'Same spin contribution' + r'\s+'+ NUMBER + r'\s*'+
+                r'^\s+' + r'Same spin scaling factor' + r'\s+' + NUMBER + r'\s*'
+                r'^\s+' + r'Opposite spin contribution' + r'\s+'+ NUMBER + r'\s*'+
+                r'^\s+' + r'Opposite spin scaling factor' + r'\s+' + NUMBER + r'\s*'
+                r'\^s+' + r'SCS-CCSD correlation energy' + r'\s+' + NUMBER + r'\s*'+
+                r'\^s+' + r'Total SCS-CCSD energy' + r'\s+' + NUMBER + r'\s*$'
+                ,outtext, re.MULTILINE | re.DOTALL)
+        #SCS-CCSD included
+        if mobj:
+            print('matched scs-ccsd')
+            psivar['CCSD SAME-SPIN CORRELATION ENERGY'] = psivar['SCS-CCSD SAME-SPIN CORRELATION ENERGY'] = (Decimal(mobj.group(1))* Decimal(mobj.group(2)))
+            psivar['CCSD OPPOSITE-SPIN CORRELATION ENERGY'] = psivar['SCS-CCSD OPPOSITE-SPIN CORRELATION ENERGY'] = (Decimal(mobj.group(4))* Decimal(mobj.group(3)))
+            psivar['SCS-CCSD CORRELATION ENERGY'] = mobj.group(5)
+            psivar['SCS-CCSD TOTAL ENERGY'] = mobj.group(6)
 
         #Process EOM-[cc_name] #nwchem_tce_dipole = false
         # Parsed information: each symmetry, root excitation energy in eV and total energy in hartree
@@ -1008,6 +1042,14 @@ def muster_modelchem(name, dertype):
             options ['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'gradient'
         elif dertype == 2:
             options ['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'hessian'
+    
+    elif lowername == 'nwc-sodft':
+        if dertype == 0:
+            options ['NWCHEM']['NWCHEM_TASK_SODFT']['value'] = 'energy'
+        elif dertype == 1:
+            options ['NWCHEM']['NWCHEM_TASK_SODFT']['value'] = 'gradient'
+        elif dertype == 2:
+            options ['NWCHEM']['NWCHEM_TASK_SODFT']['value'] = 'hessian'
 
     elif lowername == 'nwc-mp2':
         if dertype == 0:
@@ -1016,6 +1058,39 @@ def muster_modelchem(name, dertype):
             options ['NWCHEM']['NWCHEM_TASK_MP2']['value'] = 'gradient'
         elif dertype == 2:
             options ['NWCHEM']['NWCHEM_TASK_MP2']['value'] = 'hessian'
+
+    elif lowername == 'nwc-tce-mp2':
+        if dertype == 0:
+            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
+            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp2'
+        elif dertype == 1:
+            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
+            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp2'
+        elif dertype == 2:    
+            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
+            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp2'
+    
+    elif lowername == 'nwc-tce-mp3':
+        if dertype == 0:
+            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
+            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp3'
+        elif dertype == 1:
+            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
+            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp3'
+        elif dertype == 2:    
+            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
+            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp3'
+    
+    elif lowername == 'nwc-tce-mp4':
+        if dertype == 0:
+            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
+            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp4'
+        elif dertype == 1:
+            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
+            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp4'
+        elif dertype == 2:    
+            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
+            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp4'
 
     elif lowername == 'nwc-ccsd':
         if dertype == 0:
@@ -1088,6 +1163,17 @@ def muster_modelchem(name, dertype):
             options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
             options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
 
+    elif lowername == 'nwc-lccd':
+        if dertype == 0:
+            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
+            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'lccd'
+        elif dertype == 1:
+            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
+            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'lccd'
+        elif dertype == 2:
+            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
+            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'lccd'
+
     elif lowername in dft_functionals_list(): 
         if dertype == 0:
             options ['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'energy'
@@ -1121,6 +1207,10 @@ def muster_modelchem(name, dertype):
     if 'NWCHEM_TASK_DFT' in options['NWCHEM']:
         options['NWCHEM']['NWCHEM_TASK_DFT']['clobber'] = True
         options['NWCHEM']['NWCHEM_TASK_DFT']['superclobber'] = True
+
+    if 'NWCHEM_TASK_SODFT' in options['NWCHEM']:
+        options['NWCHEM']['NWCHEM_TASK_SODFT']['clobber'] = True
+        options['NWCHEM']['NWCHEM_TASK_SODFT']['superclobber'] = True
 
     if 'NWCHEM_TASK_MP2' in options['NWCHEM']:
         options['NWCHEM']['NWCHEM_TASK_MP2']['clobber'] = True
@@ -1237,10 +1327,14 @@ def nwchem_psivar_list():
     VARH['nwc-mp2'] = {
                              'nwc-hf' : 'HF TOTAL ENERGY',
                             'nwc-mp2' : 'MP2 TOTAL ENERGY'}
+    VARH['nwc-lccd'] = {
+                             'nwc-hf' : 'HF TOTAL ENERGY',
+                           'nwc-lccd' : 'LCCD TOTAL ENERGY'}
     VARH['nwc-ccsd'] = {
                              'nwc-hf' : 'HF TOTAL ENERGY',
                             'nwc-mp2' : 'MP2 TOTAL ENERGY',
                            'nwc-ccsd' : 'CCSD TOTAL ENERGY'}
+                        
                         
     VARH['nwc-ccsdt'] = {
                               'nwc-hf' : 'HF TOTAL ENERGY',
@@ -1306,7 +1400,7 @@ def dft_functionals_list():
     val.append('nwc-bhandh')
     val.append('nwc-cam-b3lyp')
     val.append('nwc-bop')
-#    val.append('nwc-hf')
+    val.append('nwc-hf')
     val.append('nwc-pw91')
     val.append('nwc-b1lyp')
     val.append('nwc-b1pw91')
