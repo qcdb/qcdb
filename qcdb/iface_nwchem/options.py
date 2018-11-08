@@ -204,6 +204,33 @@ def load_nwchem_defaults(options):
         validator=parsers.enum('none low medium high debug'),
         glossary='Options to not print into output file within the SCF block. Default is none.'))
 
+#MCSCF block
+    #required options
+    options.add('nwchem', RottenOption(
+        keyword='mcscf_active',
+        default='',
+        validator= lambda x: float(x) 
+        glossary='Number of orbitals in the complete active space self consistent theory (CASSCF).'))
+
+    options.add('nwchem', RottenOption(
+        keyword='mcscf_actelec',
+        default='',
+        validator= lambda x: float(x),
+        glossary='Number of electrons in CASSCF active space. Error will occur if discrepancy is spotted.'))
+
+    options.add('nwchem', RottenOption(
+        keyword='mcscf_multiplicity',
+        default='',
+        validator= lambda x: float(x),
+        glossary='Spin multiplicity in CASSCF/MCSCF block, must be specified for MCSCF to work.'))
+    #alternative to mcscf_multiplicity & mcscf_symmetry can use mcscf_state
+    options.add('nwchem', RottenOption(
+        keyword='mcscf_state',
+        default='',
+        validator= lambda x,
+        glossary='Defines the spatial symmetry and multiplicity. Format is [multiplicity][state], e.g. 3b2 for triplet in B2.'))
+
+
 #MP2 block
     options.add('nwchem', RottenOption(
         keyword='mp2_tight',
@@ -515,12 +542,24 @@ def load_nwchem_defaults(options):
         glossary='''Economical option of storing two-electron integrals used in coupled cluster calculations,
         taking the difference of the RHF and ROHF values: on/off. Default is off.'''))
 
-#TASK block
+#TASK block- do we need? pytests ensure what action we're implementing into qcdb
     options.add('nwchem', RottenOption(
         keyword='task_hf',
         default='energy',
         validator= lambda x: x.upper(),
         glossary='Specify HF (via SCF) task between: energy, gradient, and hessian. Default is energy.'))
+
+    options.add('nwchem', RottenOption(
+        keyword='task_scf',
+        default='',
+        validator= lambda x: x.upper(),
+        glossary='Specify Self-consistent theory task between: energy, gradient, and hessian. Default is no specified option and will run energy.'))
+
+    options.add('nwchem', RottenOption(
+        keyword='task_mcscf',
+        default='',
+        validator= lambda x: x.upper(),
+        glossary='Specify Multiconfiguration self-consistent (MCSCF) theory task between: energy, gradient, and hessian. Default is no specified option and will run energy.'))
 
     options.add('nwchem', RottenOption(
         keyword='task_mp2',
@@ -559,7 +598,25 @@ def load_nwchem_defaults(options):
         glossary='Specify TCE task between: energy, gradient, and hessian. Default is energy.'))
 
     options.add('nwchem', RottenOption(
+        keyword='task_tce_mp2', #not sure if need here but need to distinguish between MP2/MP3/MP4 and TCE MBn theory
+        default='energy',
+        validator= lambda x: x.upper(),
+        glossary='Specify TCE MP2 task between: energy, gradient, and hessian. Default is energy.'))
+
+    options.add('nwchem', RottenOption(
+        keyword='task_ccsd',
+        default='energy',
+        validator=lambda x: x.upper(),
+        glossary='Specify CCSD task between energy, gradient, and hessian. Default is energy.'))
+
+    options.add('nwchem', RottenOption(
         keyword='task_ccsd(t)',
         default='energy',
         validator=lambda x: x.upper(),
         glossary='Specify CCSD(T) task between energy, gradient, and hessian. Default is energy.'))
+
+    options.add('nwchem', RottenOption(
+        keyword='task_ccsdt',
+        default='energy',
+        validator=lambda x: x.upper(),
+        glossary='Specify CCSDT task between energy, gradient, and hessian. Default is energy.'))
