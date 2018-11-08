@@ -125,7 +125,7 @@ def harvest_outfile_pass(outtext):
             #print (mobj.group(1)) 
             psivar['NUCLEAR REPULSION ENERGY'] = mobj.group(1)
 
-        #Process DFT (RDFT, RODFT,UDFT, SODFT)
+        #Process DFT (RDFT, RODFT,UDFT, SODFT [SODFT for nwchem versions before nwchem 6.8])
         mobj = re.search(
             r'^\s+' + r'Total DFT energy' + r'\s+' + NUMBER + r'\s*' +
             r'^\s+' + r'Nuclear repulsion energy' + r'\s+' + NUMBER + '\s*$',
@@ -136,7 +136,7 @@ def harvest_outfile_pass(outtext):
             psivar ['DFT TOTAL ENERGY'] = mobj.group(1)
             psivar ['NUCLEAR REPULSION ENERGY'] = mobj.group(2)
     
-        #SODFT
+        #SODFT [for nwchem 6.8+]
         mobj = re.search(
             r'^\s+' + r'Total SO-DFT energy' + r'\s+' + NUMBER + r'\s*' +
             r'^\s+' + r'Nuclear repulsion energy' + r'\s+' + NUMBER + '\s*$',
@@ -153,9 +153,10 @@ def harvest_outfile_pass(outtext):
             r'^\s+' + r'Total SCF energy' + r'\s+' + NUMBER + r'\s*'+
             r'^\s+' + r'One-electron energy' + r'\s+' + NUMBER + r'\s*'+
             r'^\s+' + r'Two-electron energy' + r'\s+' + NUMBER + r'\s*'+
+            r'^\s+' + r'The MCSCF is already converged' + r'\s*'
             r'^\s+' + r'Total MCSCF energy' + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE) #MCSCF
         if mobj:
-            print('Total mcscf energy') #MCSCF energy calculation 
+            print('matched mcscf') #MCSCF energy calculation 
             psivar ['HF TOTAL ENERGY'] = mobj.group(1)
             psivar ['ONE-ELECTRON ENERGY'] = mobj.group(2)
             psivar ['TWO-ELECTRON ENERGY'] = mobj.group(3)
@@ -175,7 +176,7 @@ def harvest_outfile_pass(outtext):
             psivar ['HF TOTAL ENERGY'] = mobj.group(1) 
             psivar ['MP2 CORRELATION ENERGY'] = mobj.group(2)
             psivar ['MP2 TOTAL ENERGY'] = mobj.group(5) 
-
+        #SCS-MP2
         mobj = re.search(
         r'^\s+' + r'Same spin pairs'+ r'\s+' + NUMBER + r'\s*'+
         r'^\s+' + r'Same spin scaling factor'+ r'\s+' + NUMBER + r'\s*'+
@@ -183,11 +184,13 @@ def harvest_outfile_pass(outtext):
         r'^\s+' + r'Opposite spin scaling fact.'+ r'\s+' + NUMBER + r'\s*'+
         r'^\s+' + r'SCS-MP2 correlation energy' + r'\s+' + NUMBER + r'\s*'+
         r'^\s+' + r'Total SCS-MP2 energy'+r'\s+' + NUMBER + r'\s*$'
-        ,outtext, re.MULTILINE)  # SCS-MP2
+        ,outtext, re.MULTILINE)  
         if mobj:
             print('matched scs-mp2')
             psivar['MP2 SAME-SPIN CORRELATION ENERGY'] = Decimal(mobj.group(1)) * Decimal(mobj.group(2))
             psivar['MP2 OPPOSITE-SPIN CORRELATION ENERGY'] = Decimal(mobj.group(3)) * Decimal(mobj.group(4))
+            psivar['CUSTOM SCS-MP2 CORRELATION ENERGY'] = 0.5 * (float(psivar['MP2 SAME-SPIN CORRELATION ENERGY']) + float(psivar['MP2 OPPOSITE-SPIN CORRELATION ENERGY']))
+            psivar['CUSTOM SCS-MP2 TOTAL ENERGY'] = float(psivar['CUSTOM SCS-MP2 CORRELATION ENERGY']) + float(mobj.group(6)) 
             psivar['SCS-MP2 CORRELATION ENERGY'] = mobj.group(5)
             psivar['SCS-MP2 TOTAL ENERGY'] = mobj.group(6)
             
@@ -307,6 +310,8 @@ def harvest_outfile_pass(outtext):
             psivar['CCSD OPPOSITE-SPIN CORRELATION ENERGY'] = psivar['SCS-CCSD OPPOSITE-SPIN CORRELATION ENERGY'] = (Decimal(mobj.group(4))* Decimal(mobj.group(3)))
             psivar['SCS-CCSD CORRELATION ENERGY'] = mobj.group(5)
             psivar['SCS-CCSD TOTAL ENERGY'] = mobj.group(6)
+            psivar['CUSTOM SCS-CCSD CORRELATION ENERGY'] = 0.5 * (float(psivar['CCSD SAME-SPIN CORRELATION ENERGY']) + float(psivar['CCSD OPPOSITE-SPIN CORRELATION ENERGY']))
+            psivar['CUSTOM SCS-CCSD TOTAL ENERGY'] = float(mobj.group(6)) + float(psivar['CUSTOM SCS-CCSD CORRERLATION ENERGY'])
 
         #Process EOM-[cc_name] #nwchem_tce_dipole = false
         # Parsed information: each symmetry, root excitation energy in eV and total energy in hartree
@@ -793,7 +798,7 @@ def muster_dft_functionals(opt):
    
     val = opt['SCF']['DFT_FUNCTIONAL']['value'] 
     if val in dft_same_name_list:
-        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = \
+        options['NWCHEM']['DFT_XC']['value'] = \
                     {'B3LYP': 'B3LYP',
                      'PBE0' : 'PBE0',
                        'M05': 'M05',
@@ -1034,6 +1039,14 @@ def muster_modelchem(name, dertype):
             options ['NWCHEM']['NWCHEM_TASK_SCF']['value'] = 'gradient'
         elif dertype == 2:
             options ['NWCHEM']['NWCHEM_TASK_SCF']['value'] = 'hessian'
+    
+    elif lowername == 'nwc-mcscf':
+        if dertype == 0:
+            options ['NWCHEM']['NWCHEM_TASK_MCSCF']['value'] = 'energy'
+        elif dertype == 1:
+            options ['NWCHEM']['NWCHEM_TASK_MCSCF']['value'] = 'gradient'
+        elif dertype == 2:
+            options ['NWCHEM']['NWCHEM_TASK_MCSCF']['value'] = 'hessian'
             
     elif lowername == 'nwc-dft':
         if dertype == 0:
@@ -1203,6 +1216,10 @@ def muster_modelchem(name, dertype):
     if 'NWCHEM_TASK_SCF' in options['NWCHEM']:
         options['NWCHEM']['NWCHEM_TASK_SCF']['clobber'] = True
         options['NWCHEM']['NWCHEM_TASK_SCF']['superclobber'] = True
+
+    if 'NWCHEM_TASK_MCSCF' in options['NWCHEM']:
+        options['NWCHEM']['NWCHEM_TASK_MCSCF']['clobber'] = True
+        options['NWCHEM']['NWCHEM_TASK_MCSCF']['superclobber'] = True
 
     if 'NWCHEM_TASK_DFT' in options['NWCHEM']:
         options['NWCHEM']['NWCHEM_TASK_DFT']['clobber'] = True
