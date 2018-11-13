@@ -31,7 +31,7 @@ def check_ccsd_t_(return_value, is_df):
         ccsd_t_corl =    -0.216495098107383 
         ccsd_t_tot  =   -76.243239519299280 
 
-    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'rhf ref')
+    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
     assert compare_values(ccsdcorl, qcdb.get_variable('CCSD CORRELATION ENERGY'), 5, 'ccsd corl')
     assert compare_values(ccsdtot, qcdb.get_variable('CCSD TOTAL ENERGY'), 5, 'ccsd total')
     assert compare_values(ccsd_t_corr, qcdb.get_variable('(T) CORRECTION ENERGY'), 5, 'ccsd(t) corr')
@@ -45,33 +45,42 @@ def test_1_df_rhf():
         'basis': 'cc-pvdz',
         'memory': '600 mb',
         'nwchem_scf': 'rhf',
-        'nwchem_scf_thresh': 1.0e-12
+        'nwchem_scf_thresh': 1.0e-12,
+        'nwchem_tce_dft': False,
+        'nwchem_tce': 'ccsd(t)',
+        #'nwchem_tce_on': True,
+        'nwchem_tce_thresh': 1.0e-12,
+        'nwchem_task_tce': 'energy'
         })
     print('     Testing rhf ...')
-    val = qcdb.energy('nwc-hf')
+    val = qcdb.energy('nwc-ccsd(t)')
     check_ccsd_t_(val, is_df=True)
 @using_nwchem
 def test_2_df_ccsd():
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'memory':'600 mb',
+        'nwchem_scf': 'rhf',
+        'nwchem_scf_thresh': 1.0e-12,
         'nwchem_tce_dft': False,
         'nwchem_tce': 'ccsd(t)',
-        'nwchem_tce_on': True,
+        #'nwchem_tce_on': True,
         'nwchem_tce_thresh': 1.0e-12,
         'nwchem_task_tce': 'energy'
         })
     print('Testing ccsd...')
-    val=qcdb.energy('nwc-ccsd')
+    val=qcdb.energy('nwc-ccsd(t)')
     check_ccsd_t_(val, is_df=True)
 @using_nwchem    
 def test_3_df_ccsd_t_():
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'memory': '600 mb',
+        'nwchem_scf': 'rhf',
+        'nwchem_scf_thresh': 1.0e-12,
         'nwchem_tce_dft': False,
         'nwchem_tce': 'ccsd(t)',
-        'nwchem_tce_on': True,
+        #'nwchem_tce_on': True,
         'nwchem_tce_thresh': 1.0e-12,
         'nwchem_task_tce': 'energy'
         })
@@ -83,9 +92,11 @@ def test_4_nodf_ccsd_t_():
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'memory': '600 mb',
+        'nwchem_scf': 'rhf',
+        'nwchem_scf_thresh': 1.0e-12,
         'nwchem_tce_dft': False,
         'nwchem_tce': 'ccsd(t)',
-        'nwchem_tce_on': True,
+        #'nwchem_tce_on': True,
         'nwchem_tce_thresh': 1.0e-12,
         'nwchem_task_tce': 'energy'
         })

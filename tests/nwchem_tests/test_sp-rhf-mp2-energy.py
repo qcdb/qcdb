@@ -18,8 +18,8 @@ def check_mp2(return_value, is_df, is5050):
         mp2_tot =    -76.230777733733
         scs_mp2_tot= -76.226922314540
         scs_corl=     -0.200161577112
-        os      =     -0.152487590397
-        ss      =     -0.051529405908
+        os      =     -0.152487590397 * 1.200000000000
+        ss      =     -0.051529405908 * 0.333333333333
         a5050corl=       0.5*(os + ss)
         a5050tot=   a5050corl + ref
     else:
@@ -28,8 +28,8 @@ def check_mp2(return_value, is_df, is5050):
         mp2_tot =    -76.230777733733
         scs_mp2_tot= -76.226922314540
         scs_corl=     -0.200161577112
-        os      =     -0.152487590397
-        ss      =     -0.051529405908
+        os      =     -0.152487590397 * 1.200000000000
+        ss      =     -0.051529405908 * 0.333333333333
         a5050corl=       0.5*(os + ss)
         a5050tot=   a5050corl + ref
     assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'scf total')
@@ -48,7 +48,8 @@ def test_1_df_mp2():
         'nwchem_task_mp2': 'energy'
         })
     print('Testing mp2(df)...')
-    val = qcdb.energy('nwc-mp2')
+   # print(jrec['qcvars'])
+    val = qcdb.energy('nwc-mp2')# return_wfn=True)
     check_mp2(val, is_df=True, is5050=False)
 @using_nwchem
 def test_2_df_scsmp2():
@@ -83,5 +84,5 @@ def test_4_hf():
         'nwchem_scf_nopen' : 0
         })
     print("Testing hf...")
-    val = qcdb.energy('nwc-hf')
+    val = qcdb.energy('nwc-mp2')
     check_mp2(val, is_df=True, is5050=False)
