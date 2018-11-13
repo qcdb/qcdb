@@ -1,0 +1,20 @@
+echo
+
+geometry
+N        0.08546       -0.00020       -0.05091
+H       -0.25454       -0.62639        0.67895
+H       -0.25454       -0.31918       -0.95813
+end
+
+basis spherical
+* library cc-pVDZ
+end
+
+scf
+ uhf
+ nopen 1
+ thresh 1.0e-8
+ maxiter 80
+end
+
+task mp2 energy

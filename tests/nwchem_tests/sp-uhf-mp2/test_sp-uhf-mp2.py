@@ -12,7 +12,7 @@ nh2= qcdb.set_molecule('''
          H       -0.25454       -0.31918       -0.95813
         ''')
 print(nh2)
-def check_uhf_mp2(return_value, is_df, is_5050=False):
+def check_uhf_mp2(return_value, is_df, is_5050):
     if is_df:
         ref         =       -55.566057523877
         mp2_tot     =       -55.711202243414
@@ -54,27 +54,34 @@ def test_1_hf():
         'nwchem_scf_nopen': 1,
         #'nwchem_scf_mixiter': 80,
         'nwchem_scf_thresh': 1.0e-8,
-        #'nwchem_task_hf'   : 'energy'
         })
     print('Testing hf...')
-    val = qcdb.energy('nwc-hf')
-    check_uhf_mp2(val, is_df=True)
+    val = qcdb.energy('nwc-mp2')
+    check_uhf_mp2(val, is_df=True, is_5050=False)
 @using_nwchem
 def test_2_mp2():
     qcdb.set_options({
         'basis'     :    'cc-pvdz',
         'memory'    :    '300 mb',
-        #'task_mp2'  :    'energy'
+        'nwchem_scf':   'UHF',
+        'nwchem_scf_nopen': 1,
+        #'nwchem_scf_mixiter': 80,
+        'nwchem_scf_thresh': 1.0e-8,
+        #'nwchem_task_mp2'  :    'energy'
         })
     print('Testing mp2...')
     val  = qcdb.energy('nwc-mp2')
-    check_uhf_mp2(val, is_df=True)
+    check_uhf_mp2(val, is_df=True, is_5050=False)
 @using_nwchem
 def test_3_mp2_a5050():
     qcdb.set_options({
         'basis'     : 'cc-pvdz',
         'memory'    : '300 mb',
-        #'task_mp2'  : 'energy'
+        'nwchem_scf':   'UHF',
+        'nwchem_scf_nopen': 1,
+        #'nwchem_scf_mixiter': 80,
+        'nwchem_scf_thresh': 1.0e-8,
+        #'nwchem_task_mp2'  :    'energy'
         })
     print('Testing custom mp2...')
     val  = qcdb.energy('nwc-mp2')

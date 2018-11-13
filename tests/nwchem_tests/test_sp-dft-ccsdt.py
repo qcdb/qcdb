@@ -36,12 +36,17 @@ def test_1_dft():
         'memory': '600 mb',
         'basis' : 'sto-3g',
         #'nwchem_dft__convergence__density': 1.0e-12,
-        #'nwchem_dft_xc': 'b3lyp'
+        #'nwchem_dft_xc': 'b3lyp',
         #add grid options
+        'nwchem_tce_dft': True,
+        #'nwchem_tce_on' : True,
+        'nwchem_tce': 'CCSDT',
+        'nwchem_tce_thresh': 1.0e-12,
+        'nwchem_task_tce': 'energy'
         })
     #print(jrec['qcvars'])
     print('Testing DFT energy...')
-    val = qcdb.energy('nwc-dft')#, return_wfn=True)
+    val = qcdb.energy('nwc-ccsdt')
     check_dft(val, is_dft=True)
 
 @using_nwchem
@@ -57,5 +62,5 @@ def test_2_ccsdt():
         })
    # print(jrec['qcvars'])
     print('Test CCSDT energy ...')
-    val = qcdb.energy('nwc-ccsdt') #, return_wfn=True)
+    val = qcdb.energy('nwc-ccsdt')
     check_dft(val, is_dft=True)

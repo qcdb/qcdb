@@ -11,16 +11,16 @@ h2o = qcdb.set_molecule('''
         H     0.000000000000    0.757480611647    0.520865616174
         ''')
 print(h2o)
-def check_mp2(return_value, is_df, is5050):
+def check_mp2(val, is_df, is5050):
     if is_df:
         ref         =       -76.026760737428
         mp2_tot     =       -76.230777733733
         mp2_corl    =        -0.204016996305
         scs_corl    =        -0.200161577112
         scs_tot     =       -76.226922314540
-        ss          =        -0.051529405908
-        os          =        -0.152487590397
-        a5050corl   =       0.5*(ss + os)
+        ss_corl     =        -0.051529405908 * 0.333333333333
+        os_corl     =        -0.152487590397 * 1.200000000000
+        a5050corl   =       0.5*(ss_corl + os_corl)
         a5050tot    =       a5050corl + ref
     else:
         ref         =       -76.026760737428
@@ -28,9 +28,9 @@ def check_mp2(return_value, is_df, is5050):
         mp2_corl    =        -0.204016996305
         scs_corl    =        -0.200161577112
         scs_tot     =       -76.226922314540
-        ss_corl     =        -0.051529405908
-        os_corl     =        -0.152487590397
-        a5050corl   =       0.5*(ss + os)
+        ss_corl     =        -0.051529405908 * 0.333333333333
+        os_corl     =        -0.152487590397 * 1.200000000000
+        a5050corl   =       0.5*(ss_corl + os_corl)
         a5050tot    =       a5050corl + ref
 
     assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'scf')
@@ -66,7 +66,7 @@ def test_2_hf():
         'nwchem_scf_nopen':     0
         })
     print('Testing hf...')
-    val = qcdb.energy('nwc-hf')
+    val = qcdb.gradient('nwc-mp2')
     check_mp2(val, is_df=True, is5050=False)
 @using_nwchem
 def test_3_mp2_custom():
