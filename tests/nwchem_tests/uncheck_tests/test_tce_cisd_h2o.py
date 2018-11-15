@@ -41,7 +41,7 @@ def test_1_hf():
         #'nwchem_scf_tol2e':    1.0e-10
         })
     print('Testing hf...')
-    val = qcdb.energy('nwc-hf')
+    val = qcdb.energy('nwc-tce')
     check_tce_cisd(val, is_df=True)
 
 @using_nwchem

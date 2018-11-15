@@ -30,10 +30,12 @@ def check_mcscf(val, is_df):
 @using_nwchem
 def test_1_hf():
     qcdb.set_options({
-        'basis'     :       '6-31g**'
+        'basis'     :       '6-31g**',
+        'nwchem_mcscf_active'   : 6,
+        'nwchem_mcscf_actelec'  : 6,
         })
     print('Testing hf...')
-    val = qcdb.energy('nwc-hf')
+    val = qcdb.energy('nwc-mcscf')
     check_mcscf(val, is_df=True)
 
 @using_nwchem

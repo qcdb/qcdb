@@ -41,7 +41,7 @@ def test_1_hf():
         'nwchem_scf_thresh': 1.0e-7
         })
     print("Testing HF energy (df)...")
-    val = qcdb.energy('nwc-hf')
+    val = qcdb.energy('nwc-ccsdtq')
     check_ccsdtq(val, is_df=True)
 @using_nwchem
 def test_2_ccsdtq():
