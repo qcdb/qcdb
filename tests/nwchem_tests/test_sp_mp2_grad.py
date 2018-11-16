@@ -22,6 +22,10 @@ def check_mp2(val, is_df, is5050):
         os_corl     =        -0.152487590397 * 1.200000000000
         a5050corl   =       0.5*(ss_corl + os_corl)
         a5050tot    =       a5050corl + ref
+        ref_grad    =       np.array(
+                                [[0.000000,   0.000000,   0.012114],
+                                 [-0.001793,   0.000000,  -0.006057],
+                                 [0.001793,   0.000000,  -0.006057]])
     else:
         ref         =       -76.026760737428
         mp2_tot     =       -76.226922314540
@@ -32,12 +36,17 @@ def check_mp2(val, is_df, is5050):
         os_corl     =        -0.152487590397 * 1.200000000000
         a5050corl   =       0.5*(ss_corl + os_corl)
         a5050tot    =       a5050corl + ref
+        ref_grad    =       np.array(
+                                [[0.000000,   0.000000,   0.012114],
+                                 [-0.001793,   0.000000,  -0.006057],
+                                 [0.001793,   0.000000,  -0.006057]])
 
     assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'scf')
     assert compare_values(mp2_tot, qcdb.get_variable('MP2 TOTAL ENERGY'), 5, 'mp2 tot')
     assert compare_values(mp2_corl, qcdb.get_variable('MP2 CORRELATION ENERGY'), 5, 'mp2 corl')
     assert compare_values(scs_tot, qcdb.get_variable('SCS-MP2 TOTAL ENERGY'), 5, 'scs mp2 tot')
     assert compare_values(scs_corl, qcdb.get_variable('SCS-MP2 CORRELATION ENERGY'), 5, 'scs mp2 corl')
+    assert compare_arrays(ref_grad, qcdb.get_variable('CURRENT GRADIENT'), 5, 'mp2 grad')
     if is5050:
          assert compare_values(a5050corl, qcdb.get_variable('CUSTOM SCS-MP2 CORRELATION ENERGY'), 5, 'custom scs mp2 corl')
          assert compare_values(a5050tot, qcdb.get_variable('CUSTOM SCS-MP2 TOTAL ENERGY'), 5, 'custom scs-mp2 tot')
