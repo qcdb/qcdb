@@ -147,14 +147,14 @@ def harvest_outfile_pass(outtext):
             psivar ['DFT TOTAL ENERGY'] = mobj.group(1)
             psivar ['NUCLEAR REPULSION ENERGY'] = mobj.group(2)
 
-
         #MCSCF 
         mobj = re.search(
             r'^\s+' + r'Total SCF energy' + r'\s+' + NUMBER + r'\s*'+
             r'^\s+' + r'One-electron energy' + r'\s+' + NUMBER + r'\s*'+
             r'^\s+' + r'Two-electron energy' + r'\s+' + NUMBER + r'\s*'+
             r'^\s+' + r'The MCSCF is already converged' + r'\s*'
-            r'^\s+' + r'Total MCSCF energy' + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE) #MCSCF
+            r'^\s+' + r'Total MCSCF energy' + r'\s+' + NUMBER + r'\s*$',
+            outtext, re.MULTILINE) #MCSCF
         if mobj:
             print('matched mcscf') #MCSCF energy calculation 
             psivar ['HF TOTAL ENERGY'] = mobj.group(1)
@@ -226,7 +226,43 @@ def harvest_outfile_pass(outtext):
             print ('matched coupled cluster-mp2')
             psivar ['MP2 CORRELATION ENERGY'] = mobj.group(2) 
             psivar ['MP2 TOTAL ENERGY'] = mobj.group(3) 
- 
+        
+        #Process CI calculation through tce [dertype] command
+        ci_name = ''
+        mobj = re.search(
+            r'^\s+' + r'Iterations converged' + r'\s*' +
+            r'^\s+' + r'CI' + r'(.*?)' + r' correlation energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*'+
+            r'^\s+' + r'(.*?)' + r' total energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*$'
+            ,outtext, re.MULTILINE) 
+
+        if mobj:
+            ci_name = mobj.group(1)
+            print('matched %s' % (mobj.group(1))) 
+            print (mobj.group(1))
+            print (mobj.group(2))
+            print (mobj.group(4))
+
+            psivar['%s CORRELATION ENERGY' % (mobj.group(1))] = mobj.group(2)
+            psivar['%s TOTAL ENERGY' % (mobj.group(1))] = mobj.group(4)
+
+        #Process MP calculation through tce [dertype] command
+        mp_name = ''
+        mobj = re.search(
+            r'^\s+' + r'Iterations converged' + r'\s*' +
+            r'^\s+' + r'MBPT' + r'(.*?)' + r' correlation energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*'+
+            r'^\s+' + r'(.*?)' + r' total energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*$'
+            ,outtext, re.MULTILINE) 
+
+        if mobj:
+            mp_name = mobj.group(1)
+            print('matched %s' % (mobj.group(1))) 
+            print (mobj.group(1))
+            print (mobj.group(2))
+            print (mobj.group(4)) 
+
+            psivar['%s CORRELATION ENERGY' % (mobj.group(1))] = mobj.group(2)
+            psivar['%s TOTAL ENERGY' % (mobj.group(1))] = mobj.group(4)
+
         #Process CC calculation through tce [dertype] command
         cc_name = ''
         mobj = re.search(
@@ -373,14 +409,16 @@ def harvest_outfile_pass(outtext):
         
         #TCE- ROHF and UHF
         # mobj = re.findall(
-       #     r'^\s+' + 'Total SCF energy' + '^\s+' + NUMBER +
-        #    r'^\s*' + r'^\s+' + r'CCSD correlation energy / hartree' + r'\s+' + NUMBER +
-        #    r'^\s*' + r'\s+' + r'CCSD total energy / hartree' + r'\s+'+ NUMBER + r's*$', outtext, re.MULTILINE)
+        #    r'^\s+' + 'Total SCF energy' + '^\s+' + NUMBER +
+         #   r'^\s*' + r'^\s+' + r'CCSD correlation energy / hartree' + r'\s+' + NUMBER +
+          #  r'^\s*' + r'\s+' + r'CCSD total energy / hartree' + r'\s+'+ NUMBER + r's*$', 
+           # outtext, re.MULTILINE)
        # if mobj:
         #    print(mobj) #print list
          #   print('CCSD Energy = ')
-          #  psivar['CCSD CORRELATION ENERGY'] = mobj.group(5)
-           # psivar['CCSD TOTAL ENERGY'] = mobj.group(6)
+          #  psivar['HF TOTAL ENERGY'] = mobj.group(1)
+           # psivar['CCSD CORRELATION ENERGY'] = mobj.group(2)
+            #psivar['CCSD TOTAL ENERGY'] = mobj.group(3)
 
 
                  # No symmetry
@@ -618,36 +656,16 @@ def harvest_outfile_pass(outtext):
     if 'CCSD(T) TOTAL ENERGY' in psivar and 'CCSD(T) CORRELATION ENERGY' in psivar:
         psivar['CURRENT CORRELATION ENERGY'] = psivar['CCSD(T) CORRELATION ENERGY']
         psivar['CURRENT ENERGY'] = psivar['CCSD(T) TOTAL ENERGY']
-    
-    if 'CISD CORRELATION ENERGY' in psivar:
-        psivar['CISD CORRELATION ENERGY'] = psivar['CISD CORRELATION ENERGY']
-    
-    if 'CISD TOTAL ENERGY' in psivar:
-        psivar['CISD TOTAL ENERGY'] = psivar['CISD TOTAL ENERGY']
-   
-    if 'CISDT CORRELATION ENERGY' in psivar:
-        psivar['CISDT CORRELATION ENERGY'] = psivar['CISDT CORRELATION ENERGY']
-               
-    if 'CISDT TOTAL ENERGY' in psivar:
-        psivar['CISDT TOTAL ENERGY'] = psivar['CISDT TOTAL ENERGY']
 
-    if 'MP2 CORRELATION ENERGY' in psivar:
-        psivar['MP2 CORRELATION ENERGY'] = psivar['MP2 CORRELATION ENERGY']
+    if ('%s TOTAL ENERGY' % (ci_name) in psivar and \
+       ('%s CORRELATION ENERGY' % (ci_name) in psivar)):
+        psivar['CURRENT CORRELATION ENERGY'] = psivar['%s CORRELATION ENERGY' % (ci_name)]
+        psivar['CURRENT ENERGY'] = psivar['%s TOTAL ENERGY' % (ci_name)]
 
-    if 'MP2 TOTAL ENERGY' in psivar:
-        psivar['MP2 TOTAL ENERGY'] = psivar['MP2 TOTAL ENERGY']
-
-    if 'MP3 CORRELATION ENERGY' in psivar:
-        psivar['MP3 CORRELATION ENERGY'] = psivar['MP3 CORRELATION ENERGY']
-
-    if 'MP3 TOTAL ENERGY' in psivar:
-        psivar['MP3 TOTAL ENERGY'] = psivar['MP3 TOTAL ENERGY']
-
-    if 'MP4 CORRELATION ENERGY' in psivar:
-        psivar['MP4 CORRELATION ENERGY'] = psivar['MP4 CORRELATION ENERGY']
-
-    if 'MP4 TOTAL ENERGY' in psivar:
-        psivar['MP4 TOTAL ENERGY'] = psivar['MP4 TOTAL ENERGY']
+    if ('%s TOTAL ENERGY' % (mp_name) in psivar and \
+       ('%s CORRELATION ENERGY' % (mp_name) in psivar)):
+        psivar['CURRENT CORRELATION ENERGY'] = psivar['%s CORRELATION ENERGY' % (mp_name)]
+        psivar['CURRENT ENERGY'] = psivar['%s TOTAL ENERGY' % (mp_name)]
 
     if ('EOM-%s TOTAL ENERGY' % (cc_name) in psivar) and \
        ('%s EXCITATION ENERGY' %(cc_name) in psivar):
@@ -1083,7 +1101,7 @@ def muster_modelchem(name, dertype):
             options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
             options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp2'
     
-    elif lowername == 'nwc-tce-mp3':
+    elif lowername == 'nwc-mp3':
         if dertype == 0:
             options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
             options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp3'
@@ -1094,7 +1112,7 @@ def muster_modelchem(name, dertype):
             options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
             options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp3'
     
-    elif lowername == 'nwc-tce-mp4':
+    elif lowername == 'nwc-mp4':
         if dertype == 0:
             options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
             options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp4'
@@ -1294,6 +1312,10 @@ def nwchem_list():
     val.append('nwc-ccsdt')
     val.append('nwc-ccsdtq')
     val.append('nwc-ccsd(t)')
+    val.append('nwc-lccd')
+    val.append('nwc-tce-mp2')
+    val.append('nwc-tce-mp3')
+    val.append('nwc-tce-mp4')
     val.append('nwc-eom-ccsd')
     val.append('nwc-eom-ccsdt')
     val.append('nwc-eom-ccsdtq')
@@ -1317,6 +1339,10 @@ def nwchem_gradient_list():
     val.append('nwc-ccsdt')
     val.append('nwc-ccsdtq')
     val.append('nwc-ccsd(t)')
+    val.append('nwc-lccd')
+    val.append('nwc-tce-mp2')
+    val.append('nwc-tce-mp3')
+    val.append('nwc-tce-mp4')
     val.append('nwc-eom-ccsd')
     val.append('nwc-eom-ccsdt')
     val.append('nwc-eom-ccsdtq')
@@ -1347,6 +1373,10 @@ def nwchem_psivar_list():
     VARH['nwc-lccd'] = {
                              'nwc-hf' : 'HF TOTAL ENERGY',
                            'nwc-lccd' : 'LCCD TOTAL ENERGY'}
+    VARH['nwc-cisd'] = {
+                             'nwc-hf' : 'HF TOTAL ENERGY',
+                            'nwc-mp2' : 'MP2 TOTAL ENERGY',
+                           'nwc-cisd' : 'CISD TOTAL ENERGY'}
     VARH['nwc-ccsd'] = {
                              'nwc-hf' : 'HF TOTAL ENERGY',
                             'nwc-mp2' : 'MP2 TOTAL ENERGY',

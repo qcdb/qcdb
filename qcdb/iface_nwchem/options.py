@@ -9,13 +9,6 @@ from ..exceptions import *
 from . import parsers
 
 def load_nwchem_defaults(options):
-    #Haven't added NCHEM_OMP_NUM_THREADS
-    #options.add('nwchem', RottenOption(
-        #keyword='omp_num_threads
-        #default= 1
-        #validator=
-        #glossary='Sets OMP_NUM_THREADS environment variable before calling NWCHEM'
-   #option for NWChem may be 'nwchem' or 'nwc'
     options.add('nwchem', RottenOption(
         keyword='translate_psi4',
         default= True,
@@ -28,16 +21,19 @@ def load_nwchem_defaults(options):
         default='total 400 mb',
         validator=parsers.parse_memory,
         glossary='Total memory allocation, which can be specified further to stack, heap, and global.'))
+
     options.add('nwchem', RottenOption(
         keyword='stack_memory',
         default='',
         validator=parsers.parse_memory,
         glossary= 'Stack memory allocation that can be specified beyond the total memory.'))
+    
     options.add('nwchem', RottenOption(
         keyword='heap_memory',
         default='',
         validator=parsers.parse_memory,
         glossary= 'Heap memory allocation that can be specified beyond the total memory allocation.'))
+    
     options.add('nwchem', RottenOption(
         keyword='global_memory',
         default='',
@@ -49,6 +45,7 @@ def load_nwchem_defaults(options):
         default=True,
         validator=parsers.boolean,
         glossary='Enables or disables the translation of the center of nuclear charge to the origin. Default is move the center of nuclear charge to the origin (center or True).'))
+    
     options.add('nwchem', RottenOption(
         keyword='geometry_units',
         default='Angstroms',
@@ -69,15 +66,20 @@ def load_nwchem_defaults(options):
         validator=parsers.boolean,
         glossary='NWChem generates redundant internal coordinates from user input Cartesian coordinates. Default is on.'))
 
-#Symmetry options
+#Top level options
     options.add('nwchem', RottenOption(
         keyword   ='symmetry',
-        default   = '',
-        validator = lambda x: x.upper(), 
+        default   = 'c1',
+        validator = parsers.enum(' c1 c2v c3v d2h ') #test only need to figure out better way TODO
         glossary  ='''Optional symmetry directive that specifies the group of the molecule,
         which can be automatically determined via the geometry autosym function.''' ))
+    
+    options.add('nwchem', RottenOption(
+        keyword     ='charge',
+        default     = 0,
+        validator   = lambda x: float(x),
+        glossary    ='Charge of the molecule.'))
 
-#Top level print options
     options.add('nwchem', RottenOption(
         keyword='print',
         default='medium',
@@ -86,11 +88,6 @@ def load_nwchem_defaults(options):
 
 #Basis block
 ###Need to figure out how to delineate per atom basis attribution #TODO
-    options.add('nwchem', RottenOption(
-        keyword="basis_library_all",
-        default="",
-        validator= lambda x: x.lower(),
-        glossary='Specifies which basis the atoms are assigned. Can generalize for all atoms or specify different libraries for each atom (i.e. using 6-31g for H but using cc-pvdz for O.)'))
 
 #SCF block
     options.add('nwchem', RottenOption(
@@ -136,12 +133,14 @@ def load_nwchem_defaults(options):
         validator= parsers.postive_integer,
         glossary= '''SCF Semidirect options: File size allows the user to specify the amount of disk space used per process for storing the integrals in 64-bit words. 
         Default of semidirect leads to directive DIRECT.'''))
+    
     options.add('nwchem', RottenOption(
         keyword='scfsd__memsize',
         default= 0,
         validator= parsers.positive_integer,
         glossary= '''SCF Semidirect options: Memory size allows user to specify the number of 64-bit words to be used per process for caching integrals in memory.
         If the amount of storage space is not available, the code cuts the value in half and checks again, and will continue to do so until request is satisfied.'''))
+    
     options.add('nwchem', RottenOption(
         keyword= 'scfsd__filename',
         default='',
@@ -219,7 +218,7 @@ def load_nwchem_defaults(options):
         glossary='Number of electrons in CASSCF active space. Error will occur if discrepancy is spotted.'))
 
     options.add('nwchem', RottenOption(
-        keyword='mcscf_multiplicity',
+        keyword='mcscf_mult',
         default='',
         validator= lambda x: float(x),
         glossary='Spin multiplicity in CASSCF/MCSCF block, must be specified for MCSCF to work.'))
@@ -227,9 +226,34 @@ def load_nwchem_defaults(options):
     options.add('nwchem', RottenOption(
         keyword='mcscf_state',
         default='',
-        validator= lambda x,
+        validator= parsers.enum(' 1a1 3b1'), 
         glossary='Defines the spatial symmetry and multiplicity. Format is [multiplicity][state], e.g. 3b2 for triplet in B2.'))
 
+#TDDFT block
+    options.add('nwchem', RottenOption(
+        keyword='tddft_nroots',
+        default= 1,
+        validator= lambda x: float(x),
+        glossary='The number of excited state roots in a TDDFT caclulation.'))
+    options.add('nwchem', RottenOption(
+        keyword='tddft_singlet',
+        default=True, 
+        validator= parsers.boolean,
+        glossary= 'Default is on. Requests the TDDFT calculatioin of singlet excited states when reference wave function is closed.'))
+    options.add('nwchem', RottenOption(
+        keyword='tddft_triplet',
+        default=True,
+        validator= 'Default is on. Request the calculation of triplet excited states when reference wave function is closed.'))
+    options.add('nwchem', RottenOption(
+        keyword='tddft_thresh',
+        default=1.0e-4,
+        validator= lambda x: float(x),
+        glossary= 'The convergence threshold of Davidson\'s iterative alogorithm to solve a matrix eigenvalue problem. Default is 1e-4.'))
+    options.add('nwchem', RottenOption(
+        keyword='tddft_maxiter',
+        default= 100,
+        validator= lambda x: float(x),
+        glossary= 'Max iterations. Default is 100.'))
 
 #MP2 block
     options.add('nwchem', RottenOption(
@@ -519,9 +543,9 @@ def load_nwchem_defaults(options):
 
     options.add('nwchem', RottenOption(
         keyword='tce_nroots',
-        default= 1,
+        default= 0,
         validator= parsers.postive_integer,
-        glossary='Number of excited states. Default is 1.'))
+        glossary='Number of excited states. Default is 0.'))
 
     options.add('nwchem', RottenOption(
         keyword='tce_target',
@@ -541,6 +565,42 @@ def load_nwchem_defaults(options):
         validator= parsers.boolean,
         glossary='''Economical option of storing two-electron integrals used in coupled cluster calculations,
         taking the difference of the RHF and ROHF values: on/off. Default is off.'''))
+
+    options.add('nwchem', RottenOption(
+        keyword='tce_2emet',
+        default= 1,
+        validator= parsers.positive_integer,
+        glossary='Default is 1.'))
+    
+    options.add('nwchem', RottenOption(
+        keyword= 'tce_active_oa',
+        default= '',
+        validator= parsers.positive_integer,
+        glossary='Specify the number of occupied alpha spin-orbitals.'))
+    
+    options.add('nwchem', RottenOption(
+        keyword= 'tce_active_ob',
+        default= '',
+        validator= parsers.positive_integer,
+        glossary='Specify the number of occupied beta spin-orbitals.'))
+    
+    options.add('nwchem', RottenOption(
+        keyword= 'tce_active_va',
+        default= '',
+        validator= parsers.positive_integer,
+        glossary='Specify the number of unoccupied alpha spin-orbitals.'))
+    
+    options.add('nwchem', RottenOption(
+        keyword= 'tce_active_vb',
+        default= '',
+        validator= parsers.positive_integer,
+        glossary='Specify the number of unoccupied beta spin-orbitals.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'tce_tilesize',
+        default= '',
+        validator= parsers.positive_integer,
+        glossary= ''))
 
 #TASK block- do we need? pytests ensure what action we're implementing into qcdb
     options.add('nwchem', RottenOption(
