@@ -4,6 +4,7 @@ import sys
 from utils import *
 from addons import *
 import qcdb
+import numpy as np
 
 h2o = qcdb.set_molecule('''
         O     0.000000000000    0.000000000000   -0.065638538099
@@ -91,3 +92,18 @@ def test_3_mp2_custom():
     print('Testing mp2 ...')
     val = qcdb.gradient('nwc-mp2')
     check_mp2(val, is_df=False, is5050=True)
+@using_nwchem
+def test_4_mp2_array():
+    qcdb.set_options({
+        'basis'         :       'cc-pvdz',
+        'memory'        :       '400 mb',
+        'nwchem_scf'    :       'rhf',
+        'nwchem_scf_thresh':    1.0e-4,
+        'nwchem_scf_nopen':     0,
+        'nwchem_mp2_tight':     True,
+        'nwchem_task_mp2':      'gradient'
+        })
+    print('Testing mp2 ...')
+    val = qcdb.gradient('nwc-mp2')
+    check_mp2(val, is_df=True, is5050=False)
+
