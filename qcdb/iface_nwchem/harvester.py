@@ -34,8 +34,8 @@ from collections import defaultdict
 from decimal import Decimal
 
 from ..pdict import PreservingDict 
-from ..periodictable import *
-from ..physconst import *
+#from ..periodictable import *
+#from ..physconst import *
 from ..exceptions import *
 from ..molecule import Molecule
 from ..orient import OrientMols
