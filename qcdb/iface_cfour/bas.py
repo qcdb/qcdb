@@ -3,7 +3,8 @@ import re
 import uuid
 import collections
 
-from .. import molparse
+import qcelemental as qcel
+
 from ..driver import pe
 
 try:
@@ -16,7 +17,7 @@ def format_molecule_for_cfour(molrec, ropts, verbose=1):
     accession=3456
 
     units = 'Bohr'
-    molcmd = molparse.to_string(molrec, dtype='cfour', units=units)
+    molcmd = qcel.molparse.to_string(molrec, dtype='cfour', units=units)
 
     ropts.require('CFOUR', 'CHARGE', int(molrec['molecular_charge']), accession=accession, verbose=verbose)
     ropts.require('CFOUR', 'MULTIPLICITY', molrec['molecular_multiplicity'], accession=accession, verbose=verbose)

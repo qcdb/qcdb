@@ -3,7 +3,8 @@ import re
 import sys
 import uuid
 
-from .. import molparse
+import qcelemental as qcel
+
 from ..driver import pe
 
 try:
@@ -17,7 +18,7 @@ def format_molecule_for_nwchem(molrec, ropts, verbose=1):
     kwgs = {'accession': accession, 'verbose': verbose}
 
     units = 'Bohr'
-    molcmd = molparse.to_string(molrec, dtype='nwchem', units=units)
+    molcmd = qcel.molparse.to_string(molrec, dtype='nwchem', units=units)
 
     ropts.require('NWCHEM', 'CHARGE', int(molrec['molecular_charge']), **kwgs)
     if molrec['molecular_multiplicity'] != 1:

@@ -1,9 +1,11 @@
+import sys
 import pprint
 pp = pprint.PrettyPrinter(width=120)
 
-
 import qcdb
 
+
+a2a = 0.52917721067 / 0.52917720859
 
 def true_false_decorator(compare_fn, *args, **kwargs):
     """Turns `compare_fn` that returns `None` on success and raises
@@ -30,3 +32,9 @@ compare_matrices = true_false_decorator(qcdb.compare_matrices)
 compare_arrays = true_false_decorator(qcdb.compare_arrays)
 compare_dicts = true_false_decorator(qcdb.compare_dicts)
 compare_molrecs = true_false_decorator(qcdb.compare_molrecs)
+
+
+def tnm():
+    """Returns the name of the calling function, usually name of test case."""
+
+    return sys._getframe().f_back.f_code.co_name

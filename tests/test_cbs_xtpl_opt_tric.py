@@ -54,7 +54,7 @@ def system1():
     })
     
     h2.update_geometry()
-    assert compare_values(0.529177208590000, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy") #TEST
+    assert compare_values(0.529177208590000 * a2a, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy") #TEST
 
     return h2
 

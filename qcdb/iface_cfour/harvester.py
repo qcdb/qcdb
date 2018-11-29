@@ -36,9 +36,9 @@ from decimal import Decimal
 
 import numpy as np
 
-from .. import periodictable
+import qcelemental as qcel
+
 from ..exceptions import *
-from ..physconst import *
 from ..molecule import Molecule
 from ..moptions.options import conv_float2negexp
 from ..pdict import PreservingDict
@@ -689,7 +689,7 @@ def harvest(p4Mol, c4out, **largs):
     retMol = None if p4Mol else grdMol
 
     if oriDip is not None:
-        oriDip *= psi_dipmom_au2debye
+        oriDip *= qcel.constants.dipmom_au2debye
         outPsivar['CURRENT DIPOLE X'] = oriDip[0]
         outPsivar['CURRENT DIPOLE Y'] = oriDip[1]
         outPsivar['CURRENT DIPOLE Z'] = oriDip[2]
@@ -727,7 +727,7 @@ def harvest_GRD(grd):
     grad = []
     for at in range(Nat):
         mline = grd[at + 1].split()
-        el = 'GH' if int(float(mline[0])) == 0 else periodictable.z2el[int(float(mline[0]))]
+        el = 'GH' if int(float(mline[0])) == 0 else qcel.periodictable.to_E(int(float(mline[0])))
         molxyz += '%s %16s %16s %16s\n' % (el, mline[-3], mline[-2], mline[-1])
         lline = grd[at + 1 + Nat].split()
         grad.append([float(lline[-3]), float(lline[-2]), float(lline[-1])])
@@ -1405,7 +1405,7 @@ def jajo2mol(jajodic):
     # TODO chgmult, though not really necessary for reorientation
     for at in range(Nat):
         posn = map[at] - 1
-        el = 'GH' if elem[posn] == 0 else periodictable.z2el[elem[posn]]
+        el = 'GH' if elem[posn] == 0 else qcel.periodictable.to_E(elem[posn])
         posn *= 3
         molxyz += '%s %21.15f %21.15f %21.15f\n' % (el, coord[posn], coord[posn + 1], coord[posn + 2])
     mol = Molecule.init_with_xyz(molxyz, no_com=True, no_reorient=True, contentsNotFilename=True)

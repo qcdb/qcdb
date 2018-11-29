@@ -7,6 +7,8 @@ import pytest
 from utils import *
 from addons import *
 
+import qcelemental as qcel
+
 import qcdb
 from qcdb.iface_dftd3 import runner as dftd3
 
@@ -82,7 +84,7 @@ def test_recon_2b():
     
 
 def test_3():
-    sys = qcdb.molparse.from_string(eneyne)['qm']
+    sys = qcel.molparse.from_string(eneyne)['qm']
 
     res = dftd3.run_dftd3(molrec=sys, functional='b3lyp', dashlevel='d3bj')
     assert compare_strings('B3LYP-D3BJ', compute_key(res), 'key')

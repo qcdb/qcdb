@@ -30,7 +30,6 @@ from __future__ import absolute_import
 from __future__ import print_function
 
 from ..vecutil import *
-from ..physconst import *
 from ..cov_radii import *
 
 BOND_FACTOR = 1.2  # fudge factor for bond length threshold
@@ -52,7 +51,7 @@ def xyz2mol(self):
     Written by Trent M. Parker 9 Jun 2014
 
     """
-    factor = 1.0 if self.PYunits == 'Angstrom' else psi_bohr2angstroms
+    factor = 1.0 if self.PYunits == 'Angstrom' else qcel.constants.bohr2angstroms
 
     bonds = self.bond_profile()
 
@@ -120,7 +119,7 @@ def bond_profile(self):
     bonds = []
     for i in range(self.natom()):
         for j in range(i + 1, self.natom()):
-            dist = norm(sub(self.xyz(j), self.xyz(i))) * psi_bohr2angstroms
+            dist = norm(sub(self.xyz(j), self.xyz(i))) * qcel.constants.bohr2angstroms
             # TOOD check bohr/ang progress
             bonded_dist = BOND_FACTOR * (psi_cov_radii[self.symbol(i)] + psi_cov_radii[self.symbol(j)])
             if bonded_dist > dist:

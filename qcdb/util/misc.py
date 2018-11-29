@@ -4,7 +4,7 @@ import math
 
 import numpy as np
 
-from ..physconst import psi_bohr2angstroms
+import qcelemental as qcel
 
 if sys.version_info >= (3, 0):
     basestring = str
@@ -70,7 +70,7 @@ def standardize_efp_angles_units(units, geom_hints):
             return radang
 
     if units == 'Angstrom':
-        iutau = 1. / psi_bohr2angstroms
+        iutau = 1. / qcel.constants.bohr2angstroms
     else:
         iutau = 1.
 
@@ -119,7 +119,7 @@ def process_units(molrec):
     units = molrec.get('units', None)
     input_units_to_au = molrec.get('input_units_to_au', None)
 
-    b2a = psi_bohr2angstroms
+    b2a = qcel.constants.bohr2angstroms
     a2b = 1. / b2a
 
     def perturb_check(candidate, reference):

@@ -38,7 +38,6 @@ import collections
 from .exceptions import *
 from .util import search_file
 from .molecule import Molecule
-from .periodictable import *
 from .libmintsgshell import ShellInfo
 from .libmintsbasissetparser import Gaussian94BasisSetParser
 from .basislist import corresponding_basis, corresponding_zeta

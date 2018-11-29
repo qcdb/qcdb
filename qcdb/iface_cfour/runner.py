@@ -6,7 +6,6 @@ import inspect
 from decimal import Decimal
 
 from .. import __version__
-from .. import molparse
 from .. import moptions
 from .. import qcvars
 from ..driver.driver_helpers import print_variables
