@@ -33,14 +33,16 @@ import struct
 from collections import defaultdict
 from decimal import Decimal
 
-from ..pdict import PreservingDict 
+from ..pdict import PreservingDict
 #from ..periodictable import *
 #from ..physconst import *
 from ..exceptions import *
 from ..molecule import Molecule
 from ..orient import OrientMols
+
 #from .options import conv_float2negexp
 #from . import nwc_movecs
+
 
 def harvest_output(outtext):
     """Function to separate portions of a NWChem output file *outtext*,
@@ -51,29 +53,30 @@ def harvest_output(outtext):
     pass_coord = []
     pass_grad = []
 
-    for outpass in re.split(r' Line search:',outtext,re.MULTILINE):
+    for outpass in re.split(r' Line search:', outtext, re.MULTILINE):
         psivar, nwcoord, nwgrad, version, error = harvest_outfile_pass(outpass)
         pass_psivar.append(psivar)
         pass_coord.append(nwcoord)
         pass_grad.append(nwgrad)
-    
+
+
 #       print ('\n\nXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n')
 #       print (outpass)
 #       print (psivar, nwcoord, nwgrad)
 #       print (psivar, nwgrad)
 #       print ('\n\nxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n')
 
-    retindx = -1 if pass_coord[-1] else -2 
+    retindx = -1 if pass_coord[-1] else -2
 
-#    print ('    <<<  NW PSIVAR  >>>')
-#    for item in pass_psivar[retindx]:
-#       print('       %30s %16.8f' % (item, pass_psivar[retindx][item]))
-#    print ('    <<<  NW COORD   >>>')
-#    for item in pass_coord[retindx]:
-#    print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
-#    print ('    <<<   NW GRAD   >>>')
-#    for item in pass_grad[retindx]:
-#       print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
+    #    print ('    <<<  NW PSIVAR  >>>')
+    #    for item in pass_psivar[retindx]:
+    #       print('       %30s %16.8f' % (item, pass_psivar[retindx][item]))
+    #    print ('    <<<  NW COORD   >>>')
+    #    for item in pass_coord[retindx]:
+    #    print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
+    #    print ('    <<<   NW GRAD   >>>')
+    #    for item in pass_grad[retindx]:
+    #       print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
 
     return pass_psivar[retindx], pass_coord[retindx], pass_grad[retindx], version, error
 
@@ -99,148 +102,130 @@ def harvest_outfile_pass(outtext):
         print('matched version')
         version = mobj.group('version')
 
-    #Process SCF 
+    #Process SCF
     #1)Fail to converge
-    mobj = re.search(
-        r'^\s+' + r'(?:Calculation failed to converge)'+r'\s*$',
-        outtext, re.MULTILINE)
+    mobj = re.search(r'^\s+' + r'(?:Calculation failed to converge)' + r'\s*$', outtext, re.MULTILINE)
     if mobj:
         print('failed to converge')
 
     #2)Calculation converged
     else:
-        mobj = re.search(
-            r'^\s+' + r'(?:Total SCF energy)' + r'\s+=\s*' + NUMBER +r's*$'
-            ,outtext, re.MULTILINE) 
+        mobj = re.search(r'^\s+' + r'(?:Total SCF energy)' + r'\s+=\s*' + NUMBER + r's*$', outtext, re.MULTILINE)
         if mobj:
-            print('matched HF') 
-            psivar['HF TOTAL ENERGY'] = mobj.group(1) 
+            print('matched HF')
+            psivar['HF TOTAL ENERGY'] = mobj.group(1)
 
-    #Process Effective nuclear repulsion energy (a.u.) 
-        mobj = re.search( 
-            r'^\s+' + r'Effective nuclear repulsion energy \(a\.u\.\)' + r'\s+' + NUMBER + r'\s*$'
-            ,outtext, re.MULTILINE)
+    #Process Effective nuclear repulsion energy (a.u.)
+        mobj = re.search(r'^\s+' + r'Effective nuclear repulsion energy \(a\.u\.\)' + r'\s+' + NUMBER + r'\s*$',
+                         outtext, re.MULTILINE)
         if mobj:
             print('matched NRE')
-            #print (mobj.group(1)) 
+            #print (mobj.group(1))
             psivar['NUCLEAR REPULSION ENERGY'] = mobj.group(1)
 
         #Process DFT (RDFT, RODFT,UDFT, SODFT [SODFT for nwchem versions before nwchem 6.8])
         mobj = re.search(
-            r'^\s+' + r'Total DFT energy' + r'\s+' + NUMBER + r'\s*' +
-            r'^\s+' + r'Nuclear repulsion energy' + r'\s+' + NUMBER + '\s*$',
-            outtext, re.MULTILINE)
+            r'^\s+' + r'Total DFT energy' + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'Nuclear repulsion energy' + r'\s+' +
+            NUMBER + '\s*$', outtext, re.MULTILINE)
         if mobj:
-            print ('matched DFT')
+            print('matched DFT')
             #print (mobj.group(1))
-            psivar ['DFT TOTAL ENERGY'] = mobj.group(1)
-            psivar ['NUCLEAR REPULSION ENERGY'] = mobj.group(2)
-    
+            psivar['DFT TOTAL ENERGY'] = mobj.group(1)
+            psivar['NUCLEAR REPULSION ENERGY'] = mobj.group(2)
+
         #SODFT [for nwchem 6.8+]
         mobj = re.search(
-            r'^\s+' + r'Total SO-DFT energy' + r'\s+' + NUMBER + r'\s*' +
-            r'^\s+' + r'Nuclear repulsion energy' + r'\s+' + NUMBER + '\s*$',
-            outtext, re.MULTILINE)
+            r'^\s+' + r'Total SO-DFT energy' + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'Nuclear repulsion energy' +
+            r'\s+' + NUMBER + '\s*$', outtext, re.MULTILINE)
         if mobj:
-            print ('matched DFT')
+            print('matched DFT')
             #print (mobj.group(1))
-            psivar ['DFT TOTAL ENERGY'] = mobj.group(1)
-            psivar ['NUCLEAR REPULSION ENERGY'] = mobj.group(2)
+            psivar['DFT TOTAL ENERGY'] = mobj.group(1)
+            psivar['NUCLEAR REPULSION ENERGY'] = mobj.group(2)
 
-        #MCSCF 
-        mobj = re.search(
-            r'^\s+' + r'Total SCF energy' + r'\s+' + NUMBER + r'\s*'+
-            r'^\s+' + r'One-electron energy' + r'\s+' + NUMBER + r'\s*'+
-            r'^\s+' + r'Two-electron energy' + r'\s+' + NUMBER + r'\s*'+
-            r'^\s+' + r'The MCSCF is already converged' + r'\s*'
-            r'^\s+' + r'Total MCSCF energy' + r'\s+' + NUMBER + r'\s*$',
-            outtext, re.MULTILINE) #MCSCF
+        #MCSCF
+        mobj = re.search(r'^\s+' + r'Total SCF energy' + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'One-electron energy' +
+                         r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'Two-electron energy' + r'\s+' + NUMBER + r'\s*' +
+                         r'^\s+' + r'The MCSCF is already converged' + r'\s*'
+                         r'^\s+' + r'Total MCSCF energy' + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE)  #MCSCF
         if mobj:
-            print('matched mcscf') #MCSCF energy calculation 
-            psivar ['HF TOTAL ENERGY'] = mobj.group(1)
-            psivar ['ONE-ELECTRON ENERGY'] = mobj.group(2)
-            psivar ['TWO-ELECTRON ENERGY'] = mobj.group(3)
-            psivar ['MCSCF TOTAL ENERGY'] = mobj.group(4)
+            print('matched mcscf')  #MCSCF energy calculation
+            psivar['HF TOTAL ENERGY'] = mobj.group(1)
+            psivar['ONE-ELECTRON ENERGY'] = mobj.group(2)
+            psivar['TWO-ELECTRON ENERGY'] = mobj.group(3)
+            psivar['MCSCF TOTAL ENERGY'] = mobj.group(4)
 
         #Process MP2 (Restricted, Unrestricted(RO n/a))
         #1)SCF-MP2
         mobj = re.search(
-        r'^\s+' + r'SCF energy' + r'\s+' + NUMBER + r'\s*'+
-        r'^\s+' + r'Correlation energy' + r'\s+' + NUMBER + r'\s*'+
-        r'^\s+' + r'Singlet pairs' + r'\s+' + NUMBER + r'\s*'+
-        r'^\s+' + r'Triplet pairs' + r'\s+' + NUMBER + r'\s*'+ 
-        r'^\s+' + r'Total MP2 energy' + r'\s+' + NUMBER + r'\s*$'
-        ,outtext, re.MULTILINE) #MP2
+            r'^\s+' + r'SCF energy' + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'Correlation energy' + r'\s+' + NUMBER +
+            r'\s*' + r'^\s+' + r'Singlet pairs' + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'Triplet pairs' + r'\s+' +
+            NUMBER + r'\s*' + r'^\s+' + r'Total MP2 energy' + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE)  #MP2
         if mobj:
-            print ('matched scf-mp2')
-            psivar ['HF TOTAL ENERGY'] = mobj.group(1) 
-            psivar ['MP2 CORRELATION ENERGY'] = mobj.group(2)
-            psivar ['MP2 TOTAL ENERGY'] = mobj.group(5) 
+            print('matched scf-mp2')
+            psivar['HF TOTAL ENERGY'] = mobj.group(1)
+            psivar['MP2 CORRELATION ENERGY'] = mobj.group(2)
+            psivar['MP2 TOTAL ENERGY'] = mobj.group(5)
         #SCS-MP2
         mobj = re.search(
-        r'^\s+' + r'Same spin pairs'+ r'\s+' + NUMBER + r'\s*'+
-        r'^\s+' + r'Same spin scaling factor'+ r'\s+' + NUMBER + r'\s*'+
-        r'^\s+' + r'Opposite spin pairs'+ r'\s+' + NUMBER + r'\s*'+
-        r'^\s+' + r'Opposite spin scaling fact.'+ r'\s+' + NUMBER + r'\s*'+
-        r'^\s+' + r'SCS-MP2 correlation energy' + r'\s+' + NUMBER + r'\s*'+
-        r'^\s+' + r'Total SCS-MP2 energy'+r'\s+' + NUMBER + r'\s*$'
-        ,outtext, re.MULTILINE)  
+            r'^\s+' + r'Same spin pairs' + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'Same spin scaling factor' + r'\s+' +
+            NUMBER + r'\s*' + r'^\s+' + r'Opposite spin pairs' + r'\s+' + NUMBER + r'\s*' + r'^\s+' +
+            r'Opposite spin scaling fact.' + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'SCS-MP2 correlation energy' +
+            r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'Total SCS-MP2 energy' + r'\s+' + NUMBER + r'\s*$', outtext,
+            re.MULTILINE)
         if mobj:
             print('matched scs-mp2')
             psivar['MP2 SAME-SPIN CORRELATION ENERGY'] = Decimal(mobj.group(1)) * Decimal(mobj.group(2))
             psivar['MP2 OPPOSITE-SPIN CORRELATION ENERGY'] = Decimal(mobj.group(3)) * Decimal(mobj.group(4))
-            psivar['CUSTOM SCS-MP2 CORRELATION ENERGY'] = 0.5 * (float(psivar['MP2 SAME-SPIN CORRELATION ENERGY']) + float(psivar['MP2 OPPOSITE-SPIN CORRELATION ENERGY']))
-            psivar['CUSTOM SCS-MP2 TOTAL ENERGY'] = float(psivar['CUSTOM SCS-MP2 CORRELATION ENERGY']) + float(mobj.group(6)) 
+            psivar['CUSTOM SCS-MP2 CORRELATION ENERGY'] = 0.5 * (float(psivar['MP2 SAME-SPIN CORRELATION ENERGY']) +
+                                                                 float(psivar['MP2 OPPOSITE-SPIN CORRELATION ENERGY']))
+            psivar['CUSTOM SCS-MP2 TOTAL ENERGY'] = float(psivar['CUSTOM SCS-MP2 CORRELATION ENERGY']) + float(
+                mobj.group(6))
             psivar['SCS-MP2 CORRELATION ENERGY'] = mobj.group(5)
             psivar['SCS-MP2 TOTAL ENERGY'] = mobj.group(6)
-            
-            print (mobj.group(1)) #ess
-            print (mobj.group(2)) #fss
-            print (mobj.group(3)) #eos
-            print (mobj.group(4)) #fos
-            print (mobj.group(5)) #scs corl
-            print (mobj.group(6)) #scs-mp2
+
+            print(mobj.group(1))  #ess
+            print(mobj.group(2))  #fss
+            print(mobj.group(3))  #eos
+            print(mobj.group(4))  #fos
+            print(mobj.group(5))  #scs corl
+            print(mobj.group(6))  #scs-mp2
 
         #2) DFT-MP2
         mobj = re.search(
-            r'^\s+' + r'DFT energy' + r'\s+' + NUMBER + r'\s*'+
-            r'^\s+' + r'Unscaled MP2 energy' + r'\s+' + NUMBER + r'\s*'+ 
-            r'^\s+' + r'Total DFT+MP2 energy' + r'\s+' + NUMBER + r'\s*$'
-            ,outtext, re.MULTILINE) 
+            r'^\s+' + r'DFT energy' + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'Unscaled MP2 energy' + r'\s+' + NUMBER +
+            r'\s*' + r'^\s+' + r'Total DFT+MP2 energy' + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE)
         if mobj:
-            print ('matched dft-mp2')
-            psivar ['DFT TOTAL ENERGY'] = mobj.group(1)
-            psivar ['MP2 CORRELATION ENERGY'] = mobj.group(2)
-            psivar ['MP2 TOTAL ENERGY'] = mobj.group(3)
+            print('matched dft-mp2')
+            psivar['DFT TOTAL ENERGY'] = mobj.group(1)
+            psivar['MP2 CORRELATION ENERGY'] = mobj.group(2)
+            psivar['MP2 TOTAL ENERGY'] = mobj.group(3)
 
         #3) MP2 with CCSD or CCSD(T) calculation (through CCSD(T) directive)
         mobj = re.search(
-            r'^\s+' + r'MP2 Energy \(coupled cluster initial guess\)' + r'\s*'+
-            r'^\s+' + r'------------------------------------------' + r'\s*'+
-            r'^\s+' + r'Reference energy:' + r'\s+' + NUMBER + r'\s*'+ 
-            r'^\s+' + r'MP2 Corr\. energy:' + r'\s+' + NUMBER + r'\s*'+
-            r'^\s+' + r'Total MP2 energy:' + r'\s+' + NUMBER + r'\s*$'
-            ,outtext, re.MULTILINE)
+            r'^\s+' + r'MP2 Energy \(coupled cluster initial guess\)' + r'\s*' + r'^\s+' +
+            r'------------------------------------------' + r'\s*' + r'^\s+' + r'Reference energy:' + r'\s+' + NUMBER +
+            r'\s*' + r'^\s+' + r'MP2 Corr\. energy:' + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'Total MP2 energy:' +
+            r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE)
 
         if mobj:
-            print ('matched coupled cluster-mp2')
-            psivar ['MP2 CORRELATION ENERGY'] = mobj.group(2) 
-            psivar ['MP2 TOTAL ENERGY'] = mobj.group(3) 
-        
+            print('matched coupled cluster-mp2')
+            psivar['MP2 CORRELATION ENERGY'] = mobj.group(2)
+            psivar['MP2 TOTAL ENERGY'] = mobj.group(3)
+
         #Process CI calculation through tce [dertype] command
         ci_name = ''
         mobj = re.search(
-            r'^\s+' + r'Iterations converged' + r'\s*' +
-            r'^\s+' + r'CI' + r'(.*?)' + r' correlation energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*'+
-            r'^\s+' + r'(.*?)' + r' total energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*$'
-            ,outtext, re.MULTILINE) 
+            r'^\s+' + r'Iterations converged' + r'\s*' + r'^\s+' + r'CI' + r'(.*?)' + r' correlation energy / hartree'
+            + r'\s+=\s*' + NUMBER + r'\s*' + r'^\s+' + r'(.*?)' + r' total energy / hartree' + r'\s+=\s*' + NUMBER +
+            r'\s*$', outtext, re.MULTILINE)
 
         if mobj:
             ci_name = mobj.group(1)
-            print('matched %s' % (mobj.group(1))) 
-            print (mobj.group(1))
-            print (mobj.group(2))
-            print (mobj.group(4))
+            print('matched %s' % (mobj.group(1)))
+            print(mobj.group(1))
+            print(mobj.group(2))
+            print(mobj.group(4))
 
             psivar['%s CORRELATION ENERGY' % (mobj.group(1))] = mobj.group(2)
             psivar['%s TOTAL ENERGY' % (mobj.group(1))] = mobj.group(4)
@@ -248,17 +233,16 @@ def harvest_outfile_pass(outtext):
         #Process MP calculation through tce [dertype] command
         mp_name = ''
         mobj = re.search(
-            r'^\s+' + r'Iterations converged' + r'\s*' +
-            r'^\s+' + r'MBPT' + r'(.*?)' + r' correlation energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*'+
-            r'^\s+' + r'(.*?)' + r' total energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*$'
-            ,outtext, re.MULTILINE) 
+            r'^\s+' + r'Iterations converged' + r'\s*' + r'^\s+' + r'MBPT' + r'(.*?)' +
+            r' correlation energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*' + r'^\s+' + r'(.*?)' +
+            r' total energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*$', outtext, re.MULTILINE)
 
         if mobj:
             mp_name = mobj.group(1)
-            print('matched %s' % (mobj.group(1))) 
-            print (mobj.group(1))
-            print (mobj.group(2))
-            print (mobj.group(4)) 
+            print('matched %s' % (mobj.group(1)))
+            print(mobj.group(1))
+            print(mobj.group(2))
+            print(mobj.group(4))
 
             psivar['%s CORRELATION ENERGY' % (mobj.group(1))] = mobj.group(2)
             psivar['%s TOTAL ENERGY' % (mobj.group(1))] = mobj.group(4)
@@ -266,127 +250,120 @@ def harvest_outfile_pass(outtext):
         #Process CC calculation through tce [dertype] command
         cc_name = ''
         mobj = re.search(
-            r'^\s+' + r'Iterations converged' + r'\s*' +
-            r'^\s+' + r'(.*?)' + r' correlation energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*'+
-            r'^\s+' + r'(.*?)' + r' total energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*$'
-            ,outtext, re.MULTILINE) 
+            r'^\s+' + r'Iterations converged' + r'\s*' + r'^\s+' + r'(.*?)' + r' correlation energy / hartree' +
+            r'\s+=\s*' + NUMBER + r'\s*' + r'^\s+' + r'(.*?)' + r' total energy / hartree' + r'\s+=\s*' + NUMBER +
+            r'\s*$', outtext, re.MULTILINE)
 
         if mobj:
             cc_name = mobj.group(1)
-            print('matched %s' % (mobj.group(1))) 
-            print (mobj.group(1)) #cc_name
-            print (mobj.group(2)) #cc_name corl. energy
-            print (mobj.group(4)) #cc_name total energy
+            print('matched %s' % (mobj.group(1)))
+            print(mobj.group(1))  #cc_name
+            print(mobj.group(2))  #cc_name corl. energy
+            print(mobj.group(4))  #cc_name total energy
 
             psivar['%s CORRELATION ENERGY' % (mobj.group(1))] = mobj.group(2)
             psivar['%s TOTAL ENERGY' % (mobj.group(1))] = mobj.group(4)
 
-         # Process CC '()' correction part through tce [dertype] command
+        # Process CC '()' correction part through tce [dertype] command
         mobj = re.search(
-            r'^\s+' + cc_name + r'\('+r'(.*?)'+r'\)'+ r'\s+' + r'correction energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*'+
-            r'^\s+' + cc_name + r'\('+r'(.*?)'+r'\)'+ r'\s+' + r'correlation energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*'+
-            r'^\s+' + cc_name + r'\('+r'(.*?)'+r'\)'+ r'\s+' + r'total energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*$'
-            ,outtext, re.MULTILINE)
+            r'^\s+' + cc_name + r'\(' + r'(.*?)' + r'\)' + r'\s+' + r'correction energy / hartree' + r'\s+=\s*' +
+            NUMBER + r'\s*' + r'^\s+' + cc_name + r'\(' + r'(.*?)' + r'\)' + r'\s+' + r'correlation energy / hartree' +
+            r'\s+=\s*' + NUMBER + r'\s*' + r'^\s+' + cc_name + r'\(' + r'(.*?)' + r'\)' + r'\s+' +
+            r'total energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*$', outtext, re.MULTILINE)
 
         if mobj:
             print('matched %s(%s)' % (cc_name, mobj.group(1)))
-                #print (mobj.group(1)) #correction ()
-                #print (mobj.group(2)) #correction () correction energy
-                #print (mobj.group(4)) #correction () corl. energy 
-                #print (mobj.group(6)) #correction () total energy
+            #print (mobj.group(1)) #correction ()
+            #print (mobj.group(2)) #correction () correction energy
+            #print (mobj.group(4)) #correction () corl. energy
+            #print (mobj.group(6)) #correction () total energy
 
-            psivar['(%s) CORRECTION ENERGY'  % (mobj.group(1))] = mobj.group(2)
+            psivar['(%s) CORRECTION ENERGY' % (mobj.group(1))] = mobj.group(2)
             psivar['%s(%s) CORRELATION ENERGY' % (cc_name, mobj.group(1))] = mobj.group(4)
-            psivar['%s(%s) TOTAL ENERGY'  % (cc_name, mobj.group(1))] = mobj.group(6) 
+            psivar['%s(%s) TOTAL ENERGY' % (cc_name, mobj.group(1))] = mobj.group(6)
 
         #Process CCSD/CCSD(T) using nwchem CCSD/CCSD(T) [dertype] command
         mobj = re.search(
-        r'^\s+' + r'-----------' + r'\s*' +
-        r'^\s+' + r'CCSD Energy' + r'\s*' +
-        r'^\s+' + r'-----------' + r'\s*' +
-        r'^\s+' + r'Reference energy:' + r'\s+' + NUMBER + r'\s*'+
-        r'^\s+' + r'CCSD corr\. energy:' + r'\s+' + NUMBER + r'\s*'+
-        r'^\s+' + r'Total CCSD energy:' + r'\s+' + NUMBER + r'\s*$'
-        ,outtext, re.MULTILINE | re.DOTALL)
+            r'^\s+' + r'-----------' + r'\s*' + r'^\s+' + r'CCSD Energy' + r'\s*' + r'^\s+' + r'-----------' + r'\s*' +
+            r'^\s+' + r'Reference energy:' + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'CCSD corr\. energy:' + r'\s+' +
+            NUMBER + r'\s*' + r'^\s+' + r'Total CCSD energy:' + r'\s+' + NUMBER + r'\s*$', outtext,
+            re.MULTILINE | re.DOTALL)
 
         if mobj:
-            print ('matched ccsd')
+            print('matched ccsd')
             psivar['CCSD CORRELATION ENERGY'] = mobj.group(2)
             psivar['CCSD TOTAL ENERGY'] = mobj.group(3)
 
         mobj = re.search(
-        r'^\s+' + r'--------------' + r'\s*' +
-        r'^\s+' + r'CCSD\(T\) Energy' + r'\s*' +
-        r'^\s+' + r'--------------' + r'\s*' +
-        r'(?:.*?)' + 
-        r'^\s+' + r'\(T\) corr\. energy:' + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'Total CCSD\(T\) energy:' + r'\s+' + NUMBER + r'\s*$' 
-        ,outtext, re.MULTILINE | re.DOTALL)
+            r'^\s+' + r'--------------' + r'\s*' + r'^\s+' + r'CCSD\(T\) Energy' + r'\s*' + r'^\s+' + r'--------------'
+            + r'\s*' + r'(?:.*?)' + r'^\s+' + r'\(T\) corr\. energy:' + r'\s+' + NUMBER + r'\s*' + r'^\s+' +
+            r'Total CCSD\(T\) energy:' + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE | re.DOTALL)
 
         if mobj:
-            print ('matched ccsd(t)')
+            print('matched ccsd(t)')
             psivar['(T) CORRECTION ENERGY'] = mobj.group(1)
-            psivar['CCSD(T) CORRELATION ENERGY'] = Decimal(mobj.group(2)) - psivar['HF TOTAL ENERGY'] 
+            psivar['CCSD(T) CORRELATION ENERGY'] = Decimal(mobj.group(2)) - psivar['HF TOTAL ENERGY']
             psivar['CCSD(T) TOTAL ENERGY'] = mobj.group(2)
-        
+
         mobj = re.search(
-                r'^\s+' + r'Spin Component Scaled (SCS) CCSD' + r'\s*' +
-                r'(?:.*?)' +
-                r'^\s+' + r'Same spin contribution' + r'\s+'+ NUMBER + r'\s*'+
-                r'^\s+' + r'Same spin scaling factor' + r'\s+' + NUMBER + r'\s*'
-                r'^\s+' + r'Opposite spin contribution' + r'\s+'+ NUMBER + r'\s*'+
-                r'^\s+' + r'Opposite spin scaling factor' + r'\s+' + NUMBER + r'\s*'
-                r'\^s+' + r'SCS-CCSD correlation energy' + r'\s+' + NUMBER + r'\s*'+
-                r'\^s+' + r'Total SCS-CCSD energy' + r'\s+' + NUMBER + r'\s*$'
-                ,outtext, re.MULTILINE | re.DOTALL)
+            r'^\s+' + r'Spin Component Scaled (SCS) CCSD' + r'\s*' + r'(?:.*?)' + r'^\s+' + r'Same spin contribution' +
+            r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'Same spin scaling factor' + r'\s+' + NUMBER + r'\s*'
+            r'^\s+' + r'Opposite spin contribution' + r'\s+' + NUMBER + r'\s*' + r'^\s+' +
+            r'Opposite spin scaling factor' + r'\s+' + NUMBER + r'\s*'
+            r'\^s+' + r'SCS-CCSD correlation energy' + r'\s+' + NUMBER + r'\s*' + r'\^s+' + r'Total SCS-CCSD energy' +
+            r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE | re.DOTALL)
         #SCS-CCSD included
         if mobj:
             print('matched scs-ccsd')
-            psivar['CCSD SAME-SPIN CORRELATION ENERGY'] = psivar['SCS-CCSD SAME-SPIN CORRELATION ENERGY'] = (Decimal(mobj.group(1))* Decimal(mobj.group(2)))
-            psivar['CCSD OPPOSITE-SPIN CORRELATION ENERGY'] = psivar['SCS-CCSD OPPOSITE-SPIN CORRELATION ENERGY'] = (Decimal(mobj.group(4))* Decimal(mobj.group(3)))
+            psivar['CCSD SAME-SPIN CORRELATION ENERGY'] = psivar['SCS-CCSD SAME-SPIN CORRELATION ENERGY'] = (
+                Decimal(mobj.group(1)) * Decimal(mobj.group(2)))
+            psivar['CCSD OPPOSITE-SPIN CORRELATION ENERGY'] = psivar['SCS-CCSD OPPOSITE-SPIN CORRELATION ENERGY'] = (
+                Decimal(mobj.group(4)) * Decimal(mobj.group(3)))
             psivar['SCS-CCSD CORRELATION ENERGY'] = mobj.group(5)
             psivar['SCS-CCSD TOTAL ENERGY'] = mobj.group(6)
-            psivar['CUSTOM SCS-CCSD CORRELATION ENERGY'] = 0.5 * (float(psivar['CCSD SAME-SPIN CORRELATION ENERGY']) + float(psivar['CCSD OPPOSITE-SPIN CORRELATION ENERGY']))
-            psivar['CUSTOM SCS-CCSD TOTAL ENERGY'] = float(mobj.group(6)) + float(psivar['CUSTOM SCS-CCSD CORRERLATION ENERGY'])
+            psivar['CUSTOM SCS-CCSD CORRELATION ENERGY'] = 0.5 * (float(
+                psivar['CCSD SAME-SPIN CORRELATION ENERGY']) + float(psivar['CCSD OPPOSITE-SPIN CORRELATION ENERGY']))
+            psivar['CUSTOM SCS-CCSD TOTAL ENERGY'] = float(mobj.group(6)) + float(
+                psivar['CUSTOM SCS-CCSD CORRERLATION ENERGY'])
 
         #Process EOM-[cc_name] #nwchem_tce_dipole = false
         # Parsed information: each symmetry, root excitation energy in eV and total energy in hartree
         # psivar name might need to be fixed
-        # each root excitation energy is extracted from the last iteration of right hand side 
+        # each root excitation energy is extracted from the last iteration of right hand side
         mobj = re.findall(
-        r'^\s+' + r'Excited-state calculation'+r'\s+'+r'\(\s+'+ r'(.*?)'+ r'\s+'+r'symmetry\)'+ r'\s*'+
-        r'^\s+' + r'========================================='+ r'\s*'+
-        r'(?:.*?)' +  #Skip to line before right-hand side iterations
-        r'^\s+' + r'EOM-'+ cc_name +r' right-hand side iterations' + r'\s*' +
-        r'(?:.*?)'+
-        r'^\s+' + r'Iteration' + r'\s+\d+\s+' + r'using' + r'\s+\d+\s+' + r'trial vectors' + r'\s*' + 
-        r'((?:\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+(?:(\s+\d+\.\d+\s+\d+\.\d+)?)\s*\n)+)'+
-        r'^\s+' + r'--------------------------------------------------------------' + r'\s*'+
-        r'^\s+' + r'Iterations converged' + r'\s*$'
-        ,outtext, re.MULTILINE | re.DOTALL)
+            r'^\s+' + r'Excited-state calculation' + r'\s+' + r'\(\s+' + r'(.*?)' + r'\s+' + r'symmetry\)' + r'\s*' +
+            r'^\s+' + r'=========================================' + r'\s*' + r'(?:.*?)'
+            +  #Skip to line before right-hand side iterations
+            r'^\s+' + r'EOM-' + cc_name + r' right-hand side iterations' + r'\s*' + r'(?:.*?)' + r'^\s+' + r'Iteration'
+            + r'\s+\d+\s+' + r'using' + r'\s+\d+\s+' + r'trial vectors' + r'\s*' +
+            r'((?:\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+(?:(\s+\d+\.\d+\s+\d+\.\d+)?)\s*\n)+)' + r'^\s+' +
+            r'--------------------------------------------------------------' + r'\s*' + r'^\s+' +
+            r'Iterations converged' + r'\s*$',
+            outtext,
+            re.MULTILINE | re.DOTALL)
 
         if mobj:
-            ext_energy = {} #dic
-            
+            ext_energy = {}  #dic
+
             ext_energy_list = []
             for mobj_list in mobj:
-                print ('matched EOM-%s - %s symmetry' %(cc_name, mobj_list[0])) #cc_name, symmetry
-                print (mobj_list)
+                print('matched EOM-%s - %s symmetry' % (cc_name, mobj_list[0]))  #cc_name, symmetry
+                print(mobj_list)
                 count = 0
                 for line in mobj_list[1].splitlines():
                     lline = line.split()
-                    print (lline[1]) #in hartree
-                    print (lline[2]) #in eV
-                    count +=1
+                    print(lline[1])  #in hartree
+                    print(lline[2])  #in eV
+                    count += 1
 
-                    print ('matched excitation energy #%d - %s symmetry' %(count, mobj_list[0]))
+                    print('matched excitation energy #%d - %s symmetry' % (count, mobj_list[0]))
 
-                    ext_energy_list.append(lline[1]) #Collect all excitation energies 
+                    ext_energy_list.append(lline[1])  #Collect all excitation energies
 
-                    sym = str(mobj_list[0]) 
-                    ext_energy.setdefault(sym,[])
-                    ext_energy[sym].append(lline[1]) #Dictionary: symmetries(key), energies(value)
-  
+                    sym = str(mobj_list[0])
+                    ext_energy.setdefault(sym, [])
+                    ext_energy[sym].append(lline[1])  #Dictionary: symmetries(key), energies(value)
+
             ext_energy_list.sort(key=float)
 
             for nroot in range(len(ext_energy_list)):
@@ -399,145 +376,139 @@ def harvest_outfile_pass(outtext):
                             psivar['%s TOTAL ENERGY' %(cc_name)] + Decimal(ext_energy_list[nroot]) #in hartree
         #TCE_CR_EOMCCSD(T) information
         mobj = re.search(
-            r'^\s+' + r'CR-' + r'(w+)' + r'\s+' + r'total energy / hartree' + r'\s+' + NUMBER + r'\s*' +  
-            r'^\s+' + r'CR-' + r'(w+)' + r'\s+' + r'excitation energy \(eV\)' +r'\s+' + NUMBER + r'\s*$',
-            outtext, re.MULTILINE) 
+            r'^\s+' + r'CR-' + r'(w+)' + r'\s+' + r'total energy / hartree' + r'\s+' + NUMBER + r'\s*' + r'^\s+' +
+            r'CR-' + r'(w+)' + r'\s+' + r'excitation energy \(eV\)' + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE)
         if mobj:
             print(mobj)
             print("matched CR =")
-       
-        
+
         #TCE- ROHF and UHF
         # mobj = re.findall(
         #    r'^\s+' + 'Total SCF energy' + '^\s+' + NUMBER +
-         #   r'^\s*' + r'^\s+' + r'CCSD correlation energy / hartree' + r'\s+' + NUMBER +
-          #  r'^\s*' + r'\s+' + r'CCSD total energy / hartree' + r'\s+'+ NUMBER + r's*$', 
-           # outtext, re.MULTILINE)
-       # if mobj:
-        #    print(mobj) #print list
-         #   print('CCSD Energy = ')
-          #  psivar['HF TOTAL ENERGY'] = mobj.group(1)
-           # psivar['CCSD CORRELATION ENERGY'] = mobj.group(2)
-            #psivar['CCSD TOTAL ENERGY'] = mobj.group(3)
+        #   r'^\s*' + r'^\s+' + r'CCSD correlation energy / hartree' + r'\s+' + NUMBER +
+        #  r'^\s*' + r'\s+' + r'CCSD total energy / hartree' + r'\s+'+ NUMBER + r's*$',
+        # outtext, re.MULTILINE)
+    # if mobj:
+    #    print(mobj) #print list
+    #   print('CCSD Energy = ')
+    #  psivar['HF TOTAL ENERGY'] = mobj.group(1)
+    # psivar['CCSD CORRELATION ENERGY'] = mobj.group(2)
+    #psivar['CCSD TOTAL ENERGY'] = mobj.group(3)
 
-
-                 # No symmetry
+    # No symmetry
 #                psivar ['EOM-%s ROOT 0 -> ROOT %d EXCITATION ENERGY' %(cc_name, nroot+1)] = \
 #                    ext_energy_list[nroot] #in hartree
 #                psivar ['EOM-%s ROOT 0 -> ROOT %d TOTAL ENERGY' %(cc_name, nroot+1)] = \
-#                    psivar['%s TOTAL ENERGY' %(cc_name)] + Decimal(ext_energy_list[nroot]) 
+#                    psivar['%s TOTAL ENERGY' %(cc_name)] + Decimal(ext_energy_list[nroot])
 
-        #Process TDDFT
+#Process TDDFT
 #       1) Spin allowed
         mobj = re.findall(
-        r'^\s+' + r'----------------------------------------------------------------------------'+ r'\s*'+
-        r'^\s+' + r'Root'+ r'\s+'+r'(\d+)'+r'\s+'+r'(\w+)'+r'\s+'+r'(.*?)'+r'\s+'+ NUMBER + r'\s+a\.u\.\s+'+ NUMBER + r'\s+eV\s*'+
-        r'^\s+' + r'----------------------------------------------------------------------------'+ r'\s*'+
-        r'^\s+' + r'Transition Moments' + r'\s+X\s+'+ NUMBER + r'\s+Y\s+'+ NUMBER +r'\s+Z\s+'+ NUMBER + r'\s*'+
-        r'^\s+' + r'Transition Moments' + r'\s+XX\s+'+ NUMBER + r'\s+XY\s+'+ NUMBER + r'\s+XZ\s+'+ NUMBER + r'\s*'+
-        r'^\s+' + r'Transition Moments' + r'\s+YY\s+'+ NUMBER + r'\s+YZ\s+'+ NUMBER + r'\s+ZZ\s+'+ NUMBER + r'\s*$'
-        ,outtext, re.MULTILINE) 
+            r'^\s+' + r'----------------------------------------------------------------------------' + r'\s*' +
+            r'^\s+' + r'Root' + r'\s+' + r'(\d+)' + r'\s+' + r'(\w+)' + r'\s+' + r'(.*?)' + r'\s+' + NUMBER +
+            r'\s+a\.u\.\s+' + NUMBER + r'\s+eV\s*' + r'^\s+' +
+            r'----------------------------------------------------------------------------' + r'\s*' + r'^\s+' +
+            r'Transition Moments' + r'\s+X\s+' + NUMBER + r'\s+Y\s+' + NUMBER + r'\s+Z\s+' + NUMBER + r'\s*' + r'^\s+'
+            + r'Transition Moments' + r'\s+XX\s+' + NUMBER + r'\s+XY\s+' + NUMBER + r'\s+XZ\s+' + NUMBER + r'\s*' +
+            r'^\s+' + r'Transition Moments' + r'\s+YY\s+' + NUMBER + r'\s+YZ\s+' + NUMBER + r'\s+ZZ\s+' + NUMBER +
+            r'\s*$', outtext, re.MULTILINE)
 
         if mobj:
-            print ('matched TDDFT with transition moments')
+            print('matched TDDFT with transition moments')
             for mobj_list in mobj:
-                #print (mobj_list) 
+                #print (mobj_list)
                 #print (mobj_list[0]) #root number
                 #print (mobj_list[1]) #singlet or triplet?
                 #print (mobj_list[2]) #symmetry
 
-             #### temporary psivars ####    
-                psivar ['TDDFT ROOT %s %s %s EXCITATION ENERGY' %(mobj_list[0],mobj_list[1],mobj_list[2])] = mobj_list[3]  # in a.u.
+                #### temporary psivars ####
+                psivar['TDDFT ROOT %s %s %s EXCITATION ENERGY' % (mobj_list[0], mobj_list[1],
+                                                                  mobj_list[2])] = mobj_list[3]  # in a.u.
                 psivar ['TDDFT ROOT %s %s %s EXCITED STATE ENERGY' %(mobj_list[0],mobj_list[1],mobj_list[2])] = \
-                    psivar ['DFT TOTAL ENERGY'] + Decimal(mobj_list[3]) 
-                psivar ['TDDFT ROOT %s DIPOLE X' %(mobj_list[0])] = mobj_list[5]
-                psivar ['TDDFT ROOT %s DIPOLE Y' %(mobj_list[0])] = mobj_list[6]
-                psivar ['TDDFT ROOT %s DIPOLE Z' %(mobj_list[0])] = mobj_list[7]
-                psivar ['TDDFT ROOT %s QUADRUPOLE XX' %(mobj_list[0])] = mobj_list[8]
-                psivar ['TDDFT ROOT %s QUADRUPOLE XY' %(mobj_list[0])] = mobj_list[9]
-                psivar ['TDDFT ROOT %s QUADRUPOLE XZ' %(mobj_list[0])] = mobj_list[10]
-                psivar ['TDDFT ROOT %s QUADRUPOLE YY' %(mobj_list[0])] = mobj_list[11]
-                psivar ['TDDFT ROOT %s QUADRUPOLE YZ' %(mobj_list[0])] = mobj_list[12]
-                psivar ['TDDFT ROOT %s QUADRUPOLE ZZ' %(mobj_list[0])] = mobj_list[13]
+                    psivar ['DFT TOTAL ENERGY'] + Decimal(mobj_list[3])
+                psivar['TDDFT ROOT %s DIPOLE X' % (mobj_list[0])] = mobj_list[5]
+                psivar['TDDFT ROOT %s DIPOLE Y' % (mobj_list[0])] = mobj_list[6]
+                psivar['TDDFT ROOT %s DIPOLE Z' % (mobj_list[0])] = mobj_list[7]
+                psivar['TDDFT ROOT %s QUADRUPOLE XX' % (mobj_list[0])] = mobj_list[8]
+                psivar['TDDFT ROOT %s QUADRUPOLE XY' % (mobj_list[0])] = mobj_list[9]
+                psivar['TDDFT ROOT %s QUADRUPOLE XZ' % (mobj_list[0])] = mobj_list[10]
+                psivar['TDDFT ROOT %s QUADRUPOLE YY' % (mobj_list[0])] = mobj_list[11]
+                psivar['TDDFT ROOT %s QUADRUPOLE YZ' % (mobj_list[0])] = mobj_list[12]
+                psivar['TDDFT ROOT %s QUADRUPOLE ZZ' % (mobj_list[0])] = mobj_list[13]
+
 
 #       2) Spin forbidden
         mobj = re.findall(
-        r'^\s+' + r'----------------------------------------------------------------------------'+ r'\s*'+
-        r'^\s+' + r'Root'+ r'\s+'+r'(\d+)'+r'\s+'+r'(\w+)'+r'\s+'+r'(.*?)'+r'\s+'+ NUMBER + r'\s+a\.u\.\s+'+ NUMBER + r'\s+eV\s*'+
-        r'^\s+' + r'----------------------------------------------------------------------------'+ r'\s*'+
-        r'^\s+' + r'Transition Moments' + r'\s+Spin forbidden\s*$'
-        ,outtext, re.MULTILINE)
+            r'^\s+' + r'----------------------------------------------------------------------------' + r'\s*' +
+            r'^\s+' + r'Root' + r'\s+' + r'(\d+)' + r'\s+' + r'(\w+)' + r'\s+' + r'(.*?)' + r'\s+' + NUMBER +
+            r'\s+a\.u\.\s+' + NUMBER + r'\s+eV\s*' + r'^\s+' +
+            r'----------------------------------------------------------------------------' + r'\s*' + r'^\s+' +
+            r'Transition Moments' + r'\s+Spin forbidden\s*$', outtext, re.MULTILINE)
 
         if mobj:
-            print ('matched TDDFT - spin forbidden')
+            print('matched TDDFT - spin forbidden')
             for mobj_list in mobj:
-             #### temporary psivars ####    
-                psivar ['TDDFT ROOT %s %s %s EXCITATION ENERGY' %(mobj_list[0],mobj_list[1],mobj_list[2])] = mobj_list[3]  # in a.u.
+                #### temporary psivars ####
+                psivar['TDDFT ROOT %s %s %s EXCITATION ENERGY' % (mobj_list[0], mobj_list[1],
+                                                                  mobj_list[2])] = mobj_list[3]  # in a.u.
                 psivar ['TDDFT ROOT %s %s %s EXCITED STATE ENERGY' %(mobj_list[0],mobj_list[1],mobj_list[2])] = \
                     psivar ['DFT TOTAL ENERGY'] + Decimal(mobj_list[3])
             if mobj:
-                print('Non-variation initial energy') #prints out energy, 5 counts
-    
+                print('Non-variation initial energy')  #prints out energy, 5 counts
+
         #Process geometry
         # 1) CHARGE
         # Read charge from SCF module
-        mobj = re.search(
-            r'^\s+' + r'charge          =' + r'\s+'+ NUMBER + r'\s*$'
-            ,outtext,re.MULTILINE | re.IGNORECASE)
+        mobj = re.search(r'^\s+' + r'charge          =' + r'\s+' + NUMBER + r'\s*$', outtext,
+                         re.MULTILINE | re.IGNORECASE)
 
         if mobj:
-            print ('matched charge')
+            print('matched charge')
             out_charge = int(float(mobj.group(1)))
 
         # Read charge from General information (not scf module)
-        mobj = re.search(
-        r'^\s+' + r'Charge           :' + r'\s+'+ r'(-?\d+)'+ r'\s*$' 
-        ,outtext,re.MULTILINE | re.IGNORECASE)
+        mobj = re.search(r'^\s+' + r'Charge           :' + r'\s+' + r'(-?\d+)' + r'\s*$', outtext,
+                         re.MULTILINE | re.IGNORECASE)
 
         if mobj:
-            print ('matched charge')
+            print('matched charge')
             out_charge = int(float(mobj.group(1)))
-        
+
         # 2) MULTIPLICITY
         # Read multiplicity from SCF module
-        mobj = re.search(
-        r'^\s+' + r'open shells     =' + r'\s+'+ r'(\d+)'+ r'\s*$' 
-        ,outtext,re.MULTILINE | re.IGNORECASE)
+        mobj = re.search(r'^\s+' + r'open shells     =' + r'\s+' + r'(\d+)' + r'\s*$', outtext,
+                         re.MULTILINE | re.IGNORECASE)
 
-        if mobj: 
-            print ('matched multiplicity')
+        if mobj:
+            print('matched multiplicity')
             out_mult = int(mobj.group(1)) + 1
 
         # Read multiplicity from SCF module through alpha, beta electrons
         mobj = re.search(
-        r'^\s+' + r'alpha electrons =' + r'\s+'+ r'(\d+)'+ r'\s*'+
-        r'^\s+' + r'beta  electrons =' + r'\s+'+ r'(\d+)'+ r'\s*$'
-        ,outtext,re.MULTILINE | re.IGNORECASE)   
+            r'^\s+' + r'alpha electrons =' + r'\s+' + r'(\d+)' + r'\s*' + r'^\s+' + r'beta  electrons =' + r'\s+' +
+            r'(\d+)' + r'\s*$', outtext, re.MULTILINE | re.IGNORECASE)
 
         if mobj:
-            print ('matched multiplicity')
-            out_mult = int(mobj.group(1))-int(mobj.group(2)) + 1 #nopen + 1
-  
+            print('matched multiplicity')
+            out_mult = int(mobj.group(1)) - int(mobj.group(2)) + 1  #nopen + 1
+
         # Read multiplicity from General information (not scf module)
-        mobj = re.search(
-        r'^\s+' + r'Spin multiplicity:' + r'\s+'+ r'(\d+)' + r'\s*$'
-        ,outtext,re.MULTILINE | re.IGNORECASE)
+        mobj = re.search(r'^\s+' + r'Spin multiplicity:' + r'\s+' + r'(\d+)' + r'\s*$', outtext,
+                         re.MULTILINE | re.IGNORECASE)
 
         if mobj:
-            print ('matched multiplicity')
-            out_mult = int(mobj.group(1)) 
+            print('matched multiplicity')
+            out_mult = int(mobj.group(1))
 
-        #3) Initial geometry   
+        #3) Initial geometry
         mobj = re.search(
-        r'^\s+' + r'Geometry' + r'.*' + r'\s*' +
-        r'^\s+' + r'(?:-+)\s*'+
-        r'\s+' + r'\n' +
-        r'^\s' + r'Output coordinates in ' + r'(.*?)' + r'\s' + r'\(scale by'+ r'.*' + r'\s'+ r'to convert to a\.u\.\)'+
-        r'\s+' + r'\n' +
-        r'^\s+' + r'No\.\       Tag          Charge          X              Y              Z'+ r'\s*'+
-        r'^\s+' + r'---- ---------------- ---------- -------------- -------------- --------------'+r'\s*'+
-        r'((?:\s+([1-9][0-9]*)+\s+([A-Z][a-z]*)+\s+\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s*\n)+)'+r'\s*$'
-        ,outtext,re.MULTILINE | re.IGNORECASE)
+            r'^\s+' + r'Geometry' + r'.*' + r'\s*' + r'^\s+' + r'(?:-+)\s*' + r'\s+' + r'\n' + r'^\s' +
+            r'Output coordinates in ' + r'(.*?)' + r'\s' + r'\(scale by' + r'.*' + r'\s' + r'to convert to a\.u\.\)' +
+            r'\s+' + r'\n' + r'^\s+' + r'No\.\       Tag          Charge          X              Y              Z' +
+            r'\s*' + r'^\s+' + r'---- ---------------- ---------- -------------- -------------- --------------' +
+            r'\s*' +
+            r'((?:\s+([1-9][0-9]*)+\s+([A-Z][a-z]*)+\s+\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s*\n)+)'
+            + r'\s*$', outtext, re.MULTILINE | re.IGNORECASE)
 
         if mobj:
             print('matched geom')
@@ -546,37 +517,36 @@ def harvest_outfile_pass(outtext):
             #dinky molecule w/ charge and multiplicity
             if mobj.group(1) == 'angstroms':
                 #print ('unit is angstroms')
-                molxyz = '%d \n%d %d tag\n' % (len(mobj.group(2).splitlines()), out_charge, out_mult) # unit = angstrom
+                molxyz = '%d \n%d %d tag\n' % (len(mobj.group(2).splitlines()), out_charge, out_mult
+                                               )  # unit = angstrom
                 for line in mobj.group(2).splitlines():
                     lline = line.split()
-                    molxyz += '%s %16s %16s %16s\n' %(lline[-5], lline[-3], lline[-2], lline[-1])
+                    molxyz += '%s %16s %16s %16s\n' % (lline[-5], lline[-3], lline[-2], lline[-1])
                     # Jiyoung was collecting charge (-4)? see if this is ok for ghosts
-                                                  # Tag    ,    X,        Y,        Z
+                    # Tag    ,    X,        Y,        Z
                 #psivar_coord = Molecule.init_with_xyz(molxyz, no_com=True, no_reorient=True, contentsNotFilename=True)
                 psivar_coord = Molecule.from_string(molxyz, dtype='xyz+', fix_com=True, fix_orientation=True)
 
-        
-            else: # unit = a.u.
-                #print ('unit is au') 
+            else:  # unit = a.u.
+                #print ('unit is au')
                 molxyz = '%d au\n%d %d tag\n' % (len(mobj.group(2).splitlines()), out_charge, out_mult)
                 for line in mobj.group(2).splitlines():
                     lline = line.split()
-                    molxyz += '%s %16s %16s %16s\n' %(lline[-4], lline[-3], lline[-2], lline[-1])
-                                                      # Tag    ,    X,        Y,        Z
+                    molxyz += '%s %16s %16s %16s\n' % (lline[-4], lline[-3], lline[-2], lline[-1])
+                    # Tag    ,    X,        Y,        Z
                 #psivar_coord = Molecule.init_with_xyz(molxyz, no_com=True, no_reorient=True, contentsNotFilename=True)
                 psivar_coord = Molecule.from_string(molxyz, dtype='xyz+', fix_com=True, fix_orientation=True)
-            
+
         #Process gradient
         mobj = re.search(
-            r'^\s+' + r'.*'+ r'ENERGY GRADIENTS' + r'\s*'+
-            r'\s+' + r'\n'+
-            r'^\s+' + r'atom               coordinates                        gradient' + r'\s*'+
-            r'^\s+' + r'x          y          z           x          y          z' + r'\s*' +
-            r'((?:\s+([1-9][0-9]*)+\s+([A-Z][a-x]*)+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s*\n)+)'+r'\s*$'
-            ,outtext, re.MULTILINE)
+            r'^\s+' + r'.*' + r'ENERGY GRADIENTS' + r'\s*' + r'\s+' + r'\n' + r'^\s+' +
+            r'atom               coordinates                        gradient' + r'\s*' + r'^\s+' +
+            r'x          y          z           x          y          z' + r'\s*' +
+            r'((?:\s+([1-9][0-9]*)+\s+([A-Z][a-x]*)+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s*\n)+)'
+            + r'\s*$', outtext, re.MULTILINE)
 
         if mobj:
-            print ('matched molgrad')
+            print('matched molgrad')
             atoms = []
             psivar_grad = []
             for line in mobj.group(1).splitlines():
@@ -584,50 +554,43 @@ def harvest_outfile_pass(outtext):
                 #print (lline)
                 if lline == []:
                     pass
-                else: 
-                    atoms.append(lline[1]) #Tag
+                else:
+                    atoms.append(lline[1])  #Tag
                     psivar_grad.append([float(lline[-3]), float(lline[-2]), float(lline[-1])])
 
-        #Process dipole 
+        #Process dipole
         mobj = re.search(
-            r'^\s+' + r'Dipole moment' + r'\s+' + NUMBER + r'\s' + r'A\.U\.'+ r'\s*' + 
-            r'^\s+' + r'DMX' + r'\s+' + NUMBER + r'.*' + r'\s*' +
-            r'^\s+' + r'DMY' + r'\s+' + NUMBER + r'.*' + r'\s*' +
-            r'^\s+' + r'DMZ' + r'\s+' + NUMBER + r'.' + r'\s*' + 
-            r'^\s+' + r'.*' + r'\s*' + 
-            r'^\s+' + r'Total dipole' + r'\s+' + NUMBER + r'\s' + r'A\.U\.'+ r'\s*'+
-            r'^\s+' + r'Dipole moment' + r'\s+' + NUMBER + r'\s' + r'Debye\(s\)' + r'\s*'+
-            r'^\s+' + r'DMX' + r'\s+' + NUMBER + r'.*' + r'\s*' +
-            r'^\s+' + r'DMY' + r'\s+' + NUMBER + r'.*' + r'\s*' +
-                r'^\s+' + r'DMZ' + r'\s+' + NUMBER + r'.*' + r'\s*' +
-            r'^\s+' + r'.*' + r'\s*' +
-            r'^\s+' + r'Total dipole' + r'\s+' + NUMBER + r'\s' + r'DEBYE\(S\)' + r'\s*$'
-            ,outtext,re.MULTILINE)
-                
-        if mobj:
-            print ('matched total dipole')  
-           #print (mobj.group(5), 'a.u.') 
-           #print (mobj.group(10),'debye(s)')
+            r'^\s+' + r'Dipole moment' + r'\s+' + NUMBER + r'\s' + r'A\.U\.' + r'\s*' + r'^\s+' + r'DMX' + r'\s+' +
+            NUMBER + r'.*' + r'\s*' + r'^\s+' + r'DMY' + r'\s+' + NUMBER + r'.*' + r'\s*' + r'^\s+' + r'DMZ' + r'\s+' +
+            NUMBER + r'.' + r'\s*' + r'^\s+' + r'.*' + r'\s*' + r'^\s+' + r'Total dipole' + r'\s+' + NUMBER + r'\s' +
+            r'A\.U\.' + r'\s*' + r'^\s+' + r'Dipole moment' + r'\s+' + NUMBER + r'\s' + r'Debye\(s\)' + r'\s*' +
+            r'^\s+' + r'DMX' + r'\s+' + NUMBER + r'.*' + r'\s*' + r'^\s+' + r'DMY' + r'\s+' + NUMBER + r'.*' + r'\s*' +
+            r'^\s+' + r'DMZ' + r'\s+' + NUMBER + r'.*' + r'\s*' + r'^\s+' + r'.*' + r'\s*' + r'^\s+' + r'Total dipole'
+            + r'\s+' + NUMBER + r'\s' + r'DEBYE\(S\)' + r'\s*$', outtext, re.MULTILINE)
 
-           #UNIT = DEBYE(S)
+        if mobj:
+            print('matched total dipole')
+            #print (mobj.group(5), 'a.u.')
+            #print (mobj.group(10),'debye(s)')
+
+            #UNIT = DEBYE(S)
             psivar['CURRENT DIPOLE X'] = mobj.group(7)
             psivar['CURRENT DIPOLE Y'] = mobj.group(8)
             psivar['CURRENT DIPOLE Z'] = mobj.group(9)
-           # total?             
+            # total?
 
-        #Process error code
+            #Process error code
             mobj = re.search(
-                r'^\s+' + r'current input line \:' +r'\s*'+
-                r'^\s+'+ r'([1-9][0-9]*)' + r'\:' +r'\s+' + r'(.*)'+ r'\s*'+
-                r'^\s+'r'------------------------------------------------------------------------' + r'\s*'+
-                r'^\s+'r'------------------------------------------------------------------------' + r'\s*'+
-                r'^\s+' + r'There is an error in the input file' + r'\s*$'
-                ,outtext,re.MULTILINE)
+                r'^\s+' + r'current input line \:' + r'\s*' + r'^\s+' + r'([1-9][0-9]*)' + r'\:' + r'\s+' + r'(.*)' +
+                r'\s*' + r'^\s+'
+                r'------------------------------------------------------------------------' + r'\s*' + r'^\s+'
+                r'------------------------------------------------------------------------' + r'\s*' + r'^\s+' +
+                r'There is an error in the input file' + r'\s*$', outtext, re.MULTILINE)
             if mobj:
                 print('matched error')
-               #print (mobj.group(1)) #error line number
-           #print (mobj.group(2)) #error reason 
-            psivar['NWCHEM ERROR CODE'] = mobj.group(1)    
+            #print (mobj.group(1)) #error line number
+        #print (mobj.group(2)) #error reason
+            psivar['NWCHEM ERROR CODE'] = mobj.group(1)
             # TODO process errors into error var
 
     # Process CURRENT energies (TODO: needs better way)
@@ -645,14 +608,14 @@ def harvest_outfile_pass(outtext):
         psivar['CURRENT ENERGY'] = psivar['DFT TOTAL ENERGY']
 
     # Process TCE CURRENT energies
-      # Need to be fixed  
-      # HOW TO KNOW options['NWCHEM']['NWCHEM_TCE']['value']?
-      # TODO: CURRENT ENERGY = TCE ENERGY
+    # Need to be fixed
+    # HOW TO KNOW options['NWCHEM']['NWCHEM_TCE']['value']?
+    # TODO: CURRENT ENERGY = TCE ENERGY
     if ('%s TOTAL ENERGY' % (cc_name) in psivar and \
        ('%s CORRELATION ENERGY' % (cc_name) in psivar)):
         psivar['CURRENT CORRELATION ENERGY'] = psivar['%s CORRELATION ENERGY' % (cc_name)]
         psivar['CURRENT ENERGY'] = psivar['%s TOTAL ENERGY' % (cc_name)]
-  
+
     if 'CCSD(T) TOTAL ENERGY' in psivar and 'CCSD(T) CORRELATION ENERGY' in psivar:
         psivar['CURRENT CORRELATION ENERGY'] = psivar['CCSD(T) CORRELATION ENERGY']
         psivar['CURRENT ENERGY'] = psivar['CCSD(T) TOTAL ENERGY']
@@ -669,18 +632,19 @@ def harvest_outfile_pass(outtext):
 
     if ('EOM-%s TOTAL ENERGY' % (cc_name) in psivar) and \
        ('%s EXCITATION ENERGY' %(cc_name) in psivar):
-        psivar['CURRENT ENERGY'] = psivar['EOM-%s TOTAL ENERGY' %(cc_name)]
-        psivar['CURRENT EXCITATION ENERGY'] = psivar['%s EXCITATION ENERGY' %(cc_name)] 
+        psivar['CURRENT ENERGY'] = psivar['EOM-%s TOTAL ENERGY' % (cc_name)]
+        psivar['CURRENT EXCITATION ENERGY'] = psivar['%s EXCITATION ENERGY' % (cc_name)]
 
     return psivar, psivar_coord, psivar_grad, version, error
+
 
 def harvest_hessian(hess):
     """Parses the contents *hessian* of the NWChem hess file into a hessian array.
     Hess file name has to be "nwchem.hess". (default)
 
     """
-    hess = hess.splitlines() 
-        
+    hess = hess.splitlines()
+
 
 def muster_inherited_options(ropts, verbose=1):
     accession = sys._getframe().f_code.co_name + '_' + str(uuid.uuid4())
@@ -703,13 +667,14 @@ def muster_memory(mem):
     text = ''
 
     options = defaultdict(lambda: defaultdict(dict))
-    options['NWCHEM']['NWCHEM_MEMORY']['value'] = [int(mem), 'mb'] #Total memory set in mb
+    options['NWCHEM']['NWCHEM_MEMORY']['value'] = [int(mem), 'mb']  #Total memory set in mb
 
     for item in options['NWCHEM']:
         options['NWCHEM'][item]['clobber'] = True
 
     return text, options
-    
+
+
 #May need to adjust options for qcdb driver ATL
 def muster_psi4options(opt, mol):
     """Translate psi4 keywords *opt* that have been explicitly set into
@@ -720,18 +685,18 @@ def muster_psi4options(opt, mol):
 
     """
     text = ''
-    options = defaultdict(lambda:defaultdict(dict))
+    options = defaultdict(lambda: defaultdict(dict))
 
     mult = mol.multiplicity()
-   #print ('mult: ', mult)  
-        
+    #print ('mult: ', mult)
+
     if 'SCF' in opt:
         if 'REFERENCE' in opt['SCF']:
             if opt['SCF']['REFERENCE']['value'] == 'UKS':
                 options['NWCHEM']['NWCHEM_DFT']['value'] = 'ODFT'
 
-            elif opt['SCF']['REFERENCE']['value'] == 'RKS': 
-                if mult != 1:   
+            elif opt['SCF']['REFERENCE']['value'] == 'RKS':
+                if mult != 1:
                     options['NWCHEM']['NWCHEM_DFT']['value'] = 'RODFT'
                 else:
                     pass
@@ -745,7 +710,7 @@ def muster_psi4options(opt, mol):
             if opt['SCF']['SCF_TYPE']['value'] == 'DIRECT':
                 options['NWCHEM']['NWCHEM_DFT_DIRECT']['value'] = 'TRUE'
                 options['NWCHEM']['NWCHEM_SCF_DIRECT']['value'] = 'TRUE'
-         
+
         if 'D_CONVERGENCE' in opt['SCF']:
             options['NWCHEM']['NWCHEM_DFT_CONVERGENCE']['value'] = \
                 ['density', opt['SCF']['D_CONVERGENCE']['value']]
@@ -761,7 +726,7 @@ def muster_psi4options(opt, mol):
 
         if 'MAXITER' in opt['SCF']:
             options['NWCHEM']['NWCHEM_DFT_ITERATIONS']['value'] = \
-               opt['SCF']['MAXITER']['value']   
+               opt['SCF']['MAXITER']['value']
             options['NWCHEM']['NWCHEM_SCF_MAXITER']['value'] = \
                opt['SCF']['MAXITER']['value']
 
@@ -773,17 +738,17 @@ def muster_psi4options(opt, mol):
                 options['NWCHEM']['NWCHEM_DFT_XC']['value'], options['NWCHEM']['NWCHEM_DFT_DISP']['value'] = \
             muster_dft_w_dispersion(opt)
 
-            else: 
+            else:
                 options['NWCHEM']['NWCHEM_DFT_XC']['value'] = muster_dft_functionals(opt)
-  
+
         if 'DFT_RADIAL_POINTS' and 'DFT_SPHERICAL_POINTS' in opt['SCF']:
             rad_val = opt['SCF']['DFT_RADIAL_POINTS']['value']
             sph_val = opt['SCF']['DFT_SPHERICAL_POINTS']['value']
-            
+
             sph_val_list = \
                 [38,50,74,86,110,146,170,194,230,266,302,350,434,590,770,974,1202,1454,1730,2030,2354, \
                 2702,3074,3470,3890,4334,4802,5294,5810]
-            
+
             iangquad = sph_val_list.index(sph_val) + 1
 
             grid_val = []
@@ -792,12 +757,12 @@ def muster_psi4options(opt, mol):
 
             #print ('grid_val? ', grid_val)
 
-            options['NWCHEM']['NWCHEM_DFT_GRID']['value'] = grid_val            
-            
+            options['NWCHEM']['NWCHEM_DFT_GRID']['value'] = grid_val
 
     for item in options['NWCHEM']:
         options['NWCHEM'][item]['clobber'] = False
     return text, options
+
 
 def muster_dft_functionals(opt):
     """Translate psi4 dft functionals w/o dispersion into NWChem counterparts. 
@@ -805,7 +770,7 @@ def muster_dft_functionals(opt):
     """
 
     text = ''
-    options = defaultdict(lambda:defaultdict(dict))
+    options = defaultdict(lambda: defaultdict(dict))
     dft_functional = ''
 
     dft_same_name_list = ['B3LYP','PBE0','M05','M05-2X',\
@@ -813,8 +778,8 @@ def muster_dft_functionals(opt):
       'HCTHP14','HCTH407P','B1B95','M06','M06-2X','M06-HF',\
       'M08-HX','M08-SO','M11','M11-L','MPW1B95','MPW1K','MPWB1K',\
       'PW6B95','PWB6K', 'BOP']
-   
-    val = opt['SCF']['DFT_FUNCTIONAL']['value'] 
+
+    val = opt['SCF']['DFT_FUNCTIONAL']['value']
     if val in dft_same_name_list:
         options['NWCHEM']['DFT_XC']['value'] = \
                     {'B3LYP': 'B3LYP',
@@ -843,7 +808,7 @@ def muster_dft_functionals(opt):
                       'BOP' : 'BOP'
                     }[opt['SCF']['DFT_FUNCTIONAL']['value']]
 
-    elif (val =='HF'):
+    elif (val == 'HF'):
         options['NWCHEM']['NWCHEM_DFT_XC']['value'] = \
             ['HFexch', 1.0]
 
@@ -854,7 +819,7 @@ def muster_dft_functionals(opt):
     elif (val == 'BLYP'):
         options['NWCHEM']['NWCHEM_DFT_XC']['value'] = \
             ['becke88', 'lyp']
-    
+
     elif (val == 'BP86'):
         options['NWCHEM']['NWCHEM_DFT_XC']['value'] = \
             ['becke88', 'perdew86']
@@ -863,7 +828,7 @@ def muster_dft_functionals(opt):
         options['NWCHEM']['NWCHEM_DFT_XC']['value'] = \
             ['xpbe96', 'cpbe96']
 
-    elif (val=='PW91'):
+    elif (val == 'PW91'):
         options['NWCHEM']['NWCHEM_DFT_XC']['value'] = \
             ['xperdew91', 'perdew91']
 
@@ -876,40 +841,40 @@ def muster_dft_functionals(opt):
 
     elif (val == 'TPSSH'):
         options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xctpssh']
-    
+
     elif (val == 'BHANDH'):
         options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['beckehandh']
-    
-    elif (val =='CAM-B3LYP'):
+
+    elif (val == 'CAM-B3LYP'):
         options['NWCHEM']['NWCHEM_DFT_XC']['value'] = \
         ['xcamb88','1.00','lyp','0.81','vwn_5','0.19','hfexch','1.00\n','cam','0.33',\
         'cam_alpha','0.19','cam_beta','0.46']
 
-    elif (val =='B1LYP'):
+    elif (val == 'B1LYP'):
         options['NWCHEM']['NWCHEM_DFT_XC']['value'] = \
             ['HFexch', 0.25,'becke88', 0.75, 'lyp']
 
-    elif (val =='B1PW91'):
+    elif (val == 'B1PW91'):
         options['NWCHEM']['NWCHEM_DFT_XC']['value'] = \
             ['HFexch', 0.25,'becke88', 0.75, 'perdew91']
 
     elif (val == 'B3LYP5'):
         options['NWCHEM']['NWCHEM_DFT_XC']['value'] = \
-            ['vwn_5', 0.19, 'lyp', 0.81, 'HFexch', 0.20, 'slater',0.8,'becke88','nonlocal',0.72] 
+            ['vwn_5', 0.19, 'lyp', 0.81, 'HFexch', 0.20, 'slater',0.8,'becke88','nonlocal',0.72]
 
     elif (val == 'B86BPBE'):
         options['NWCHEM']['NWCHEM_DFT_XC']['value'] = \
             ['becke86b', 'cpbe96']
 
     elif (val == 'B97') or (val == 'B97-0'):
-        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['becke97','HFexch', 0.1943]        
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['becke97', 'HFexch', 0.1943]
     elif (val == 'B97-1P'):
-        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['becke97gga1','HFexch', 0.1500]
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['becke97gga1', 'HFexch', 0.1500]
     elif (val == 'B97-3'):
-        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['becke97-3','HFexch', 0.2693]
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['becke97-3', 'HFexch', 0.2693]
 
     elif (val == 'BHANDHLYP') or (val == 'BHHLYP'):
-        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['becke88',0.500,'HFexch', 0.500,'lyp']
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['becke88', 0.500, 'HFexch', 0.500, 'lyp']
 
     elif (val == 'LRC-WPBE'):
         options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xwpbe',1.00,'cpbe96',1.0,'hfexch','1.00\n',\
@@ -919,24 +884,24 @@ def muster_dft_functionals(opt):
           'cam',0.2,'cam_alpha',0.20,'cam_beta',0.80]
 
     elif (val == 'MPW1PW'):
-        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['mpw91',0.75,'HFexch', 0.25,'perdew91']
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['mpw91', 0.75, 'HFexch', 0.25, 'perdew91']
     elif (val == 'MPWLYP1M'):
-        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['mpw91',0.95,'HFexch', 0.05,'lyp']
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['mpw91', 0.95, 'HFexch', 0.05, 'lyp']
     elif (val == 'MPWLYP1W'):
-        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['mpw91','vwn_5', 0.12,'lyp',0.88]
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['mpw91', 'vwn_5', 0.12, 'lyp', 0.88]
 
     elif (val == 'PBE0-13'):
-        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96',0.6667,'HFexch',0.3333,'cpbe96']
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96', 0.6667, 'HFexch', 0.3333, 'cpbe96']
     elif (val == 'PBEH'):
-        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96',0.75,'HFexch',0.25,'cpbe96']
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96', 0.75, 'HFexch', 0.25, 'cpbe96']
     elif (val == 'PBELYP1W'):
-        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96','vwn_5', 0.26,'lyp',0.74]
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96', 'vwn_5', 0.26, 'lyp', 0.74]
 
     elif (val == 'PW86PBE'):
-        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xperdew86','cpbe96']
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xperdew86', 'cpbe96']
 
     elif (val == 'TPSSLYP1W'):
-        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xtpss03','vwn_5',0.26,'lyp',0.74]
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xtpss03', 'vwn_5', 0.26, 'lyp', 0.74]
 
     elif (val == 'XLYP'):
         options['NWCHEM']['NWCHEM_DFT_XC']['value'] = \
@@ -950,33 +915,38 @@ def muster_dft_functionals(opt):
     elif (val == 'SB98-1A'):
         options['NWCHEM']['NWCHEM_DFT_XC']['value'] = \
             ['becke98','HFexch',0.229]
- 
+
     elif (val == 'PBEH3C'):
-        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96',0.58,'HFexch', 0.42,'cpbe96']
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96', 0.58, 'HFexch', 0.42, 'cpbe96']
     elif (val == 'PBE1W'):
-        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96','vwn_5', 0.26,'cpbe96',0.74]
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96', 'vwn_5', 0.26, 'cpbe96', 0.74]
     elif (val == 'PBE0-2'):
-        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96',0.2063,'HFexch',0.7937,'cpbe96',0.5,'mp2',0.5]
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96', 0.2063, 'HFexch', 0.7937, 'cpbe96', 0.5, 'mp2', 0.5]
     elif (val == 'O3LYP'):
-        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['slater',0.0706,'optx',0.8133,'HFexch',0.1161,'vwn_5', 0.19,'lyp',0.81]
+        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = [
+            'slater', 0.0706, 'optx', 0.8133, 'HFexch', 0.1161, 'vwn_5', 0.19, 'lyp', 0.81
+        ]
     elif (val == 'HSE03'):
         options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96',1.0,'xcampbe96','-0.25','cpbe96','1.0\n',\
           'cam',0.1061,'cam_alpha',0.0,'cam_beta',0.25]
     elif (val == 'HSE06'):
         options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['xpbe96',1.0,'xcampbe96','-0.25','cpbe96',1.0,'srhfexch','0.25\n',\
-          'cam',0.11,'cam_alpha',0.0,'cam_beta',1.0]    
+          'cam',0.11,'cam_alpha',0.0,'cam_beta',1.0]
     elif (val == 'WPBE0'):
         options['NWCHEM']['NWCHEM_DFT_XC']['value'] = \
             ['xwpbe', 1.0, 'cpbe96', 1.0, 'HFexch', 1.0, \
-            '\ncam', 0.30, 'cam_alpha', 0.25, 'cam_beta', 0.75] 
+            '\ncam', 0.30, 'cam_alpha', 0.25, 'cam_beta', 0.75]
 
     else:
         val = str(val)
-        raise ValidationError("""Requested functional %s is not available. Check NWChem manual and try nwchem_dft_xc keyword instead. """ % (val))
+        raise ValidationError(
+            """Requested functional %s is not available. Check NWChem manual and try nwchem_dft_xc keyword instead. """
+            % (val))
 
     dft_functional = options['NWCHEM']['NWCHEM_DFT_XC']['value']
 
     return dft_functional
+
 
 def muster_dft_w_dispersion(opt):
     """Translate psi4 dft functionals w/dispersion into NWChem counterparts. 
@@ -984,7 +954,7 @@ def muster_dft_w_dispersion(opt):
     """
 
     text = ''
-    options = defaultdict(lambda:defaultdict(dict))
+    options = defaultdict(lambda: defaultdict(dict))
     dft_functional = ''
     dft_dispersion = ''
 
@@ -1011,19 +981,22 @@ def muster_dft_w_dispersion(opt):
     elif (val == 'M05-2X-D3'):
         options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['m05-2x']
         options['NWCHEM']['NWCHEM_DFT_DISP']['value'] = ['vdw', 3]
-  
+
     elif (val == 'PBE0-D3'):
         options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['pbe0']
         options['NWCHEM']['NWCHEM_DFT_DISP']['value'] = ['vdw', 3]
 
     else:
         val = str(val)
-        raise ValidationError("""Requested functional %s is not available. Check NWChem manual and try nwchem_dft_xc keyword instead. """ % (val))
+        raise ValidationError(
+            """Requested functional %s is not available. Check NWChem manual and try nwchem_dft_xc keyword instead. """
+            % (val))
 
     dft_functional = options['NWCHEM']['NWCHEM_DFT_XC']['value']
     dft_dispersion = options['NWCHEM']['NWCHEM_DFT_DISP']['value']
 
     return dft_functional, dft_dispersion
+
 
 def muster_modelchem(name, dertype):
     """Transform calculation method *name* and derivative level *dertype*
@@ -1039,89 +1012,89 @@ def muster_modelchem(name, dertype):
     text = ''
     lowername = name.lower()
     options = defaultdict(lambda: defaultdict(dict))
-    
+
     if lowername == 'nwchem':
         pass
     elif lowername == 'nwc-scf':
         if dertype == 0:
-            options ['NWCHEM']['NWCHEM_TASK_SCF']['value'] = 'energy'
+            options['NWCHEM']['NWCHEM_TASK_SCF']['value'] = 'energy'
         elif dertype == 1:
-            options ['NWCHEM']['NWCHEM_TASK_SCF']['value'] = 'gradient'
+            options['NWCHEM']['NWCHEM_TASK_SCF']['value'] = 'gradient'
         elif dertype == 2:
-            options ['NWCHEM']['NWCHEM_TASK_SCF']['value'] = 'hessian'
-    
+            options['NWCHEM']['NWCHEM_TASK_SCF']['value'] = 'hessian'
+
     elif lowername == 'nwc-hf':
         if dertype == 0:
-            options ['NWCHEM']['NWCHEM_TASK_SCF']['value'] = 'energy'
+            options['NWCHEM']['NWCHEM_TASK_SCF']['value'] = 'energy'
         elif dertype == 1:
-            options ['NWCHEM']['NWCHEM_TASK_SCF']['value'] = 'gradient'
+            options['NWCHEM']['NWCHEM_TASK_SCF']['value'] = 'gradient'
         elif dertype == 2:
-            options ['NWCHEM']['NWCHEM_TASK_SCF']['value'] = 'hessian'
-    
+            options['NWCHEM']['NWCHEM_TASK_SCF']['value'] = 'hessian'
+
     elif lowername == 'nwc-mcscf':
         if dertype == 0:
-            options ['NWCHEM']['NWCHEM_TASK_MCSCF']['value'] = 'energy'
+            options['NWCHEM']['NWCHEM_TASK_MCSCF']['value'] = 'energy'
         elif dertype == 1:
-            options ['NWCHEM']['NWCHEM_TASK_MCSCF']['value'] = 'gradient'
+            options['NWCHEM']['NWCHEM_TASK_MCSCF']['value'] = 'gradient'
         elif dertype == 2:
-            options ['NWCHEM']['NWCHEM_TASK_MCSCF']['value'] = 'hessian'
-            
+            options['NWCHEM']['NWCHEM_TASK_MCSCF']['value'] = 'hessian'
+
     elif lowername == 'nwc-dft':
         if dertype == 0:
-            options ['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'energy'
+            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'energy'
         elif dertype == 1:
-            options ['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'gradient'
+            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'gradient'
         elif dertype == 2:
-            options ['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'hessian'
-    
+            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'hessian'
+
     elif lowername == 'nwc-sodft':
         if dertype == 0:
-            options ['NWCHEM']['NWCHEM_TASK_SODFT']['value'] = 'energy'
+            options['NWCHEM']['NWCHEM_TASK_SODFT']['value'] = 'energy'
         elif dertype == 1:
-            options ['NWCHEM']['NWCHEM_TASK_SODFT']['value'] = 'gradient'
+            options['NWCHEM']['NWCHEM_TASK_SODFT']['value'] = 'gradient'
         elif dertype == 2:
-            options ['NWCHEM']['NWCHEM_TASK_SODFT']['value'] = 'hessian'
+            options['NWCHEM']['NWCHEM_TASK_SODFT']['value'] = 'hessian'
 
     elif lowername == 'nwc-mp2':
         if dertype == 0:
-            options ['NWCHEM']['NWCHEM_TASK_MP2']['value'] = 'energy'
+            options['NWCHEM']['NWCHEM_TASK_MP2']['value'] = 'energy'
         elif dertype == 1:
-            options ['NWCHEM']['NWCHEM_TASK_MP2']['value'] = 'gradient'
+            options['NWCHEM']['NWCHEM_TASK_MP2']['value'] = 'gradient'
         elif dertype == 2:
-            options ['NWCHEM']['NWCHEM_TASK_MP2']['value'] = 'hessian'
+            options['NWCHEM']['NWCHEM_TASK_MP2']['value'] = 'hessian'
 
     elif lowername == 'nwc-tce-mp2':
         if dertype == 0:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp2'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp2'
         elif dertype == 1:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp2'
-        elif dertype == 2:    
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp2'
-    
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp2'
+        elif dertype == 2:
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp2'
+
     elif lowername == 'nwc-mp3':
         if dertype == 0:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp3'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp3'
         elif dertype == 1:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp3'
-        elif dertype == 2:    
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp3'
-    
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp3'
+        elif dertype == 2:
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp3'
+
     elif lowername == 'nwc-mp4':
         if dertype == 0:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp4'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp4'
         elif dertype == 1:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp4'
-        elif dertype == 2:    
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp4'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp4'
+        elif dertype == 2:
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp4'
 
     elif lowername == 'nwc-ccsd':
         if dertype == 0:
@@ -1141,96 +1114,96 @@ def muster_modelchem(name, dertype):
 
     elif lowername == 'nwc-ccsdt':
         if dertype == 0:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdt'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdt'
         elif dertype == 1:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdt'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdt'
         elif dertype == 2:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdt'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdt'
 
     elif lowername == 'nwc-ccsdtq':
         if dertype == 0:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
         elif dertype == 1:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
         elif dertype == 2:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
 
     elif lowername == 'nwc-eom-ccsd':
         if dertype == 0:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsd'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsd'
         elif dertype == 1:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsd'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsd'
         elif dertype == 2:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsd'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsd'
 
     elif lowername == 'nwc-eom-ccsdt':
         if dertype == 0:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdt'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdt'
         elif dertype == 1:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdt'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdt'
         elif dertype == 2:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdt'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdt'
 
     elif lowername == 'nwc-eom-ccsdtq':
         if dertype == 0:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
         elif dertype == 1:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
         elif dertype == 2:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
 
     elif lowername == 'nwc-lccd':
         if dertype == 0:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'lccd'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'lccd'
         elif dertype == 1:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'lccd'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'lccd'
         elif dertype == 2:
-            options ['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-            options ['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'lccd'
+            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
+            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'lccd'
 
-    elif lowername in dft_functionals_list(): 
+    elif lowername in dft_functionals_list():
         if dertype == 0:
-            options ['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'energy'
-            options ['SCF']['DFT_FUNCTIONAL']['value'] = lowername[4:].upper()
-            options ['NWCHEM']['NWCHEM_DFT_XC']['value'] = muster_dft_functionals(options) 
+            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'energy'
+            options['SCF']['DFT_FUNCTIONAL']['value'] = lowername[4:].upper()
+            options['NWCHEM']['NWCHEM_DFT_XC']['value'] = muster_dft_functionals(options)
         elif dertype == 1:
-            options ['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'gradient'
-            options ['SCF']['DFT_FUNCTIONAL']['value'] = lowername[4:].upper()
-            options ['NWCHEM']['NWCHEM_DFT_XC']['value'] = muster_dft_functionals(options)
+            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'gradient'
+            options['SCF']['DFT_FUNCTIONAL']['value'] = lowername[4:].upper()
+            options['NWCHEM']['NWCHEM_DFT_XC']['value'] = muster_dft_functionals(options)
         elif dertype == 2:
-            options ['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'hessian'
-            options ['SCF']['DFT_FUNCTIONAL']['value'] = lowername[4:].upper()
-            options ['NWCHEM']['NWCHEM_DFT_XC']['value'] = muster_dft_functionals(options)
+            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'hessian'
+            options['SCF']['DFT_FUNCTIONAL']['value'] = lowername[4:].upper()
+            options['NWCHEM']['NWCHEM_DFT_XC']['value'] = muster_dft_functionals(options)
 
     elif lowername == 'nwc-tddft':
         if dertype == 0:
-            options ['NWCHEM']['NWCHEM_TASK_TDDFT']['value'] = 'energy'
+            options['NWCHEM']['NWCHEM_TASK_TDDFT']['value'] = 'energy'
         elif dertype == 1:
-            options ['NWCHEM']['NWCHEM_TASK_TDDFT']['value'] = 'gradient'
+            options['NWCHEM']['NWCHEM_TASK_TDDFT']['value'] = 'gradient'
         elif dertype == 2:
-            options ['NWCHEM']['NWCHEM_TASK_TDDFT']['value'] = 'hessian'
- 
+            options['NWCHEM']['NWCHEM_TASK_TDDFT']['value'] = 'hessian'
+
     else:
         raise ValidationError("""Requested NWChem computational methods %s is not available.""" % (lowername))
 
-    #Set clobbering 
+    #Set clobbering
     if 'NWCHEM_TASK_SCF' in options['NWCHEM']:
         options['NWCHEM']['NWCHEM_TASK_SCF']['clobber'] = True
         options['NWCHEM']['NWCHEM_TASK_SCF']['superclobber'] = True
@@ -1249,7 +1222,7 @@ def muster_modelchem(name, dertype):
 
     if 'NWCHEM_TASK_MP2' in options['NWCHEM']:
         options['NWCHEM']['NWCHEM_TASK_MP2']['clobber'] = True
-        options['NWCHEM']['NWCHEM_TASK_MP2']['superclobber'] = True 
+        options['NWCHEM']['NWCHEM_TASK_MP2']['superclobber'] = True
 
     if 'NWCHEM_TASK_CCSD' in options['NWCHEM']:
         options['NWCHEM']['NWCHEM_TASK_CCSD']['clobber'] = True
@@ -1257,39 +1230,40 @@ def muster_modelchem(name, dertype):
 
     if 'NWCHEM_TASK_CCSD(T)' in options['NWCHEM']:
         options['NWCHEM']['NWCHEM_TASK_CCSD(T)']['clobber'] = True
-        options['NWCHEM']['NWCHEM_TASK_CCSD(T)']['superclobber'] = True 
+        options['NWCHEM']['NWCHEM_TASK_CCSD(T)']['superclobber'] = True
 
     if 'NWCHEM_TASK_TCE' in options['NWCHEM']:
         options['NWCHEM']['NWCHEM_TASK_TCE']['clobber'] = True
-        options['NWCHEM']['NWCHEM_TASK_TCE']['superclobber'] = True 
+        options['NWCHEM']['NWCHEM_TASK_TCE']['superclobber'] = True
 
     if 'NWCHEM_TASK_TDDFT' in options['NWCHEM']:
         options['NWCHEM']['NWCHEM_TASK_TDDFT']['clobber'] = True
         options['NWCHEM']['NWCHEM_TASK_TDDFT']['superclobber'] = True
 
-    return text,options 
+    return text, options
 
-def harvest(p4Mol, nwout, **largs): #check orientation and scratch files
+
+def harvest(p4Mol, nwout, **largs):  #check orientation and scratch files
     """Parses all the pieces of output from NWChem: the stdout in
     *nwout* Scratch files are not yet considered at this moment. 
 
     """
 
     outPsivar, outMol, outGrad, version, error = harvest_output(nwout)
-   # print ('outMol', outMol)
-   #print ('outGrad', outGrad)
-   # print ('P4Mol', p4Mol)
-   #Coordinate info check
+    # print ('outMol', outMol)
+    #print ('outGrad', outGrad)
+    # print ('P4Mol', p4Mol)
+    #Coordinate info check
 
     if outMol:
         if p4Mol:
             if abs(outMol.nuclear_repulsion_energy() - p4Mol.nuclear_repulsion_energy()) > 1.0e-3:
                 raise ValidationError("""NWChem outfile (NRE: %f) inconsistent with Psi4 input (NRE: %f).""" % \
-                            (outMol.nuclear_repulsion_energy(), p4Mol.nuclear_repulsion_energy()))  
+                            (outMol.nuclear_repulsion_energy(), p4Mol.nuclear_repulsion_energy()))
             ## TEST##########
-            #else: 
+            #else:
             #   print ( """NWChem outfile (NRE: %f) consistent with Psi4 input (NRE: %f).""" % \
-                #             (outMol.nuclear_repulsion_energy(), p4Mol.nuclear_repulsion_energy()))
+            #             (outMol.nuclear_repulsion_energy(), p4Mol.nuclear_repulsion_energy()))
             ################
     else:
         raise ValidationError("""No coordinate information extracted from NWChem output.""")
@@ -1324,7 +1298,8 @@ def nwchem_list():
 
     return val
 
-def nwchem_gradient_list(): 
+
+def nwchem_gradient_list():
     """Return an array of NWChem methods with energies. Appended
     to procedures['gradient'].
 
@@ -1351,7 +1326,8 @@ def nwchem_gradient_list():
 
     return val
 
-def nwchem_hessian_list(): 
+
+def nwchem_hessian_list():
     return []
 
 
@@ -1363,48 +1339,34 @@ def nwchem_psivar_list():
         
     """
     VARH = {}
-    VARH['nwc-scf'] = {
-                            'nwc-scf' : 'HF TOTAL ENERGY'}
-    VARH['nwc-hf'] = {
-                             'nwc-hf' : 'HF TOTAL ENERGY'}
-    VARH['nwc-mp2'] = {
-                             'nwc-hf' : 'HF TOTAL ENERGY',
-                            'nwc-mp2' : 'MP2 TOTAL ENERGY'}
-    VARH['nwc-lccd'] = {
-                             'nwc-hf' : 'HF TOTAL ENERGY',
-                           'nwc-lccd' : 'LCCD TOTAL ENERGY'}
-    VARH['nwc-cisd'] = {
-                             'nwc-hf' : 'HF TOTAL ENERGY',
-                            'nwc-mp2' : 'MP2 TOTAL ENERGY',
-                           'nwc-cisd' : 'CISD TOTAL ENERGY'}
-    VARH['nwc-ccsd'] = {
-                             'nwc-hf' : 'HF TOTAL ENERGY',
-                            'nwc-mp2' : 'MP2 TOTAL ENERGY',
-                           'nwc-ccsd' : 'CCSD TOTAL ENERGY'}
-                        
-                        
-    VARH['nwc-ccsdt'] = {
-                              'nwc-hf' : 'HF TOTAL ENERGY',
-                           'nwc-ccsdt' : 'CCSDT TOTAL ENERGY'}
-    
-    VARH['nwc-ccsdtq'] = {
-                               'nwc-hf' : 'HF TOTAL ENERGY',
-                           'nwc-ccsdtq' : 'CCSDTQ TOTAL ENERGY'}
+    VARH['nwc-scf'] = {'nwc-scf': 'HF TOTAL ENERGY'}
+    VARH['nwc-hf'] = {'nwc-hf': 'HF TOTAL ENERGY'}
+    VARH['nwc-mp2'] = {'nwc-hf': 'HF TOTAL ENERGY', 'nwc-mp2': 'MP2 TOTAL ENERGY'}
+    VARH['nwc-lccd'] = {'nwc-hf': 'HF TOTAL ENERGY', 'nwc-lccd': 'LCCD TOTAL ENERGY'}
+    VARH['nwc-cisd'] = {'nwc-hf': 'HF TOTAL ENERGY', 'nwc-mp2': 'MP2 TOTAL ENERGY', 'nwc-cisd': 'CISD TOTAL ENERGY'}
+    VARH['nwc-ccsd'] = {'nwc-hf': 'HF TOTAL ENERGY', 'nwc-mp2': 'MP2 TOTAL ENERGY', 'nwc-ccsd': 'CCSD TOTAL ENERGY'}
+
+    VARH['nwc-ccsdt'] = {'nwc-hf': 'HF TOTAL ENERGY', 'nwc-ccsdt': 'CCSDT TOTAL ENERGY'}
+
+    VARH['nwc-ccsdtq'] = {'nwc-hf': 'HF TOTAL ENERGY', 'nwc-ccsdtq': 'CCSDTQ TOTAL ENERGY'}
 
     VARH['nwc-ccsd(t)'] = {
-                             'nwc-hf' : 'HF TOTAL ENERGY',
-                            'nwc-mp2' : 'MP2 TOTAL ENERGY',
-                           'nwc-ccsd' : 'CCSD TOTAL ENERGY',
-                        'nwc-ccsd(t)' : 'CCSD(T) TOTAL ENERGY'}
+        'nwc-hf': 'HF TOTAL ENERGY',
+        'nwc-mp2': 'MP2 TOTAL ENERGY',
+        'nwc-ccsd': 'CCSD TOTAL ENERGY',
+        'nwc-ccsd(t)': 'CCSD(T) TOTAL ENERGY'
+    }
 
     #VARH['nwc-dft'] = {
-    #                        'nwc-dfttot' : 'DFT TOTAL ENERGY'} 
+    #                        'nwc-dfttot' : 'DFT TOTAL ENERGY'}
 
     VARH['nwc-eom-ccsd'] = {
-                            'nwc-hf' : 'HF TOTAL ENERGY',
-                       #'nwc-dfttot' : 'DFT TOTAL ENERGY', 
-                          'nwc-ccsd' : 'CCSD TOTAL ENERGY'}
+        'nwc-hf': 'HF TOTAL ENERGY',
+        #'nwc-dfttot' : 'DFT TOTAL ENERGY',
+        'nwc-ccsd': 'CCSD TOTAL ENERGY'
+    }
     return VARH
+
 
 def dft_functionals_list():
     """Return an array of available method of dft functionals through nwchem interface. 
@@ -1412,7 +1374,7 @@ def dft_functionals_list():
     """
     val = []
     val.append('nwc-b3lyp')
-    val.append('nwc-pbe0') 
+    val.append('nwc-pbe0')
     val.append('nwc-m05')
     val.append('nwc-m05-2x')
     val.append('nwc-ft97')
@@ -1471,4 +1433,3 @@ def dft_functionals_list():
     val.append('nwc-wpbe')
 
     return val
-

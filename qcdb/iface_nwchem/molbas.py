@@ -28,7 +28,7 @@ def format_molecule_for_nwchem(molrec, ropts, verbose=1):
     return molcmd
 
 
-def hide_format_basis_for_cfour(molrec, ropts, native_puream, verbose=1): #puream):
+def hide_format_basis_for_cfour(molrec, ropts, native_puream, verbose=1):  #puream):
     """Function to print the BASIS=SPECIAL block for Cfour according
     to the active atoms in Molecule. Special short basis names
     are used by qcdb GENBAS-writer in accordance with
@@ -59,6 +59,7 @@ def hide_format_basis_for_cfour(molrec, ropts, native_puream, verbose=1): #purea
 
     return text
 
+
 def kill_old_format_basis_for_cfour(molrec, puream):
     """Function to print the BASIS=SPECIAL block for Cfour according
     to the active atoms in Molecule. Special short basis names
@@ -86,7 +87,6 @@ def kill_old_format_basis_for_cfour(molrec, puream):
     return text, options
 
 
-
 def format_basis_for_nwchem(self, basopt):
     """Function to print NWChem-style basis sets into [basis block] according
     to the active atoms in Molecule. Basis sets are loaded from Psi4 basis sets library. 
@@ -105,6 +105,7 @@ def format_basis_for_nwchem(self, basopt):
 
     return text, options
 
+
 def format_basis_for_nwchem_puream(self, puream):
     """Function to recognize puream for NWChem 
 
@@ -112,16 +113,15 @@ def format_basis_for_nwchem_puream(self, puream):
     text = ''
 
     if (puream == True):
- #       print ('I am spherical')
+        #       print ('I am spherical')
         text += "basis spherical \n"
     else:
- #       print ('I am cartesian')
-        text += "basis \n" #Default : cartesian
+        #       print ('I am cartesian')
+        text += "basis \n"  #Default : cartesian
 
     options = defaultdict(lambda: defaultdict(dict))
 
     return text, options
-
 
 
 def local_prepare_options_for_modules(changedOnly=False, commandsInsteadDict=False):
@@ -147,14 +147,41 @@ def fulllocal_prepare_options_for_modules(changedOnly=False, commandsInsteadDict
 
     modules = [
         # PSI4 Modules
-        "ADC", "CCENERGY", "CCEOM", "CCDENSITY", "CCLAMBDA", "CCHBAR",
-        "CCRESPONSE", "CCSORT", "CCTRIPLES", "CLAG", "CPHF", "CIS",
-        "DCFT", "DETCI", "DFMP2", "DFTSAPT", "FINDIF", "FNOCC", "LMP2",
-        "MCSCF", "MINTS", "MRCC", "OCC", "OPTKING", "PSIMRCC", "RESPONSE",
-        "SAPT", "SCF", "STABILITY", "THERMO", "TRANSQT", "TRANSQT2",
+        "ADC",
+        "CCENERGY",
+        "CCEOM",
+        "CCDENSITY",
+        "CCLAMBDA",
+        "CCHBAR",
+        "CCRESPONSE",
+        "CCSORT",
+        "CCTRIPLES",
+        "CLAG",
+        "CPHF",
+        "CIS",
+        "DCFT",
+        "DETCI",
+        "DFMP2",
+        "DFTSAPT",
+        "FINDIF",
+        "FNOCC",
+        "LMP2",
+        "MCSCF",
+        "MINTS",
+        "MRCC",
+        "OCC",
+        "OPTKING",
+        "PSIMRCC",
+        "RESPONSE",
+        "SAPT",
+        "SCF",
+        "STABILITY",
+        "THERMO",
+        "TRANSQT",
+        "TRANSQT2",
         # External Modules
         "CFOUR",
-        ]
+    ]
 
     options = collections.defaultdict(dict)
     commands = ''
@@ -163,8 +190,7 @@ def fulllocal_prepare_options_for_modules(changedOnly=False, commandsInsteadDict
             if opt in ['DFT_CUSTOM_FUNCTIONAL', 'EXTERN']:  # Feb 2017 hack
                 continue
             val = core.get_global_option(opt)
-            options['GLOBALS'][opt] = {'value': val,
-                                       'has_changed': core.has_global_option_changed(opt)}
+            options['GLOBALS'][opt] = {'value': val, 'has_changed': core.has_global_option_changed(opt)}
             if isinstance(val, basestring):
                 commands += """core.set_global_option('%s', '%s')\n""" % (opt, val)
             else:
@@ -177,8 +203,7 @@ def fulllocal_prepare_options_for_modules(changedOnly=False, commandsInsteadDict
                 hoc = core.has_option_changed(module, opt)
                 if hoc or not changedOnly:
                     val = core.get_option(module, opt)
-                    options[module][opt] = {'value': val,
-                                            'has_changed': hoc}
+                    options[module][opt] = {'value': val, 'has_changed': hoc}
                     if isinstance(val, basestring):
                         commands += """core.set_local_option('%s', '%s', '%s')\n""" % (module, opt, val)
                     else:
@@ -191,7 +216,6 @@ def fulllocal_prepare_options_for_modules(changedOnly=False, commandsInsteadDict
         return commands
     else:
         return options
-
 
 
 def prepare_options_for_nwchem(options):
@@ -213,51 +237,58 @@ def prepare_options_for_nwchem(options):
         if opt.startswith('NWCHEM_'):
             if opt.startswith('NWCHEM_TASK'):
                 pass
- 
+
             elif opt.startswith('NWCHEM_SCF'):
                 if (opt == 'NWCHEM_SCF_PRINT') or (opt == 'NWCHEM_SCF_NOPRINT'):
                     if val['has_changed']:
-                        scf_block_text += """%s \"%s\" \n""" %(format_option_for_theory_block_nwchem(opt[11:],val['value']))
+                        scf_block_text += """%s \"%s\" \n""" % (format_option_for_theory_block_nwchem(
+                            opt[11:], val['value']))
                 else:
                     if val['has_changed']:
-                        scf_block_text += """%s %s \n""" %(format_option_for_theory_block_nwchem(opt[11:],val['value']))
+                        scf_block_text += """%s %s \n""" % (format_option_for_theory_block_nwchem(
+                            opt[11:], val['value']))
 
             elif opt.startswith('NWCHEM_MP2'):
                 if val['has_changed']:
-                    mp2_block_text += """%s %s \n""" %(format_option_for_theory_block_nwchem(opt[11:],val['value']))
+                    mp2_block_text += """%s %s \n""" % (format_option_for_theory_block_nwchem(opt[11:], val['value']))
 
             elif opt.startswith('NWCHEM_DFT'):
                 if (opt == 'NWCHEM_DFT_GRID'):
                     if val['has_changed']:
-                        dft_block_text += """%s lebedev %s \n""" %(format_option_for_theory_block_nwchem(opt[11:],val['value']))
+                        dft_block_text += """%s lebedev %s \n""" % (format_option_for_theory_block_nwchem(
+                            opt[11:], val['value']))
 
-                elif (opt =='NWCHEM_DFT_PRINT') or (opt =='NWCHEM_DFT_NOPRINT'):
+                elif (opt == 'NWCHEM_DFT_PRINT') or (opt == 'NWCHEM_DFT_NOPRINT'):
                     if val['has_changed']:
-                        dft_block_text += """%s \"%s\" \n""" %(format_option_for_theory_block_nwchem(opt[11:],val['value']))
+                        dft_block_text += """%s \"%s\" \n""" % (format_option_for_theory_block_nwchem(
+                            opt[11:], val['value']))
                 else:
                     if val['has_changed']:
-                        dft_block_text += """%s %s \n""" %(format_option_for_theory_block_nwchem(opt[11:],val['value']))
+                        dft_block_text += """%s %s \n""" % (format_option_for_theory_block_nwchem(
+                            opt[11:], val['value']))
 
             elif opt.startswith('NWCHEM_CCSD'):
                 if val['has_changed']:
-                    ccsd_block_text += """%s %s \n""" %(format_option_for_theory_block_nwchem(opt[12:],val['value']))
+                    ccsd_block_text += """%s %s \n""" % (format_option_for_theory_block_nwchem(opt[12:], val['value']))
 
             elif opt.startswith('NWCHEM_TCE'):
-                if (opt == 'NWCHEM_TCE_MODULE'): 
+                if (opt == 'NWCHEM_TCE_MODULE'):
                     if val['has_changed']:
-                        tce_block_text += """%s \n""" %(val['value']) 
+                        tce_block_text += """%s \n""" % (val['value'])
                 elif (opt == 'NWCHEM_TCE'):
                     pass
                 else:
                     if val['has_changed']:
-                        tce_block_text += """%s %s \n""" %(format_option_for_theory_block_nwchem(opt[11:],val['value']))
+                        tce_block_text += """%s %s \n""" % (format_option_for_theory_block_nwchem(
+                            opt[11:], val['value']))
 
             elif opt.startswith('NWCHEM_TDDFT'):
                 if val['has_changed']:
-                    tddft_block_text += """%s %s \n""" %(format_option_for_theory_block_nwchem(opt[13:],val['value']))                
+                    tddft_block_text += """%s %s \n""" % (format_option_for_theory_block_nwchem(
+                        opt[13:], val['value']))
             else:
                 if val['has_changed']:
-                    text += """%s %s \n""" %(format_option_for_nwchem(opt,val['value']))
+                    text += """%s %s \n""" % (format_option_for_nwchem(opt, val['value']))
 
     if options['NWCHEM']['NWCHEM_TASK_DFT']['has_changed']:
         if dft_block_text:
@@ -270,13 +301,13 @@ def prepare_options_for_nwchem(options):
         if tddft_block_text:
             text += "tddft\n" + tddft_block_text + "end\n\n"
 
-    elif options['NWCHEM']['NWCHEM_TCE_DFT']['has_changed']: # DFT is used as TCE reference wavefunction
+    elif options['NWCHEM']['NWCHEM_TCE_DFT']['has_changed']:  # DFT is used as TCE reference wavefunction
         if dft_block_text:
             text += "dft\n" + dft_block_text + "end\n\n"
         if tce_block_text:
             text += "tce\n" + tce_block_text + "end\n\n"
 
-    else: #SCF, MP2 block, TCE block w/ scf reference wavefunction,  
+    else:  #SCF, MP2 block, TCE block w/ scf reference wavefunction,
         if scf_block_text:
             text += "scf\n" + scf_block_text + "end\n\n"
 
@@ -284,18 +315,20 @@ def prepare_options_for_nwchem(options):
             text += "mp2\n" + mp2_block_text + "end\n\n"
 
         if tce_block_text:
-            text += "tce\n" + tce_block_text + "end\n\n"   
-        
+            text += "tce\n" + tce_block_text + "end\n\n"
+
         if ccsd_block_text:
-            text += "ccsd\n" + ccsd_block_text + "end\n\n" 
+            text += "ccsd\n" + ccsd_block_text + "end\n\n"
 
     if text:
         text = text[:-1] + '\n'
+
 
 #    print ("I'm prepare_options_for_nwchem")
 #    print (text)
 
     return text
+
 
 def prepare_options_for_task_nwchem(options):
     """Function to take the full snapshot of the liboptions object
@@ -312,19 +345,18 @@ def prepare_options_for_task_nwchem(options):
         for opt, val in options['NWCHEM'].items():
             if opt.startswith('NWCHEM_TASK'):
                 if val['has_changed']:
-                    if opt.startswith('NWCHEM_TASK_CCSD'): #task ccsd, ccsd(t) -> task tce
-                        text += """tce; %s ; end\n""" %(opt[12:].lower()) # NWCHEM_TCE_MODULE =ccsd or ccsd(t)
-                        text += """task tce %s \n""" %(val['value'])
+                    if opt.startswith('NWCHEM_TASK_CCSD'):  #task ccsd, ccsd(t) -> task tce
+                        text += """tce; %s ; end\n""" % (opt[12:].lower())  # NWCHEM_TCE_MODULE =ccsd or ccsd(t)
+                        text += """task tce %s \n""" % (val['value'])
             else:
                 pass
     else:
         for opt, val in options['NWCHEM'].items():
             if opt.startswith('NWCHEM_TASK'):
                 if val['has_changed']:
-                    text += """task %s %s \n""" %(opt[12:].lower(),val['value'])
+                    text += """task %s %s \n""" % (opt[12:].lower(), val['value'])
             else:
                 pass
-           
 
     if text:
         text = text[:-1] + '\n'
@@ -332,8 +364,7 @@ def prepare_options_for_task_nwchem(options):
     return text
 
 
-
-def format_option_for_nwchem(opt,val):
+def format_option_for_nwchem(opt, val):
     """Function to reformat value *val* for option *opt* from python
     into nwchem-speak. 
         
@@ -345,14 +376,15 @@ def format_option_for_nwchem(opt,val):
         for n in range(len(val)):
             text += str(val[n])
             if n < (len(val) - 1):
-                    text += '%s' %(spaces)
+                text += '%s' % (spaces)
 
     else:
         text += str(val)
 
     return opt[7:].lower(), text
 
-def format_option_for_theory_block_nwchem(opt,val):
+
+def format_option_for_theory_block_nwchem(opt, val):
     """Function to reformat value *val* for option *opt* BLOCK from python
     into nwchem-speak. 
         
@@ -360,9 +392,9 @@ def format_option_for_theory_block_nwchem(opt,val):
     text = ''
     spaces = '  '
 
-    # Transform string booleans into " " 
+    # Transform string booleans into " "
     if str(val) == 'TRUE':
-        text += '%s' %(spaces)
+        text += '%s' % (spaces)
     elif str(val) == 'FALSE':
         pass
 
@@ -370,7 +402,7 @@ def format_option_for_theory_block_nwchem(opt,val):
         for n in range(len(val)):
             text += str(val[n])
             if n < (len(val) - 1):
-                    text += '%s' %(spaces)
+                text += '%s' % (spaces)
 
     elif str(val) == 'RODFT':
         text += str(val) + '\ncgmin'
