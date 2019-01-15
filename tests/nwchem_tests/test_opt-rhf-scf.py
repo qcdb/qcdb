@@ -13,13 +13,9 @@ h2o = qcdb.set_molecule('''
 print(h2o)
 
 
-def check_rhf(return_value, is_df):
-    if is_df:
-        ref = -76.010496306999
-        nre = 9.187334240165
-    else:
-        ref = -76.010738270124
-        nre = 9.347020370478
+def check_rhf(return_value):
+    ref = -76.010496306999
+    nre = 9.187334240165
     assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
     assert compare_values(nre, qcdb.get_variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
 
@@ -39,4 +35,4 @@ def test_1_hf():
     })
     print('Testing HF...')
     val = qcdb.energy('nwc-hf')
-    check_rhf(val, is_df=True)
+    check_rhf(val)

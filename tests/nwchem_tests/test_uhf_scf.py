@@ -13,13 +13,9 @@ nh2 = qcdb.set_molecule('''
 print(nh2)
 
 
-def check_uhf_hf(return_value, is_df=True):
-    if is_df:
-        ref = -55.566057523877
-        nre = 7.580905897627
-    else:
-        ref = -55.566057523877
-        nre = 7.580905897627
+def check_uhf_hf(return_value):
+    ref = -55.566057523877
+    nre = 7.580905897627
 
     assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'scf')
     assert compare_values(nre, qcdb.get_variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
@@ -36,4 +32,4 @@ def test_1_hf():
     })
     print('Testing hf...')
     val = qcdb.energy('nwc-hf')
-    check_uhf_hf(val, is_df=True)
+    check_uhf_hf(val)

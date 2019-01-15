@@ -12,17 +12,11 @@ h2o= qcdb.set_molecule('''
         ''')
 print(h2o)
 
-def check_ccsdtq(return_value, is_df):
-    if is_df:
-        ref         =       -76.010496307079
-        nre         =         9.187334240165
-        ccsdtq      =       -76.210368641377713
-        ccsdtq_corl =        -0.199872334299139
-    else:
-        ref         =       -76.010496307079
-        nre         =         9.187334240165
-        ccsdtq      =       -76.210368641377713
-        ccsdtq_corl =        -0.199872334299139
+def check_ccsdtq(return_value):
+    ref         =       -76.010496307079
+    nre         =         9.187334240165
+    ccsdtq      =       -76.210368641377713
+    ccsdtq_corl =        -0.199872334299139
         
     assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 6, 'hf ref')  #TEST
     assert compare_values(nre, qcdb.get_variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
@@ -42,7 +36,7 @@ def test_1_hf():
         })
     print("Testing HF energy (df)...")
     val = qcdb.energy('nwc-ccsdtq')
-    check_ccsdtq(val, is_df=True)
+    check_ccsdtq(val)
 @using_nwchem
 def test_2_ccsdtq():
     qcdb.set_options({
@@ -58,4 +52,4 @@ def test_2_ccsdtq():
         })
     print('Testing CCSDTQ (df)...')
     val = qcdb.energy('nwc-ccsdtq')
-    check_ccsdtq(val, is_df=True)
+    check_ccsdtq(val)

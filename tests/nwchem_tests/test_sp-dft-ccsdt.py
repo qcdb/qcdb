@@ -68,4 +68,4 @@ def test_2_ccsdt():
     # print(jrec['qcvars'])
     print('Test CCSDT energy ...')
     val = qcdb.energy('nwc-ccsdt')
-    check_dft(val, is_dft=True)
+    check_dft(val, is_dft=False)

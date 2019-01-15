@@ -616,6 +616,10 @@ def harvest_outfile_pass(outtext):
         psivar['CURRENT CORRELATION ENERGY'] = psivar['%s CORRELATION ENERGY' % (cc_name)]
         psivar['CURRENT ENERGY'] = psivar['%s TOTAL ENERGY' % (cc_name)]
 
+    if 'CCSD TOTAL ENERGY' in psivar and 'CCSD CORRELATION ENERGY' in psivar:
+        psivar['CURRENT CORRELATION ENERGY'] = psivar['CCSD(T) CORRELATION ENERGY']
+        psivar['CURRENT ENERGY'] = psivar['CCSD(T) TOTAL ENERGY']
+
     if 'CCSD(T) TOTAL ENERGY' in psivar and 'CCSD(T) CORRELATION ENERGY' in psivar:
         psivar['CURRENT CORRELATION ENERGY'] = psivar['CCSD(T) CORRELATION ENERGY']
         psivar['CURRENT ENERGY'] = psivar['CCSD(T) TOTAL ENERGY']

@@ -13,27 +13,16 @@ h2o = qcdb.set_molecule('''
 print(h2o)
 
 
-def check_mp2(return_value, is_df, is5050):
-    if is_df:
-        ref = -76.026760737428
-        nre = 9.187334240165
-        mp2_tot = -76.230777733733
-        scs_mp2_tot = -76.226922314540
-        scs_corl = -0.200161577112
-        os = -0.152487590397 * 1.200000000000
-        ss = -0.051529405908 * 0.333333333333
-        a5050corl = 0.5 * (os + ss)
-        a5050tot = a5050corl + ref
-    else:
-        ref = -76.026760737428
-        nre = 9.187334240165
-        mp2_tot = -76.230777733733
-        scs_mp2_tot = -76.226922314540
-        scs_corl = -0.200161577112
-        os = -0.152487590397 * 1.200000000000
-        ss = -0.051529405908 * 0.333333333333
-        a5050corl = 0.5 * (os + ss)
-        a5050tot = a5050corl + ref
+def check_mp2(return_value, is5050):
+    ref = -76.026760737428
+    nre = 9.187334240165
+    mp2_tot = -76.230777733733
+    scs_mp2_tot = -76.226922314540
+    scs_corl = -0.200161577112
+    os = -0.152487590397 * 1.200000000000
+    ss = -0.051529405908 * 0.333333333333
+    a5050corl = 0.5 * (os + ss)
+    a5050tot = a5050corl + ref
     assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'scf total')
     assert compare_values(mp2_tot, qcdb.get_variable('MP2 TOTAL ENERGY'), 5, 'mp2 energy')
     assert compare_values(scs_mp2_tot, qcdb.get_variable('SCS-MP2 TOTAL ENERGY'), 5, 'scs-mp2')
@@ -44,39 +33,26 @@ def check_mp2(return_value, is_df, is5050):
 
 
 @using_nwchem
-def test_1_df_mp2():
-    qcdb.set_options({'basis': 'cc-pvdz', 'memory': '400 mb', 'nwchem_mp2_tight': True, 'nwchem_task_mp2': 'energy'})
+def test_1_a5050_no():
+    qcdb.set_options({
+        'basis': 'cc-pvdz', 
+        'memory': '400 mb', 
+        'nwchem_mp2_tight': True, 
+        'nwchem_task_mp2': 'energy'
+        })
     print('Testing mp2(df)...')
     # print(jrec['qcvars'])
     val = qcdb.energy('nwc-mp2')  # return_wfn=True)
-    check_mp2(val, is_df=True, is5050=False)
-
-
-@using_nwchem
-def test_2_df_scsmp2():
-    qcdb.set_options({'basis': 'cc-pvdz', 'memory': '400 mb', 'nwchem_mp2_tight': True, 'nwchem_task_mp2': 'energy'})
-    print('Testing scs-mp2(df)...')
-    val = qcdb.energy('nwc-mp2')
-    check_mp2(val, is_df=True, is5050=False)
-
+    check_mp2(val, is5050=False)
 
 @using_nwchem
-def test_3_a5050_mp2():
-    qcdb.set_options({'basis': 'cc-pvdz', 'memory': '400 mb', 'nwchem_mp2_tight': True, 'nwchem_task_mp2': 'energy'})
-    print('Testing scs-mp2(df)...')
-    val = qcdb.energy('nwc-mp2')
-    check_mp2(val, is_df=False, is5050=True)
-
-
-@using_nwchem
-def test_4_hf():
+def test_2_a5050():
     qcdb.set_options({
-        'basis': 'cc-pvdz',
-        'memory': '400 mb',
-        'nwchem_scf': 'rhf',
-        'nwchem_scf_thresh': 1.0e-8,
-        'nwchem_scf_nopen': 0
-    })
-    print("Testing hf...")
+        'basis': 'cc-pvdz', 
+        'memory': '400 mb', 
+        'nwchem_mp2_tight': True, 
+        'nwchem_task_mp2': 'energy'
+        })
+    print('Testing scs-mp2(df)...')
     val = qcdb.energy('nwc-mp2')
-    check_mp2(val, is_df=True, is5050=False)
+    check_mp2(val, is5050=True)
