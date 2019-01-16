@@ -33,11 +33,12 @@ install:
 
 # Build out environment
   #- conda create -n tenv python=$PYTHON_VER cmake numpy ci-psi4 psi4 -c psi4/label/dev -c psi4
+  - qcelemental=0.1.2 -c psi4
   - conda create -n tenv python=$PYTHON_VER cmake numpy nomkl
   - source activate tenv
   - conda install pytest pytest-cov codecov deepdiff pint -c conda-forge
-  - conda list
-  - git clone https://github.com/MolSSI/QCElemental.git
+    #- conda list
+    #- git clone https://github.com/MolSSI/QCElemental.git
   - cd QCElemental && python setup.py install
 
 before_script:
