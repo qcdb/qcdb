@@ -73,8 +73,8 @@ def test_1_hf():
         'nwchem_scf': 'rhf',
         'nwchem_scf_thresh': 1.0e-12,
         'nwchem_tce_dft': False,
-        'nwchem_tce': 'ccsd(t)',
-        #'nwchem_tce_on': False,
+        'nwchem_tce_module': 'ccsd(t)',
+        'nwchem_tce': False,
         'nwchem_tce_thresh': 1.0e-12
     })
     print("Testing hf...")
@@ -90,8 +90,8 @@ def test_2_mp2():
         'nwchem_scf': 'rhf',
         'nwchem_scf_thresh': 1.0e-12,
         'nwchem_tce_dft': False,
-        'nwchem_tce': 'ccsd(t)',
-        #'nwchem_tce_on': False,
+        'nwchem_tce_module': 'ccsd(t)',
+        'nwchem_tce': False,
         'nwchem_tce_thresh': 1.0e-12
     })
     print("Testing MP2...")
@@ -107,8 +107,8 @@ def test_3_mp2_5050():
         'nwchem_scf': 'rhf',
         'nwchem_scf_thresh': 1.0e-12,
         'nwchem_tce_dft': False,
-        'nwchem_tce': 'ccsd(t)',
-        #'nwchem_tce_on': False,
+        'nwchem_tce_module': 'ccsd(t)',
+        'nwchem_tce': False,
         'nwchem_tce_thresh': 1.0e-12
     })
     print("testing mp2...")
@@ -124,8 +124,8 @@ def test_4_ccsd():
         'nwchem_scf': 'rhf',
         'nwchem_scf_thresh': 1.0e-12,
         'nwchem_tce_dft': False,
-        'nwchem_tce': 'ccsd(t)',
-        #'nwchem_tce_on': False,
+        'nwchem_tce_module': 'ccsd(t)',
+        'nwchem_tce': False,
         'nwchem_tce_thresh': 1.0e-12
     })
     print("Testing CCSD energy ...")
@@ -141,8 +141,8 @@ def test_5_ccsd_t():
         'nwchem_scf': 'rhf',
         'nwchem_scf_thresh': 1.0e-12,
         'nwchem_tce_dft': False,
-        'nwchem_tce': 'ccsd(t)',
-        #'nwchem_tce_on': False,
+        'nwchem_tce_module': 'ccsd(t)',
+        'nwchem_tce': False,
         'nwchem_tce_thresh': 1.0e-12
     })
     print("Testing CCSD(T) energy ...")
@@ -158,8 +158,8 @@ def test_6_custom_ccsd():
         'nwchem_scf': 'rhf',
         'nwchem_scf_thresh': 1.0e-12,
         'nwchem_tce_dft': False,
-        'nwchem_tce': 'ccsd(t)',
-        #'nwchem_tce_on': True,
+        'nwchem_tce_module': 'ccsd(t)',
+        'nwchem_tce': True,
         'nwchem_tce_thresh': 1.0e-12
     })
     print("Testing custom SCS MP2 energy ...")

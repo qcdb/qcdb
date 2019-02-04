@@ -24,30 +24,15 @@ def check_ccsdtq(return_value):
     assert compare_values(ccsdtq_corl, qcdb.get_variable('CCSDTQ CORRELATION ENERGY'), 6, 'CCSDTQ corl')  #TEST
 
 @using_nwchem
-def test_1_hf():
+def test_1_ccsdtq():
     qcdb.set_options({
         'basis': '6-31g*',
-        'memory': '2000 mb',
-        #'nwchem_total_memory': '2000 mb',
-        #'nwchem_global_memory': '1700 mb',
-        #'nwchem_symmetry': 'c2v',
-        'nwchem_scf': 'RHF',
-        'nwchem_scf_thresh': 1.0e-7
-        })
-    print("Testing HF energy (df)...")
-    val = qcdb.energy('nwc-ccsdtq')
-    check_ccsdtq(val)
-@using_nwchem
-def test_2_ccsdtq():
-    qcdb.set_options({
-        'basis': '6-31g*',
-        'memory': '2000 mb',
-        #'nwchem_total_memory': '2000 mb',
-        #'nwchem_global_memory': '1700 mb',
-        #'nwchem_symmetry': 'c2v',
+        #'memory': '2000 mb',
+        'nwchem_memory': '[total, 2000, global, 1700,mb]',
+        #'nwchem_verify'    : True,
         'nwchem_tce_dft': False,
-        'nwchem_tce': 'CCSDTQ',
-        #'nwchem_tce_on' : True,
+        'nwchem_tce_module': 'CCSDTQ',
+        'nwchem_tce' : True,
         'nwchem_tce_thresh': 1.0e-7
         })
     print('Testing CCSDTQ (df)...')

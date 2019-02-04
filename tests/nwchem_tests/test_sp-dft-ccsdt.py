@@ -28,7 +28,7 @@ def check_dft(return_value, is_dft):
         nre = 9.187334240165
 
 
-#    assert compare_values(dft_ref, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft ref')
+    assert compare_values(dft_ref, qcdb.get_variable('DFT (PBE) TOTAL ENERGY'), 5, 'dft ref')
     assert compare_values(ccsdt_tot, qcdb.get_variable('CCSDT TOTAL ENERGY'), 5, 'ccsdt total')
     assert compare_values(ccsdt_corl, qcdb.get_variable('CCSDT CORRELATION ENERGY'), 5, 'ccsdt corl')
     assert compare_values(nre, qcdb.get_variable('NUCLEAR REPULSION ENERGY'), 'nre')
@@ -43,8 +43,8 @@ def test_1_dft():
         #'nwchem_dft_xc': 'b3lyp',
         #add grid options
         'nwchem_tce_dft': True,
-        #'nwchem_tce_on' : True,
-        'nwchem_tce': 'CCSDT',
+        'nwchem_tce' : True,
+        'nwchem_tce_module': 'CCSDT',
         'nwchem_tce_thresh': 1.0e-12,
         'nwchem_task_tce': 'energy'
     })
@@ -60,8 +60,8 @@ def test_2_ccsdt():
         'basis': 'sto-3g',
         'memory': '600 mb',
         'nwchem_tce_dft': True,
-        #'nwchem_tce_on' : True,
-        'nwchem_tce': 'CCSDT',
+        'nwchem_tce' : True,
+        'nwchem_tce_module': 'CCSDT',
         'nwchem_tce_thresh': 1.0e-12,
         'nwchem_task_tce': 'energy'
     })

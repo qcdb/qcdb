@@ -23,7 +23,7 @@ def check_ccsd_t_(return_value):
     ccsd_t_corl = -0.216413143590677
     ccsd_t_tot = -76.243157564782578
 
-    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
+    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 3, 'hf ref')
     assert compare_values(ccsdcorl, qcdb.get_variable('CCSD CORRELATION ENERGY'), 5, 'ccsd corl')
     assert compare_values(ccsdtot, qcdb.get_variable('CCSD TOTAL ENERGY'), 5, 'ccsd total')
     assert compare_values(ccsd_t_corr, qcdb.get_variable('(T) CORRECTION ENERGY'), 5, 'ccsd(t) corr')
@@ -33,18 +33,18 @@ def check_ccsd_t_(return_value):
 
 
 @using_nwchem
-def test_1_df_rhf():
+def test_1_ccsd_t_():
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'memory': '600 mb',
         'nwchem_scf': 'rhf',
         'nwchem_scf_thresh': 1.0e-12,
         'nwchem_tce_dft': False,
-        'nwchem_tce': 'ccsd(t)',
-        #'nwchem_tce_on': True,
+        'nwchem_tce_module': 'CCSD(T)',
+        'nwchem_tce': True,
         'nwchem_tce_thresh': 1.0e-12,
         'nwchem_task_tce': 'energy'
     })
-    print('     Testing rhf ...')
+    print('     Testing ccsd(t) ...')
     val = qcdb.energy('nwc-ccsd(t)')
     check_ccsd_t_(val)
