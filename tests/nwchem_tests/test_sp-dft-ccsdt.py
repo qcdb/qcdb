@@ -17,21 +17,21 @@ print(h2o)
 
 def check_dft(return_value, is_dft):
     if is_dft:
-        dft_ref = -95.217126584667
+        ref = -95.217126584667
         nre = 9.187334240165
         ccsdt_tot = -95.263267683066744
         ccsdt_corl = -0.046141098399779
-    else:
-        dft_ref = -95.217126584667
+    else: #change values for non-dft
+        ref = -74.963048525888
         ccsdt_tot = -95.263267683066744
         ccsdt_corl = -0.046141098399779
         nre = 9.187334240165
 
 
-    assert compare_values(dft_ref, qcdb.get_variable('DFT (PBE) TOTAL ENERGY'), 5, 'dft ref')
+    assert compare_values(ref, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft ref')
     assert compare_values(ccsdt_tot, qcdb.get_variable('CCSDT TOTAL ENERGY'), 5, 'ccsdt total')
     assert compare_values(ccsdt_corl, qcdb.get_variable('CCSDT CORRELATION ENERGY'), 5, 'ccsdt corl')
-    assert compare_values(nre, qcdb.get_variable('NUCLEAR REPULSION ENERGY'), 'nre')
+    assert compare_values(nre, qcdb.get_variable('NUCLEAR REPULSION ENERGY'), 5,  'nre')
 
 
 @using_nwchem

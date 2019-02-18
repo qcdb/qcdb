@@ -23,7 +23,7 @@ def check_ccsd_t_(return_value):
     ccsd_t_corl = -0.216413143590677
     ccsd_t_tot = -76.243157564782578
 
-    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 3, 'hf ref')
+    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
     assert compare_values(ccsdcorl, qcdb.get_variable('CCSD CORRELATION ENERGY'), 5, 'ccsd corl')
     assert compare_values(ccsdtot, qcdb.get_variable('CCSD TOTAL ENERGY'), 5, 'ccsd total')
     assert compare_values(ccsd_t_corr, qcdb.get_variable('(T) CORRECTION ENERGY'), 5, 'ccsd(t) corr')

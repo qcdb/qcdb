@@ -22,7 +22,7 @@ def check_hf(return_value):
         [0.000000, 0.010677, 0.007595]])
     assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
     assert compare_values(nre, qcdb.get_variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
-    assert compare_arrays(grads, qcdb.get_variable('CURRENT GRADIENT'), 3, 'hf grad')
+    assert compare_arrays(grads, qcdb.get_variable('CURRENT GRADIENT'), 5, 'hf grad')
 
 @using_nwchem
 def test_1_hf():
