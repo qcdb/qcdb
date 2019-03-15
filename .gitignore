@@ -105,3 +105,6 @@ timer.dat
 install*/
 build*/
 psi.*.clean
+
+#NWChem tests
+/tests/nwchem_tests/uncheck_tests*
