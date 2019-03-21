@@ -435,14 +435,24 @@ qcvardefs['CURRENT ENERGY'] = {
 
 qcvardefs['CURRENT GRADIENT'] = {
     'units': 'Eh/a0',
+    'dimension': '({nat}, 3)',
     'glossary': """
    The total electronic gradient of the most recent stage of a
    calculation (frequently overwritten). This is the quantity tracked by
    the geometry optimizer.
 """}
 
+qcvardefs['CURRENT DIPOLE GRADIENT'] = {
+    'units': 'Eh a0/u',  # = [(e a0/a0)^2/u]
+    'dimension': '(3 * {nat}, 3)',  # T?
+    'glossary': """
+   The derivative of the dipole with respect to nuclear perturbations
+   as a degree-of-freedom by dipole component array.
+"""}
+
 qcvardefs['CURRENT HESSIAN'] = {
     'units': 'Eh/a0/a0',
+    'dimension': '(3 * {nat}, 3 * {nat})',
     'glossary': """
    The total electronic Hessian of the most recent stage of a
    calculation.
@@ -548,6 +558,7 @@ def define_dashd_qcvars(fctl, dashes, extra=''):
 
         qcvardefs['{}-{} DISPERSION CORRECTION GRADIENT'.format(fctl.upper(), dd.upper())] = {
             'units': 'Eh',
+            'dimension': '({nat}, 3)',
             'glossary': """
    The gradient to the dispersion correction defined for appending to underlying functional
    {} when a DFT-D method is requested. {}
@@ -660,6 +671,7 @@ qcvardefs['DISPERSION CORRECTION ENERGY'] = {
 
 qcvardefs['DISPERSION CORRECTION GRADIENT'] = {
     'units': 'Eh/a0',
+    'dimension': '({nat}, 3)',
     'glossary': r"""
    The gradient to the dispersion correction appended to an underlying functional
    when a DFT-D method is requested. Quantity :math:`E_{\text{-D}}`
@@ -688,8 +700,17 @@ qcvardefs['HF TOTAL ENERGY'] = {
    in Eq. :eq:`SCFterms`.
 """}
 
+qcvardefs['HF DIPOLE GRADIENT'] = {
+    'units': 'Eh a0/u',  # = [(e a0/a0)^2/u]
+    'dimension': '(3 * {nat}, 3)',  # T?
+    'glossary': """
+   The derivative of the Hartree--Fock method dipole with respect to nuclear perturbations
+   as a degree-of-freedom by dipole component array.
+"""}
+
 qcvardefs['HF TOTAL HESSIAN'] = {
     'units': 'Eh/a0/a0',
+    'dimension': '(3 * {nat}, 3 * {nat})',
     'glossary': """
    The total electronic energy for the Hartree-Fock method.
 """}
@@ -845,6 +866,7 @@ qcvardefs['CUSTOM D2 DISPERSION CORRECTION ENERGY'] = {
 
 qcvardefs['CUSTOM D2 DISPERSION CORRECTION GRADIENT'] = {
     'units': 'Eh',
+    'dimension': '({nat}, 3)',
     'glossary': r"""
    Label for D2-formula dispersion correction gradient when
    parameters match no functional.
@@ -1158,6 +1180,12 @@ qcvardefs['ONE-ELECTRON ENERGY'] = {
    Quantity :math:`E_{1e^-}` in Eq. :eq:`SCFterms`.
 """}
 
+qcvardefs['PCM POLARIZATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+    The Mutual polarization between the quantum chemical region and the classical polarizable continuum.
+"""}
+
 #.. psivar:: QCISD TOTAL ENERGY
 #   QCISD CORRELATION ENERGY
 #
@@ -1226,6 +1254,12 @@ qcvardefs['SCF ITERATIONS'] = {
    The number of iterations in final? SCF set.
 """}
 
+qcvardefs['SCF ITERATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+    The total SCF energy for the last completed iteration.
+"""}
+
 #.. psivar:: SCF QUADRUPOLE XX
 #   SCF QUADRUPOLE XY
 #   SCF QUADRUPOLE XZ
@@ -1259,8 +1293,25 @@ qcvardefs['SCF TOTAL ENERGY'] = {
    to :psivar:`DFT TOTAL ENERGY <DFTTOTALENERGY>`.
 """}
 
+qcvardefs['SCF TOTAL GRADIENT'] = {
+    'units': 'Eh/a0/a0',
+    'dimension': '({nat}, 3)',
+    'glossary': """
+   The total electronic Hessian of the SCF stage of a calculation.
+   May be HF or DFT.
+"""}
+
+qcvardefs['SCF DIPOLE GRADIENT'] = {
+    'units': 'Eh a0/u',  # = [(e a0/a0)^2/u]
+    'dimension': '(3 * {nat}, 3)',  # T?
+    'glossary': """
+   The derivative of the SCF dipole with respect to nuclear perturbations
+   as a degree-of-freedom by dipole component array.
+"""}
+
 qcvardefs['SCF TOTAL HESSIAN'] = {
     'units': 'Eh/a0/a0',
+    'dimension': '(3 * {nat}, 3 * {nat})',
     'glossary': """
    The total electronic Hessian of the SCF stage of a calculation.
    May be HF or DFT.
