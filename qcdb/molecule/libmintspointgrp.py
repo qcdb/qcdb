@@ -3,7 +3,7 @@
 #
 # Psi4: an open-source quantum chemistry software package
 #
-# Copyright (c) 2007-2017 The Psi4 Developers.
+# Copyright (c) 2007-2019 The Psi4 Developers.
 #
 # The copyrights for code used from other parties are included in
 # the corresponding files.
@@ -26,16 +26,10 @@
 # @END LICENSE
 #
 
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import division
 import sys
 
 from ..exceptions import *
 from ..vecutil import *
-
-if sys.version_info >= (3,0):
-    basestring = str
 
 
 #
@@ -710,8 +704,8 @@ class IrreducibleRepresentation(object):
         elif len(args) == 4 and \
             isinstance(args[0], int) and \
             isinstance(args[1], int) and \
-            isinstance(args[2], basestring) and \
-            isinstance(args[3], basestring):
+            isinstance(args[2], str) and \
+            isinstance(args[3], str):
             self.constructor_order_degen_mulliken(*args)
         else:
             raise ValidationError('IrreducibleRepresentation::constructor: Inappropriate configuration of constructor arguments')
@@ -872,7 +866,7 @@ class CharacterTable(object):
         if len(args) == 0:
             pass
         elif len(args) == 1 and \
-            isinstance(args[0], basestring):
+            isinstance(args[0], str):
             self.constructor_schoenflies(*args)
         elif len(args) == 1 and \
             isinstance(args[0], int):
@@ -1529,13 +1523,13 @@ class PointGroup(object):
 #        if len(args) == 0:
 #            self.constructor_zero_ao_basis()
         if len(args) == 1 and \
-            isinstance(args[0], basestring):
+            isinstance(args[0], str):
             self.constructor_schoenflies(*args)
         elif len(args) == 1 and \
             isinstance(args[0], int):
             self.constructor_bits(*args)
         elif len(args) == 2 and \
-            isinstance(args[0], basestring) and \
+            isinstance(args[0], str) and \
             len(args[1]) == 3:
             self.constructor_schoenflies_origin(*args)
         elif len(args) == 2 and \
@@ -1609,6 +1603,10 @@ class PointGroup(object):
     def char_table(self):
         """Returns the CharacterTable for this point group."""
         return CharacterTable(self.PYbits)
+
+    def order(self):
+        """Returns the order of this point group."""
+        return self.char_table().order()
 
 #    def equiv(self, grp, tol=1.0e-6):
 #        """Returns 1 if the point groups *self* and *grp* are equivalent,

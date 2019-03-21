@@ -3,7 +3,7 @@
 #
 # Psi4: an open-source quantum chemistry software package
 #
-# Copyright (c) 2007-2017 The Psi4 Developers.
+# Copyright (c) 2007-2019 The Psi4 Developers.
 #
 # The copyrights for code used from other parties are included in
 # the corresponding files.
@@ -26,8 +26,6 @@
 # @END LICENSE
 #
 
-from __future__ import absolute_import
-from __future__ import print_function
 import os
 import re
 import copy
@@ -35,6 +33,7 @@ import math
 import collections
 
 import numpy as np
+
 import qcelemental as qcel
 
 from ..vecutil import *
@@ -50,7 +49,7 @@ ZERO = 1.0E-14
 NOISY_ZERO = 1.0E-8
 
 
-class LibmintsMolecule(object):
+class LibmintsMolecule():
     """Class to store the elements, coordinates, fragmentation pattern,
     charge, multiplicity of a molecule. Largely replicates psi4's libmints
     Molecule class, developed by Justin M. Turney and Andy M. Simmonett
@@ -92,6 +91,8 @@ class LibmintsMolecule(object):
         self.PYcomment = ''
         # Molecule origin
         self.PYprovenance = []
+        # Molecule connectivity
+        self.PYconnectivity = []
         # The molecular charge
         self.PYmolecular_charge = 0
         # The multiplicity (defined as 2Ms + 1)
@@ -201,9 +202,9 @@ class LibmintsMolecule(object):
         """Get molecule provenance
 
         >>> print(H2OH2O.provenance())
-        [{'creator': 'QCElemental',
-          'routine': 'qcelemental.molparse.from_arrays',
-          'version': 'v0.1.0a+8.g465f4e3'}]
+        {'creator': 'QCElemental',
+         'routine': 'qcelemental.molparse.from_arrays',
+         'version': 'v0.1.0a+8.g465f4e3'}
 
         """
         return copy.deepcopy(self.PYprovenance)
@@ -215,6 +216,23 @@ class LibmintsMolecule(object):
 
         """
         self.PYprovenance = provenance
+
+    def connectivity(self):
+        """Get molecule connectivity
+
+        >>> print(H2OH2O.connectivity())
+        [(0, 1, 1.0), (0, 2, 1.0)]
+
+        """
+        return copy.deepcopy(self.PYconnectivity)
+
+    def set_connectivity(self, connectivity):
+        """Set molecule connectivity
+
+        >>> H2OH2O.set_connectivity([(0, 1, 1.0), (0, 2, 1.0)])
+
+        """
+        self.PYconnectivity = connectivity
 
     def natom(self):
         """Number of atoms
@@ -251,6 +269,7 @@ class LibmintsMolecule(object):
         """
         if not float(charge).is_integer():
             raise ValidationError('System charge must be integer: {}'.format(charge))
+        self.PYcharge_specified = True
         self.PYmolecular_charge = int(charge)
 
     def multiplicity(self):
@@ -269,6 +288,7 @@ class LibmintsMolecule(object):
         """
         if not float(mult).is_integer() or float(mult) < 0.0:
             raise ValidationError('System multiplicity must be positive integer: {}'.format(mult))
+        self.PYmultiplicity_specified = True
         self.PYmultiplicity = int(mult)
 
     def units(self):
@@ -418,7 +438,7 @@ class LibmintsMolecule(object):
         if math.fabs(self.atoms[atom].Z() - int(self.atoms[atom].Z())) > 0.0:
             print("""WARNING: Obtaining masses from atom with fractional charge...may be incorrect!!!\n""")
             # TODO outfile
-        return z2mass[int(self.atoms[atom].Z())]
+        return qcel.periodictable.to_mass(int(self.atoms[atom].Z()))
 
     def set_mass(self, atom, mass):
         """Set the mass of a particular atom (good for isotopic substitutions).
@@ -785,7 +805,7 @@ class LibmintsMolecule(object):
 
             for i in range(self.natom()):
                 geom = self.atoms[i].compute()
-                text += """    %8s%4s """ % (self.symbol(i), "" if self.Z(i) else "(Gh)")
+                text += """      %3s%-7s """ % ("" if self.Z(i) else "Gh(", self.symbol(i) + ("" if self.Z(i) else ")"))
                 for j in range(3):
                     text += """  %17.12f""" % (geom[j])
                 text += "\n"
@@ -823,7 +843,7 @@ class LibmintsMolecule(object):
             text += """    ------------   -----------------  -----------------  -----------------\n"""
 
             for i in range(self.natom()):
-                text += """    %8s%4s """ % (self.symbol(i), "" if self.Z(i) else "(Gh)")
+                text += """      %3s%-7s """ % ("" if self.Z(i) else "Gh(", self.symbol(i) + ("" if self.Z(i) else ")"))
                 text += ("""  %17.12f""" * 3).format(*(self.xyz(i)))
                 text += "\n"
             text += "\n"
@@ -849,7 +869,7 @@ class LibmintsMolecule(object):
             text += """    ------------   -----------------  -----------------  -----------------\n"""
 
             for i in range(self.natom()):
-                text += """    %8s%4s """ % (self.symbol(i), "" if self.Z(i) else "(Gh)")
+                text += """      %3s%-7s """ % ("" if self.Z(i) else "Gh(", self.symbol(i) + ("" if self.Z(i) else ")"))
                 text += ("""  %17.12f""" * 3).format(*self.xyz(i) * qcel.constants.bohr2angstroms)
                 text += "\n"
             text += "\n"
@@ -875,7 +895,7 @@ class LibmintsMolecule(object):
 
             for i in range(self.nallatom()):
                 geom = self.full_atoms[i].compute()
-                text += """    %8s%4s """ % (self.fsymbol(i), "" if self.fZ(i) else "(Gh)")
+                text += """      %3s%-7s """ % ("" if self.fZ(i) else "Gh(", self.fsymbol(i) + ("" if self.fZ(i) else ")"))
                 for j in range(3):
                     text += """  %17.12f""" % (geom[j])
                 text += "\n"
@@ -1026,6 +1046,7 @@ class LibmintsMolecule(object):
         else:
             raise ValidationError("Molecule::add_atom: Adding atom on top of an existing atom.")
 
+    # For use with atoms defined with ZMAT or variable values, i.e., not Cartesian and NumberValue
     def add_unsettled_atom(self, Z, anchor, symbol, mass=0.0, charge=0.0, label='', A=-1):
         self.lock_frame = False
         numEntries = len(anchor)
@@ -1225,17 +1246,19 @@ class LibmintsMolecule(object):
         else:
             return geom.tolist()
 
-    def full_geometry(self):
+    def full_geometry(self, np_out=False):
         """Returns the full (dummies included) geometry in Bohr as a N X 3 array.
 
         >>> print(H2OH2O.full_geometry())
         [[-2.930978460188563, -0.21641143673806384, 0.0], [-3.655219780069251, 1.4409218455037016, 0.0], [-1.1332252981904638, 0.0769345303220403, 0.0], [0.0, 0.0, 0.0], [2.5523113582286716, 0.21064588230662976, 0.0], [3.175492014248769, -0.7062681346308132, -1.4334725450878665], [3.175492014248769, -0.7062681346308132, 1.4334725450878665]]
 
         """
-        geom = []
-        for at in range(self.nallatom()):
-            geom.append([self.fx(at), self.fy(at), self.fz(at)])
-        return geom
+        geom = np.asarray([self.full_atoms[at].compute() for at in range(self.nallatom())])
+        geom *= self.input_units_to_au()
+        if np_out:
+            return geom
+        else:
+            return geom.tolist()
 
     def set_geometry(self, geom):
         """Sets the geometry, given a N X 3 array of coordinates *geom* in Bohr.
@@ -1733,37 +1756,37 @@ class LibmintsMolecule(object):
         """
         raise FeatureNotImplemented('Molecule::set_com_fixed')  # FINAL
 
-    def inertia_tensor(self):
-        """Compute inertia tensor.
-
-        >>> print(H2OH2O.inertia_tensor())
-        [[8.704574864178731, -8.828375721817082, 0.0], [-8.828375721817082, 280.82861714077666, 0.0], [0.0, 0.0, 281.249500988553]]
-
-        """
-        tensor = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-
-        for i in range(self.natom()):
-            # I(alpha, alpha)
-            tensor[0][0] += self.mass(i) * (self.y(i) * self.y(i) + self.z(i) * self.z(i))
-            tensor[1][1] += self.mass(i) * (self.x(i) * self.x(i) + self.z(i) * self.z(i))
-            tensor[2][2] += self.mass(i) * (self.x(i) * self.x(i) + self.y(i) * self.y(i))
-
-            # I(alpha, beta)
-            tensor[0][1] -= self.mass(i) * self.x(i) * self.y(i)
-            tensor[0][2] -= self.mass(i) * self.x(i) * self.z(i)
-            tensor[1][2] -= self.mass(i) * self.y(i) * self.z(i)
-
-        # mirror
-        tensor[1][0] = tensor[0][1]
-        tensor[2][0] = tensor[0][2]
-        tensor[2][1] = tensor[1][2]
-
-        # Check the elements for zero and make them a hard zero.
-        for i in range(3):
-            for j in range(3):
-                if math.fabs(tensor[i][j]) < ZERO:
-                    tensor[i][j] = 0.0
-        return tensor
+#    def inertia_tensor(self):
+#        """Compute inertia tensor.
+#
+#        >>> print(H2OH2O.inertia_tensor())
+#        [[8.704574864178731, -8.828375721817082, 0.0], [-8.828375721817082, 280.82861714077666, 0.0], [0.0, 0.0, 281.249500988553]]
+#
+#        """
+#        tensor = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+#
+#        for i in range(self.natom()):
+#            # I(alpha, alpha)
+#            tensor[0][0] += self.mass(i) * (self.y(i) * self.y(i) + self.z(i) * self.z(i))
+#            tensor[1][1] += self.mass(i) * (self.x(i) * self.x(i) + self.z(i) * self.z(i))
+#            tensor[2][2] += self.mass(i) * (self.x(i) * self.x(i) + self.y(i) * self.y(i))
+#
+#            # I(alpha, beta)
+#            tensor[0][1] -= self.mass(i) * self.x(i) * self.y(i)
+#            tensor[0][2] -= self.mass(i) * self.x(i) * self.z(i)
+#            tensor[1][2] -= self.mass(i) * self.y(i) * self.z(i)
+#
+#        # mirror
+#        tensor[1][0] = tensor[0][1]
+#        tensor[2][0] = tensor[0][2]
+#        tensor[2][1] = tensor[1][2]
+#
+#        # Check the elements for zero and make them a hard zero.
+#        for i in range(3):
+#            for j in range(3):
+#                if math.fabs(tensor[i][j]) < ZERO:
+#                    tensor[i][j] = 0.0
+#        return tensor
 
     def rotational_constants(self, tol=FULL_PG_TOL, return_units='cm^-1'):
         """Compute the rotational constants and moments of inertia.
@@ -1822,7 +1845,7 @@ class LibmintsMolecule(object):
         """
         rot_const = self.rotational_constants()
         for i in range(3):
-            if rot_const[i] == None:
+            if rot_const[i] is None:
                 rot_const[i] = 0.0
 
         # Determine degeneracy of rotational constants.
@@ -1926,36 +1949,36 @@ class LibmintsMolecule(object):
 
     # <<< Methods for Saving >>>
 
-    def save_string_xyz(self, save_ghosts=True):
-        """Save a string for a XYZ-style file.
-
-        >>> H2OH2O.save_string_xyz()
-        6
-        _
-         O   -1.551007000000   -0.114520000000    0.000000000000
-         H   -1.934259000000    0.762503000000    0.000000000000
-         H   -0.599677000000    0.040712000000    0.000000000000
-         O    1.350625000000    0.111469000000    0.000000000000
-         H    1.680398000000   -0.373741000000   -0.758561000000
-         H    1.680398000000   -0.373741000000    0.758561000000
-
-        """
-        factor = 1.0 if self.PYunits == 'Angstrom' else qcel.constants.bohr2angstroms
-
-        N = self.natom()
-        if not save_ghosts:
-            N = 0
-            for i in range(self.natom()):
-                if self.Z(i):
-                    N += 1
-        text = "%d\n\n" % (N)
-
-        for i in range(self.natom()):
-            [x, y, z] = self.atoms[i].compute()
-            if save_ghosts or self.Z(i):
-                text += '%2s %17.12f %17.12f %17.12f\n' % ((self.symbol(i) if self.Z(i) else "Gh"), \
-                    x * factor, y * factor, z * factor)
-        return text
+#    def save_string_xyz(self, save_ghosts=True):
+#        """Save a string for a XYZ-style file.
+#
+#        >>> H2OH2O.save_string_xyz()
+#        6
+#        _
+#         O   -1.551007000000   -0.114520000000    0.000000000000
+#         H   -1.934259000000    0.762503000000    0.000000000000
+#         H   -0.599677000000    0.040712000000    0.000000000000
+#         O    1.350625000000    0.111469000000    0.000000000000
+#         H    1.680398000000   -0.373741000000   -0.758561000000
+#         H    1.680398000000   -0.373741000000    0.758561000000
+#
+#        """
+#        factor = 1.0 if self.PYunits == 'Angstrom' else qcel.constants.bohr2angstroms
+#
+#        N = self.natom()
+#        if not save_ghosts:
+#            N = 0
+#            for i in range(self.natom()):
+#                if self.Z(i):
+#                    N += 1
+#        text = "%d\n\n" % (N)
+#
+#        for i in range(self.natom()):
+#            [x, y, z] = self.atoms[i].compute()
+#            if save_ghosts or self.Z(i):
+#                text += '%2s %17.12f %17.12f %17.12f\n' % ((self.symbol(i) if self.Z(i) else "Gh"), \
+#                    x * factor, y * factor, z * factor)
+#        return text
 
     def save_xyz(self, filename, save_ghosts=True):
         """Save an XYZ file.
@@ -3259,7 +3282,6 @@ def compute_atom_map(mol, tol=0.05):
                 np3[ii] = 0
                 for jj in range(3):
                     np3[ii] += so[ii][jj] * ac[jj]
-
             atom_map[i][g] = mol.atom_at_position(np3, tol)
             if atom_map[i][g] < 0:
                 print("""  Molecule:\n""")
