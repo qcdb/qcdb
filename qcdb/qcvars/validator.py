@@ -11,7 +11,7 @@ except NameError:
     basestring = str
 
 
-def certify(dicary):
+def certify(dicary, plump=False, nat=None):
     """
 
     Parameters
@@ -24,6 +24,8 @@ def certify(dicary):
     for pv, var in dicary.items():
         if pv in qcvardefs.keys():
             doi = qcvardefs[pv].get('doi', None)
+            if plump and isinstance(var, np.ndarray) and var.ndim == 1:
+                var = var.reshape(eval(qcvardefs[pv]['dimension'].format(nat=nat)))
             calcinfo.append(QCAspect(pv, qcvardefs[pv]['units'], var, '', doi, qcvardefs[pv]['glossary']))
 
         else:

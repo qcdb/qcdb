@@ -5,6 +5,7 @@ pp = pprint.PrettyPrinter(width=120)
 import inspect
 
 import numpy as np
+import qcelemental as qcel
 
 from .. import __version__
 from .. import qcvars
@@ -96,12 +97,18 @@ def psi4_plant(jobrec):  # jobrec@i -> psi4@i
     # NOTE TODO very limited OPTIONS HANDSHAKE
     muster_inherited_options(opts)
 
+    psi4rec['json']['schema_name'] = 'qcschema_input'
+    psi4rec['json']['schema_version'] = 1
     omem = opts.scroll['QCDB'].pop('MEMORY')
     psi4rec['json']['memory'] = omem.value
-    psi4rec['json']['molecule'] = {'qm': jobrec['molecule']}
+    psi4rec['json']['molecule'] = qcel.molparse.to_schema(jobrec['molecule'], dtype=2)
     psi4rec['json']['driver'] = jobrec['driver']
     mtd = jobrec['method']
-    psi4rec['json']['method'] = mtd[3:] if mtd.startswith('p4-') else mtd
+    psi4rec['json']['model'] = {
+        'method': mtd[3:] if mtd.startswith('p4-') else mtd,
+        'basis': '(auto)',
+    }
+    psi4rec['json']['extras'] = {'wfn_qcvars_only': True}
     #psi4rec['json']['args'] = 
     psi4rec['json']['kwargs'] = jobrec['kwargs']
     #psi4rec['json']['scratch_location'] = 
@@ -120,7 +127,9 @@ def psi4_plant(jobrec):  # jobrec@i -> psi4@i
     for k, v in opts.scroll['PSI4'].items():
         if v.disputed():
             popts[k] = v.value
-    psi4rec['json']['options'] = popts
+    psi4rec['json']['keywords'] = popts
+    if 'BASIS' in psi4rec['json']['keywords']:
+        psi4rec['json']['model']['basis'] =  psi4rec['json']['keywords']['BASIS']
 
     # Handle qcdb keywords implying cfour keyword values
 #    if core.get_option('CFOUR', 'TRANSLATE_PSI4'):
@@ -158,7 +167,7 @@ def psi4_harvest(jobrec, psi4rec):  # jobrec@i, psi4rec@io -> jobrec@io
         raise KeyError('Required fields missing from ({})'.format(
             psi4rec.keys())) from err
 
-    if psi4rec['error']:
+    if not psi4rec['success']:
         raise RuntimeError(psi4rec['error'])
 
     #c4files = {}
@@ -173,12 +182,9 @@ def psi4_harvest(jobrec, psi4rec):  # jobrec@i, psi4rec@io -> jobrec@io
     #        c4files[fl] = cfourrec[field]
 
     # Absorb results into qcdb data structures
-    progvars = PreservingDict(psi4rec['psivars'])
-    import psi4
-    progarrs = {k: np.array(psi4.core.Matrix.from_serial(v)) for k, v in psi4rec['psiarrays'].items()}
-    progvars.update(progarrs)
+    progvars = PreservingDict(psi4rec['extras']['qcvars'])
     qcvars.build_out(progvars)
-    calcinfo = qcvars.certify(progvars)
+    calcinfo = qcvars.certify(progvars, plump=True, nat=len(jobrec['molecule']['mass']))
 
     jobrec['raw_output'] = psi4rec['raw_output']
     jobrec['qcvars'] = calcinfo

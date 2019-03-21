@@ -109,10 +109,10 @@ def psi4_subprocess(psi4rec):  # psi4rec@i -> psi4rec@io
         spcallstdout += data
     psi4rec['stdout'] = spcallstdout
 
-    with open(inputjson, 'rb') as handle:
-        psi4rec['json'] = bson.loads(handle.read())
-    #with open(inputjson, 'r') as handle:
-    #    psi4rec['json'] = json.load(handle)
+    #with open(inputjson, 'rb') as handle:
+    #    psi4rec['json'] = bson.loads(handle.read())
+    with open(inputjson, 'r') as handle:
+        psi4rec['json'] = json.load(handle)
 
     for fl in ['grid_esp.dat']:
         fullpath = tmpdir + os.sep + fl
