@@ -1307,89 +1307,9 @@ class Molecule(LibmintsMolecule):
         else:
             return Molecule.from_dict(molrec)
 
-#    def to_string(self, dtype, units='Angstrom', atom_format=None, ghost_format=None, width=17, prec=12):
-#        """Format a string representation of QM molecule.
-#
-#        Parameters
-#        ----------
-#        dtype : {'xyz'}
-#            Overall string format. Note that it's possible to request variations
-#            that don't fit the dtype spec so may not be re-readable (e.g., ghost
-#            and mass in nucleus label with 'xyz').
-#        units : {'Angstrom', 'Bohr'}
-#            Units in which to write string. There is not an option to write in
-#            intrinsic/input units. For `dtype='xyz', units='Bohr'` where the
-#            format doesn't have a slot to specify units, "au" is added so that
-#            readable as 'xyz+'.
-#        atom_format : str, optional
-#            General format is '{elem}'. A format string that may contain fields
-#            'elea' (-1 will be ''), 'elez', 'elem', 'mass', 'elbl' in any
-#            arrangement. For example if a format naturally uses element symbol
-#            and you want atomic number instead with mass info, too, pass
-#            '{elez}@{mass}'. See `ghost_format` for handling field 'real'.
-#        ghost_format : str, optional
-#            General format is '@{elem}'. Like `atom_format`, but this formatter
-#            is used when `real=False`. To suppress ghost atoms, use `ghost_format=''`.
-#        width : int, optional
-#            Field width for formatting coordinate float.
-#        prec : int, optional
-#            Number of decimal places for formatting coordinate float.
-#
-#        Returns
-#        -------
-#        smol : str
-#            String representation of the molecule.
-#
-#        """
-#        def _atoms_formatter(molrec, atom_format, ghost_format, width, prec, sp):
-#            geom = molrec['geom'].reshape((-1, 3))
-#            nat = geom.shape[0]
-#            fxyz = """{:>{width}.{prec}f}"""
-#            sp = """{:{sp}}""".format('', sp=sp)
-#
-#            atoms = []
-#            for iat in range(nat):
-#                atom = []
-#                atominfo = {'elea': '' if molrec['elea'][iat] == -1 else molrec['elea'][iat],
-#                            'elez': molrec['elez'][iat],
-#                            'elem': molrec['elem'][iat],
-#                            'mass': molrec['mass'][iat],
-#                            'elbl': molrec['elbl'][iat]}
-#
-#                if molrec['real'][iat]:
-#                    nuc = """{:{width}}""".format(atom_format.format(**atominfo), width=width)
-#                    atom.append(nuc)
-#                else:
-#                    if ghost_format == '':
-#                        continue
-#                    else:
-#                        nuc = """{:{width}}""".format(ghost_format.format(**atominfo), width=width)
-#                        atom.append(nuc)
-#
-#                atom.extend([fxyz.format(x, width=width, prec=prec) for x in geom[iat]])
-#                atoms.append(sp.join(atom))
-#
-#            return atoms
-#
-#        molrec = self.to_dict(force_units=units, np_out=True)
-#
-#        if dtype == 'xyz':
-#            atom_format = '{elem}' if atom_format is None else atom_format
-#            ghost_format = '@{elem}' if ghost_format is None else ghost_format
-#
-#            atoms = _atoms_formatter(molrec, atom_format, ghost_format, width, prec, 2)
-#            nat = len(atoms)
-#
-#            first_line = """{}{}""".format(str(nat), ' au' if units == 'Bohr' else '')
-#            smol = [first_line, '']
-#            smol.extend(atoms)
-#
-#        return '\n'.join(smol)
-
     def to_string(self, dtype, units='Angstrom', atom_format=None, ghost_format=None, width=17, prec=12):
         """Format a string representation of QM molecule."""
 
-        #molrec = self.to_dict(force_units=units, np_out=True)
         molrec = self.to_dict(np_out=True)
         smol = qcel.molparse.to_string(
             molrec,
