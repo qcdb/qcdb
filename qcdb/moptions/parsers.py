@@ -14,7 +14,19 @@ def enum(inputval):
             raise OptionValidationError(
                 """Not allowed value: {} not in {}""".format(inputval, allowed))
     return closedenum
-            
+
+
+def intenum(inputval):
+    allowed = [int(x) for x in inputval.split()]
+
+    def closedenum(x, allowed=allowed):
+        if x in allowed:
+            return x
+        else:
+            raise OptionValidationError(
+                """Not allowed value: {} not in {}""".format(inputval, allowed))
+    return closedenum
+
 
 def boolean(inputval):
     yes = re.compile(r'^(yes|true|on|1)', re.IGNORECASE)
@@ -27,7 +39,7 @@ def boolean(inputval):
     else:
         raise OptionValidationError(
             """Can't interpret into boolean: {}""".format(inputval))
-         
+
 
 def sphcart(inputval):
     sph = re.compile(r'^(yes|true|on|1|sph|spherical)', re.IGNORECASE)
@@ -40,7 +52,7 @@ def sphcart(inputval):
     else:
         raise OptionValidationError(
             """Can't interpret into boolean True (sph) or False (cart): {}""".format(inputval))
-         
+
 
 def percentage(inputval):
     if 0.0 <= inputval <= 100.0:
@@ -51,11 +63,27 @@ def percentage(inputval):
 
 
 def positive_integer(inputval):
-    if inputval > 0 and isinstance(inputval, int):
-        return inputval
+    if inputval > 0 and float(inputval).is_integer():
+        return int(inputval)
     else:
         raise OptionValidationError(
             'Positive integer number of iterations, if you please: {}'.format(inputval))
+
+
+def nonnegative_integer(inputval):
+    if inputval > -1 and float(inputval).is_integer():
+        return int(inputval)
+    else:
+        raise OptionValidationError(
+            'Non-negative integer number, if you please: {}'.format(inputval))
+
+
+def integer(inputval):
+    if float(inputval).is_integer():
+        return int(inputval)
+    else:
+        raise OptionValidationError(
+            'Integer number, if you please: {}'.format(inputval))
 
 
 def parse_convergence(inputval):

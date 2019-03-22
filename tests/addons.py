@@ -92,3 +92,6 @@ using_geometric = pytest.mark.skipif(_plugin_import('geometric') is False,
 
 using_dftd3 = pytest.mark.skipif(_which('dftd3') is False,
                                 reason='Not detecting executable dftd3. Install package if necessary and add to envvar PATH')
+
+using_gamess = pytest.mark.skipif(_which('rungms') is False,
+                                reason='Not detecting executable rungms. Install program if necessary and add to envvar PATH')

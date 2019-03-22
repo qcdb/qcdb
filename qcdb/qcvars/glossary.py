@@ -50,7 +50,7 @@ qcvardefs['[T] CORRECTION ENERGY'] = {
 #   ACPF DIPOLE Y
 #   ACPF DIPOLE Z
 #
-#   The three components of the dipole [Debye] for the 
+#   The three components of the dipole [Debye] for the
 #   averaged coupled-pair functional level of theory.
 #
 #.. psivar:: ACPF QUADRUPOLE XX
@@ -60,7 +60,7 @@ qcvardefs['[T] CORRECTION ENERGY'] = {
 #   ACPF QUADRUPOLE YZ
 #   ACPF QUADRUPOLE ZZ
 #
-#   The six components of the quadrupole [Debye Ang] for the 
+#   The six components of the quadrupole [Debye Ang] for the
 #   averaged coupled-pair functional level of theory.
 #
 #.. psivar:: ACPF TOTAL ENERGY
@@ -73,7 +73,7 @@ qcvardefs['[T] CORRECTION ENERGY'] = {
 #   AQCC DIPOLE Y
 #   AQCC DIPOLE Z
 #
-#   The three components of the dipole [Debye] for the 
+#   The three components of the dipole [Debye] for the
 #   averaged quadratic coupled-cluster level of theory.
 #
 #.. psivar:: AQCC QUADRUPOLE XX
@@ -83,7 +83,7 @@ qcvardefs['[T] CORRECTION ENERGY'] = {
 #   AQCC QUADRUPOLE YZ
 #   AQCC QUADRUPOLE ZZ
 
-#   The six components of the quadrupole [Debye Ang] for the 
+#   The six components of the quadrupole [Debye Ang] for the
 #   averaged quadratic coupled-cluster level of theory.
 #
 #.. psivar:: AQCC TOTAL ENERGY
@@ -104,7 +104,7 @@ qcvardefs['[T] CORRECTION ENERGY'] = {
 #   method requested through cbs().
 #
 #.. psivar:: CC ROOT n DIPOLE X
-#   CC ROOT n DIPOLE Y 
+#   CC ROOT n DIPOLE Y
 #   CC ROOT n DIPOLE Z
 #
 #   The three components of the dipole [Debye] for the requested
@@ -124,7 +124,7 @@ qcvardefs['[T] CORRECTION ENERGY'] = {
 #   CC ROOT n CORRELATION ENERGY
 #
 #   The total electronic energy [H] and correlation energy component [H]
-#   for the requested coupled cluster level of theory and root 
+#   for the requested coupled cluster level of theory and root
 #   *n* (numbering starts at GS = 0).
 #
 #.. psivar:: CC TOTAL ENERGY
@@ -159,8 +159,8 @@ qcvardefs['[T] CORRECTION ENERGY'] = {
 
 #.. psivar:: CC2 DIPOLE POLARIZABILITY @ xNM
 #
-#   The dipole polarizability [au] calculated at the CC2 level 
-#   for a given (x) wavelength, (x) rounded to nearest integer. 
+#   The dipole polarizability [au] calculated at the CC2 level
+#   for a given (x) wavelength, (x) rounded to nearest integer.
 #
 #.. psivar:: CC2 SPECIFIC ROTATION (LEN) @ xNM
 #
@@ -169,12 +169,12 @@ qcvardefs['[T] CORRECTION ENERGY'] = {
 #
 #.. psivar:: CC2 SPECIFIC ROTATION (VEL) @ xNM
 #
-#   The specific rotation [deg/(dm (g/cm^3))] calculated at the CC2 level in the 
+#   The specific rotation [deg/(dm (g/cm^3))] calculated at the CC2 level in the
 #   velocity gauge for a given (x) wavelength, (x) rounded to nearest integer.
 #
 #.. psivar:: CC2 SPECIFIC ROTATION (MVG) @ xNM
 #
-#   The specific rotation [deg/(dm (g/cm^3))] calculated at the CC2 level in the 
+#   The specific rotation [deg/(dm (g/cm^3))] calculated at the CC2 level in the
 #   modified velocity gauge for a given (x) wavelength, (x) rounded to nearest integer.
 #
 #.. psivar:: CC QUADRUPOLE XX
@@ -197,7 +197,7 @@ qcvardefs['[T] CORRECTION ENERGY'] = {
 #   CCn CORRELATION ENERGY
 #
 #   The total electronic energy [H] and correlation energy component [H]
-#   for the requested full coupled-cluster (CCSD, CCSDT, up to CC\ *n*) 
+#   for the requested full coupled-cluster (CCSD, CCSDT, up to CC\ *n*)
 #   level of theory.
 #
 #.. psivar:: CCSD(T) TOTAL ENERGY
@@ -362,30 +362,49 @@ qcvardefs['[T] CORRECTION ENERGY'] = {
 #   The six components of the quadrupole [Debye Ang] for the requested
 #   configuration interaction level of theory and root *n*.
 
-#.. psivar:: CI ROOT n TOTAL ENERGY
-#   CI ROOT n CORRELATION ENERGY
-#
-#   The total electronic energy [H] and correlation energy component [H]
-#   for the requested configuration interaction level of theory and root 
-#   *n* (numbering starts at 0).
-#
+
+for root in range(4):
+    qcvardefs[f'CI ROOT {root} TOTAL ENERGY'] = {
+        'units': 'Eh',
+        'glossary': """
+       The total electronic energy [H] and correlation energy component [H]
+       for the requested configuration interaction level of theory and root
+       *n* (numbering starts at 0).
+    """}
+
+    qcvardefs[f'CI ROOT {root} CORRELATION ENERGY'] = {
+        'units': 'Eh',
+        'glossary': """
+       The total electronic energy [H] and correlation energy component [H]
+       for the requested configuration interaction level of theory and root
+       *n* (numbering starts at 0).
+    """}
+
 #.. psivar:: CI STATE-AVERAGED TOTAL ENERGY
 #   CI STATE-AVERAGED CORRELATION ENERGY
 #
 #   The total electronic energy [H] and correlation energy component [H]
 #   for state-averaged CI/CASSCF levels of theory.
-#   
-#.. psivar:: CI TOTAL ENERGY
-#   CI CORRELATION ENERGY
-#
-#   The total electronic energy [H] and correlation energy component [H]
-#   for the requested configuration interaction level of theory and root.
-#
+
+qcvardefs['CI TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': """
+   The total electronic energy [H]
+   for the requested configuration interaction level of theory and root.
+"""}
+
+qcvardefs['CI CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': """
+   The correlation energy component [H]
+   for the requested configuration interaction level of theory and root.
+"""}
+
 #.. psivar:: CISD DIPOLE X
 #   CISD DIPOLE Y
 #   CISD DIPOLE Z
 #
-#   The three components of the dipole [Debye] for the 
+#   The three components of the dipole [Debye] for the
 #   configuration interaction singles and doubles level of theory and root.
 #
 #.. psivar:: CISD QUADRUPOLE XX
@@ -395,7 +414,7 @@ qcvardefs['[T] CORRECTION ENERGY'] = {
 #   CISD QUADRUPOLE YZ
 #   CISD QUADRUPOLE ZZ
 #
-#   The six components of the quadrupole [Debye Ang] for the 
+#   The six components of the quadrupole [Debye Ang] for the
 #   configuration interaction singles and doubles level of theory and root.
 
 #.. psivar:: CISD TOTAL ENERGY
@@ -496,7 +515,7 @@ def define_prop_qcvars(mtd, extra=''):
            The {} component of the dipole for the {} level of theory
            and root *n* (number starts at GS = 0). {}
     """.format(i, mtd, extra)}
-    
+
     for i in _quad_components:
         qcvardefs['{} QUADRUPOLE {}'.format(mtd, i)] = {
             'units': 'D A',
@@ -519,7 +538,7 @@ def define_scf_qcvars(mtd, is_dft=True, extra='', is_dh=False):
     if is_dft:
         qcvardefs['{} FUNCTIONAL TOTAL ENERGY'.format(mtd)] = {
             'units': 'Eh',
-            'glossary': r""" 
+            'glossary': r"""
            The total electronic energy for the underlying functional of the
            requested DFT method {}, without any dispersion correction. {}
         """.format(mtd, extra)}
@@ -528,7 +547,7 @@ def define_scf_qcvars(mtd, is_dft=True, extra='', is_dh=False):
         qcvardefs['{} DOUBLE-HYBRID CORRECTION ENERGY'.format(mtd)] = {
             'units': 'Eh',
             'glossary': r"""
-           The scaled MP2 correlation energy correction appended to an 
+           The scaled MP2 correlation energy correction appended to an
            underlying functional {}. {}
         """.format(mtd, extra)}
 
@@ -538,7 +557,7 @@ def define_scf_qcvars(mtd, is_dft=True, extra='', is_dh=False):
             'glossary': """
            The {} component of the dipole for the {} level of theory. {}
     """.format(i, mtd, extra)}
-    
+
     for i in _quad_components:
         qcvardefs['{} QUADRUPOLE {}'.format(mtd, i)] = {
             'units': 'D A',
@@ -566,7 +585,7 @@ def define_dashd_qcvars(fctl, dashes, extra=''):
 
         qcvardefs['{}-{} TOTAL ENERGY'.format(fctl.upper(), dd.upper())] = {
             'units': 'Eh',
-            'glossary': r""" 
+            'glossary': r"""
            The total electronic energy for the underlying functional of the
            requested DFT method {}, with dispersion correction. {}
         """.format(fctl, extra)}
@@ -613,10 +632,10 @@ qcvardefs['DFT FUNCTIONAL TOTAL ENERGY'] = {
 qcvardefs['DFT TOTAL ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
-   The total electronic energy for the requested DFT method, 
+   The total electronic energy for the requested DFT method,
    :math:`E_{\text{DFT}}` in Eq. :eq:`DFTterms`.
 
-   .. math:: 
+   .. math::
       :nowrap:
       :label: DFTterms
 
@@ -664,22 +683,30 @@ qcvardefs['DISPERSION CORRECTION GRADIENT'] = {
 qcvardefs['DOUBLE-HYBRID CORRECTION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
-   The scaled MP2 correlation energy correction [H] appended to an 
+   The scaled MP2 correlation energy correction [H] appended to an
    underlying functional when a DH-DFT method is requested.
    Quantity :math:`E_{\text{DH}}` in Eq. :eq:`DFTterms`.
 """}
 
-#.. psivar:: FCI TOTAL ENERGY
-#   FCI CORRELATION ENERGY
-#
-#   The total electronic energy [H] and correlation energy component [H]
-#   for the full configuration interaction level of theory.
+qcvardefs['FCI TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total electronic energy
+   for the full configuration interaction level of theory.
+"""}
+
+qcvardefs['FCI CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The electronic correlation energy component [H]
+   for the full configuration interaction level of theory.
+"""}
 
 qcvardefs['HF TOTAL ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    The total electronic energy for the Hartree--Fock method, without
-   any dispersion correction; the first three (or four, since 
+   any dispersion correction; the first three (or four, since
    :math:`E_{xc} = 0`) terms in Eq. :eq:`SCFterms`. Quantity :math:`E_{\text{HF}}`
    in Eq. :eq:`SCFterms`.
 """}
@@ -722,7 +749,7 @@ qcvardefs['DMRG-CASPT2 TOTAL ENERGY'] = {
 qcvardefs['MP2 TOTAL ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
-   The total electronic energy 
+   The total electronic energy
    for the MP2 level of theory.
 """}
 
@@ -734,10 +761,10 @@ qcvardefs['MP2 CORRELATION ENERGY'] = {
 
 .. psivar:: MP2 CORRELATION ENERGY
 
-   The MP2 correlation energy for the requested DFT method, 
+   The MP2 correlation energy for the requested DFT method,
    :math:`E_{\text{MP2corl}}` in Eq. :eq:`MP2corl`.
 
-   .. math:: 
+   .. math::
       :nowrap:
       :label: MP2corl
 
@@ -793,7 +820,7 @@ qcvardefs['MP2 DOUBLES ENERGY'] = {
 qcvardefs['SCS-MP2 CORRELATION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
-   The MP2-like correlation energy by reweighting 
+   The MP2-like correlation energy by reweighting
    MP2 DOUBLES ENERGY by 6/5 opposite-spin
    and 1/3 same-spin contributions, with any singles
    carried along.
@@ -819,7 +846,7 @@ qcvardefs['CUSTOM SCS-MP2 CORRELATION ENERGY'] = {
 qcvardefs['CUSTOM SCS-MP2 TOTAL ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
-   The total energy built from 
+   The total energy built from
    CUSTOM SCS-MP2 CORRELATION ENERGY and reference.
 """}
 
@@ -827,7 +854,7 @@ qcvardefs['SCS(N)-MP2 CORRELATION ENERGY'] = {
     'units': 'Eh',
     'doi': '10.1021/ct6002737',
     'glossary': r"""
-   The MP2-like correlation energy by reweighting 
+   The MP2-like correlation energy by reweighting
    MP2 DOUBLES ENERGY by 0 opposite-spin
    and 1.76 same-spin contributions, with any singles
    carried along.
@@ -983,7 +1010,7 @@ qcvardefs['MP6 CORRELATION ENERGY'] = {
 qcvardefs['CCSD TOTAL ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
-   The total electronic energy 
+   The total electronic energy
    for the coupled cluster singles and doubles level of theory.
 """}
 
@@ -995,10 +1022,10 @@ qcvardefs['CCSD CORRELATION ENERGY'] = {
 
 .. psivar:: CCSD CORRELATION ENERGY
 
-   The CCSD correlation energy for the requested DFT method, 
+   The CCSD correlation energy for the requested DFT method,
    :math:`E_{\text{CCSDcorl}}` in Eq. :eq:`CCSDcorl`.
 
-   .. math:: 
+   .. math::
       :nowrap:
       :label: CCSDcorl
 
@@ -1030,7 +1057,7 @@ qcvardefs['CCSD OPPOSITE-SPIN CORRELATION ENERGY'] = {
 qcvardefs['CCSD(T) TOTAL ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
-   The total electronic energy 
+   The total electronic energy
    for the coupled cluster singles and doubles plus perturbative triples level of theory.
 """}
 
@@ -1044,7 +1071,7 @@ qcvardefs['CCSD(T) CORRELATION ENERGY'] = {
 qcvardefs['CCSD[T] TOTAL ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
-   The total electronic energy 
+   The total electronic energy
    for the coupled cluster singles and doubles plus bracket perturbative triples level of theory.
 """}
 
@@ -1188,7 +1215,7 @@ qcvardefs['SCF TOTAL ENERGY'] = {
    variables less this quantity. Constructed from Eq. :eq:`SCFterms`,
    where this quantity is :math:`E_{\text{SCF}}`.
 
-   .. math:: 
+   .. math::
       :nowrap:
       :label: SCFterms
 
@@ -1250,26 +1277,26 @@ qcvardefs['B97-D TOTAL ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    functional energy for B97-D w/ disp correction ORPHAN
-"""} 
+"""}
 
 qcvardefs['B97-D FUNCTIONAL TOTAL ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    functional energy for B97-D w/o disp correction ORPHAN
-"""} 
+"""}
 
 # why not normal for this?
 qcvardefs['B97-0 TOTAL ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    functional energy for original hybrid B97-0 w/o disp correction ORPHAN
-"""} 
+"""}
 
 qcvardefs['B97-0 FUNCTIONAL TOTAL ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    functional energy for original hybrid B97-0 w/o disp correction ORPHAN
-"""} 
+"""}
 
 #.. psivar:: UNCP-CORRECTED 2-BODY INTERACTION ENERGY
 #
@@ -1316,7 +1343,7 @@ define_scf_qcvars('SOGGA11-X', is_dh=False)
 define_scf_qcvars('B2GPPLYP', is_dh=True)
 define_scf_qcvars('PTPSS', is_dh=True)
 define_scf_qcvars('PWPB95', is_dh=True)
-define_scf_qcvars('DSD-BLYP', is_dh=True), 
+define_scf_qcvars('DSD-BLYP', is_dh=True),
 define_scf_qcvars('PBE0-DH', is_dh=True)
 #define_scf_qcvars('B97-D', is_dh=False)
 define_dashd_qcvars('bp86', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
