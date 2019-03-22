@@ -35,6 +35,8 @@ import hashlib
 import itertools
 import collections
 
+import qcelemental as qcel
+
 from .exceptions import *
 from .util import search_file
 from .molecule import Molecule
@@ -1256,11 +1258,12 @@ class BasisSet(object):
             info.append(atominfo)
         return info
 
-    def print_detail_gamess(self, out=None, numbersonly=False):
+    def print_detail_gamess(self, out=None, numbersonly=False, return_list=False):
         """Prints a detailed PSI3-style summary of the basis (per-atom)
         *  @param out The file stream to use for printing. Defaults to outfile.
 
         """
+        blst = []
         text = ''
         if not numbersonly:
             text += self.print_summary(out=None)
@@ -1271,19 +1274,26 @@ class BasisSet(object):
         text += """    ****\n"""
 
         for uA in range(self.molecule.nunique()):
+            if return_list:
+                text = ''
             A = self.molecule.unique(uA)
             if not numbersonly:
-                text += """%s\n""" % (z2element[self.molecule.Z(A)])
+                text += """%s\n""" % (qcel.periodictable.to_symbol(self.molecule.Z(A)))
             first_shell = self.center_to_shell[A]
             n_shell = self.center_to_nshell[A]
 
             for Q in range(n_shell):
                 text += self.shells[Q + first_shell].pyprint_gamess(outfile=None)
             #text += """    ****\n"""
+            if return_list:
+                blst.append(text)
         text += """\n"""
 
         if out is None:
-            return text
+            if return_list:
+                return blst
+            else:
+                return text
         else:
             with open(out, mode='w') as handle:
                 handle.write(text)

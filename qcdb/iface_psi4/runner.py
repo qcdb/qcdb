@@ -66,9 +66,9 @@ def psi4_driver(jobrec):
 
     psi4rec = psi4_plant(jobrec)
 
-    # test json roundtrip
-    jpsi4rec = json.dumps(psi4rec)
-    psi4rec = json.loads(jpsi4rec)
+#    # test json roundtrip
+#    jpsi4rec = json.dumps(psi4rec)
+#    psi4rec = json.loads(jpsi4rec)
 
     #print('[2] PSI4REC PRE-SUBPROCESS (x@i) <<<')
     #pp.pprint(psi4rec)
@@ -116,8 +116,10 @@ def psi4_plant(jobrec):  # jobrec@i -> psi4@i
 
     #for hookkey, hookfunc in jobrec['hooks']['pre'].items():
     #    psi4rec['json']['in_' + hookkey] = hookfunc()
-    if opts.scroll['PSI4']['GRIDDAT'].value != '':
-        psi4rec['json']['infile_' + 'grid.dat'] = opts.scroll['PSI4']['GRIDDAT'].value
+
+    # March 2019 temporarily suspending GRIDDAT
+    #if opts.scroll['PSI4']['GRIDDAT'].value != '':
+    #    psi4rec['json']['infile_' + 'grid.dat'] = opts.scroll['PSI4']['GRIDDAT'].value
     
     popts = {}
     for k, v in opts.scroll['QCDB'].items():
@@ -183,6 +185,10 @@ def psi4_harvest(jobrec, psi4rec):  # jobrec@i, psi4rec@io -> jobrec@io
 
     # Absorb results into qcdb data structures
     progvars = PreservingDict(psi4rec['extras']['qcvars'])
+    for k in list(progvars.keys()):
+        if k in ['DETCI AVG DVEC NORM', 'MCSCF TOTAL ENERGY']:
+            progvars.pop(k)
+
     qcvars.build_out(progvars)
     calcinfo = qcvars.certify(progvars, plump=True, nat=len(jobrec['molecule']['mass']))
 
