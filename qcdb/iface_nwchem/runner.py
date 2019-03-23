@@ -380,3 +380,13 @@ def write_input(name, dertype, molecule, ropts):
    # print ("#########NWCHEM INPUT END##########")
 
     return nwinput
+
+    if "MP2 OPPOSITE-SPIN CORRELATION ENERGY" in progvars and "MP2 SAME-SPIN CORRELATION ENERGY" in progvars:
+        oss_opt = jobrec['options'].scroll['QCDB']['MP2_OS_SCALE']
+        sss_opt = jobrec['options'].scroll['QCDB']['MP2_SS_SCALE'] 
+        custom_scsmp2_corl = \
+                Decimal(oss_opt.value) * progvars["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] + \
+                Decimal(sss_opt.value) * progvars["MP2 SAME-SPIN CORRELATION ENERGY"]
+        if "MP2 SINGLES ENERGY" in progvars:
+            custom_scsmp2_corl += progvars["MP2 SINGLES ENERGY"]
+        progvars["CUSTOM SCS-MP2 CORRELATION ENERGY"] = custom_scsmp2_corl

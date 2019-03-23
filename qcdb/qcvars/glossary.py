@@ -560,6 +560,22 @@ def define_dashd_qcvars(fctl, dashes, extra=''):
            requested DFT method {}, with dispersion correction. {}
         """.format(fctl, extra)}
 
+
+def define_ex_transition_qcvars(max_root, mtd, sym):
+    mtd = mtd.upper()
+    sym = []
+
+    for i in range(max_root):
+        qcvardefs['EOM-{} ROOT 0 -> ROOT {} EXCITATION ENERGY - {} SYMMETRY'.format(mtd, i+1, sym)] = {
+                'units' :   'Eh',
+                'glossary'  :   """
+                The excitation energy of EOM-{} in {} symmetry from 0 to root {}""".format(mtd, sym, i)}
+    
+    for i in range(max_root):
+        qcvardefs['EOM-{} ROOT 0 -> ROOT {} TOTAL ENERGY - {} SYMMETRY'.format(mtd, i+1, sym)] = {
+                'units' :   'Eh',
+                'glossary'  :   """
+                The total energy of EOM-{} in {} symmetry from 0 to root {}""".format(mtd, sym, i)}
 #TRACELESS QUADRUPOLE POLARIZABILITY XZYY
 #.. psivar:: db_name DATABASE MEAN ABSOLUTE DEVIATION
 #
@@ -987,6 +1003,66 @@ qcvardefs['CCSD CORRELATION ENERGY'] = {
 
 """}
 
+qcvardefs['CCSDT (PBE) TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total electronic energy 
+   for the coupled cluster singles, doubles, and triples level of theory.
+"""}
+
+qcvardefs['CCSDT (PBE) CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The correlation energy component
+   for the coupled cluster singles, doubles, and triples level of theory.
+
+.. psivar:: CCSDT CORRELATION ENERGY
+
+   The CCSDT correlation energy for the requested DFT method, 
+   :math:`E_{\text{CCSDTcorl}}` in Eq. :eq:`CCSDTcorl`.
+
+   .. math:: 
+      :nowrap:
+      :label: CCSDTcorl
+
+         \begin{align*}
+#            E_{\text{CCSDTcorl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
+#                               & = E_{\text{S}} + E_{\text{D}} \\
+         \end{align*}
+
+"""}
+
+qcvardefs['CCSDTQ TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total electronic energy 
+   for the coupled cluster singles, doubles, triples, and quadruples level of theory.
+
+   .. psivar:: CCSDTQ TOTAL ENERGY
+"""}
+
+qcvardefs['CCSDTQ CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The correlation energy component
+   for the coupled cluster singles, doubles, triples, and quadruples level of theory.
+
+.. psivar:: CCSDTQ CORRELATION ENERGY
+
+   The CCSDTQ correlation energy for the requested DFT method, 
+   :math:`E_{\text{CCSDTQcorl}}` in Eq. :eq:`CCSDTQcorl`.
+
+   .. math:: 
+      :nowrap:
+      :label: CCSDTQcorl
+
+         \begin{align*}
+#            E_{\text{CCSDTQcorl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
+#                               & = E_{\text{S}} + E_{\text{D}} \\
+         \end{align*}
+
+"""}
+
 qcvardefs['CCSD SAME-SPIN CORRELATION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
@@ -1013,6 +1089,20 @@ qcvardefs['CCSD(T) TOTAL ENERGY'] = {
 """}
 
 qcvardefs['CCSD(T) CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The correlation energy component
+   for the coupled cluster singles and doubles plus perturbative triples level of theory.
+"""}
+
+qcvardefs['CCSDT TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total electronic energy 
+   for the coupled cluster singles and doubles plus perturbative triples level of theory.
+"""}
+
+qcvardefs['CCSDT CORRELATION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    The correlation energy component
@@ -1278,6 +1368,6 @@ define_dashd_qcvars('blyp', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
 define_dashd_qcvars('pbe0', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
 define_dashd_qcvars('wpbe', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
 #define_dashd_qcvars('wb97x', dashes=['d'])
-
+define_ex_transition_qcvars(4, 'ccsd', ['b1', 'a1'])
 define_prop_qcvars('ccsd')
 define_prop_qcvars('cc')  # TODO reconsider
