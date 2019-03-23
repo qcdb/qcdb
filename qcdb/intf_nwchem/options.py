@@ -631,232 +631,232 @@ def load_nwchem_defaults(options):
             validator=parsers.enum('none low medium high debug'),
             glossary='No print options for the DFT block. Default is none.'))
 
-#CCSD block
-options.add(
-        'nwchem',
-        RottenOption(
-            keyword= 'ccsd_maxiter',
-            default= 20,
-            validator= parsers.positive_integers,
-            glossary= 'Maximum numbers of iterations; iterations default is 20.'))
-options.add(
-        'nwchem',
-        RottenOption(
-            keyword='ccsd_thresh',
-            default= 1.0e-6,
-            validator=parsers.parse_convergence,
-            glossary= 'Convergence threshold for the iterative part of the calculation.'))
-
-#CCSD(T) block
-options.add(
-        'nwchem',
-        RottenOption(
-            keyword= 'ccsd(t)_maxiter',
-            default= 20,
-            validator= parsers.positive_integers,
-            glossary= 'Maximum numbers of iterations; iterations default is 20.'))
-options.add(
-        'nwchem',
-        RottenOption(
-            keyword='ccsd(t)_thresh',
-            default= 1.0e-6,
-            validator=parsers.parse_convergence,
-            glossary= 'Convergence threshold for the iterative part of the calculation.'))
-
-#TCE block
-options.add('nwchem', RottenOption(
-    keyword='tce_dft',
-    default=False,
-    validator=parsers.boolean,
-    glossary='Use DFT as TCE reference wave function. If not specified, default is SCF(HF).'))
-
-options.add('nwchem', RottenOption(
-    keyword='tce_on',
-    default=True,
-    validator=parsers.boolean,
-    glossary='The switch for turning on the Tensor Contraction Engine (TCE). Not necessarily needed for couple cluster methods of singles and doubles (CCSD), but necessary for couple cluster theory for singles, doubles, and triples (CCSDT) and couple cluster theory for singles, doubles, triples, and quadruples (CCSDTQ). Default is on.'
-        ))
-
-options.add('nwchem', RottenOption(
-    keyword='tce',
-    default='',
-    validator=parsers.enum("LCCD CCD LCCSD CCSD CCSD_ACT LR-CCSD EACCSD IPCCSD CC2 CCSDT CCSDTA CCSDTQ CCSDTQ CCSD(T) CCSD[T] CR-CCSD[T] CR-CCSD(T) CCSD(2)_T CCSD(2)_TQ CCSDT(2)_Q LR-CCSD(T) LR-CCSD(TQ)-1 CREOMSD(T) CREOM(T)AC QCISD CISD CISDT CISDTQ MBPT2 MBPT3 MBPT4 MP2 MP3 MP4"),
-    glossary='''Specify TCE correlation models. Options include:
-        LCCD, CCD, LCCSD, CCSD, CCSD_ACT, LR-CCSD, EACCSD, IPCCSD, CC2, CCSDT, CCSDTA, CCSDTQ, CCSD(T), CCSD[T]
-        CR-CCSD[T], CR-CCSD(T), CCSD(2)_T, CCSD(2)_TQ, CCSDT(2)_Q, LR-CCSD(T), LR-CCSD(TQ)-1, CREOMSD(T),
-        CREOM(T)AC, QCISD, CISD, CISDT, CISDTQ, MBPT2, MBPT3, MBPT4.
-        MBP2= MP2, MBPT3= MP3, MBPT4= MP4.'''))
-
-options.add('nwchem', RottenOption(
-    keyword='tce_thresh',
-    default=1.e-4,
-    validator=parsers.parse_convergence,
-    glossary='TCE convergence threshold'))
-
-options.add('nwchem',RottenOption(
-    keyword='tce_maxiter', 
-    default=100, 
-    validator=parsers.positive_integer, 
-    glosssary='TCE max iterations'))
-
-options.add('nwchem', RottenOption(
-    keyword='tce_io',
-    default='',
-    validator=lambda x: x.upper(),
-    glossary='''Parallel I/O scheme specification. Available:
-        FORTRAN, EAF, GA, SF, REPLICATED, DRA, GAEAF'''))
-
-options.add('nwchem', RottenOption(
-    keyword='tce_diis',
-    default=5,
-    validator=parsers.postive_integer,
-    glossary='''Number of iterations for a DIIS extrapolation to be performed. Will accelerate excitation
-        amplitude convergence. Default is 5.'''))
-
-    #options.add('nwchem', RottenOption(
-    #   keyword='tce_freeze',
-    #Array TODO
-
-options.add('nwchem',RottenOption(
-    keyword='tce_nroots',
-    default=0,
-    validator=parsers.postive_integer,
-    glossary='Number of excited states. Default is 0.'))
-
-options.add('nwchem', RottenOption(
-    keyword='tce_target',
-    default=1,
-    validator=parsers.postive_integer,
-    glossary='TCE target root. Default is 1.'))
-
-options.add('nwchem', RottenOption(
-    keyword='tce_targetsym',
-    default='',
-    validator=lambda x: x.upper(),
-    glossary='TCE target symmetry. Default is None.'))
-
-options.add('nwchem', RottenOption(
-    keyword='tce_2eorb',
-    default=False,
-    validator=parsers.boolean,
-    glossary='''Economical option of storing two-electron integrals used in coupled cluster calculations,
-    taking the difference of the RHF and ROHF values: on/off. Default is off.'''))
-
-options.add('nwchem',RottenOption(
-    keyword='tce_2emet', 
-    default=1, 
-    validator=parsers.positive_integer, 
-    glossary='Default is 1.'))
-
-options.add('nwchem', RottenOption(
-    keyword='tce_active_oa',
-    default='',
-    validator=parsers.positive_integer,
-    glossary='Specify the number of occupied alpha spin-orbitals.'))
-
-options.add('nwchem',RottenOption(
-    keyword='tce_active_ob',
-    default='',
-    validator=parsers.positive_integer,
-    glossary='Specify the number of occupied beta spin-orbitals.'))
-
-options.add('nwchem',RottenOption(
-    keyword='tce_active_va',
-    default='',
-    validator=parsers.positive_integer,
-    glossary='Specify the number of unoccupied alpha spin-orbitals.'))
-
-options.add('nwchem', RottenOption(
-    keyword='tce_active_vb',
-    default='',
-    validator=parsers.positive_integer,
-    glossary='Specify the number of unoccupied beta spin-orbitals.'))
-
-options.add('nwchem', RottenOption(
-    keyword='tce_tilesize', 
-    default='', 
-    validator=parsers.positive_integer, 
-    glossary='Tile size in Tensor Contraction Engine (TCE).'))
-
-#TASK block- do we need? pytests ensure what action we're implementing into qcdb
-options.add('nwchem', RottenOption(
-    keyword='task_hf',
-    default='energy',
-    validator=lambda x: x.upper(),
-    glossary='Specify HF (via SCF) task between: energy, gradient, and hessian. Default is energy.'))
-
-options.add('nwchem', RottenOption(
-    keyword='task_scf',
-    default='',
-    validator=lambda x: x.upper(),
-    glossary=
-    'Specify Self-consistent theory task between: energy, gradient, and hessian. Default is no specified option and will run energy.'
-        ))
-
-options.add('nwchem',  RottenOption(
-    keyword='task_mcscf',
-    default='',
-    validator=lambda x: x.upper(),
-    glossary=
-    'Specify Multiconfiguration self-consistent (MCSCF) theory task between: energy, gradient, and hessian. Default is no specified option and will run energy.'
-        ))
-
-options.add('nwchem', RottenOption(
-    keyword='task_mp2',
-    default='energy',
-    validator=lambda x: x.upper(),
-    glossary='Specify MP2 [semi-direct] task between: energy, gradient, and hessian. Default is energy.'))
-
-options.add('nwchem', RottenOption(
-    keyword='task_direct_mp2',
-    default='energy',
-    validator=lambda x: x.upper(),
-    glossary='Specify MP2 [direct] task between: energy, gradient, and hessian. Default is energy.'))
-
-options.add('nwchem', RottenOption(
-    keyword='task_rimp2',
-    default='energy',
-    validator=lambda x: x.upper(),
-    glossary='Specify RIMP2 task between: energy, gradient, and hessian. Default is energy.'))
-
-options.add('nwchem', RottenOption(
-    keyword='task_dft',
-    default='energy',
-    validator=lambda x: x.upper(),
-    glossary='Specify DFT task between: energy, gradient, and hessian. Default is energy.'))
-
-options.add('nwchem',RottenOption(
-    keyword='task_sodft',
-    default='energy',
-    validator=lambda x: x.upper(),
-    glossary='Specify SODFT task between: energy, gradient, and hessian. Default is energy.'))
-
-options.add('nwchem', RottenOption(
-    keyword='task_tce',
-    default='energy',
-    validator=lambda x: x.upper(),
-    glossary='Specify TCE task between: energy, gradient, and hessian. Default is energy.'))
-
-options.add('nwchem',RottenOption(
-            keyword='task_tce_mp2',  #not sure if need here but need to distinguish between MP2/MP3/MP4 and TCE MBn theory
-            default='energy',
-            validator=lambda x: x.upper(),
-            glossary='Specify TCE MP2 task between: energy, gradient, and hessian. Default is energy.'))
-
-options.add('nwchem', RottenOption(
-     keyword='task_ccsd',
-     default='energy',
-     validator=lambda x: x.upper(),
-     glossary='Specify CCSD task between energy, gradient, and hessian. Default is energy.'))
-
-options.add('nwchem', RottenOption(
-     keyword='task_ccsd(t)',
-     default='energy',
-     validator=lambda x: x.upper(),
-     glossary='Specify CCSD(T) task between energy, gradient, and hessian. Default is energy.'))
-
-options.add('nwchem', RottenOption(
-    keyword='task_ccsdt',
-    default='energy',
-    validator=lambda x: x.upper(),
-    glossary='Specify CCSDT task between energy, gradient, and hessian. Default is energy.'))
+    #CCSD block
+    options.add(
+            'nwchem',
+            RottenOption(
+                keyword= 'ccsd_maxiter',
+                default= 20,
+                validator= parsers.positive_integer,
+                glossary= 'Maximum numbers of iterations; iterations default is 20.'))
+    options.add(
+            'nwchem',
+            RottenOption(
+                keyword='ccsd_thresh',
+                default= 1.0e-6,
+                validator=parsers.parse_convergence,
+                glossary= 'Convergence threshold for the iterative part of the calculation.'))
+    
+    #CCSD(T) block
+    options.add(
+            'nwchem',
+            RottenOption(
+                keyword= 'ccsd(t)_maxiter',
+                default= 20,
+                validator= parsers.positive_integer,
+                glossary= 'Maximum numbers of iterations; iterations default is 20.'))
+    options.add(
+            'nwchem',
+            RottenOption(
+                keyword='ccsd(t)_thresh',
+                default= 1.0e-6,
+                validator=parsers.parse_convergence,
+                glossary= 'Convergence threshold for the iterative part of the calculation.'))
+    
+    #TCE block
+    options.add('nwchem', RottenOption(
+        keyword='tce_dft',
+        default=False,
+        validator=parsers.boolean,
+        glossary='Use DFT as TCE reference wave function. If not specified, default is SCF(HF).'))
+    
+    options.add('nwchem', RottenOption(
+        keyword='tce_on',
+        default=True,
+        validator=parsers.boolean,
+        glossary='The switch for turning on the Tensor Contraction Engine (TCE). Not necessarily needed for couple cluster methods of singles and doubles (CCSD), but necessary for couple cluster theory for singles, doubles, and triples (CCSDT) and couple cluster theory for singles, doubles, triples, and quadruples (CCSDTQ). Default is on.'
+            ))
+    
+    options.add('nwchem', RottenOption(
+        keyword='tce',
+        default='none',
+        validator=parsers.enum("none LCCD CCD LCCSD CCSD CCSD_ACT LR-CCSD EACCSD IPCCSD CC2 CCSDT CCSDTA CCSDTQ CCSDTQ CCSD(T) CCSD[T] CR-CCSD[T] CR-CCSD(T) CCSD(2)_T CCSD(2)_TQ CCSDT(2)_Q LR-CCSD(T) LR-CCSD(TQ)-1 CREOMSD(T) CREOM(T)AC QCISD CISD CISDT CISDTQ MBPT2 MBPT3 MBPT4 MP2 MP3 MP4"),
+        glossary='''Specify TCE correlation models. Options include:
+            LCCD, CCD, LCCSD, CCSD, CCSD_ACT, LR-CCSD, EACCSD, IPCCSD, CC2, CCSDT, CCSDTA, CCSDTQ, CCSD(T), CCSD[T]
+            CR-CCSD[T], CR-CCSD(T), CCSD(2)_T, CCSD(2)_TQ, CCSDT(2)_Q, LR-CCSD(T), LR-CCSD(TQ)-1, CREOMSD(T),
+            CREOM(T)AC, QCISD, CISD, CISDT, CISDTQ, MBPT2, MBPT3, MBPT4.
+            MBP2= MP2, MBPT3= MP3, MBPT4= MP4.'''))
+    
+    options.add('nwchem', RottenOption(
+        keyword='tce_thresh',
+        default=1.e-4,
+        validator=parsers.parse_convergence,
+        glossary='TCE convergence threshold'))
+    
+    options.add('nwchem',RottenOption(
+        keyword='tce_maxiter', 
+        default=100, 
+        validator=parsers.positive_integer, 
+        glossary='TCE max iterations'))
+    
+    options.add('nwchem', RottenOption(
+        keyword='tce_io',
+        default='',
+        validator=lambda x: x.upper(),
+        glossary='''Parallel I/O scheme specification. Available:
+            FORTRAN, EAF, GA, SF, REPLICATED, DRA, GAEAF'''))
+    
+    options.add('nwchem', RottenOption(
+        keyword='tce_diis',
+        default=5,
+        validator=parsers.positive_integer,
+        glossary='''Number of iterations for a DIIS extrapolation to be performed. Will accelerate excitation
+            amplitude convergence. Default is 5.'''))
+    
+        #options.add('nwchem', RottenOption(
+        #   keyword='tce_freeze',
+        #Array TODO
+    
+    options.add('nwchem',RottenOption(
+        keyword='tce_nroots',
+        default=0,
+        validator=parsers.nonnegative_integer,
+        glossary='Number of excited states. Default is 0.'))
+    
+    options.add('nwchem', RottenOption(
+        keyword='tce_target',
+        default=1,
+        validator=parsers.positive_integer,
+        glossary='TCE target root. Default is 1.'))
+    
+    options.add('nwchem', RottenOption(
+        keyword='tce_targetsym',
+        default='',
+        validator=lambda x: x.upper(),
+        glossary='TCE target symmetry. Default is None.'))
+    
+    options.add('nwchem', RottenOption(
+        keyword='tce_2eorb',
+        default=False,
+        validator=parsers.boolean,
+        glossary='''Economical option of storing two-electron integrals used in coupled cluster calculations,
+        taking the difference of the RHF and ROHF values: on/off. Default is off.'''))
+    
+    options.add('nwchem',RottenOption(
+        keyword='tce_2emet', 
+        default=1, 
+        validator=parsers.positive_integer, 
+        glossary='Default is 1.'))
+    
+    options.add('nwchem', RottenOption(
+        keyword='tce_active_oa',
+        default=1,  # ?
+        validator=parsers.positive_integer,
+        glossary='Specify the number of occupied alpha spin-orbitals.'))
+    
+    options.add('nwchem',RottenOption(
+        keyword='tce_active_ob',
+        default=1,
+        validator=parsers.positive_integer,
+        glossary='Specify the number of occupied beta spin-orbitals.'))
+    
+    options.add('nwchem',RottenOption(
+        keyword='tce_active_va',
+        default=1,
+        validator=parsers.positive_integer,
+        glossary='Specify the number of unoccupied alpha spin-orbitals.'))
+    
+    options.add('nwchem', RottenOption(
+        keyword='tce_active_vb',
+        default=1,
+        validator=parsers.positive_integer,
+        glossary='Specify the number of unoccupied beta spin-orbitals.'))
+    
+    options.add('nwchem', RottenOption(
+        keyword='tce_tilesize', 
+        default=1, 
+        validator=parsers.positive_integer, 
+        glossary='Tile size in Tensor Contraction Engine (TCE).'))
+    
+    #TASK block- do we need? pytests ensure what action we're implementing into qcdb
+    options.add('nwchem', RottenOption(
+        keyword='task_hf',
+        default='energy',
+        validator=lambda x: x.upper(),
+        glossary='Specify HF (via SCF) task between: energy, gradient, and hessian. Default is energy.'))
+    
+    options.add('nwchem', RottenOption(
+        keyword='task_scf',
+        default='',
+        validator=lambda x: x.upper(),
+        glossary=
+        'Specify Self-consistent theory task between: energy, gradient, and hessian. Default is no specified option and will run energy.'
+            ))
+    
+    options.add('nwchem',  RottenOption(
+        keyword='task_mcscf',
+        default='',
+        validator=lambda x: x.upper(),
+        glossary=
+        'Specify Multiconfiguration self-consistent (MCSCF) theory task between: energy, gradient, and hessian. Default is no specified option and will run energy.'
+            ))
+    
+    options.add('nwchem', RottenOption(
+        keyword='task_mp2',
+        default='energy',
+        validator=lambda x: x.upper(),
+        glossary='Specify MP2 [semi-direct] task between: energy, gradient, and hessian. Default is energy.'))
+    
+    options.add('nwchem', RottenOption(
+        keyword='task_direct_mp2',
+        default='energy',
+        validator=lambda x: x.upper(),
+        glossary='Specify MP2 [direct] task between: energy, gradient, and hessian. Default is energy.'))
+    
+    options.add('nwchem', RottenOption(
+        keyword='task_rimp2',
+        default='energy',
+        validator=lambda x: x.upper(),
+        glossary='Specify RIMP2 task between: energy, gradient, and hessian. Default is energy.'))
+    
+    options.add('nwchem', RottenOption(
+        keyword='task_dft',
+        default='energy',
+        validator=lambda x: x.upper(),
+        glossary='Specify DFT task between: energy, gradient, and hessian. Default is energy.'))
+    
+    options.add('nwchem',RottenOption(
+        keyword='task_sodft',
+        default='energy',
+        validator=lambda x: x.upper(),
+        glossary='Specify SODFT task between: energy, gradient, and hessian. Default is energy.'))
+    
+    options.add('nwchem', RottenOption(
+        keyword='task_tce',
+        default='energy',
+        validator=lambda x: x.upper(),
+        glossary='Specify TCE task between: energy, gradient, and hessian. Default is energy.'))
+    
+    options.add('nwchem',RottenOption(
+                keyword='task_tce_mp2',  #not sure if need here but need to distinguish between MP2/MP3/MP4 and TCE MBn theory
+                default='energy',
+                validator=lambda x: x.upper(),
+                glossary='Specify TCE MP2 task between: energy, gradient, and hessian. Default is energy.'))
+    
+    options.add('nwchem', RottenOption(
+         keyword='task_ccsd',
+         default='energy',
+         validator=lambda x: x.upper(),
+         glossary='Specify CCSD task between energy, gradient, and hessian. Default is energy.'))
+    
+    options.add('nwchem', RottenOption(
+         keyword='task_ccsd(t)',
+         default='energy',
+         validator=lambda x: x.upper(),
+         glossary='Specify CCSD(T) task between energy, gradient, and hessian. Default is energy.'))
+    
+    options.add('nwchem', RottenOption(
+        keyword='task_ccsdt',
+        default='energy',
+        validator=lambda x: x.upper(),
+        glossary='Specify CCSDT task between energy, gradient, and hessian. Default is energy.'))

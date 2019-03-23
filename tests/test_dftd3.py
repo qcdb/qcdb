@@ -10,7 +10,7 @@ from addons import *
 import qcelemental as qcel
 
 import qcdb
-from qcdb.iface_dftd3 import runner as dftd3
+from qcdb.intf_dftd3 import runner as dftd3
 
 
 eneyne = """

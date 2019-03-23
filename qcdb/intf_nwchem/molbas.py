@@ -125,7 +125,7 @@ def format_basis_for_nwchem_puream(self, puream):
 
 
 def local_prepare_options_for_modules(changedOnly=False, commandsInsteadDict=False):
-    from ..iface_psi4.options import query_options_defaults_from_psi
+    from ..intf_psi4.options import query_options_defaults_from_psi
     return query_options_defaults_from_psi(changedOnly=changedOnly)
 
 

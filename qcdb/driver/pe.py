@@ -3,7 +3,7 @@ import collections
 from .. import data_dir
 from ..molecule import Molecule
 from ..moptions.read_options2 import RottenOptions, load_qcdb_defaults
-from ..iface_psi4.options import load_cfour_defaults_from_psi4, load_psi4_defaults, load_nwchem_defaults_from_psi4
+from ..intf_psi4.options import load_cfour_defaults_from_psi4, load_psi4_defaults, load_nwchem_defaults_from_psi4
 from ..intf_gamess.options import load_gamess_defaults
 
 
