@@ -1,8 +1,8 @@
 #! single-point CCSDTQ/6-31g* on water
 import os
 import sys
-from utils import *
-from addons import *
+from ..utils import *
+from ..addons import *
 import qcdb
 
 h2o= qcdb.set_molecule('''

@@ -1,8 +1,8 @@
 #non-TCE CCSD(T) energy for N2
 import os
 import sys
-from addons import *
-from utils import *
+from ..addons import *
+from ..utils import *
 import qcdb
 
 n2 = qcdb.set_molecule('''

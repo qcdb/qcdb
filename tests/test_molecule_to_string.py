@@ -1,8 +1,8 @@
 import pint
 import pytest
 
-from utils import *
-from addons import *
+from .utils import *
+from .addons import *
 
 _results = {
     "subject1":

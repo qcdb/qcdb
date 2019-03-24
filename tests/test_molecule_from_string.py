@@ -7,8 +7,8 @@ import numpy as np
 
 import qcelemental as qcel
 
-from utils import *
-from addons import *
+from .utils import *
+from .addons import *
 
 import qcdb
 

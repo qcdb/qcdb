@@ -4,8 +4,8 @@ import pprint
 
 import pytest
 
-from utils import *
-from addons import *
+from .utils import *
+from .addons import *
 
 import qcelemental as qcel
 

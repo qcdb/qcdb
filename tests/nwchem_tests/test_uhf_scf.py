@@ -1,8 +1,8 @@
 #! single-point UHF/cc-pVDZ  on NH2
 import os
 import sys
-from addons import *
-from utils import *
+from ..addons import *
+from ..utils import *
 import qcdb
 
 nh2 = qcdb.set_molecule('''

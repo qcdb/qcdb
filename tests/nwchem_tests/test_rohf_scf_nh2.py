@@ -1,8 +1,8 @@
 #! single-point HF/cc-pVDZ (Cartesian) on NH2
 import os
 import sys
-from utils import *
-from addons import *
+from ..utils import *
+from ..addons import *
 import qcdb
 
 nh2 = qcdb.set_molecule('''
