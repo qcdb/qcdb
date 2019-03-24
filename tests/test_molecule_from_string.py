@@ -132,7 +132,7 @@ fullans1a = {
 
 def test_qmol_11a():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = [_string_prov_stamp]
+    fullans['provenance'] = _string_prov_stamp
 
     asdf = qcdb.Molecule(fullans)
 
@@ -142,7 +142,7 @@ def test_qmol_11a():
 
 def test_qmol_11b():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = [_arrays_prov_stamp]
+    fullans['provenance'] = _arrays_prov_stamp
 
     asdf = qcdb.Molecule(geom=[0., 0., 0., 1., 0., 0.], elez=[8, 1], fix_com=True)
 
@@ -152,7 +152,7 @@ def test_qmol_11b():
 
 def test_qmol_11c():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = [_string_prov_stamp]
+    fullans['provenance'] = _string_prov_stamp
 
     asdf = qcdb.Molecule("""nocom\n8 0 0 0\n1 1 0 0""", dtype='psi4')
 
@@ -162,7 +162,7 @@ def test_qmol_11c():
 
 def test_qmol_11d():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = [_string_prov_stamp]
+    fullans['provenance'] = _string_prov_stamp
 
     asdf = qcdb.Molecule("""nocom\n8 0 0 0\n1 1 0 0""", dtype='psi4+')
 
@@ -172,7 +172,7 @@ def test_qmol_11d():
 
 def test_qmol_11e():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = [_string_prov_stamp]
+    fullans['provenance'] = _string_prov_stamp
 
     asdf = qcdb.Molecule("""2\n\nO 0 0 0 \n1 1 0 0 """, dtype='xyz', fix_com=True)
 
@@ -182,7 +182,7 @@ def test_qmol_11e():
 
 def test_qmol_11f():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = [_arrays_prov_stamp]
+    fullans['provenance'] = _arrays_prov_stamp
 
     asdf = qcdb.Molecule.from_dict(fullans)
 
@@ -192,7 +192,7 @@ def test_qmol_11f():
 
 def test_qmol_11g():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = [_arrays_prov_stamp]
+    fullans['provenance'] = _arrays_prov_stamp
 
     asdf = qcdb.Molecule.from_arrays(geom=[0., 0., 0., 1., 0., 0.], elez=[8, 1], fix_com=True)
 
@@ -202,7 +202,7 @@ def test_qmol_11g():
 
 def test_qmol_11h():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = [_string_prov_stamp]
+    fullans['provenance'] = _string_prov_stamp
 
     asdf = qcdb.Molecule.from_string("""nocom\n8 0 0 0\n1 1 0 0""")
 
@@ -212,7 +212,7 @@ def test_qmol_11h():
 
 def test_qmol_11i():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = [_string_prov_stamp]
+    fullans['provenance'] = _string_prov_stamp
 
     asdf = qcdb.Molecule.from_string("""nocom\n8 0 0 0\n1 1 0 0""")
 
@@ -222,7 +222,7 @@ def test_qmol_11i():
 
 def test_qmol_11j():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = [_string_prov_stamp]
+    fullans['provenance'] = _string_prov_stamp
 
     asdf = qcdb.Molecule.from_string("""2\n\nO 0 0 0 \n1 1 0 0 """, fix_com=True)
 
@@ -278,7 +278,7 @@ def test_qmol_11j():
 
 def test_qmol_12():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = [_arrays_prov_stamp]
+    fullans['provenance'] = _arrays_prov_stamp
 
     asdf = qcdb.Molecule(geom=[0., 0., 0., 1., 0., 0.], elez=[8, 1], fix_com=True)
 

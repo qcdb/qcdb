@@ -57,7 +57,8 @@ def is_psi4_new_enough(version_feature_introduced):
 #using_scipy = pytest.mark.skipif(_plugin_import('scipy') is False,
 #                                reason='Not detecting module scipy. Install package if necessary and add to envvar PYTHONPATH')
 
-using_psi4 = pytest.mark.skipif(_plugin_import('psi4') is False,
+#using_psi4 = pytest.mark.skipif(_plugin_import('psi4') is False,
+using_psi4 = pytest.mark.skipif(is_psi4_new_enough("1.4a1.dev60") is False,
                                  reason='Not detecting module psi4. Install package and add to envvar PYTHONPATH')
 
 #using_psi4_libxc = pytest.mark.skipif(is_psi4_new_enough("1.2a1.dev100") is False,
@@ -81,13 +82,14 @@ using_psi4_molrec = pytest.mark.skipif(is_psi4_new_enough("1.2a1.dev999") is Fal
 using_pylibefp = pytest.mark.skipif(_plugin_import('pylibefp') is False,
                                 reason='Not detecting module pylibefp. Install package if necessary and add to envvar PYTHONPATH')
 
-using_cfour = pytest.mark.skipif(_which('xcfour') is False,
+#using_cfour = pytest.mark.skipif(_which('xcfour') is False,
+using_cfour = pytest.mark.skipif((_which('xcfour') is False) or (_plugin_import('psi4') is False),  # needs psi for options
                                 reason='Not detecting executable xcfour. Install program if necessary and add to envvar PATH')
 
 using_nwchem = pytest.mark.skipif(_which('nwchem') is False,
                                 reason='Not detecting executable nwchem. Install program if necessary and add to envvar PATH')
 
-using_geometric = pytest.mark.skipif(_plugin_import('geometric') is False,
+using_geometric = pytest.mark.skipif(_plugin_import('geometric_old') is False,  # hidden b/c uses old json interface in fork
                                 reason='Not detecting module geomeTRIC. Install package if necessary and add to envvar PYTHONPATH')
 
 using_dftd3 = pytest.mark.skipif(_which('dftd3') is False,

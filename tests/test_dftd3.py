@@ -133,7 +133,7 @@ def test_10_qmol():
     eneyne = qcdb.set_molecule(seneyne)
     eneyne.update_geometry()
 
-    E, G = eneyne.run_dftd3('b3lyp', 'd2gr')
+    E, G = eneyne.run_dftd3('b3lyp', 'd2')
     assert compare_values(ref_d2[0], E, 7, 'Q: Ethene-Ethyne -D2')
 
 
@@ -141,10 +141,10 @@ def test_10_qmol():
 @using_psi4
 def test_10_pmol():
     import psi4
-    eneyne = psi4.set_molecule(seneyne)
+    eneyne = psi4.geometry(seneyne)
     eneyne.update_geometry()
 
-    E, G = eneyne.run_dftd3('b3lyp', 'd2gr')
+    E, G = eneyne.run_dftd3('b3lyp', 'd2')
     assert compare_values(ref_d2[0], E, 7, 'P: Ethene-Ethyne -D2')
 
 @using_dftd3

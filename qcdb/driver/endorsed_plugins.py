@@ -1,3 +1,5 @@
+from qcengine.util import which, which_import
+
 from .proc_table import procedures
 from .. import intf_psi4
 from .. import intf_cfour
@@ -5,17 +7,8 @@ from .. import intf_dftd3
 from .. import intf_nwchem
 from .. import intf_gamess
 
-#from .util import pl
-#
-#try:
-#    import psi4
-#except ImportError:
-#    pass
-#
-#if addons('psi4'):
 
-#def load_up_psi():
-if True:
+if which('psi4') and which_import('psi4'):
     import psi4
     print('loaded psi4 from:', psi4.__file__)
 
@@ -37,7 +30,7 @@ if True:
     for mtd in psi4.driver.proc_table.procedures['hessian']:
         procedures['hessian']['psi4'][mtd.lower()] = intf_psi4.run_psi4
 
-if True:
+if which('xcfour'):
 
     # integrate CFOUR with driver routines
     procedures['energy']['cfour'] = {}
@@ -52,14 +45,14 @@ if True:
     for mtd in intf_cfour.cfour_hessian_list():
        procedures['hessian']['cfour'][mtd.lower()] = intf_cfour.run_cfour
 
-if True:
+if which('dftd3'):
 
     # integrate DFTD3 with driver routines
     procedures['energy']['dftd3'] = {}
     for mtd in intf_dftd3.dftd3_list():
         procedures['energy']['dftd3'][mtd.lower()] = intf_dftd3.alt_run_dftd3
 
-if True:
+if which('nwchem'):
 
     # integrate NWChem with driver routines
     procedures['energy']['nwchem'] = {}
@@ -70,7 +63,7 @@ if True:
     for mtd in intf_nwchem.nwchem_gradient_list():
        procedures['gradient']['nwchem'][mtd.lower()] = intf_nwchem.run_nwchem
 
-if True:
+if which('rungms'):
 
     # integrate GAMESS with driver routines
     procedures['energy']['gamess'] = {}
