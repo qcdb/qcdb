@@ -1,34 +1,6 @@
-# @BEGIN LICENSE
-#
-# Psi4: an open-source quantum chemistry software package
-#
-# Copyright (c) 2007-2017 The Psi4 Developers.
-#
-# The copyrights for code used from other parties are included in
-# the corresponding files.
-#
-# This file is part of Psi4.
-#
-# Psi4 is free software; you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, version 3.
-#
-# Psi4 is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License along
-# with Psi4; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-#
-# @END LICENSE
-#
-
-from __future__ import absolute_import
-from __future__ import print_function
 import re
 import sys
+import uuid
 import struct
 from collections import defaultdict
 from decimal import Decimal
@@ -516,7 +488,6 @@ def harvest_outfile_pass(outtext):
 
             #dinky molecule w/ charge and multiplicity
             if mobj.group(1) == 'angstroms':
-                #print ('unit is angstroms')
                 molxyz = '%d \n%d %d tag\n' % (len(mobj.group(2).splitlines()), out_charge, out_mult
                                                )  # unit = angstrom
                 for line in mobj.group(2).splitlines():
@@ -524,17 +495,14 @@ def harvest_outfile_pass(outtext):
                     molxyz += '%s %16s %16s %16s\n' % (lline[-5], lline[-3], lline[-2], lline[-1])
                     # Jiyoung was collecting charge (-4)? see if this is ok for ghosts
                     # Tag    ,    X,        Y,        Z
-                #psivar_coord = Molecule.init_with_xyz(molxyz, no_com=True, no_reorient=True, contentsNotFilename=True)
                 psivar_coord = Molecule.from_string(molxyz, dtype='xyz+', fix_com=True, fix_orientation=True)
 
             else:  # unit = a.u.
-                #print ('unit is au')
                 molxyz = '%d au\n%d %d tag\n' % (len(mobj.group(2).splitlines()), out_charge, out_mult)
                 for line in mobj.group(2).splitlines():
                     lline = line.split()
-                    molxyz += '%s %16s %16s %16s\n' % (lline[-4], lline[-3], lline[-2], lline[-1])
+                    molxyz += '%s %16s %16s %16s\n' % (int(float(lline[-4])), lline[-3], lline[-2], lline[-1])
                     # Tag    ,    X,        Y,        Z
-                #psivar_coord = Molecule.init_with_xyz(molxyz, no_com=True, no_reorient=True, contentsNotFilename=True)
                 psivar_coord = Molecule.from_string(molxyz, dtype='xyz+', fix_com=True, fix_orientation=True)
 
         #Process gradient
@@ -617,8 +585,8 @@ def harvest_outfile_pass(outtext):
         psivar['CURRENT ENERGY'] = psivar['%s TOTAL ENERGY' % (cc_name)]
 
     if 'CCSD TOTAL ENERGY' in psivar and 'CCSD CORRELATION ENERGY' in psivar:
-        psivar['CURRENT CORRELATION ENERGY'] = psivar['CCSD(T) CORRELATION ENERGY']
-        psivar['CURRENT ENERGY'] = psivar['CCSD(T) TOTAL ENERGY']
+        psivar['CURRENT CORRELATION ENERGY'] = psivar['CCSD CORRELATION ENERGY']
+        psivar['CURRENT ENERGY'] = psivar['CCSD TOTAL ENERGY']
 
     if 'CCSD(T) TOTAL ENERGY' in psivar and 'CCSD(T) CORRELATION ENERGY' in psivar:
         psivar['CURRENT CORRELATION ENERGY'] = psivar['CCSD(T) CORRELATION ENERGY']
@@ -656,12 +624,41 @@ def muster_inherited_options(ropts, verbose=1):
 
     do_translate = ropts.scroll['QCDB']['TRANSLATE_QCDB'].value
 
-    # qcdb/memory [B] --> cfour/memory_size [MB]
-    qopt = ropts.scroll['QCDB']['MEMORY']
-    if do_translate or qopt.is_required():
-        mem = [int(0.000001 * qopt.value), 'mb']
-        print('\n\nMEMORY', mem, '\n\n')
-        ropts.suggest('NWCHEM', 'MEMORY', mem, **kwgs)
+# REVISIT MEMORY
+#    # qcdb/memory [B] --> cfour/memory_size [MB]
+#    qopt = ropts.scroll['QCDB']['MEMORY']
+#    if do_translate or qopt.is_required():
+#        mem = [int(0.000001 * qopt.value), 'mb']
+#        print('\n\nMEMORY', mem, '\n\n')
+#        ropts.suggest('NWCHEM', 'MEMORY', mem, **kwgs)
+
+#    # qcdb/puream --> cfour/spherical
+#    ropts.suggest('CFOUR', 'SPHERICAL', ropts.scroll['QCDB']['PUREAM'].value, **kwgs)
+
+    # qcdb/reference --> nwchem/scf_[r|u|ro]hf
+    # TODO ref or scf__ref?
+    qref = ropts.scroll['QCDB']['SCF__REFERENCE'].value
+    print('<<<< QREF {} >>>'.format(qref))
+    if qref in ['RHF', 'UHF', 'ROHF']:
+        rhf = (qref == 'RHF')
+        uhf = (qref == 'UHF')
+        rohf = (qref == 'ROHF')
+        ropts.suggest('NWCHEM', 'scf__rhf', rhf, **kwgs)
+        ropts.suggest('NWCHEM', 'scf__uhf', uhf, **kwgs)
+        ropts.suggest('NWCHEM', 'scf__rohf', rohf, **kwgs)
+
+#    # qcdb/scf__d_convergence --> gamess/scf__conv
+#    qopt = ropts.scroll['QCDB']['SCF__D_CONVERGENCE']
+#    if qopt.disputed():
+#        conv = conv_float2negexp(qopt.value)
+#        ropts.suggest('GAMESS', 'scf__conv', conv, **kwgs)
+
+#    # qcdb/scf__maxiter --> cfour/scf_maxcyc
+#    ropts.suggest('CFOUR', 'SCF_MAXCYC', ropts.scroll['QCDB']['SCF__MAXITER'].value, **kwgs)
+#
+#    # qcdb/scf__damping_percentage --> cfour/scf_damping
+#    damp = int(10 * ropts.scroll['QCDB']['SCF__DAMPING_PERCENTAGE'].value)
+#    ropts.suggest('CFOUR', 'SCF_DAMPING', damp, **kwgs)
 
 
 def muster_memory(mem):
@@ -1002,6 +999,43 @@ def muster_dft_w_dispersion(opt):
     return dft_functional, dft_dispersion
 
 
+def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
+    accession = sys._getframe().f_code.co_name + '_' + str(uuid.uuid4())
+    kwgs = {'accession': accession, 'verbose': verbose}
+
+    lowername = name.lower()
+
+    #runtyp = {'energy': 'energy',
+    #          'gradient': 'gradient',
+    #          'hessian': 'hessian',
+    #          'properties': 'prop',
+    #         }[driver]
+
+    runtyp = {0: 'energy',
+              1: 'gradient',
+              2: 'hessian',
+              #'properties': 'prop',
+             }[dertype]
+
+    if lowername == 'nwc-nwchem':
+        pass
+
+    elif lowername in ['nwc-scf', 'nwc-hf']:
+        #ropts.require('NWCHEM', 'task__scf', runtyp, **kwgs)
+        mdccmd = f'task scf {runtyp}\n\n'
+    elif lowername == 'nwc-mp2':
+        mdccmd = f'task mp2 {runtyp}\n\n'
+    elif lowername == 'nwc-ccsd':
+        mdccmd = f'task ccsd {runtyp}\n\n'
+    elif lowername == 'nwc-ccsd(t)':
+        mdccmd = f'task ccsd(t) {runtyp}\n\n'
+
+    else:
+        raise ValidationError(f"""Requested NWChem computational method {lowername} is not available.""")
+
+    return mdccmd
+
+
 def muster_modelchem(name, dertype):
     """Transform calculation method *name* and derivative level *dertype*
     into options for NWChem. While deliberately requested pieces,
@@ -1309,24 +1343,24 @@ def nwchem_gradient_list():
 
     """
     val = []
-    val.append('nwchem')
+#    val.append('nwchem')
     val.append('nwc-scf')
     val.append('nwc-hf')
     val.append('nwc-mp2')
-    val.append('nwc-dft')
+#    val.append('nwc-dft')
     val.append('nwc-ccsd')
-    val.append('nwc-ccsdt')
-    val.append('nwc-ccsdtq')
-    val.append('nwc-ccsd(t)')
-    val.append('nwc-lccd')
-    val.append('nwc-tce-mp2')
-    val.append('nwc-tce-mp3')
-    val.append('nwc-tce-mp4')
-    val.append('nwc-eom-ccsd')
-    val.append('nwc-eom-ccsdt')
-    val.append('nwc-eom-ccsdtq')
-    val.extend(dft_functionals_list())
-    val.append('nwc-tddft')
+#    val.append('nwc-ccsdt')
+#    val.append('nwc-ccsdtq')
+#    val.append('nwc-ccsd(t)')
+#    val.append('nwc-lccd')
+#    val.append('nwc-tce-mp2')
+#    val.append('nwc-tce-mp3')
+#    val.append('nwc-tce-mp4')
+#    val.append('nwc-eom-ccsd')
+#    val.append('nwc-eom-ccsdt')
+#    val.append('nwc-eom-ccsdtq')
+#    val.extend(dft_functionals_list())
+#    val.append('nwc-tddft')
 
     return val
 

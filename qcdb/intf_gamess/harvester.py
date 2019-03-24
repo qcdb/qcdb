@@ -148,7 +148,7 @@ def muster_modelchem(name, dertype, ropts, sysinfo, verbose=1):
 #            options ['GAMESS']['GAMESS_CONTRL_COORD']['value']  = 'fragonly'
 
     else:
-        raise ValidationError("""Requested Cfour computational methods %d is not available.""" % (lowername))
+        raise ValidationError("""Requested GAMESS computational methods %d is not available.""" % (lowername))
 
     return ''
 

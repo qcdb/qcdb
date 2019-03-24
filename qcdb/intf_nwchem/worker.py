@@ -36,7 +36,7 @@ def nwchem_subprocess(nwchemrec):  # enginerec@i -> enginerec@io
 
     try:
         nwchemrec['command']
-        nwchemrec['nwchemnw']
+        nwchemrec['nwchem.nw']
     except KeyError as err:
         raise KeyError('Required fields missing from ({})'.format(
             nwchemrec.keys())) from err
@@ -71,7 +71,7 @@ def nwchem_subprocess(nwchemrec):  # enginerec@i -> enginerec@io
 
     # write governing inputs
     with open('nwchem.nw', 'w') as handle:
-        handle.write(nwchemrec['nwchemnw'])
+        handle.write(nwchemrec['nwchem.nw'])
 #    with open('GENBAS', 'w') as handle:
 #        handle.write(nwchemrec['genbas'])
 

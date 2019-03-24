@@ -225,7 +225,7 @@ def gamess_plant(jobrec):  # jobrec@i -> gamess@i
 #    active molecule, current keyword settings, and cfour {...} block.
 #
 #    """
-    import qcdb
+#    import qcdb
 #    # Handle memory
 #    # I don't think memory belongs in jobrec. it goes in pkgrec (for pbs) and possibly duplicated in options (for prog)
 ##    if 'memory' in jobrec:
@@ -286,7 +286,7 @@ def gamess_plant(jobrec):  # jobrec@i -> gamess@i
 
 #    # Handle driver vs input/default keyword reconciliation
 #
-    # Handle conversion of psi4 keyword structure into cfour format
+    # Handle conversion of qcdb keyword structure into gamess format
     resolved_options = {k: v.value for k, v in jobrec['options'].scroll['GAMESS'].items() if v.disputed()}
     optcmd = format_options_for_gamess(resolved_options)
 

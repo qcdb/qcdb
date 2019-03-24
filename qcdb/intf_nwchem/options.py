@@ -1,12 +1,10 @@
 import collections
 
-from ..moptions.read_options2 import *
-import RottenOption
-import copy
-import uuid
+from ..moptions.read_options2 import RottenOption
+from ..moptions import parsers
 
-from ..exceptions import *
-from . import parsers
+#from ..exceptions import *
+#from . import parsers
 
 
 def load_nwchem_defaults(options):
@@ -23,7 +21,7 @@ def load_nwchem_defaults(options):
         'nwchem',
         RottenOption(
             keyword='total_memory',
-            default='total 400 mb',
+            default='400 mb',
             validator=parsers.parse_memory,
             glossary='Total memory allocation, which can be specified further to stack, heap, and global.'))
 
@@ -31,22 +29,26 @@ def load_nwchem_defaults(options):
         'nwchem',
         RottenOption(
             keyword='stack_memory',
-            default='',
-            validator=parsers.parse_memory,
+            default='100 mb',
+            validator=parsers.parse_memory_nomin,
             glossary='Stack memory allocation that can be specified beyond the total memory.'))
 
     options.add(
         'nwchem',
         RottenOption(
             keyword='heap_memory',
-            default='',
-            validator=parsers.parse_memory,
+            default='100 mb',
+            validator=parsers.parse_memory_nomin,
             glossary='Heap memory allocation that can be specified beyond the total memory allocation.'))
 
     options.add(
         'nwchem',
         RottenOption(
-            keyword='global_memory', default='', validator=parsers.parse_memory, glossary='Global memory allocation.'))
+            keyword='global_memory',
+            default='200 mb',
+            validator=parsers.parse_memory_nomin,
+            glossary='Global memory allocation.'))
+
     #Geometry options
     options.add(
         'nwchem',
@@ -58,15 +60,16 @@ def load_nwchem_defaults(options):
             'Enables or disables the translation of the center of nuclear charge to the origin. Default is move the center of nuclear charge to the origin (center or True).'
         ))
 
-    options.add(
-        'nwchem',
-        RottenOption(
-            keyword='geometry_units',
-            default='Angstroms',
-            validator=parsers.enum('au atomic bohr nm nanometers pm picometers'),
-            glossary='''keyword specifying the <units> string variable. Default for geometry input is Angstroms. 
-        Other options include atomic units (au, atomic or bohr are acceptable keywords), nanometers (nm), or picometers (pm)
-        '''))
+# superseded by molecule spec
+#    options.add(
+#        'nwchem',
+#        RottenOption(
+#            keyword='geometry__units',
+#            default='Angstroms',
+#            validator=parsers.enum('ANGSTROMS AN AU ATOMIC BOHR NM NANOMETERS PM PICOMETERS'),
+#            glossary='''keyword specifying the <units> string variable. Default for geometry input is Angstroms. 
+#        Other options include atomic units (au, atomic or bohr are acceptable keywords), nanometers (nm), or picometers (pm)
+#        '''))
 
     options.add(
         'nwchem',
@@ -85,19 +88,23 @@ def load_nwchem_defaults(options):
             glossary=
             'NWChem generates redundant internal coordinates from user input Cartesian coordinates. Default is on.'))
 
-    #Top level options
-    options.add(
-        'nwchem',
-        RottenOption(
-            keyword='symmetry',
-            default='c1',
-            validator=parsers.enum(' c1 c2v c3v d2h '),
-            glossary='Optional symmetry directive that specifies the group of the molecule, \
-        which can be automatically determined via the geometry autosym function.'))
+#    #Top level options
+#    options.add(
+#        'nwchem',
+#        RottenOption(
+#            keyword='symmetry',
+#            default='c1',
+#            validator=parsers.enum(' c1 c2v c3v d2h '),
+#            glossary='Optional symmetry directive that specifies the group of the molecule, \
+#        which can be automatically determined via the geometry autosym function.'))
 
     options.add(
         'nwchem',
-        RottenOption(keyword='charge', default=0, validator=lambda x: float(x), glossary='Charge of the molecule.'))
+        RottenOption(
+            keyword='charge',
+            default=0,
+            validator=lambda x: float(x),
+            glossary='Charge of the molecule. Nuclear charges plus this should equal an integral number of electrons.'))
 
     options.add(
         'nwchem',
@@ -111,28 +118,52 @@ def load_nwchem_defaults(options):
 
     #Basis block
     ###Need to figure out how to delineate per atom basis attribution #TODO
+    options.add(
+        'nwchem',
+        RottenOption(
+            keyword='basis',
+            default='',
+            validator=lambda x: x.lower(),
+            glossary='This is just a dummy so can throw an error. Only basis-passing implemented at present.'))
+
 
     #SCF block
     options.add(
         'nwchem',
         RottenOption(
-            keyword='scf',
-            default='RHF',
-            validator=parsers.enum("RHF UHF ROHF"),
-            glossary='Reference wave function: RHF, UHF, ROHF'))
+            keyword='scf__rhf',
+            default=True,
+            validator=parsers.boolean,  # rather have one kw as enum but that's not the nwc way ("RHF UHF ROHF"),
+            glossary='Reference wave function: RHF, UHF, ROHF. RHF is closed-shell default'))
 
     options.add(
         'nwchem',
         RottenOption(
-            keyword='scf_nopen',
-            default=0,
-            validator=lambda x: float(x),
+            keyword='scf__uhf',
+            default=False,
+            validator=parsers.boolean,  # rather have one kw as enum but that's not the nwc way ("RHF UHF ROHF"),
+            glossary='Reference wave function: RHF, UHF, ROHF. UHF is never default'))
+
+    options.add(
+        'nwchem',
+        RottenOption(
+            keyword='scf__rohf',
+            default=True,
+            validator=parsers.boolean,  # rather have one kw as enum but that's not the nwc way ("RHF UHF ROHF"),
+            glossary='Reference wave function: RHF, UHF, ROHF. ROHF is closed-shell default'))
+
+    options.add(
+        'nwchem',
+        RottenOption(
+            keyword='scf__nopen',
+            default=1,
+            validator=parsers.positive_integer,
             glossary='Specifies the number of open shells in wave function.'))
 
     options.add(
         'nwchem',
         RottenOption(
-            keyword='scf_thresh',
+            keyword='scf__thresh',
             default=1.e-4,
             validator=parsers.parse_convergence,
             glossary='SCF Convergence threshold'))
@@ -140,7 +171,10 @@ def load_nwchem_defaults(options):
     options.add(
         'nwchem',
         RottenOption(
-            keyword='scf_maxiter', default=20, validator=parsers.postive_integer, glossary='Max SCF iteration'))
+            keyword='scf_maxiter',
+            default=20,
+            validator=parsers.nonnegative_integer,
+            glossary='Max SCF iteration'))
 
     options.add(
         'nwchem',
@@ -159,9 +193,9 @@ def load_nwchem_defaults(options):
     options.add(
         'nwchem',
         RottenOption(
-            keyword='scfsd__filesize',
+            keyword='dft__semidirect__filesize',
             default=0,
-            validator=parsers.postive_integer,
+            validator=parsers.nonnegative_integer,
             glossary=
             '''SCF Semidirect options: File size allows the user to specify the amount of disk space used per process for storing the integrals in 64-bit words. 
         Default of semidirect leads to directive DIRECT.'''))
@@ -169,9 +203,9 @@ def load_nwchem_defaults(options):
     options.add(
         'nwchem',
         RottenOption(
-            keyword='scfsd__memsize',
+            keyword='dft__semidirect__memsize',
             default=0,
-            validator=parsers.positive_integer,
+            validator=parsers.nonnegative_integer,
             glossary=
             '''SCF Semidirect options: Memory size allows user to specify the number of 64-bit words to be used per process for caching integrals in memory.
         If the amount of storage space is not available, the code cuts the value in half and checks again, and will continue to do so until request is satisfied.'''
@@ -257,41 +291,41 @@ def load_nwchem_defaults(options):
     options.add(
         'nwchem',
         RottenOption(
-            keyword='mcscf_active',
-            default='',
-            validator=lambda x: float(x),
+            keyword='mcscf__active',
+            default=0,
+            validator=parsers.nonnegative_integer,
             glossary='Number of orbitals in the complete active space self consistent theory (CASSCF).'))
 
     options.add(
         'nwchem',
         RottenOption(
-            keyword='mcscf_actelec',
-            default='',
-            validator=lambda x: float(x),
+            keyword='mcscf__actelec',
+            default=0,
+            validator=parsers.nonnegative_integer,
             glossary='Number of electrons in CASSCF active space. Error will occur if discrepancy is spotted.'))
 
     options.add(
         'nwchem',
         RottenOption(
-            keyword='mcscf_mult',
-            default='',
-            validator=lambda x: float(x),
+            keyword='mcscf__multiplicity',
+            default=1,
+            validator=parsers.nonnegative_integer,
             glossary='Spin multiplicity in CASSCF/MCSCF block, must be specified for MCSCF to work.'))
     #alternative to mcscf_multiplicity & mcscf_symmetry can use mcscf_state
-    options.add(
-        'nwchem',
-        RottenOption(
-            keyword='mcscf_state',
-            default='',
-            validator=parsers.enum(' 1a1 3b1'),
-            glossary=
-            'Defines the spatial symmetry and multiplicity. Format is [multiplicity][state], e.g. 3b2 for triplet in B2.'))
+#    options.add(
+#        'nwchem',
+#        RottenOption(
+#            keyword='mcscf_state',
+#            default='',
+#            validator=parsers.enum(' 1a1 3b1'),
+#            glossary=
+#            'Defines the spatial symmetry and multiplicity. Format is [multiplicity][state], e.g. 3b2 for triplet in B2.'))
     options.add(
             'nwchem',
             RottenOption(
-                keyword= 'mcscf_level',
-                default= 0.1,
-                validator= parsers.positive_integers,
+                keyword='mcscf_level',
+                default=0.1,
+                validator=parsers.nonnegative_float,
                 glossary= 'The Hessian used in the MCSCF optimization by default level shifted by 0.1 until the orbital gradient normal falls below 0.01 at which point the level shift is reduced to zero. The initial value of 0.1 can be changed as increasing the level shift may make convergence more stable in some instances.'))
 
     #TDDFT block
@@ -316,13 +350,13 @@ def load_nwchem_defaults(options):
         RottenOption(
             keyword='tddft_triplet',
             default=True,
-            validator=
-            'Default is on. Request the calculation of triplet excited states when reference wave function is closed.')
+            validator=parsers.boolean,
+            glossary='Default is on. Request the calculation of triplet excited states when reference wave function is closed.')
     )
     options.add(
         'nwchem',
         RottenOption(
-            keyword='tddft_thresh',
+            keyword='tddft__thresh',
             default=1.0e-4,
             validator=lambda x: float(x),
             glossary=
@@ -340,7 +374,7 @@ def load_nwchem_defaults(options):
     options.add(
         'nwchem',
         RottenOption(
-            keyword='mp2_tight',
+            keyword='mp2__tight',
             default=False,
             validator=parsers.boolean,
             glossary='''Increase precision of MP2 energy and gradients. Will also change SCF and CPHF precision.
@@ -375,7 +409,7 @@ def load_nwchem_defaults(options):
         'nwchem',
         RottenOption(
             keyword='dft',
-            default='',
+            default='rdft',
             validator=parsers.enum("RDFT RODFT UDFT ODFT"),
             glossary='Defining DFT wavefunction: RDFT, RODFT, UDFT, ODFT (Open shell, singlet).'))
 
@@ -386,7 +420,8 @@ def load_nwchem_defaults(options):
         RottenOption(
             keyword='dft__convergence__energy',
             default=1.e-6,
-            validator=lambda x: float(x),
+            #validator=lambda x: float(x),
+            validator=parsers.parse_convergence,
             glossary='total energy convergence within the DFT block'))
 
     options.add(
@@ -436,15 +471,15 @@ def load_nwchem_defaults(options):
         RottenOption(
             keyword='dft__convergence__damp',
             default=0,
-            validator=parsers.parse_convergence,
-            glossary='Percent of previous iterations mixed with current iterations density.'))
+            validator=parsers.percentage,
+            glossary="Percent of previous iterations mixed with current iteration's density."))
 
     options.add(
         'nwchem',
         RottenOption(
             keyword='dft__convergence__ncydp',
             default=2,
-            validator=parsers.positive_integers,
+            validator=parsers.positive_integer,
             glossary='Specifies number of damping cycles. Default is 2.'))
 
     options.add(
@@ -476,7 +511,7 @@ def load_nwchem_defaults(options):
         RottenOption(
             keyword='dft__convergence__ncyds',
             default=30,
-            validator=parsers.positive_integers,
+            validator=parsers.positive_integer,
             glossary='Specifies number of DIIS [Direct inversion of iterative subspace] cycles needed. Default is 30.')
     )
 
@@ -521,7 +556,7 @@ def load_nwchem_defaults(options):
         RottenOption(
             keyword='dft__convergence__rabuck',
             default=25,
-            validator=parsers.positive_integers,
+            validator=parsers.positive_integer,
             glossary='''The Rabuck method can be implemented when the initial guess is poor. 
         Will use fractional occupation of the orbital levels during the initial cycles of SCF convergence (A.D. Rabuck and G. Scuseria, J. Chem. Phys 110, 695(1999). 
         This option specifies the number of cycles the Rabuck method is active.'''))
@@ -530,9 +565,9 @@ def load_nwchem_defaults(options):
         'nwchem',
         RottenOption(
             keyword='dft_xc',
-            default='',
+            default='none',
             validator=parsers.enum(
-                '''acm b3lyp beckehandh pbe0 becke97 becke97-1 becke97-2 becke97-3 becke98 hcth hcth120 hcth 147 hcth407
+                '''none acm b3lyp beckehandh pbe0 becke97 becke97-1 becke97-2 becke97-3 becke98 hcth hcth120 hcth 147 hcth407
         becke97ggal hcth407p optx hcthp14 mpw91 mpwlk xft97 cft97 ft97 op bop pbeop HFexch becke88 xperdew91 xpbe96 gill96 lyp perdew81
         perdew86 perdew 91 cpbe96 pw91lda slater vwn_1 vwn_2 vwn_3 vwn_4 vwn_5 vwn_1_rpa'''),
             glossary=
@@ -543,12 +578,16 @@ def load_nwchem_defaults(options):
     options.add(
         'nwchem',
         RottenOption(
-            keyword='dft_iterations', default=30, validator=parsers.postive_integer,
+            keyword='dft_iterations', default=30, validator=parsers.positive_integer,
             glossary='Specify DFT iterations'))
 
     options.add(
         'nwchem',
-        RottenOption(keyword='dft_mult', default=1, validator=lambda x: float(x), glossary='DFT Mulitiplicity'))
+        RottenOption(
+            keyword='dft__mult',
+            default=1,
+            validator=parsers.positive_integer,
+            glossary='DFT Mulitiplicity'))
 
     options.add(
         'nwchem',
@@ -582,21 +621,21 @@ def load_nwchem_defaults(options):
             validator=parsers.boolean,
             glossary='Direct calculation of DFT: on/off. Default is off.'))
 
-    options.add(
-        'nwchem',
-        RottenOption(
-            keyword='dft__semidirect__filesize',
-            default='',  #default is disksize
-            validator=parsers.positive_integers,
-            glossary='The semidirect options control caching of integrals; option defines the file size, default is disk size.'))
+#    options.add(
+#        'nwchem',
+#        RottenOption(
+#            keyword='dft__semidirect__filesize',
+#            default='',  #default is disksize
+#            validator=parsers.positive_integer,
+#            glossary='The semidirect options control caching of integrals; option defines the file size, default is disk size.'))
 
-    options.add(
-        'nwchem',
-        RottenOption(keyword='dft__semidirect__memsize', default='', validator=parsers.parse_memory, glossary='memory size in the semidirect options.'))
-
-    options.add(
-        'nwchem',
-        RottenOption(keyword='dft__semidirect__filename', default='', validator=lambda x: x.lower(), glosary='name of file in semidirect options.'))
+#    options.add(
+#        'nwchem',
+#        RottenOption(keyword='dft__semidirect__memsize', default='', validator=parsers.parse_memory, glossary='memory size in the semidirect options.'))
+#
+#    options.add(
+#        'nwchem',
+#        RottenOption(keyword='dft__semidirect__filename', default='', validator=lambda x: x.lower(), glosary='name of file in semidirect options.'))
 
     options.add(
         'nwchem',
@@ -642,7 +681,7 @@ def load_nwchem_defaults(options):
     options.add(
             'nwchem',
             RottenOption(
-                keyword='ccsd_thresh',
+                keyword='ccsd__thresh',
                 default= 1.0e-6,
                 validator=parsers.parse_convergence,
                 glossary= 'Convergence threshold for the iterative part of the calculation.'))
@@ -658,7 +697,7 @@ def load_nwchem_defaults(options):
     options.add(
             'nwchem',
             RottenOption(
-                keyword='ccsd(t)_thresh',
+                keyword='ccsd(t)__thresh',
                 default= 1.0e-6,
                 validator=parsers.parse_convergence,
                 glossary= 'Convergence threshold for the iterative part of the calculation.'))
@@ -688,7 +727,7 @@ def load_nwchem_defaults(options):
             MBP2= MP2, MBPT3= MP3, MBPT4= MP4.'''))
     
     options.add('nwchem', RottenOption(
-        keyword='tce_thresh',
+        keyword='tce__thresh',
         default=1.e-4,
         validator=parsers.parse_convergence,
         glossary='TCE convergence threshold'))

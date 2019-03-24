@@ -8,8 +8,7 @@ from ..molecule import Molecule
 
 
 def muster_and_format_molecule_and_basis_for_gamess(molrec, ropts, qbs, verbose=1):
-    accession = uuid.uuid4()
-
+    kwgs = {'accession': uuid.uuid4(), 'verbose': verbose}
     units = 'Bohr'
 
     native_puream = qbs.has_puream()
@@ -35,10 +34,9 @@ def muster_and_format_molecule_and_basis_for_gamess(molrec, ropts, qbs, verbose=
     elif pg == 'D_inf_h':
         pgn, naxis = 'Dnh', 4
     elif pg == 'Sn':
-        pgn, naxis = 'S2n', qmol.full_pg_n() / 2  # never tested
+        pgn, naxis = 'S2n', qmol.full_pg_n() / 2  # n/2n never tested
     else:
         pgn, naxis = pg, qmol.full_pg_n()
-
 
     uniq_atombas_lines = gamess_data_record_cart.splitlines()[:2]  # $data and card -1-
     uniq_atombas_lines.append(f""" {pgn} {naxis}""")  # card -2-
@@ -51,15 +49,14 @@ def muster_and_format_molecule_and_basis_for_gamess(molrec, ropts, qbs, verbose=
             uniq_atombas_lines.append('')  # card -8U-
 
     uniq_atombas_lines.append(""" $end""")
-    molcmd = '\n'.join(uniq_atombas_lines)
 
-    ropts.require('GAMESS', 'contrl__coord', 'unique', accession=accession, verbose=verbose)
-    ropts.require('GAMESS', 'contrl__units', {'Bohr': 'bohr', 'Angstrom': 'angs'}[units], accession=accession, verbose=verbose)
-    ropts.require('GAMESS', 'contrl__icharg', int(molrec['molecular_charge']), accession=accession, verbose=verbose)
-    ropts.require('GAMESS', 'contrl__mult', molrec['molecular_multiplicity'], accession=accession, verbose=verbose)
-    ropts.require('GAMESS', 'contrl__ispher', {True: 1, False: -1}[native_puream], accession=accession, verbose=verbose)
+    ropts.require('GAMESS', 'contrl__coord', 'unique', **kwgs)
+    ropts.require('GAMESS', 'contrl__units', {'Bohr': 'bohr', 'Angstrom': 'angs'}[units], **kwgs)
+    ropts.require('GAMESS', 'contrl__icharg', int(molrec['molecular_charge']), **kwgs)
+    ropts.require('GAMESS', 'contrl__mult', molrec['molecular_multiplicity'], **kwgs)
+    ropts.require('GAMESS', 'contrl__ispher', {True: 1, False: -1}[native_puream], **kwgs)
 
-    return molcmd
+    return '\n'.join(uniq_atombas_lines)
 
 
 def format_option_for_gamess(opt, val, lop_off=True):
@@ -67,7 +64,7 @@ def format_option_for_gamess(opt, val, lop_off=True):
 
     text = ''
 
-    # Transform booleans into integers
+    # Transform booleans into Fortran booleans
     if str(val) == 'True':
         text += '.true.'
     elif str(val) == 'False':

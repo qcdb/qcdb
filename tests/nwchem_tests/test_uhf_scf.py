@@ -26,9 +26,9 @@ def test_1_hf():
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'memory': '400 mb',
-        'nwchem_scf': 'uhf',
-        'nwchem_scf_nopen': 1,
-        'nwchem_scf_thresh': 1.0e-8
+        'nwchem_scf__uhf': True,
+        'nwchem_scf__nopen': 1,
+        'nwchem_scf__thresh': 1.0e-8
     })
     print('Testing hf...')
     val = qcdb.energy('nwc-hf')
