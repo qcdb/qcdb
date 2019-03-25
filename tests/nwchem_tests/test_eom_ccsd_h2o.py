@@ -1,8 +1,8 @@
 #EOM CCSD
 import os
 import sys
-from addons import *
-from utils import *
+from ..addons import *
+from ..utils import *
 import qcdb
 
 h2o = qcdb.set_molecule('''

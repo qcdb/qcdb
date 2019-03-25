@@ -27,11 +27,11 @@ def load_qcdb_defaults(options):
             validator=lambda x: x.upper(),
             glossary='Primary orbital basis set.'))
 
-    #options.add('qcdb', RottenOption(
-    #        keyword='e_convergence',
-    #        default=1.e-6,
-    #        validator=parsers.parse_convergence,
-    #        glossary='Convergence criterion for energy.'))
+    options.add('qcdb', RottenOption(
+            keyword='e_convergence',
+            default=1.e-6,
+            validator=parsers.parse_convergence,
+            glossary='Convergence criterion for energy.'))
 
     options.add('qcdb', RottenOption(  # derived shorthand global
             keyword='scf__e_convergence',
@@ -216,14 +216,17 @@ class RottenOptions(object):
 
         return '\n'.join(text)
 
-    def print_changed(self):
+    def print_changed(self, history=True):
         text = []
         for pkg in self.scroll:
             text.append('  <<<  {}  >>>'.format(pkg))
             for opt, oopt in sorted(self.scroll[pkg].items()):
                 #if not oopt.is_default():
                 if len(oopt.history) > 1:
-                    text.append(str(oopt))
+                    if history:
+                        text.append(str(oopt))
+                    else:
+                        text.append(oopt.shortstr())
 
         return '\n'.join(text)
 
@@ -283,6 +286,15 @@ class RottenOption(object):
         if self.disputed():
             text.extend(['         ' + str(entry) for entry in self.history])
                 #format(self.keyword, added[0], added[2] + 100 * int(added[1]), added[3]))
+        return '\n'.join(text)
+
+    def shortstr(self):
+        text = []
+        text.append('  {:50} {:>30} {} {}'.format(
+                                        self.keyword + ':',
+                                        str(self.value),
+                                        '  ' if self.is_default() else '<>',
+                                        '(' + str(self.history[0][0]) + ')'))
         return '\n'.join(text)
 
     #@property

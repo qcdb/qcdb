@@ -170,6 +170,19 @@ def wfn_psivars():
         args=['CCSD[T] CORRELATION ENERGY', 'CCSD CORRELATION ENERGY', '[T] CORRECTION ENERGY'],
         coeff=[-1, 1, 1]))
 
+    # FCI
+    pv0.extend(_solve_in_turn(
+        args=['FCI TOTAL ENERGY', 'HF TOTAL ENERGY', 'FCI CORRELATION ENERGY'],
+        coeff=[-1, 1, 1]))
+
+    # Generics
+    pv0.extend(_solve_in_turn(
+        args=['CC TOTAL ENERGY', 'HF TOTAL ENERGY', 'CC CORRELATION ENERGY'],
+        coeff=[-1, 1, 1]))
+    pv0.extend(_solve_in_turn(
+        args=['CI TOTAL ENERGY', 'HF TOTAL ENERGY', 'CI CORRELATION ENERGY'],
+        coeff=[-1, 1, 1]))
+
     # DFT
 
     #   fctl

@@ -1,7 +1,7 @@
 import os
 import sys
-from addons import *
-from utils import *
+from ..addons import *
+from ..utils import *
 import qcdb
 import numpy as np
 

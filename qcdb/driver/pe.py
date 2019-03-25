@@ -1,9 +1,13 @@
 import collections
 
+from qcengine.util import which, which_import
+
 from .. import data_dir
 from ..molecule import Molecule
 from ..moptions.read_options2 import RottenOptions, load_qcdb_defaults
-from ..iface_psi4.options import load_cfour_defaults_from_psi4, load_psi4_defaults, load_nwchem_defaults_from_psi4, load_gamess_defaults_from_psi4
+from ..intf_psi4.options import load_cfour_defaults_from_psi4, load_psi4_defaults
+from ..intf_nwchem.options import load_nwchem_defaults
+from ..intf_gamess.options import load_gamess_defaults
 
 
 def clean_nu_options():
@@ -15,10 +19,14 @@ def load_nu_options():
     global nu_options
 
     load_qcdb_defaults(nu_options)
-    load_cfour_defaults_from_psi4(nu_options)
-    load_nwchem_defaults_from_psi4(nu_options)
-    load_gamess_defaults_from_psi4(nu_options)
-    load_psi4_defaults(nu_options)
+    if which('xcfour') and which_import('psi4'):
+        load_cfour_defaults_from_psi4(nu_options)
+    if which('nwchem'):
+        load_nwchem_defaults(nu_options)
+    if which('rungms'):
+        load_gamess_defaults(nu_options)
+    if which('psi4') and which_import('psi4'):
+        load_psi4_defaults(nu_options)
     try:
         import resp
     except ImportError:
@@ -37,7 +45,7 @@ def clean_options():
     global active_options
     active_options = collections.defaultdict(lambda: collections.defaultdict(dict))
     active_options['GLOBALS']
-    
+
 # here liveth the options _during_ function calls
 active_options = None
 clean_options()

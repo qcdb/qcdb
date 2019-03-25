@@ -2,8 +2,8 @@
 # ROHF-MP2 is not available in NWChem
 import os
 import sys
-from utils import *
-from addons import *
+from ..utils import *
+from ..addons import *
 import qcdb
 
 nh2 = qcdb.set_molecule('''
@@ -41,10 +41,10 @@ def test_1_mp2_5050no():
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'memory': '300 mb',
-        'nwchem_scf': 'UHF',
-        'nwchem_scf_nopen': 1,
+        'nwchem_scf__UHF': True,
+        'nwchem_scf__nopen': 1,
         #'nwchem_scf_mixiter': 80,
-        'nwchem_scf_thresh': 1.0e-8,
+        'nwchem_scf__thresh': 1.0e-8,
     })
     print('Testing hf...')
     val = qcdb.energy('nwc-mp2')
@@ -55,10 +55,10 @@ def test_2_mp2_5050yes():
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'memory': '300 mb',
-        'nwchem_scf': 'UHF',
-        'nwchem_scf_nopen': 1,
+        'nwchem_scf__UHF': True,
+        'nwchem_scf__nopen': 1,
         #'nwchem_scf_mixiter': 80,
-        'nwchem_scf_thresh': 1.0e-8,
+        'nwchem_scf__thresh': 1.0e-8,
     })
     print('Testing mp2...')
     val = qcdb.energy('nwc-mp2')

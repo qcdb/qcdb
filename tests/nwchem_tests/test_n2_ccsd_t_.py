@@ -1,8 +1,8 @@
 #non-TCE CCSD(T) energy for N2
 import os
 import sys
-from addons import *
-from utils import *
+from ..addons import *
+from ..utils import *
 import qcdb
 
 n2 = qcdb.set_molecule('''
@@ -45,17 +45,17 @@ def check_ccsd_t_(return_value, is5050):
 def test_1_a5050():
     qcdb.set_options({
         'basis' : 'cc-pvdz',
-        'nwchem_ccsd_thresh'    :   1.0e-8
+        'nwchem_ccsd__thresh'    :   1.0e-8
         })
     print('testing ccsd(t)...')
-    val = qcdb.energy('nwc-ccsd(t)')
+    val = qcdb.energy('nwc-ccsd(t)', molecule=n2)
     check_ccsd_t_(val, is5050=True)
 
 @using_nwchem
 def test_2_a5050_no():
     qcdb.set_options({
         'basis' : 'cc-pvdz',
-        'nwchem_ccsd_thresh'    : 1.0e-8
+        'nwchem_ccsd__thresh'    : 1.0e-8
         })
-    val = qcdb.energy('nwc-ccsd(t)')
+    val = qcdb.energy('nwc-ccsd(t)', molecule=n2)
     check_ccsd_t_(val, is5050=False)

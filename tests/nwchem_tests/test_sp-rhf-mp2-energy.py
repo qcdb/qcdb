@@ -1,8 +1,8 @@
 #! single-point MP2/cc-pvdz on water
 import os
 import sys
-from utils import *
-from addons import *
+from ..utils import *
+from ..addons import *
 import qcdb
 
 h2o = qcdb.set_molecule('''
@@ -37,8 +37,8 @@ def test_1_a5050_no():
     qcdb.set_options({
         'basis': 'cc-pvdz', 
         'memory': '400 mb', 
-        'nwchem_mp2_tight': True, 
-        'nwchem_task_mp2': 'energy'
+        'nwchem_mp2__tight': True, 
+        #'nwchem_task_mp2': 'energy'
         })
     print('Testing mp2(df)...')
     # print(jrec['qcvars'])
@@ -50,8 +50,8 @@ def test_2_a5050():
     qcdb.set_options({
         'basis': 'cc-pvdz', 
         'memory': '400 mb', 
-        'nwchem_mp2_tight': True, 
-        'nwchem_task_mp2': 'energy'
+        'nwchem_mp2__tight': True, 
+        #'nwchem_task_mp2': 'energy'  # not the way to specify anymore
         })
     print('Testing scs-mp2(df)...')
     val = qcdb.energy('nwc-mp2')

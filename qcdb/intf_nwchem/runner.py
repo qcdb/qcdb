@@ -15,7 +15,9 @@ from ..molecule import Molecule
 from ..pdict import PreservingDict
 from . import harvester
 from .worker import nwchem_subprocess
-from .molbas import * #format_molecule_for_nwchem, format_basis_for_nwchem, format_basis_for_nwchem_puream, local_prepare_options_for_modules
+#from .molbas import * #format_molecule_for_nwchem, format_basis_for_nwchem, format_basis_for_nwchem_puream, local_prepare_options_for_modules
+from .molbasopt import muster_and_format_molecule_for_nwchem, muster_and_format_basis_for_nwchem, format_options_for_nwchem
+from .harvester import muster_inherited_options, format_modelchem_for_nwchem
 from ..moptions.options import reconcile_options
 
 
@@ -68,9 +70,9 @@ def nwchem_driver(jobrec):
         jobrec['error'] += repr(err) + 'Required fields missing from ({})'.format(jobrec.keys())
         return jobrec
 
-    print('[1] NWCHEM JOBREC PRE-PLANT (j@i) <<<')
-    pp.pprint(jobrec)
-    print('>>>')
+#    print('[1] NWCHEM JOBREC PRE-PLANT (j@i) <<<')
+#    pp.pprint(jobrec)
+#    print('>>>')
 
     nwchemrec = nwchem_plant(jobrec)
 
@@ -78,21 +80,21 @@ def nwchem_driver(jobrec):
     jnwchemrec = json.dumps(nwchemrec)
     nwchemrec = json.loads(jnwchemrec)
 
-    print('[2] NWCHEMREC PRE-SUBPROCESS (e@i) <<<')
-    pp.pprint(nwchemrec)
-    print('>>>\n')
+#    print('[2] NWCHEMREC PRE-SUBPROCESS (e@i) <<<')
+#    pp.pprint(nwchemrec)
+#    print('>>>\n')
 
     nwchem_subprocess(nwchemrec)  # updates nwchemrec
 
-    print('[3] NWCHEMREC POST-SUBPROCESS (e@io) <<<')
-    pp.pprint(nwchemrec)
-    print('>>>\n')
+#    print('[3] NWCHEMREC POST-SUBPROCESS (e@io) <<<')
+#    pp.pprint(nwchemrec)
+#    print('>>>\n')
 
     nwchem_harvest(jobrec, nwchemrec)  # updates jobrec
 
-    print('[4] NWCHEM JOBREC POST-HARVEST (j@io) <<<')
-    pp.pprint(jobrec)
-    print('>>>')
+#    print('[4] NWCHEM JOBREC POST-HARVEST (j@io) <<<')
+#    pp.pprint(jobrec)
+#    print('>>>')
 
     return jobrec
 
@@ -114,35 +116,37 @@ def nwchem_plant(jobrec):  # jobrec@i -> engine@i
 
     print('in nwchem_plant')
 
-    molcmd = format_molecule_for_nwchem(jobrec['molecule'], jobrec['options'], verbose=1)
+    # Handle qcdb keywords implying nwchem keyword values
+    muster_inherited_options(jobrec['options'])
 
-    # Handle qcdb keywords implying cfour keyword values
-    # if core.get_option('CFOUR', 'TRANSLATE_PSI4'):
- #   harvester.muster_inherited_options(jobrec['options'])
+    molcmd = muster_and_format_molecule_for_nwchem(jobrec['molecule'], jobrec['options'], verbose=1)
 
-#    _qcdb_basis = jobrec['options'].scroll['QCDB']['BASIS'].value
-#    _cfour_basis = jobrec['options'].scroll['CFOUR']['BASIS'].value
-#    #if core.get_global_option('BASIS') == '':
-#    if _qcdb_basis == '':
-#        _, cased_basis = moptions.format_option_for_cfour('CFOUR_BASIS', _cfour_basis)
-#        cfourrec['genbas'] = extract_basis_from_genbas(cased_basis, jobrec['molecule']['elem'], exact=False)
-#        bascmd = ''
-#    else:
-#        qbs = BasisSet.pyconstruct(jobrec['molecule'], 'BASIS', _qcdb_basis)
-#        #if qbs.has_ECP(): #    raise ValidationError("""ECPs not hooked up for Cfour""")
-#        cfourrec['genbas'] = qbs.print_detail_cfour() #qbs.genbas()
-#        bascmd = format_basis_for_cfour(jobrec['molecule'], jobrec['options'], qbs.has_puream())
+    _qcdb_basis = jobrec['options'].scroll['QCDB']['BASIS'].value
+    _gamess_basis = jobrec['options'].scroll['NWCHEM']['BASIS'].value
+    if _qcdb_basis == '':
+        raise ValueError('nwchem bas not impl. set with `basis cc-pvdz`, etc. to use qcdb (psi4) basis set library.')
+    # create a qcdb.Molecule to reset PG to c1 so all atoms. but print_detail isn't transmitting in a way nwc is picking up on, so per-element for now
+    #qmol = Molecule(jobrec['molecule'])
+    #qmol.reset_point_group('c1')  # need basis printed for *every* atom
+    #qbs = BasisSet.pyconstruct(qmol, 'BASIS', _qcdb_basis)
+    qbs = BasisSet.pyconstruct(jobrec['molecule'], 'BASIS', _qcdb_basis)
+
+    #if qbs.has_ECP(): #    raise ValidationError("""ECPs not hooked up for Cfour""")
+    bascmd = muster_and_format_basis_for_nwchem(jobrec['molecule'], jobrec['options'], qbs, verbose=1)
 
     # Handle calc type and quantum chemical method
   #  harvester.nu_muster_modelchem(jobrec['method'], jobrec['dertype'], jobrec['options'])
+    mdccmd = format_modelchem_for_nwchem(jobrec['method'], jobrec['dertype'], jobrec['options'], sysinfo=None)
 
     print('HH')
     print(jobrec['options'].print_changed())
 
     # Handle driver vs input/default keyword reconciliation
 
-    # Handle conversion of psi4 keyword structure into cfour format
-  #  optcmd = moptions.prepare_options_for_cfour(jobrec['options'])
+    # Handle conversion of qcdb keyword structure into nwchem format
+#OLD    optcmd = moptions.prepare_options_for_nwchem(jobrec['options'])
+    resolved_options = {k: v.value for k, v in jobrec['options'].scroll['NWCHEM'].items() if v.disputed()}
+    optcmd = format_options_for_nwchem(resolved_options)
 
     # Handle text to be passed untouched to cfour
 #    litcmd = core.get_global_option('LITERAL_CFOUR')
@@ -150,8 +154,9 @@ def nwchem_plant(jobrec):  # jobrec@i -> engine@i
     # Assemble ZMAT pieces
     #zmat = memcmd + molcmd + optcmd + mdccmd + psicmd + bascmd + litcmd
     #zmat = molcmd + optcmd + bascmd
-    nwchemrec['nwchemnw'] = write_input(jobrec['method'], jobrec['dertype'], jobrec['molecule'], jobrec['options']) #molecule)
-    #print('<<< ZMAT||{}||>>>\n'.format(nwchemrec['nwchemnw']))
+    nwchemrec['nwchem.nw'] = 'echo\n' + molcmd + bascmd + optcmd + mdccmd
+#OLD    nwchemrec['nwchem.nw'] = write_input(jobrec['method'], jobrec['dertype'], jobrec['molecule'], jobrec['options']) #molecule)
+    #print('<<< ZMAT||\n{}\n||>>>\n'.format(nwchemrec['nwchem.nw']))
     nwchemrec['command'] = ['nwchem']  # subnw?
 
     return nwchemrec
@@ -202,7 +207,6 @@ def nwchem_harvest(jobrec, nwchemrec):  # jobrec@i, enginerec@io -> jobrec@io
     # nwmol, if it exists, is dinky, just a clue to geometry of nwchem results
     psivar, nwhess, nwgrad, nwmol, version, errorTMP = harvester.harvest(qmol, nwchemrec['stdout'], **nwfiles)
 
-    print ('errorTMP', errorTMP)
     jobrec['error'] += errorTMP
     # Absorb results into psi4 data structures
     #for key in psivar.keys():

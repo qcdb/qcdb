@@ -2,8 +2,8 @@
 #Need to check out tddft excited states compared to harvester
 import os
 import sys
-from addons import *
-from utils import *
+from ..addons import *
+from ..utils import *
 import qcdb
 
 n2_plus = qcdb.set_molecule('''

@@ -367,7 +367,7 @@ def energy(name, **kwargs):
     molecule.update_geometry()
 
     if len(pe.nu_options.scroll) == 0:
-        print('EMPTY OPT')
+        #print('EMPTY OPT')
         pe.load_nu_options()
 
 
@@ -414,7 +414,7 @@ def energy(name, **kwargs):
 #            targetfile = filepath + prefix + '.' + pid + '.' + namespace + '.' + str(filenum)
 #            shutil.copy(item, targetfile)
 
-    print('QWER', pe.nu_options.print_changed())
+#PR    print('QWER', pe.nu_options.print_changed())
     package = driver_util.get_package(lowername, kwargs)
     #for k, v in pkgprefix.items():
     #    if lowername.startswith(k):
@@ -431,7 +431,7 @@ def energy(name, **kwargs):
 #
 #    optstash.restore()
     #jobrec.pop('raw_output')  # just to moderate printint to screen
-    pp.pprint(jobrec)
+#PR    pp.pprint(jobrec)
     pe.active_qcvars = copy.deepcopy(jobrec['qcvars'])
 
     if return_wfn:  # TODO current energy safer than wfn.energy() for now, but should be revisited
@@ -521,7 +521,7 @@ def properties(*args, **kwargs):
     molecule.update_geometry()
 
     if len(pe.nu_options.scroll) == 0:
-        print('EMPTY OPT')
+        #print('EMPTY OPT')
         pe.load_nu_options()
 
     # Allow specification of methods to arbitrary order

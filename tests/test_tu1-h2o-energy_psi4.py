@@ -4,37 +4,37 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from .utils import *
 from .addons import *
 
+_ref_h2o_pk_rhf  = -76.02696997325441
+_ref_ch2_pk_uhf  = -38.925088643363665
+_ref_ch2_pk_rohf = -38.91973113928147
 
 @using_psi4
-def test_tu1a():
+def test_tu1_rhf_a():
     """tu1-h2o-energy/input.dat
     global testing
 
     """
-#    import qcdb
-#    print('qcdb', qcdb.__file__)
-#    print(dir(qcdb))
     h2o = qcdb.set_molecule("""
   O 
-  H 1 0.96
-  H 1 0.96 2 104.5
+  H 1 1.8
+  H 1 1.8 2 104.5
+  units au
 """)
     print(h2o)
     print(qcdb.get_active_options().print_changed())
 
     qcdb.set_options({'basis': 'cc-pVDZ',
+                      'scf_type': 'pk',
                       'memory': '600 mb'})
 
-    qcdb.energy('scf')
+    qcdb.energy('p4-hf')
     print(qcdb.print_variables())
 
-    #assert compare_values(-76.0266327341067125, get_variable('SCF TOTAL ENERGY'), 6, sys._getframe().f_code.co_name)
-    assert compare_values(-76.0266327341067125, qcdb.get_variable('SCF TOTAL ENERGY'), 6, sys._getframe().f_code.co_name)
-#    assert False
+    assert compare_values(_ref_h2o_pk_rhf, qcdb.get_variable('HF TOTAL ENERGY'), 6, sys._getframe().f_code.co_name)
 
 
 @using_psi4
-def test_tu1b():
+def test_tu1_rhf_b():
     """tu1-h2o-energy/input.dat
     local testing
 
@@ -44,26 +44,25 @@ def test_tu1b():
 
     h2o = qcdb.Molecule("""
   O 
-  H 1 0.96
-  H 1 0.96 2 104.5
+  H 1 1.8
+  H 1 1.8 2 104.5
+  units au
 """)
 
-    E, jrec = qcdb.energy('scf/cc-pVDZ', molecule=h2o, return_wfn=True)
+    qcdb.set_options({'scf_type': 'pk',})
+
+    E, jrec = qcdb.energy('p4-hf/cc-pVDZ', molecule=h2o, return_wfn=True)
     print(qcdb.print_variables(jrec['qcvars']))
 
-    ans1 = -76.0266327341067125
-    assert compare_values(ans1, jrec['qcvars']['SCF TOTAL ENERGY'].data, 6, sys._getframe().f_code.co_name)
-    # ok in direct mode
-    #assert compare_values(ans1, jrec['wfn'].get_variable('SCF TOTAL ENERGY'), 6, sys._getframe().f_code.co_name)
+    assert compare_values(_ref_h2o_pk_rhf, jrec['qcvars']['HF TOTAL ENERGY'].data, 6, sys._getframe().f_code.co_name)
 
 
 @using_psi4
-def test_tu2():
+def test_tu2_uhf():
     """tu2-ch2-energy/input.dat
     #! Sample UHF/6-31G** CH2 computation
 
     """
-    ans2 = -38.9253416082900827
 
 
     ch2 = qcdb.set_molecule("""
@@ -72,8 +71,9 @@ def test_tu2():
   H 1 R
   H 1 R 2 A
 
-  R = 1.075
+  R = 2.05
   A = 133.93
+units au
 """)
 
     qcdb.set_options({'basis': '6-31G**',
@@ -82,10 +82,42 @@ def test_tu2():
                       #'psi_scf_type': 'pk'})
                       'scf_type': 'pk'})
 
-    E, jrec = qcdb.energy ('scf', return_wfn=True)
+    E, jrec = qcdb.energy ('p4-hf', return_wfn=True)
     print(qcdb.print_variables())
 
-    assert compare_values(ans2, qcdb.get_variable('scf total energy'), 6, sys._getframe().f_code.co_name)
+    assert compare_values(_ref_ch2_pk_uhf, qcdb.get_variable('hf total energy'), 6, sys._getframe().f_code.co_name)
+
+
+@using_psi4
+def test_tu2_rohf():
+    """tu2-ch2-energy/input.dat
+    #! Sample ROHF/6-31G** CH2 computation
+
+    """
+
+    ch2 = qcdb.set_molecule("""
+  0 3
+  C
+  H 1 R
+  H 1 R 2 A
+
+  R = 2.05
+  A = 133.93
+units au
+""")
+
+    qcdb.set_options({'basis': '6-31G**',
+                      'reference': ' rohf',
+                      'puream': 'cart',
+                      #'psi_scf_type': 'pk'})
+                      'scf_type': 'pk'})
+
+    E, jrec = qcdb.energy ('p4-hf', return_wfn=True)
+    print(qcdb.print_variables())
+
+    assert compare_values(_ref_ch2_pk_rohf, qcdb.get_variable('hf total energy'), 6, sys._getframe().f_code.co_name)
+    assert compare_values(_ref_ch2_pk_rohf, qcdb.get_variable('current energy'), 6, sys._getframe().f_code.co_name)
+    assert compare_values(_ref_ch2_pk_rohf, E, 6, sys._getframe().f_code.co_name)
 
 
 #@using_psi4
@@ -113,13 +145,13 @@ def test_tu2():
 #                      #'psi_scf_type': 'pk'})
 #                      'scf_type': 'pk'})
 #
-#    E, jrec = qcdb.energy ('scf', return_wfn=True, probe=True)
+#    E, jrec = qcdb.energy ('p4-scf', return_wfn=True, probe=True)
 #    print(qcdb.print_variables())
 #
 #    assert compare_values(ans2, qcdb.get_variable('scf total energy'), 6, sys._getframe().f_code.co_name)
 
 @using_psi4
-def test_tu2_yaml():
+def test_tu2_uhf_yaml():
 
     yamlin = """
 molecule: |
@@ -132,7 +164,7 @@ molecule: |
   A = 133.93
 
 driver: !!python/name:qcdb.energy
-method: scf
+method: p4-hf
 options:
   memory: 1gb
   basis: '6-31g**'

@@ -2,28 +2,24 @@ import os
 import re
 import sys
 import uuid
+import collections
 
 import qcelemental as qcel
 
 from ..driver import pe
 
-try:
-    basestring
-except NameError:
-    basestring = str
 
-
-def format_molecule_for_nwchem(molrec, ropts, verbose=1):
+def muster_and_format_molecule_for_nwchem(molrec, ropts, verbose=1):
     accession = sys._getframe().f_code.co_name + '_' + str(uuid.uuid4())
     kwgs = {'accession': accession, 'verbose': verbose}
 
     units = 'Bohr'
     molcmd = qcel.molparse.to_string(molrec, dtype='nwchem', units=units)
 
-    ropts.require('NWCHEM', 'CHARGE', int(molrec['molecular_charge']), **kwgs)
+    ropts.require('NWCHEM', 'charge', int(molrec['molecular_charge']), **kwgs)
     if molrec['molecular_multiplicity'] != 1:
-        ropts.require('NWCHEM', 'SCF_NOPEN', molrec['molecular_multiplicity'] - 1, **kwgs)
-        ropts.require('NWCHEM', 'DFT_MULT', molrec['molecular_multiplicity'], **kwgs)
+        ropts.require('NWCHEM', 'scf__nopen', molrec['molecular_multiplicity'] - 1, **kwgs)
+        ropts.require('NWCHEM', 'dft__mult', molrec['molecular_multiplicity'], **kwgs)
 
     return molcmd
 
@@ -124,8 +120,27 @@ def format_basis_for_nwchem_puream(self, puream):
     return text, options
 
 
+def muster_and_format_basis_for_nwchem(molrec, ropts, qbs, verbose=1):
+    kwgs = {'accession': uuid.uuid4(), 'verbose': verbose}
+    units = 'Bohr'
+
+    # this is bad b/c user can't reset puream. adjust after figuring out anonymous options better
+    native_puream = qbs.has_puream()
+    nwc_puream = {True: 'spherical', False: 'cartesian'}[native_puream]
+#    nwc_puream = 'cartesian'
+    atom_basisset = qbs.print_detail_gamess(return_list=True)
+
+    bascmd = f"""basis {nwc_puream}\n"""  # nwc wants role, not basis name, I guess: f"""basis "{qbs.name}" {nwc_puream}\n"""
+    bascmd += qbs.print_detail_nwchem()
+    bascmd += "\nend\n"
+
+    #ropts.require('NWCHEM', 'basis__puream', {True: 'spherical', False: 'cartesian'}[native_puream], accession=accession, verbose=verbose)
+
+    return bascmd
+
+
 def local_prepare_options_for_modules(changedOnly=False, commandsInsteadDict=False):
-    from ..iface_psi4.options import query_options_defaults_from_psi
+    from ..intf_psi4.options import query_options_defaults_from_psi
     return query_options_defaults_from_psi(changedOnly=changedOnly)
 
 
@@ -191,7 +206,7 @@ def fulllocal_prepare_options_for_modules(changedOnly=False, commandsInsteadDict
                 continue
             val = core.get_global_option(opt)
             options['GLOBALS'][opt] = {'value': val, 'has_changed': core.has_global_option_changed(opt)}
-            if isinstance(val, basestring):
+            if isinstance(val, str):
                 commands += """core.set_global_option('%s', '%s')\n""" % (opt, val)
             else:
                 commands += """core.set_global_option('%s', %s)\n""" % (opt, val)
@@ -204,7 +219,7 @@ def fulllocal_prepare_options_for_modules(changedOnly=False, commandsInsteadDict
                 if hoc or not changedOnly:
                     val = core.get_option(module, opt)
                     options[module][opt] = {'value': val, 'has_changed': hoc}
-                    if isinstance(val, basestring):
+                    if isinstance(val, str):
                         commands += """core.set_local_option('%s', '%s', '%s')\n""" % (module, opt, val)
                     else:
                         commands += """core.set_local_option('%s', '%s', %s)\n""" % (module, opt, val)
@@ -216,6 +231,37 @@ def fulllocal_prepare_options_for_modules(changedOnly=False, commandsInsteadDict
         return commands
     else:
         return options
+
+
+def format_options_for_nwchem(options):
+    """From NWCHEM-directed, non-default options dictionary `options`, write a NWCHEM deck."""
+
+    grouped_options = collections.defaultdict(dict)
+    for group_key, val in options.items():
+        nesting = group_key.split('__')
+        if len(nesting) == 1:
+            group, key = 'aaaglobal', nesting[0]
+        elif len(nesting) == 2:
+            group, key = nesting
+        else:
+            raise ValueError('Nesting!' + nesting)
+#        group, key = group_key.split('__')
+        grouped_options[group][key] = val
+
+    grouped_lines = {}
+    for group, opts in sorted(grouped_options.items()):
+        line = []
+#        line.append(f'${group.lower()}')
+        for key, val in grouped_options[group].items():
+            line.append(' '.join(format_option_for_nwchem(key, val, lop_off=False)))
+#        line.append('end\n')
+        if group == 'aaaglobal':
+            grouped_lines[group] = '\n'.join(line) + '\n'
+        else:
+            grouped_lines[group] = f'{group.lower()}\n  ' + '\n  '.join(line) + '\nend\n'
+#        grouped_lines[group] = textwrap.fill(' '.join(line), initial_indent=' ', subsequent_indent='  ')
+
+    return '\n'.join(grouped_lines.values()) + '\n'
 
 
 def prepare_options_for_nwchem(options):
@@ -364,7 +410,7 @@ def prepare_options_for_task_nwchem(options):
     return text
 
 
-def format_option_for_nwchem(opt, val):
+def format_option_for_nwchem(opt, val, lop_off=True):
     """Function to reformat value *val* for option *opt* from python
     into nwchem-speak. 
         
@@ -372,7 +418,24 @@ def format_option_for_nwchem(opt, val):
     text = ''
     spaces = ' '
 
-    if isinstance(val, list):
+    # Transform string booleans into " "
+    if val is True:
+        #text += spaces + opt
+        return opt.lower(), ''
+    elif val is False:
+        return '', ''
+    #if str(val) == 'TRUE':
+    #    text += '%s' % (spaces)
+    #elif str(val) == 'FALSE':
+    #    pass
+
+    # complete hack
+    if opt.upper() == 'MEMORY':
+        print(text)
+        return opt.lower(), f'{val}' # mb'
+
+
+    elif isinstance(val, list):
         for n in range(len(val)):
             text += str(val[n])
             if n < (len(val) - 1):
@@ -381,7 +444,10 @@ def format_option_for_nwchem(opt, val):
     else:
         text += str(val)
 
-    return opt[7:].lower(), text
+    if lop_off:
+        return opt[7:].lower(), text
+    else:
+        return opt.lower(), text
 
 
 def format_option_for_theory_block_nwchem(opt, val):

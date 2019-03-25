@@ -1,8 +1,8 @@
 #! pbe/sto-3g H2O DFT energy
 import os
 import sys
-from utils import *
-from addons import *
+from ..utils import *
+from ..addons import *
 import qcdb
 
 h2o = qcdb.set_molecule('''

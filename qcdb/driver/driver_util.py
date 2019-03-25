@@ -125,3 +125,71 @@ def find_derivative_type(ptype, method_name, user_dertype, user_package):
 
     return dertype
 
+
+def _process_displacement(derivfunc, method, molecule, displacement, n, ndisp, **kwargs):
+    """A helper function to perform all processing for an individual finite
+       difference computation.
+
+       Parameters
+       ----------
+       derivfunc : func
+           The function computing the target derivative.
+       method : str
+          A string specifying the method to be used for the computation.
+       molecule: psi4.core.molecule or qcdb.molecule
+          The molecule for the computation. All processing is handled internally.
+          molecule must not be modified!
+       displacement : dict
+          A dictionary containing the necessary information for the displacement.
+          See driver_findif/_geom_generator.py docstring for details.
+       n : int
+          The number of the displacement being computed, for print purposes.
+       ndisp : int
+           The total number of geometries, for print purposes.
+
+       Returns
+       -------
+       wfn: :py:class:`~psi4.core.Wavefunction`
+           The wavefunction computed.
+    """
+    import sys
+    import numpy as np
+    import psi4
+
+    # print progress to file and screen
+    psi4.core.print_out('\n')
+    #p4util.banner('Loading displacement %d of %d' % (n, ndisp))
+    print(""" %d""" % (n), end=('\n' if (n == ndisp) else ''))
+    sys.stdout.flush()
+
+    parent_group = molecule.point_group()
+    clone = molecule.clone()
+    clone.reinterpret_coordentry(False)
+    clone.fix_orientation(True)
+
+    # Load in displacement (flat list) into the active molecule
+    geom_array = np.reshape(displacement["geometry"], (-1, 3))
+    clone.set_geometry(psi4.core.Matrix.from_array(geom_array))
+
+    # If the user insists on symmetry, weaken it if some is lost when displacing.
+    if molecule.symmetry_from_input():
+        disp_group = clone.find_highest_point_group()
+        new_bits = parent_group.bits() & disp_group.bits()
+        new_symm_string = qcdb.PointGroup.bits_to_full_name(new_bits)
+        clone.reset_point_group(new_symm_string)
+
+    # clean possibly necessary for n=1 if its irrep (unsorted in displacement list) different from initial G0 for freq
+    psi4.core.clean()
+
+    # Perform the derivative calculation
+    derivative, wfn = derivfunc(method, return_wfn=True, molecule=clone, **kwargs)
+    displacement["energy"] = wfn['qcvars']['CURRENT ENERGY'].data
+
+    # If we computed a first or higher order derivative, set it.
+    if derivfunc.__name__ == 'gradient':
+        displacement["gradient"] = wfn['qcvars']['CURRENT GRADIENT'].data
+
+    # clean may be necessary when changing irreps of displacements
+    psi4.core.clean()
+
+    return wfn

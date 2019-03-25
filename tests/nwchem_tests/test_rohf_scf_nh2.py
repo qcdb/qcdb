@@ -1,8 +1,8 @@
 #! single-point HF/cc-pVDZ (Cartesian) on NH2
 import os
 import sys
-from utils import *
-from addons import *
+from ..utils import *
+from ..addons import *
 import qcdb
 
 nh2 = qcdb.set_molecule('''
@@ -26,9 +26,9 @@ def test_1_rohf():
     qcdb.set_options({
         'basis': 'cc-pVDZ',
         'memory': '300 mb',
-        'nwchem_scf': 'ROHF',
-        'nwchem_scf_nopen': 1,
-        'nwchem_scf_thresh': 1.0e-8
+        'nwchem_scf__rohf': True,
+        'nwchem_scf__nopen': 1,
+        'nwchem_scf__thresh': 1.0e-8
     })
     print('Testing HF energy ...')
     val = qcdb.energy('nwc-hf')

@@ -1,8 +1,8 @@
 import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from utils import *
-from addons import *
+from .utils import *
+from .addons import *
 
 import numpy as np
 
@@ -119,7 +119,7 @@ def system1():
     })
     
     he_dimer.update_geometry()
-    compare_values(nucenergy_ref, he_dimer.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy") #TEST
+    compare_values(nucenergy_ref, he_dimer.nuclear_repulsion_energy(), 8, "Nuclear repulsion energy") #TEST
 
 
 def system2():
@@ -138,7 +138,7 @@ def system2():
     })
     
     he_dimer.update_geometry()
-    compare_values(nucenergy_ref, he_dimer.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy") #TEST
+    compare_values(nucenergy_ref, he_dimer.nuclear_repulsion_energy(), 8, "Nuclear repulsion energy") #TEST
 
 
 # SCF TESTS

@@ -3,8 +3,8 @@
 # and able to harvest MP2 energy as well.
 import os
 import sys
-from utils import *
-from addons import *
+from ..utils import *
+from ..addons import *
 import qcdb
 
 h2o = qcdb.set_molecule('''
@@ -47,33 +47,35 @@ def check_ccsd_t_2(return_value, is_5050):
         assert compare_values(mp2tot, return_value, 5, 'mp2 return')
         assert compare_values(t_corr, qcdb.get_variable('(T) CORRECTION ENERGY'), 5, 'ccsd(t) correction')
 
+
 @using_nwchem
 def test_1_a5050_no():
     qcdb.set_options({
         'basis': 'cc-pvdz',
-        'memory': '600 mb',
-        'nwchem_scf': 'rhf',
-        'nwchem_scf_thresh': 1.0e-12,
-        'nwchem_tce_dft': False,
-        'nwchem_tce_module': 'ccsd(t)',
+#        'memory': '600 mb',
+        'nwchem_scf__rhf': True,
+        'nwchem_scf__thresh': 1.0e-12,
+        'nwchem_tce__dft': False,
+        'nwchem_tce__module': 'ccsd(t)',
         'nwchem_tce': False,
-        'nwchem_tce_thresh': 1.0e-12
+        'nwchem_tce__thresh': 1.0e-12
     })
     print("Testing MP2...")
     val = qcdb.energy('nwc-ccsd(t)')
     check_ccsd_t_2(val, is_5050=False)
+
 
 @using_nwchem
 def test_2_a5050():
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'memory': '600 mb',
-        'nwchem_scf': 'rhf',
-        'nwchem_scf_thresh': 1.0e-12,
-        'nwchem_tce_dft': False,
-        'nwchem_tce_module': 'ccsd(t)',
+        'nwchem_scf__rhf': True,
+        'nwchem_scf__thresh': 1.0e-12,
+        'nwchem_tce__dft': False,
+        'nwchem_tce__module': 'ccsd(t)',
         'nwchem_tce': False,
-        'nwchem_tce_thresh': 1.0e-12
+        'nwchem_tce__thresh': 1.0e-12
     })
     print("testing mp2...")
     val = qcdb.energy('nwc-ccsd(t)')

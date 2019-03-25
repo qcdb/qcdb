@@ -2,8 +2,8 @@
 
 import os
 import sys
-from utils import *
-from addons import *
+from ..utils import *
+from ..addons import *
 import qcdb
 
 h2o = qcdb.set_molecule('''
@@ -42,11 +42,11 @@ def test_1_dft():
         #'nwchem_dft__convergence__density': 1.0e-12,
         #'nwchem_dft_xc': 'b3lyp',
         #add grid options
-        'nwchem_tce_dft': True,
+        'nwchem_tce__dft': True,
         'nwchem_tce' : True,
-        'nwchem_tce_module': 'CCSDT',
-        'nwchem_tce_thresh': 1.0e-12,
-        'nwchem_task_tce': 'energy'
+        'nwchem_tce__module': 'CCSDT',
+        'nwchem_tce__thresh': 1.0e-12,
+#        'nwchem_task__tce': 'energy'
     })
     #print(jrec['qcvars'])
     print('Testing DFT energy...')
@@ -59,11 +59,11 @@ def test_2_ccsdt():
     qcdb.set_options({
         'basis': 'sto-3g',
         'memory': '600 mb',
-        'nwchem_tce_dft': True,
+        'nwchem_tce__dft': True,
         'nwchem_tce' : True,
-        'nwchem_tce_module': 'CCSDT',
-        'nwchem_tce_thresh': 1.0e-12,
-        'nwchem_task_tce': 'energy'
+        'nwchem_tce__module': 'CCSDT',
+        'nwchem_tce__thresh': 1.0e-12,
+#        'nwchem_task_tce': 'energy'
     })
     # print(jrec['qcvars'])
     print('Test CCSDT energy ...')

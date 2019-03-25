@@ -1,8 +1,8 @@
 import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from utils import *
-from addons import *
+from .utils import *
+from .addons import *
 
 @pytest.fixture
 def h2o():
@@ -37,8 +37,8 @@ def test_sp_rhf_ccsd(h2o):
     qcdb.set_options({
         #'cfour_CALC_level': 'CCSD',
         'BASIS': 'cc-pvtz',
-        'cfour_SCF_CONV': 12,
-        'cfour_CC_CONV': 12
+        'nwchem_scf__thresh': 12,
+        'nwchem_ccsd__thresh': 12
     })
 
     e, jrec = qcdb.energy('nwc-ccsd', return_wfn=True, molecule=h2o)
@@ -49,12 +49,18 @@ def test_sp_rhf_ccsd(h2o):
     ccsdtot = -76.337990674725  #qz2p-76.338453951890
 
     tnm = sys._getframe().f_code.co_name
-    assert compare_values(scftot, qcdb.get_variable('hf total energy'), 6, tnm + 'SCF')
-    assert compare_values(mp2tot, qcdb.get_variable('mp2 total energy'), 6, tnm + 'MP2')
-    assert compare_values(ccsdcorl, qcdb.get_variable('ccsd correlation energy'), 6, tnm + 'CCSD corl')
-    assert compare_values(ccsdtot, qcdb.get_variable('ccsd total energy'), 6, tnm + 'CCSD')
+    assert compare_values(scftot, qcdb.get_variable('hf total energy'), 6, tnm + ' SCF')
+    assert compare_values(mp2tot, qcdb.get_variable('mp2 total energy'), 6, tnm + ' MP2')
+    assert compare_values(ccsdcorl, qcdb.get_variable('ccsd correlation energy'), 6, tnm + ' CCSD corl')
+    assert compare_values(ccsdtot, qcdb.get_variable('ccsd total energy'), 6, tnm + ' CCSD')
 
+    # gradient gives every appearence of working but array should be tested and reorientation to input tested
     e, jrec = qcdb.gradient('nwc-ccsd', return_wfn=True, molecule=h2o)
+    assert compare_values(scftot, qcdb.get_variable('hf total energy'), 6, tnm + ' SCF')
+    assert compare_values(mp2tot, qcdb.get_variable('mp2 total energy'), 6, tnm + ' MP2')
+    assert compare_values(ccsdcorl, qcdb.get_variable('ccsd correlation energy'), 6, tnm + ' CCSD corl')
+    assert compare_values(ccsdtot, qcdb.get_variable('ccsd total energy'), 6, tnm + ' CCSD')
+
 
 #@using_nwchem
 #def test_sp_uhf_ccsd():

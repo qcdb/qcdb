@@ -10,7 +10,7 @@ from .. import moptions
 from .. import qcvars
 from ..driver.driver_helpers import print_variables
 from ..exceptions import *
-from ..iface_psi4.options import query_options_defaults_from_psi
+from ..intf_psi4.options import query_options_defaults_from_psi
 from ..libmintsbasisset import BasisSet
 from ..molecule import Molecule
 from ..pdict import PreservingDict

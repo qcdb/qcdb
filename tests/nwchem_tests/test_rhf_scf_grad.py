@@ -2,8 +2,8 @@
 
 import os
 import sys
-from utils import *
-from addons import *
+from ..utils import *
+from ..addons import *
 import qcdb
 import numpy as np
 
@@ -29,9 +29,9 @@ def test_1_hf():
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'memory': '400 mb',
-        'nwchem_scf': 'rhf',
-        'nwchem_scf_thresh': 1.0e-8,
-        'nwchem_scf_nopen': 0,
+        'nwchem_scf__rhf': True,
+        'nwchem_scf__thresh': 1.0e-8,
+        #'nwchem_scf__nopen': 0,  # invalid value
         #'nwchem_task_hf'   : 'gradient'
     })
     print('Testing hf...')

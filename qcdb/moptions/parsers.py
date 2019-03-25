@@ -5,7 +5,7 @@ from ..exceptions import *
 
 
 def enum(inputval):
-    allowed = inputval.split()
+    allowed = inputval.upper().split()
 
     def closedenum(x, allowed=allowed):
         if x.upper() in allowed:
@@ -14,7 +14,31 @@ def enum(inputval):
             raise OptionValidationError(
                 """Not allowed value: {} not in {}""".format(inputval, allowed))
     return closedenum
-            
+
+
+def intenum(inputval):
+    allowed = [int(x) for x in inputval.split()]
+
+    def closedenum(x, allowed=allowed):
+        if x in allowed:
+            return x
+        else:
+            raise OptionValidationError(
+                """Not allowed integer value: {} not in {}""".format(inputval, allowed))
+    return closedenum
+
+
+def casesensitive_enum(inputval):
+    allowed = inputval.split()
+
+    def closedenum(x, allowed=allowed):
+        if x in allowed:
+            return x
+        else:
+            raise OptionValidationError(
+                """Not allowed case-sensitive value: {} not in {}""".format(inputval, allowed))
+    return closedenum
+
 
 def boolean(inputval):
     yes = re.compile(r'^(yes|true|on|1)', re.IGNORECASE)
@@ -27,7 +51,7 @@ def boolean(inputval):
     else:
         raise OptionValidationError(
             """Can't interpret into boolean: {}""".format(inputval))
-         
+
 
 def sphcart(inputval):
     sph = re.compile(r'^(yes|true|on|1|sph|spherical)', re.IGNORECASE)
@@ -40,7 +64,7 @@ def sphcart(inputval):
     else:
         raise OptionValidationError(
             """Can't interpret into boolean True (sph) or False (cart): {}""".format(inputval))
-         
+
 
 def percentage(inputval):
     if 0.0 <= inputval <= 100.0:
@@ -50,12 +74,36 @@ def percentage(inputval):
             'Percentage should be between 0 and 100: {}'.format(inputval))
 
 
+def nonnegative_float(inputval):
+    if 0.0 <= inputval:
+        return float(inputval)
+    else:
+        raise OptionValidationError(
+            'Float should be non-negative: {}'.format(inputval))
+
+
 def positive_integer(inputval):
-    if inputval > 0 and isinstance(inputval, int):
-        return inputval
+    if inputval > 0 and float(inputval).is_integer():
+        return int(inputval)
     else:
         raise OptionValidationError(
             'Positive integer number of iterations, if you please: {}'.format(inputval))
+
+
+def nonnegative_integer(inputval):
+    if inputval > -1 and float(inputval).is_integer():
+        return int(inputval)
+    else:
+        raise OptionValidationError(
+            'Non-negative integer number, if you please: {}'.format(inputval))
+
+
+def integer(inputval):
+    if float(inputval).is_integer():
+        return int(inputval)
+    else:
+        raise OptionValidationError(
+            'Integer number, if you please: {}'.format(inputval))
 
 
 def parse_convergence(inputval):
@@ -68,7 +116,7 @@ def parse_convergence(inputval):
         raise OptionValidationError('wth! you call this a convergence criterion? {}'.format(inputval))
 
 
-def parse_memory(inputval):
+def parse_memory(inputval, min_mem_allowed=262144000):
     """Validates expression for total memory allocation. Takes memory value
     `inputval` as type int, float, or str; int and float are taken literally
     as bytes to be set, string taken as a unit-containing value (e.g., 30 mb)
@@ -144,9 +192,12 @@ def parse_memory(inputval):
     memory_amount = int(val * mult)
 
     # Check minimum memory requirement
-    min_mem_allowed = 262144000
     if memory_amount < min_mem_allowed:
         raise OptionValidationError("""set_memory(): Requested {:.3} MiB ({:.3} MB); minimum 250 MiB (263 MB). Please, sir, I want some more.""".format(
                 memory_amount / 1024 ** 2, memory_amount / 1000 ** 2))
 
     return memory_amount
+
+
+def parse_memory_nomin(inputval):
+    return parse_memory(inputval, min_mem_allowed=0)

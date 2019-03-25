@@ -1,8 +1,8 @@
 #! single-point CCSDTQ/6-31g* on water
 import os
 import sys
-from utils import *
-from addons import *
+from ..utils import *
+from ..addons import *
 import qcdb
 
 h2o= qcdb.set_molecule('''
@@ -30,10 +30,10 @@ def test_1_ccsdtq():
         #'memory': '2000 mb',
         'nwchem_memory': '[total, 2000, global, 1700,mb]',
         #'nwchem_verify'    : True,
-        'nwchem_tce_dft': False,
-        'nwchem_tce_module': 'CCSDTQ',
+        'nwchem_tce__dft': False,
+        'nwchem_tce__module': 'CCSDTQ',
         'nwchem_tce' : True,
-        'nwchem_tce_thresh': 1.0e-7
+        'nwchem_tce__thresh': 1.0e-7
         })
     print('Testing CCSDTQ (df)...')
     val = qcdb.energy('nwc-ccsdtq')
