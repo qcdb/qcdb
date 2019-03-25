@@ -1,7 +1,7 @@
 import uuid
 
 #from ..exceptions import *
-#from ..moptions.options import conv_float2negexp
+from ..moptions.options import conv_float2negexp
 
 
 def muster_inherited_options(ropts, verbose=1):
@@ -25,7 +25,7 @@ def muster_inherited_options(ropts, verbose=1):
     # qcdb/reference --> gamess/contrl__scftyp
     # TODO ref or scf__ref?
     qref = ropts.scroll['QCDB']['SCF__REFERENCE'].value
-    print('<<<< QREF {} >>>'.format(qref))
+#PR    print('<<<< QREF {} >>>'.format(qref))
     if qref in ['RHF', 'UHF', 'ROHF']:
     #ref = {'RHF': 'RHF',
     #       'UHF': 'UHF',
@@ -37,6 +37,13 @@ def muster_inherited_options(ropts, verbose=1):
     if qopt.disputed():
         conv = conv_float2negexp(qopt.value)
         ropts.suggest('GAMESS', 'scf__conv', conv, **kwgs)
+
+    # --> gamess/ccinp__iconv
+    qopt = ropts.scroll['QCDB']['E_CONVERGENCE']
+    if qopt.disputed():
+        conv = conv_float2negexp(qopt.value)
+        ropts.suggest('GAMESS', 'ccinp__iconv', conv, **kwgs)
+
 
 #    # qcdb/scf__maxiter --> cfour/scf_maxcyc
 #    ropts.suggest('CFOUR', 'SCF_MAXCYC', ropts.scroll['QCDB']['SCF__MAXITER'].value, **kwgs)

@@ -12,7 +12,7 @@ from ..exceptions import *
 from ..molecule import Molecule
 from ..orient import OrientMols
 
-#from .options import conv_float2negexp
+from ..moptions.options import conv_float2negexp
 #from . import nwc_movecs
 
 
@@ -625,12 +625,12 @@ def muster_inherited_options(ropts, verbose=1):
     do_translate = ropts.scroll['QCDB']['TRANSLATE_QCDB'].value
 
 # REVISIT MEMORY
-#    # qcdb/memory [B] --> cfour/memory_size [MB]
-#    qopt = ropts.scroll['QCDB']['MEMORY']
-#    if do_translate or qopt.is_required():
-#        mem = [int(0.000001 * qopt.value), 'mb']
-#        print('\n\nMEMORY', mem, '\n\n')
-#        ropts.suggest('NWCHEM', 'MEMORY', mem, **kwgs)
+    # qcdb/memory [B] --> nwchem/total_memory [MB]
+    qopt = ropts.scroll['QCDB']['MEMORY']
+    if do_translate or qopt.is_required():
+        mem = str(int(0.000001 * qopt.value / 8)) + ' mb'
+        print('MEME', qopt.value, mem)
+        ropts.suggest('NWCHEM', 'memory', mem, **kwgs)
 
 #    # qcdb/puream --> cfour/spherical
 #    ropts.suggest('CFOUR', 'SPHERICAL', ropts.scroll['QCDB']['PUREAM'].value, **kwgs)
@@ -647,11 +647,12 @@ def muster_inherited_options(ropts, verbose=1):
         ropts.suggest('NWCHEM', 'scf__uhf', uhf, **kwgs)
         ropts.suggest('NWCHEM', 'scf__rohf', rohf, **kwgs)
 
-#    # qcdb/scf__d_convergence --> gamess/scf__conv
-#    qopt = ropts.scroll['QCDB']['SCF__D_CONVERGENCE']
-#    if qopt.disputed():
-#        conv = conv_float2negexp(qopt.value)
-#        ropts.suggest('GAMESS', 'scf__conv', conv, **kwgs)
+    # qcdb/scf__d_convergence --> nwchem/scf__thresh
+    # TODO should be e_conv?
+    qopt = ropts.scroll['QCDB']['SCF__D_CONVERGENCE']
+    if qopt.disputed():
+        conv = conv_float2negexp(qopt.value)
+        ropts.suggest('NWCHEM', 'scf__thresh', conv, **kwgs)
 
 #    # qcdb/scf__maxiter --> cfour/scf_maxcyc
 #    ropts.suggest('CFOUR', 'SCF_MAXCYC', ropts.scroll['QCDB']['SCF__MAXITER'].value, **kwgs)
@@ -659,6 +660,12 @@ def muster_inherited_options(ropts, verbose=1):
 #    # qcdb/scf__damping_percentage --> cfour/scf_damping
 #    damp = int(10 * ropts.scroll['QCDB']['SCF__DAMPING_PERCENTAGE'].value)
 #    ropts.suggest('CFOUR', 'SCF_DAMPING', damp, **kwgs)
+
+    # qcdb/e_convergence --> nwchem/ccsd(t)__thresh
+    qopt = ropts.scroll['QCDB']['E_CONVERGENCE']
+    if qopt.disputed():
+        conv = conv_float2negexp(qopt.value)
+        ropts.suggest('NWCHEM', 'ccsd__thresh', conv, **kwgs)
 
 
 def muster_memory(mem):

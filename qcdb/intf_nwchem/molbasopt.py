@@ -429,6 +429,12 @@ def format_option_for_nwchem(opt, val, lop_off=True):
     #elif str(val) == 'FALSE':
     #    pass
 
+    # complete hack
+    if opt.upper() == 'MEMORY':
+        print(text)
+        return opt.lower(), f'{val}' # mb'
+
+
     elif isinstance(val, list):
         for n in range(len(val)):
             text += str(val[n])

@@ -20,6 +20,14 @@ def load_nwchem_defaults(options):
     options.add(
         'nwchem',
         RottenOption(
+            keyword='memory',
+            default='400 mb',
+            validator=parsers.parse_memory,
+            glossary='Total memory allocation, which can be specified further to stack, heap, and global.'))
+
+    options.add(
+        'nwchem',
+        RottenOption(
             keyword='total_memory',
             default='400 mb',
             validator=parsers.parse_memory,
@@ -674,10 +682,11 @@ def load_nwchem_defaults(options):
     options.add(
             'nwchem',
             RottenOption(
-                keyword= 'ccsd_maxiter',
+                keyword= 'ccsd__maxiter',
                 default= 20,
                 validator= parsers.positive_integer,
                 glossary= 'Maximum numbers of iterations; iterations default is 20.'))
+
     options.add(
             'nwchem',
             RottenOption(
@@ -686,21 +695,29 @@ def load_nwchem_defaults(options):
                 validator=parsers.parse_convergence,
                 glossary= 'Convergence threshold for the iterative part of the calculation.'))
     
+    options.add(
+            'nwchem',
+            RottenOption(
+                keyword='ccsd__freeze',
+                default=0,
+                validator=parsers.nonnegative_integer,
+                glossary= 'Number of orbitals to freeze'))  # expand to core/atomic/virtual
+
     #CCSD(T) block
-    options.add(
-            'nwchem',
-            RottenOption(
-                keyword= 'ccsd(t)_maxiter',
-                default= 20,
-                validator= parsers.positive_integer,
-                glossary= 'Maximum numbers of iterations; iterations default is 20.'))
-    options.add(
-            'nwchem',
-            RottenOption(
-                keyword='ccsd(t)__thresh',
-                default= 1.0e-6,
-                validator=parsers.parse_convergence,
-                glossary= 'Convergence threshold for the iterative part of the calculation.'))
+#    options.add(
+#            'nwchem',
+#            RottenOption(
+#                keyword= 'ccsd(t)_maxiter',
+#                default= 20,
+#                validator= parsers.positive_integer,
+#                glossary= 'Maximum numbers of iterations; iterations default is 20.'))
+#    options.add(
+#            'nwchem',
+#            RottenOption(
+#                keyword='ccsd(t)__thresh',
+#                default= 1.0e-6,
+#                validator=parsers.parse_convergence,
+#                glossary= 'Convergence threshold for the iterative part of the calculation.'))
     
     #TCE block
     options.add('nwchem', RottenOption(

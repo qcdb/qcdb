@@ -154,9 +154,9 @@ def nwchem_plant(jobrec):  # jobrec@i -> engine@i
     # Assemble ZMAT pieces
     #zmat = memcmd + molcmd + optcmd + mdccmd + psicmd + bascmd + litcmd
     #zmat = molcmd + optcmd + bascmd
-    nwchemrec['nwchem.nw'] = molcmd + bascmd + optcmd + mdccmd
+    nwchemrec['nwchem.nw'] = 'echo\n' + molcmd + bascmd + optcmd + mdccmd
 #OLD    nwchemrec['nwchem.nw'] = write_input(jobrec['method'], jobrec['dertype'], jobrec['molecule'], jobrec['options']) #molecule)
-    print('<<< ZMAT||\n{}\n||>>>\n'.format(nwchemrec['nwchem.nw']))
+    #print('<<< ZMAT||\n{}\n||>>>\n'.format(nwchemrec['nwchem.nw']))
     nwchemrec['command'] = ['nwchem']  # subnw?
 
     return nwchemrec

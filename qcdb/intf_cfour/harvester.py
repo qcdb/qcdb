@@ -334,7 +334,9 @@ def harvest_outfile_pass(outtext):
 
     mobj = re.search(
         r'^\s+' + r'(?:\d+)' + r'\s+' + r'(?P<corl>' + NUMBER + r')\s+' +
-                  NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
+                  #NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
+                  #NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER +  r'\s+' + NUMBER +  r'\s+' + NUMBER + r'\s*' +
+                  NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER +  r'\s+' + r'(' + NUMBER +  r'\s+' + NUMBER + r')?' + r'\s*' +
         r'^\s*' +
         r'^\s*' + r'(?:\w+ iterations converged .*?)' +
         r'^\s*' +

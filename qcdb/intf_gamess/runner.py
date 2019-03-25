@@ -21,7 +21,7 @@ from .harvester import muster_modelchem, muster_inherited_options
 
 
 def run_gamess(name, molecule, options, **kwargs):
-    print('\nhit run_gamess', name, kwargs)
+#    print('\nhit run_gamess', name, kwargs)
 
 #    #calledby = inspect.stack()
 #    #print('CALLEDBY')
@@ -71,9 +71,9 @@ def run_gamess(name, molecule, options, **kwargs):
     jobrec['qcschema_input'] = qcschema_input
 
 
-    print('comin in')
+#    print('comin in')
 #    #print(jobrec['options'])
-    print(jobrec['options'].print_changed())
+#PR    print(jobrec['options'].print_changed())
 
     jobrec = gamess_driver(jobrec)
 
@@ -95,7 +95,7 @@ def gamess_driver(jobrec):
 #        jobrec['error'] += repr(err) + 'Required fields missing from ({})'.format(jobrec.keys())
 #        return jobrec
 
-    print('GAMESS_DRIVER jr', jobrec)
+#    print('GAMESS_DRIVER jr', jobrec)
 
     gamessrec = gamess_plant(jobrec)
 #    #cfourrec = cfour_plant(jobrec)
@@ -105,27 +105,28 @@ def gamess_driver(jobrec):
 #    #jcfourrec = json.dumps(cfourrec)
 #    #cfourrec = json.loads(jcfourrec)
 
-    print('GAMESSREC')
-    pp.pprint(gamessrec)
+#    print('GAMESSREC')
+#    pp.pprint(gamessrec)
 
     qcschema_input = jobrec['qcschema_input']
     qcschema_input['extras']['gamess.inp'] = gamessrec['gamess.inp']
 
     ret = qcng.compute(qcschema_input, 'gamess').dict()
-    print('[5] {} JOBREC POST-HARVEST (j@io) <<<'.format('CFOUR'))
-    pp.pprint(ret)
-    print('>>>')
-    print('[6] REAL JOBREC')
+#    print('[5] {} JOBREC POST-HARVEST (j@io) <<<'.format('CFOUR'))
+#    pp.pprint(ret)
+#    print('>>>')
+#    print('[6] REAL JOBREC')
     jobrec.pop('qcschema_input')
     progvars = PreservingDict(ret['extras']['qcvars'])
     qcvars.build_out(progvars)
     calcinfo = qcvars.certify(progvars, plump=True, nat=len(jobrec['molecule']['mass']))
     jobrec['raw_output'] = ret['stdout']
     jobrec['qcvars'] = calcinfo
+    jobrec['success'] = True
 
 #    jobrec['qcvars'] = ret['extras']['qcvars']
-    pp.pprint(jobrec)
-    print('END [6]')
+#    pp.pprint(jobrec)
+#    print('END [6]')
 
 
 
@@ -238,8 +239,8 @@ def gamess_plant(jobrec):  # jobrec@i -> gamess@i
 #    #else:
 #    #    memcmd, memkw = qcdb.cfour.muster_memory(mem)
 
-    print('in gamess_plant')
-    pp.pprint(jobrec)
+#    print('in gamess_plant')
+#    pp.pprint(jobrec)
 
 #    molcmd = format_molecule_and_basis_for_gamess(jobrec['molecule'], jobrec['options'], verbose=1)
 
@@ -282,7 +283,7 @@ def gamess_plant(jobrec):  # jobrec@i -> gamess@i
     muster_modelchem(jobrec['method'], jobrec['dertype'], jobrec['options'], sysinfo)
 
     print('HH')
-    print(jobrec['options'].print_changed())
+    print(jobrec['options'].print_changed(history=False))
 
 #    # Handle driver vs input/default keyword reconciliation
 #
