@@ -432,6 +432,17 @@ def harvest_outfile_pass(outtext):
         psivar['[T] CORRECTION ENERGY'] = mobj.group('bkttcorr')
         psivar['CCSD(T) TOTAL ENERGY'] = mobj.group('ttot')
 
+
+
+    # Process DBOC
+    mobj = re.search(
+        r'^\s*' + r'(?:The total diagonal Born-Oppenheimer correction \(DBOC\) is:)\s+' +
+        r'(?P<dboc>' + NUMBER + ')' + r'\s*a.u.\s*',
+        outtext, re.MULTILINE | re.DOTALL)
+    if mobj:
+        print('matched dboc ecc')
+        psivar['CCSD DBOC ENERGY'] = mobj.group('dboc')
+
     # Process SCS-CC
     mobj = re.search(
         r'^\s+' + r'(?P<fullCC>(?P<iterCC>CC(?:\w+))(?:\(T\))?)' + r'\s+(?:energy will be calculated.)\s*' +
@@ -1015,6 +1026,12 @@ def nu_muster_modelchem(name, dertype, ropts, verbose=1):
         ropts.require('CFOUR', 'CALC_LEVEL', 'CCSD', accession=accession, verbose=verbose)
         ropts.suggest('CFOUR', 'CC_PROGRAM', 'ECC', accession=accession, verbose=verbose)
 
+    elif lowername == 'c4-ccsd-dboc':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'CCSD', accession=accession, verbose=verbose)
+        ropts.require('CFOUR', 'DERIV_LEVEL', 'ONE', accession=accession, verbose=verbose)
+        ropts.require('CFOUR', 'DBOC', 'ON', accession=accession, verbose=verbose)
+        ropts.suggest('CFOUR', 'CC_PROGRAM', 'ECC', accession=accession, verbose=verbose)
+
     elif lowername == 'c4-cc3':
         ropts.require('CFOUR', 'CALC_LEVEL', 'CC3', accession=accession, verbose=verbose)
 
@@ -1155,6 +1172,7 @@ def cfour_list():
     val.append('c4-mp4')
     val.append('c4-cc2')
     val.append('c4-ccsd')
+    val.append('c4-ccsd-dboc')
     val.append('c4-cc3')
     val.append('c4-ccsd(t)')
     val.append('c4-ccsdt')

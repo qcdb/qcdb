@@ -88,7 +88,7 @@ def prepare_options_for_cfour(options):
 
     for key, ropt in sorted(options.scroll['CFOUR'].items()):
         #if not ropt.is_default():
-        if ropt.disputed():
+        if ropt.disputed() and ropt.value is not None:
             text.append('='.join(format_option_for_cfour(key, ropt.value, lop_off=False)))
 
     text = '\n'.join(text)

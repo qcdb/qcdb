@@ -1052,6 +1052,13 @@ qcvardefs['CCSD CORRELATION ENERGY'] = {
 
 """}
 
+qcvardefs['CCSD DBOC ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   A correction to the Born-Oppenheimer Approximation, calculated
+   at the coupled cluster singles and doubles level of theory.
+"""}
+
 qcvardefs['CCSDT (PBE) TOTAL ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
