@@ -165,7 +165,7 @@ def load_nwchem_defaults(options):
         RottenOption(
             keyword='scf__nopen',
             default=1,
-            validator=parsers.positive_integer,
+            validator=parsers.nonnegative_integer,
             glossary='Specifies the number of open shells in wave function.'))
 
     options.add(
@@ -704,20 +704,20 @@ def load_nwchem_defaults(options):
                 glossary= 'Number of orbitals to freeze'))  # expand to core/atomic/virtual
 
     #CCSD(T) block
-#    options.add(
-#            'nwchem',
-#            RottenOption(
-#                keyword= 'ccsd(t)_maxiter',
-#                default= 20,
-#                validator= parsers.positive_integer,
-#                glossary= 'Maximum numbers of iterations; iterations default is 20.'))
-#    options.add(
-#            'nwchem',
-#            RottenOption(
-#                keyword='ccsd(t)__thresh',
-#                default= 1.0e-6,
-#                validator=parsers.parse_convergence,
-#                glossary= 'Convergence threshold for the iterative part of the calculation.'))
+    options.add(
+            'nwchem',
+            RottenOption(
+                keyword= 'ccsd(t)_maxiter',
+                default= 20,
+                validator= parsers.positive_integer,
+                glossary= 'Maximum numbers of iterations; iterations default is 20.'))
+    options.add(
+            'nwchem',
+            RottenOption(
+                keyword='ccsd(t)__thresh',
+                default= 1.0e-6,
+                validator=parsers.parse_convergence,
+                glossary= 'Convergence threshold for the iterative part of the calculation.'))
     
     #TCE block
     options.add('nwchem', RottenOption(
@@ -727,14 +727,14 @@ def load_nwchem_defaults(options):
         glossary='Use DFT as TCE reference wave function. If not specified, default is SCF(HF).'))
     
     options.add('nwchem', RottenOption(
-        keyword='tce_on',
+        keyword='tce',
         default=True,
         validator=parsers.boolean,
         glossary='The switch for turning on the Tensor Contraction Engine (TCE). Not necessarily needed for couple cluster methods of singles and doubles (CCSD), but necessary for couple cluster theory for singles, doubles, and triples (CCSDT) and couple cluster theory for singles, doubles, triples, and quadruples (CCSDTQ). Default is on.'
             ))
     
     options.add('nwchem', RottenOption(
-        keyword='tce',
+        keyword='tce_module',
         default='none',
         validator=parsers.enum("none LCCD CCD LCCSD CCSD CCSD_ACT LR-CCSD EACCSD IPCCSD CC2 CCSDT CCSDTA CCSDTQ CCSDTQ CCSD(T) CCSD[T] CR-CCSD[T] CR-CCSD(T) CCSD(2)_T CCSD(2)_TQ CCSDT(2)_Q LR-CCSD(T) LR-CCSD(TQ)-1 CREOMSD(T) CREOM(T)AC QCISD CISD CISDT CISDTQ MBPT2 MBPT3 MBPT4 MP2 MP3 MP4"),
         glossary='''Specify TCE correlation models. Options include:
