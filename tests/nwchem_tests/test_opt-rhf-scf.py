@@ -24,14 +24,13 @@ def check_rhf(return_value):
 def test_1_hf():
     qcdb.set_options({
         'basis': '6-31g*',
-        'memory': '400 mb',
+        'memory': '4000 mb',
         #'nwchem_geometry_center'    : False,
         #'nwchem_geometry_autosym'   : False,
-        #'symmetry'   :   'c2v',
-        'nwchem_scf': 'RHF',
-        'nwchem_scf_thresh': 1.0e-8,
-        'nwchem_scf_direct': True,
-        'nwchem_task_scf': 'optimize'
+        'nwchem_scf__rhf': True,
+        'nwchem_scf__thresh': 1.0e-8,
+        'nwchem_scf__direct': True,
+        #'nwchem_task_scf': 'optimize'
     })
     print('Testing HF...')
     val = qcdb.energy('nwc-hf')
