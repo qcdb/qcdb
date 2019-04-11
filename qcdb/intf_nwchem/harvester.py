@@ -98,7 +98,7 @@ def harvest_outfile_pass(outtext):
         #Process DFT (RDFT, RODFT,UDFT, SODFT [SODFT for nwchem versions before nwchem 6.8])
         mobj = re.search(
             r'^\s+' + r'Total DFT energy' + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'Nuclear repulsion energy' + r'\s+' +
-            NUMBER + '\s*$', outtext, re.MULTILINE)
+            NUMBER + r'\s*$', outtext, re.MULTILINE)
         if mobj:
             print('matched DFT')
             #print (mobj.group(1))
@@ -108,7 +108,7 @@ def harvest_outfile_pass(outtext):
         #SODFT [for nwchem 6.8+]
         mobj = re.search(
             r'^\s+' + r'Total SO-DFT energy' + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'Nuclear repulsion energy' +
-            r'\s+' + NUMBER + '\s*$', outtext, re.MULTILINE)
+            r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE)
         if mobj:
             print('matched DFT')
             #print (mobj.group(1))
