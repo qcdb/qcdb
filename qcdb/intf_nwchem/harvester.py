@@ -1034,6 +1034,9 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         mdccmd = f'task ccsd {runtyp}\n\n'
     elif lowername == 'nwc-ccsd(t)':
         mdccmd = f'task ccsd(t) {runtyp}\n\n'
+    elif lowername  == 'nwc-tce':
+        mdccmd = f'task tce {runtyp} \n\n'
+        istce = ropts.scroll['NWCHEM']['TCE_ON'].value
 
     else:
         raise ValidationError(f"""Requested NWChem computational method {lowername} is not available.""")
