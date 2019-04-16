@@ -394,3 +394,14 @@ def write_input(name, dertype, molecule, ropts):
         if "MP2 SINGLES ENERGY" in progvars:
             custom_scsmp2_corl += progvars["MP2 SINGLES ENERGY"]
         progvars["CUSTOM SCS-MP2 CORRELATION ENERGY"] = custom_scsmp2_corl
+
+    if "CCSD OPPOSITE-SPIN CORRELATION ENERGY" in progvars and "CCSD SAME-SPIN CORRELATION ENERGY" in progvars:
+        oss_opt = jobrec['options'].scroll['QCDB']['CCSD_OS_SCALE']
+        sss_opt = jobrec['options'].scroll['QCDB']['CCSD_SS_SCALE'] 
+        custom_scsmp2_corl = \
+                Decimal(oss_opt.value) * progvars["CCSD OPPOSITE-SPIN CORRELATION ENERGY"] + \
+                Decimal(sss_opt.value) * progvars["CCSD SAME-SPIN CORRELATION ENERGY"]
+        if "CCSD SINGLES ENERGY" in progvars:
+            custom_scsccsd_corl += progvars["CCSD SINGLES ENERGY"]
+        progvars["CUSTOM SCS-CCSD CORRELATION ENERGY"] = custom_scsccsd_corl
+

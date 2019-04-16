@@ -615,7 +615,7 @@ def load_nwchem_defaults(options):
     options.add(
         'nwchem',
         RottenOption(
-            keyword='dft_xc',
+            keyword='dft__xc',
             default='none',
             validator=parsers.enum(
                 '''none acm b3lyp beckehandh pbe0 becke97 becke97-1 becke97-2 becke97-3 becke98 hcth hcth120 hcth 147 hcth407
@@ -771,6 +771,12 @@ def load_nwchem_defaults(options):
         default=False,
         validator=parsers.boolean,
         glossary='Use DFT as TCE reference wave function. If not specified, default is SCF(HF).'))
+
+    options.add('nwchem', RottenOption(
+        keyword='tce__scf',
+        default=True,
+        validator=parsers.boolean,
+        glossary='The default TCE reference wavefunction. Set to True. Use False and tce__dft: True to turn on dft reference function.'))
     
     options.add('nwchem', RottenOption(
         keyword='tce',
@@ -778,17 +784,29 @@ def load_nwchem_defaults(options):
         validator=parsers.boolean,
         glossary='The switch for turning on the Tensor Contraction Engine (TCE). Not necessarily needed for couple cluster methods of singles and doubles (CCSD), but necessary for couple cluster theory for singles, doubles, and triples (CCSDT) and couple cluster theory for singles, doubles, triples, and quadruples (CCSDTQ). Default is on.'
             ))
+   #change enum modules into bools
+    #options.add('nwchem', RottenOption(
+    #    keyword='tce__module',
+    #    default='none',
+    #    validator=parsers.enum("none LCCD CCD LCCSD CCSD CCSD_ACT LR-CCSD EACCSD IPCCSD CC2 CCSDT CCSDTA CCSDTQ CCSDTQ CCSD(T) CCSD[T] CR-CCSD[T] CR-CCSD(T) CCSD(2)_T CCSD(2)_TQ CCSDT(2)_Q LR-CCSD(T) LR-CCSD(TQ)-1 CREOMSD(T) CREOM(T)AC QCISD CISD CISDT CISDTQ MBPT2 MBPT3 MBPT4 MP2 MP3 MP4"),
+    #    glossary='''Specify TCE correlation models. Options include:
+    #        LCCD, CCD, LCCSD, CCSD, CCSD_ACT, LR-CCSD, EACCSD, IPCCSD, CC2, CCSDT, CCSDTA, CCSDTQ, CCSD(T), CCSD[T]
+    #        CR-CCSD[T], CR-CCSD(T), CCSD(2)_T, CCSD(2)_TQ, CCSDT(2)_Q, LR-CCSD(T), LR-CCSD(TQ)-1, CREOMSD(T),
+    #        CREOM(T)AC, QCISD, CISD, CISDT, CISDTQ, MBPT2, MBPT3, MBPT4.
+    #        MBP2= MP2, MBPT3= MP3, MBPT4= MP4.'''))
     
     options.add('nwchem', RottenOption(
-        keyword='tce__module',
-        default='none',
-        validator=parsers.enum("none LCCD CCD LCCSD CCSD CCSD_ACT LR-CCSD EACCSD IPCCSD CC2 CCSDT CCSDTA CCSDTQ CCSDTQ CCSD(T) CCSD[T] CR-CCSD[T] CR-CCSD(T) CCSD(2)_T CCSD(2)_TQ CCSDT(2)_Q LR-CCSD(T) LR-CCSD(TQ)-1 CREOMSD(T) CREOM(T)AC QCISD CISD CISDT CISDTQ MBPT2 MBPT3 MBPT4 MP2 MP3 MP4"),
-        glossary='''Specify TCE correlation models. Options include:
-            LCCD, CCD, LCCSD, CCSD, CCSD_ACT, LR-CCSD, EACCSD, IPCCSD, CC2, CCSDT, CCSDTA, CCSDTQ, CCSD(T), CCSD[T]
-            CR-CCSD[T], CR-CCSD(T), CCSD(2)_T, CCSD(2)_TQ, CCSDT(2)_Q, LR-CCSD(T), LR-CCSD(TQ)-1, CREOMSD(T),
-            CREOM(T)AC, QCISD, CISD, CISDT, CISDTQ, MBPT2, MBPT3, MBPT4.
-            MBP2= MP2, MBPT3= MP3, MBPT4= MP4.'''))
+        keyword='tce__module__ccsd',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE theory set to couple cluster singles and doubles (CCSD).'))
     
+    options.add('nwchem', RottenOption(
+        keyword='tce__module_ccsd_t_', #Need to determine different between [T] and (T)
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE theory set to...'))
+
     options.add('nwchem', RottenOption(
         keyword='tce__thresh',
         default=1.e-4,

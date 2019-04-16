@@ -104,6 +104,10 @@ def wfn_psivars():
         args=['CUSTOM SCS-MP2 TOTAL ENERGY', 'CUSTOM SCS-MP2 CORRELATION ENERGY', 'HF TOTAL ENERGY'],
         coeff=[-1, 1, 1]))
 
+    pv0.extend(_solve_in_turn(
+        args=['CUSTOM SCS-MP2(N) TOTAL ENERGY', 'CUSTOM SCS-MP2(N) CORRELATION ENERGY', 'HF TOTAL ENERGY'],
+        coeff=[-1, 1, 1]))
+
     # SCS-MP2
     pv0.append({
         'form': 'SCS-MP2 CORRELATION ENERGY',
