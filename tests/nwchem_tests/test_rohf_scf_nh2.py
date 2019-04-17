@@ -25,7 +25,7 @@ def check_hf(return_value):
 def test_1_rohf():
     qcdb.set_options({
         'basis': 'cc-pVDZ',
-        'memory': '300 mb',
+        'memory': '2500 mb',
         'nwchem_scf__rohf': True,
         'nwchem_scf__nopen': 1,
         'nwchem_scf__thresh': 1.0e-8
