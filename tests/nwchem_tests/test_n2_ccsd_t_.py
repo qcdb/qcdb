@@ -45,7 +45,8 @@ def check_ccsd_t_(return_value, is5050):
 def test_1_a5050():
     qcdb.set_options({
         'basis' : 'cc-pvdz',
-        'nwchem_ccsd__thresh'    :   1.0e-8
+        'nwchem_ccsd__thresh'    :   1.0e-8,
+        'memory': '10000 mb'
         })
     print('testing ccsd(t)...')
     val = qcdb.energy('nwc-ccsd(t)', molecule=n2)
@@ -55,7 +56,8 @@ def test_1_a5050():
 def test_2_a5050_no():
     qcdb.set_options({
         'basis' : 'cc-pvdz',
-        'nwchem_ccsd__thresh'    : 1.0e-8
+        'nwchem_ccsd__thresh'    : 1.0e-8,
+        'memory': '10000 mb'
         })
     val = qcdb.energy('nwc-ccsd(t)', molecule=n2)
     check_ccsd_t_(val, is5050=False)
