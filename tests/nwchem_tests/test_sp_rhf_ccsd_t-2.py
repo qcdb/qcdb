@@ -52,13 +52,13 @@ def check_ccsd_t_2(return_value, is_5050):
 def test_1_a5050_no():
     qcdb.set_options({
         'basis': 'cc-pvdz',
-#        'memory': '600 mb',
+        'memory': '6000 mb',
         'nwchem_scf__rhf': True,
         'nwchem_scf__thresh': 1.0e-12,
-        'nwchem_tce__dft': False,
-        'nwchem_tce__module': 'ccsd(t)',
-        'nwchem_tce': False,
-        'nwchem_tce__thresh': 1.0e-12
+        #'nwchem_tce__dft': False,
+        #'nwchem_tce__module': 'ccsd(t)',
+        #'nwchem_tce': False,
+        #'nwchem_tce__thresh': 1.0e-12
     })
     print("Testing MP2...")
     val = qcdb.energy('nwc-ccsd(t)')
@@ -69,13 +69,13 @@ def test_1_a5050_no():
 def test_2_a5050():
     qcdb.set_options({
         'basis': 'cc-pvdz',
-        'memory': '600 mb',
+        'memory': '6000 mb',
         'nwchem_scf__rhf': True,
         'nwchem_scf__thresh': 1.0e-12,
-        'nwchem_tce__dft': False,
-        'nwchem_tce__module': 'ccsd(t)',
-        'nwchem_tce': False,
-        'nwchem_tce__thresh': 1.0e-12
+        #'nwchem_tce__dft': False,
+        #'nwchem_tce__module': 'ccsd(t)',
+        #'nwchem_tce': False,
+        #'nwchem_tce__thresh': 1.0e-12
     })
     print("testing mp2...")
     val = qcdb.energy('nwc-ccsd(t)')
