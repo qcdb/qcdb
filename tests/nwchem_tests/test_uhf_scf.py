@@ -28,7 +28,7 @@ def test_1_hf():
         'memory': '4000 mb',
         'nwchem_scf__uhf': True,
         'nwchem_scf__nopen': 1,
-        'nwchem_scf__thresh': 1.0e-8
+        'scf__e_convergence': 1.0e-8
     })
     print('Testing hf...')
     val = qcdb.energy('nwc-hf')

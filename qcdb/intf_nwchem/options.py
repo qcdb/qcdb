@@ -753,14 +753,14 @@ def load_nwchem_defaults(options):
     options.add(
             'nwchem',
             RottenOption(
-                keyword= 'ccsd(t)_maxiter',
+                keyword= 'ccsd_pr_t__maxiter',
                 default= 20,
                 validator= parsers.positive_integer,
                 glossary= 'Maximum numbers of iterations; iterations default is 20.'))
     options.add(
             'nwchem',
             RottenOption(
-                keyword='ccsd(t)__thresh',
+                keyword='ccsd_pr_t__thresh',
                 default= 1.0e-6,
                 validator=parsers.parse_convergence,
                 glossary= 'Convergence threshold for the iterative part of the calculation.'))
@@ -784,28 +784,176 @@ def load_nwchem_defaults(options):
         validator=parsers.boolean,
         glossary='The switch for turning on the Tensor Contraction Engine (TCE). Not necessarily needed for couple cluster methods of singles and doubles (CCSD), but necessary for couple cluster theory for singles, doubles, and triples (CCSDT) and couple cluster theory for singles, doubles, triples, and quadruples (CCSDTQ). Default is on.'
             ))
-   #change enum modules into bools
-    #options.add('nwchem', RottenOption(
-    #    keyword='tce__module',
-    #    default='none',
-    #    validator=parsers.enum("none LCCD CCD LCCSD CCSD CCSD_ACT LR-CCSD EACCSD IPCCSD CC2 CCSDT CCSDTA CCSDTQ CCSDTQ CCSD(T) CCSD[T] CR-CCSD[T] CR-CCSD(T) CCSD(2)_T CCSD(2)_TQ CCSDT(2)_Q LR-CCSD(T) LR-CCSD(TQ)-1 CREOMSD(T) CREOM(T)AC QCISD CISD CISDT CISDTQ MBPT2 MBPT3 MBPT4 MP2 MP3 MP4"),
-    #    glossary='''Specify TCE correlation models. Options include:
-    #        LCCD, CCD, LCCSD, CCSD, CCSD_ACT, LR-CCSD, EACCSD, IPCCSD, CC2, CCSDT, CCSDTA, CCSDTQ, CCSD(T), CCSD[T]
-    #        CR-CCSD[T], CR-CCSD(T), CCSD(2)_T, CCSD(2)_TQ, CCSDT(2)_Q, LR-CCSD(T), LR-CCSD(TQ)-1, CREOMSD(T),
-    #        CREOM(T)AC, QCISD, CISD, CISDT, CISDTQ, MBPT2, MBPT3, MBPT4.
-    #        MBP2= MP2, MBPT3= MP3, MBPT4= MP4.'''))
     
     options.add('nwchem', RottenOption(
         keyword='tce__module__ccsd',
         default= False,
         validator= parsers.boolean,
-        glossary= 'TCE theory set to couple cluster singles and doubles (CCSD).'))
-    
+        glossary= 'TCE module option of coupled cluster singles and doubles (CCSD).'))
+   
     options.add('nwchem', RottenOption(
-        keyword='tce__module_ccsd_t_', #Need to determine different between [T] and (T)
+        keyword= 'tce__module__ccsd_act',
         default= False,
         validator= parsers.boolean,
-        glossary= 'TCE theory set to...'))
+        glossary= 'TCE module option of coupled-cluster singles and active doubles. Can also signify active-space EOMCCSD'))
+
+    options.add('nwchem',RottenOption(
+        keyword= 'tce__module__eaccsd',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of electron affinity EOMCCSD'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'tce__module__ipccsd',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of ionization potential EOMCCSD.'))
+
+    options.add('nwchem', RottenOption(
+        keyword='tce__module__ccsd_pr_t',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of coupled cluster singles, doubles with perturbative connected triples'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'tce__module__ccsdt',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of coupled cluster singles, doubles, and triples. Also activates EOM-CCSDT if needed.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'tce__module__ccsd_br_t',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of coupled cluster singles, doubles, and perturbative connected triples.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'tce__module__ccsdta',
+        default= False,
+        validator= parsers.boolean,
+        glossary= '''TCE module option of coupled-cluster singles, doubles, and active triples. Also call for EOM-CCSDT but there are three (3) variants:
+        
+        1) T3A_LVL_1 uses largest set of triply excited amplitudes defined by at least one occupied and one unoccupied active spinorbital label
+        2) T3A_LVL_2 uses triply excited amplitudes that carry at least two occupied and unoccupied active spinorbital label
+        3) T3A_LVL_3 uses triply excited amplitudes that are defined by active indices only. 
+        
+        All require defining relevant set of occupied active alpha and beta spiorbitals (ACTIVE_OA and ACTIVE_OB) and active unoccupied alpha and beta spinorbitals (ACTIVE_VA and ACTIVE_VB).'''))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'tce__module__ccsdtq',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of coupled cluster singles, doubles, triples, and quadruples. Also, option for EOM-CCSDTQ')) 
+
+    options.add('nwchem', RottenOption(
+        keyword= 'tce__module__ccsd_pr_2_t', #ccsd(2)_t
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of CCSD and perturbative (T)_t correction.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'tce__module__ccsd_pr_2_tq', #ccsd(2)_tq
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of CCSD and perturbative CCSD(2) correction.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'tce__module__ccsdt_pr_2_q', #ccsdt(2)_q
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of CCSDT and perturbative (CCSDT_Q) quadruples correction.')) #format from site weird
+
+    options.add('nwchem', RottenOption(
+        keyword= 'tce__module__lccd',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of linearized coupled-cluster doubles (LCCD).'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'tce__module__lccsd',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of linearized coupled-cluster singles and doubles.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'tce__module__lrccsd',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of locally renormalized EOMCCSD.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'tce__module__lrccsd_pr_t',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of CCSD with perturbative locally renomalized CCSD(T) correction.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'tce__module__lrccsd_pr_tq1'.
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of CCSD with perturbative locally renomalized CCSD(TQ)(LR-CCSD(TQ)-1) correction.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'tce__module__creomsd_pr_t',
+        default= False,
+        validator= parsers.boolean,
+        glossary= '''TCE module option of EOM CCSD energies and completely renormalized EOMCCSD(T)(IA) correction. NWChem will print out two components:
+
+        1- total energy of the k-th state
+        2- the delta-corrected EOMCCSD excitation energy'''))
+
+    options.add('nwchem',RottenOption(
+        keyword= 'tce__module__creom_pr_t_ac',
+        default= False,
+        validator= parsers.boolean,
+        glossary='TCE module option of active space CR-EOMCCSD(T) approach.'))
+
+    options.add('nwchem',RottenOption(
+        keyword= 'tce__module__qcisd',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of quadratic configuration interaction of singles and doubles.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'tce__module__cisd',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of configuration interaction singles and doubles.'))
+
+    options.add('nwchem', RottenOption(
+        keyword='tce__module__cisdt',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of configuration interaction singles, doubles, and triples.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'tce__module__cisdtq',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of configuration interaction singles, doubles, triples, and quadruples.'))
+    options.add('nwchem', RottenOption(
+        keyword='tce__module__ccd',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of couple cluster doubles.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'tce__module__mp2',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of Moller-Plesset perturbation theory to the second order (MP2).'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'tce__module__mp3',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of Moller-Plesset perturbation theory to the third order (MP3).'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'tce__module__mp4',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'TCE module option of Moller-Plesset perturbation theory to the fourth order (MP4).'))
 
     options.add('nwchem', RottenOption(
         keyword='tce__thresh',

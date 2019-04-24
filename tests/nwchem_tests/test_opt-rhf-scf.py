@@ -25,10 +25,11 @@ def test_1_hf():
     qcdb.set_options({
         'basis': '6-31g*',
         'memory': '4000 mb',
+        'scf__e_convergence':   1.0e-8,
         #'nwchem_geometry_center'    : False,
         #'nwchem_geometry_autosym'   : False,
         'nwchem_scf__rhf': True,
-        'nwchem_scf__thresh': 1.0e-8,
+        #'nwchem_scf__thresh': 1.0e-8,
         'nwchem_scf__direct': True,
         #'nwchem_task_scf': 'optimize'
     })
