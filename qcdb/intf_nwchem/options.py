@@ -888,7 +888,7 @@ def load_nwchem_defaults(options):
         glossary= 'TCE module option of CCSD with perturbative locally renomalized CCSD(T) correction.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__module__lrccsd_pr_tq1'.
+        keyword= 'tce__module__lrccsd_pr_tq1',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of CCSD with perturbative locally renomalized CCSD(TQ)(LR-CCSD(TQ)-1) correction.'))
