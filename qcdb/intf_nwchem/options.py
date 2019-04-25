@@ -645,7 +645,7 @@ def load_nwchem_defaults(options):
     options.add(
         'nwchem',
         RottenOption(
-            keyword='dft__max__ovl',
+            keyword='dft__max_ovl',
             default=False,
             validator=parsers.boolean,
             glossary='Lock the ordering of orbitals on/off. Default is off.'))
@@ -749,22 +749,6 @@ def load_nwchem_defaults(options):
                 validator=parsers.nonnegative_integer,
                 glossary= 'Number of orbitals to freeze'))  # expand to core/atomic/virtual
 
-    #CCSD(T) block
-    options.add(
-            'nwchem',
-            RottenOption(
-                keyword= 'ccsd_pr_t__maxiter',
-                default= 20,
-                validator= parsers.positive_integer,
-                glossary= 'Maximum numbers of iterations; iterations default is 20.'))
-    options.add(
-            'nwchem',
-            RottenOption(
-                keyword='ccsd_pr_t__thresh',
-                default= 1.0e-6,
-                validator=parsers.parse_convergence,
-                glossary= 'Convergence threshold for the iterative part of the calculation.'))
-    
     #TCE block
     options.add('nwchem', RottenOption(
         keyword='tce__dft',
