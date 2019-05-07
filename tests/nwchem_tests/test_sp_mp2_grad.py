@@ -56,12 +56,13 @@ def check_mp2(val, is_df, is5050):
 def test_1_mp2():
     qcdb.set_options({
         'basis': 'cc-pvdz',
-        'memory': '400 mb',
-        'nwchem_scf': 'rhf',
-        'nwchem_scf_thresh': 1.0e-4,
-        'nwchem_scf_nopen': 0,
-        'nwchem_mp2_tight': True,
-        'nwchem_task_mp2': 'gradient'
+        'memory': '4000 mb',
+        'scf__e_convergence': 1.0e-4,
+        'nwchem_scf__rhf': True,
+        #'nwchem_scf__thresh': 1.0e-4,
+        'nwchem_scf__nopen': 0,
+        'nwchem_mp2__tight': True,
+    #    'nwchem_task_mp2': 'gradient'
     })
     print('Testing mp2 ...')
     val = qcdb.gradient('nwc-mp2')
@@ -72,10 +73,12 @@ def test_1_mp2():
 def test_2_hf():
     qcdb.set_options({
         'basis': 'cc-pvdz',
-        'memory': '400 mb',
-        'nwchem_scf': 'rhf',
-        'nwchem_scf_thresh': 1.0e-4,
-        'nwchem_scf_nopen': 0
+        'memory': '4000 mb',
+        'scf__e_convergence': 1.0e-4,
+        'nwchem_scf__rhf': True,
+        #'nwchem_scf__thresh': 1.0e-4,
+        'nwchem_scf__nopen': 0,
+        'nwchem_mp2__tight': True,
     })
     print('Testing hf...')
     val = qcdb.gradient('nwc-mp2')
@@ -86,12 +89,13 @@ def test_2_hf():
 def test_3_mp2_custom():
     qcdb.set_options({
         'basis': 'cc-pvdz',
-        'memory': '400 mb',
-        'nwchem_scf': 'rhf',
-        'nwchem_scf_thresh': 1.0e-4,
-        'nwchem_scf_nopen': 0,
-        'nwchem_mp2_tight': True,
-        'nwchem_task_mp2': 'gradient'
+        'memory': '4000 mb',
+        'scf__e_convergence': 1.0e-4,
+        'nwchem_scf__rhf': True,
+        #'nwchem_scf__thresh': 1.0e-4,
+        'nwchem_scf__nopen': 0,
+        'nwchem_mp2__tight': True,
+    #    'nwchem_task_mp2': 'gradient'
     })
     print('Testing mp2 ...')
     val = qcdb.gradient('nwc-mp2')
@@ -102,12 +106,13 @@ def test_3_mp2_custom():
 def test_4_mp2_array():
     qcdb.set_options({
         'basis': 'cc-pvdz',
-        'memory': '400 mb',
-        'nwchem_scf': 'rhf',
-        'nwchem_scf_thresh': 1.0e-4,
-        'nwchem_scf_nopen': 0,
-        'nwchem_mp2_tight': True,
-        'nwchem_task_mp2': 'gradient'
+        'memory': '4000 mb',
+        'scf__e_convergence': 1.0e-4,
+        'nwchem_scf__rhf': True,
+        'nwchem_scf__thresh': 1.0e-4,
+        'nwchem_scf__nopen': 0,
+        'nwchem_mp2__tight': True,
+    #    'nwchem_task_mp2': 'gradient'
     })
     print('Testing mp2 ...')
     val = qcdb.gradient('nwc-mp2')
