@@ -770,49 +770,49 @@ def load_nwchem_defaults(options):
             ))
     
     options.add('nwchem', RottenOption(
-        keyword='tce__module__ccsd',
+        keyword='tce__ccsd',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of coupled cluster singles and doubles (CCSD).'))
    
     options.add('nwchem', RottenOption(
-        keyword= 'tce__module__ccsd_act',
+        keyword= 'tce__ccsd_act',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of coupled-cluster singles and active doubles. Can also signify active-space EOMCCSD'))
 
     options.add('nwchem',RottenOption(
-        keyword= 'tce__module__eaccsd',
+        keyword= 'tce__eaccsd',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of electron affinity EOMCCSD'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__module__ipccsd',
+        keyword= 'tce__ipccsd',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of ionization potential EOMCCSD.'))
 
     options.add('nwchem', RottenOption(
-        keyword='tce__module__ccsd_pr_t',
+        keyword='tce__ccsd_pr_t',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of coupled cluster singles, doubles with perturbative connected triples'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__module__ccsdt',
+        keyword= 'tce__ccsdt',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of coupled cluster singles, doubles, and triples. Also activates EOM-CCSDT if needed.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__module__ccsd_br_t',
+        keyword= 'tce__ccsd_br_t',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of coupled cluster singles, doubles, and perturbative connected triples.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__module__ccsdta',
+        keyword= 'tce__ccsdta',
         default= False,
         validator= parsers.boolean,
         glossary= '''TCE module option of coupled-cluster singles, doubles, and active triples. Also call for EOM-CCSDT but there are three (3) variants:
@@ -824,61 +824,61 @@ def load_nwchem_defaults(options):
         All require defining relevant set of occupied active alpha and beta spiorbitals (ACTIVE_OA and ACTIVE_OB) and active unoccupied alpha and beta spinorbitals (ACTIVE_VA and ACTIVE_VB).'''))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__module__ccsdtq',
+        keyword= 'tce__ccsdtq',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of coupled cluster singles, doubles, triples, and quadruples. Also, option for EOM-CCSDTQ')) 
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__module__ccsd_pr_2_t', #ccsd(2)_t
+        keyword= 'tce__ccsd_pr_2_t', #ccsd(2)_t
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of CCSD and perturbative (T)_t correction.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__module__ccsd_pr_2_tq', #ccsd(2)_tq
+        keyword= 'tce__ccsd_pr_2_tq', #ccsd(2)_tq
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of CCSD and perturbative CCSD(2) correction.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__module__ccsdt_pr_2_q', #ccsdt(2)_q
+        keyword= 'tce__ccsdt_pr_2_q', #ccsdt(2)_q
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of CCSDT and perturbative (CCSDT_Q) quadruples correction.')) #format from site weird
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__module__lccd',
+        keyword= 'tce__lccd',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of linearized coupled-cluster doubles (LCCD).'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__module__lccsd',
+        keyword= 'tce__lccsd',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of linearized coupled-cluster singles and doubles.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__module__lrccsd',
+        keyword= 'tce__lrccsd',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of locally renormalized EOMCCSD.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__module__lrccsd_pr_t',
+        keyword= 'tce__lrccsd_pr_t',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of CCSD with perturbative locally renomalized CCSD(T) correction.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__module__lrccsd_pr_tq1',
+        keyword= 'tce__lrccsd_pr_tq1',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of CCSD with perturbative locally renomalized CCSD(TQ)(LR-CCSD(TQ)-1) correction.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__module__creomsd_pr_t',
+        keyword= 'tce__creomsd_pr_t',
         default= False,
         validator= parsers.boolean,
         glossary= '''TCE module option of EOM CCSD energies and completely renormalized EOMCCSD(T)(IA) correction. NWChem will print out two components:
@@ -887,54 +887,54 @@ def load_nwchem_defaults(options):
         2- the delta-corrected EOMCCSD excitation energy'''))
 
     options.add('nwchem',RottenOption(
-        keyword= 'tce__module__creom_pr_t_ac',
+        keyword= 'tce__creom_pr_t_ac',
         default= False,
         validator= parsers.boolean,
         glossary='TCE module option of active space CR-EOMCCSD(T) approach.'))
 
     options.add('nwchem',RottenOption(
-        keyword= 'tce__module__qcisd',
+        keyword= 'tce__qcisd',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of quadratic configuration interaction of singles and doubles.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__module__cisd',
+        keyword= 'tce__cisd',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of configuration interaction singles and doubles.'))
 
     options.add('nwchem', RottenOption(
-        keyword='tce__module__cisdt',
+        keyword='tce__cisdt',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of configuration interaction singles, doubles, and triples.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__module__cisdtq',
+        keyword= 'tce__cisdtq',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of configuration interaction singles, doubles, triples, and quadruples.'))
     options.add('nwchem', RottenOption(
-        keyword='tce__module__ccd',
+        keyword='tce__ccd',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of couple cluster doubles.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__module__mp2',
+        keyword= 'tce__mp2',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of Moller-Plesset perturbation theory to the second order (MP2).'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__module__mp3',
+        keyword= 'tce__mp3',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of Moller-Plesset perturbation theory to the third order (MP3).'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__module__mp4',
+        keyword= 'tce__mp4',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of Moller-Plesset perturbation theory to the fourth order (MP4).'))
@@ -1065,29 +1065,29 @@ def load_nwchem_defaults(options):
         validator=lambda x: x.upper(),
         glossary='Specify MP2 [direct] task between: energy, gradient, and hessian. Default is energy.'))
     
-    options.add('nwchem', RottenOption(
-        keyword='task__rimp2',
-        default='energy',
-        validator=lambda x: x.upper(),
-        glossary='Specify RIMP2 task between: energy, gradient, and hessian. Default is energy.'))
+   # options.add('nwchem', RottenOption(
+       # keyword='task__rimp2',
+      #  default='energy',
+     #   validator=lambda x: x.upper(),
+    #    glossary='Specify RIMP2 task between: energy, gradient, and hessian. Default is energy.'))
     
-    options.add('nwchem', RottenOption(
-        keyword='task__dft',
-        default='energy',
-        validator=lambda x: x.upper(),
-        glossary='Specify DFT task between: energy, gradient, and hessian. Default is energy.'))
+   # options.add('nwchem', RottenOption(
+       # keyword='task__dft',
+       # default='energy',
+        #validator=lambda x: x.upper(),
+        #glossary='Specify DFT task between: energy, gradient, and hessian. Default is energy.'))
     
-    options.add('nwchem',RottenOption(
-        keyword='task__sodft',
-        default='energy',
-        validator=lambda x: x.upper(),
-        glossary='Specify SODFT task between: energy, gradient, and hessian. Default is energy.'))
+   # options.add('nwchem',RottenOption(
+    #    keyword='task__sodft',
+     #   default='energy',
+      #  validator=lambda x: x.upper(),
+       # glossary='Specify SODFT task between: energy, gradient, and hessian. Default is energy.'))
     
-    options.add('nwchem', RottenOption(
-        keyword='task__tce',
-        default='energy',
-        validator=lambda x: x.upper(),
-        glossary='Specify TCE task between: energy, gradient, and hessian. Default is energy.'))
+    #options.add('nwchem', RottenOption(
+     #   keyword='task__tce',
+      #  default='energy',
+       # validator=lambda x: x.upper(),
+        #glossary='Specify TCE task between: energy, gradient, and hessian. Default is energy.'))
     
     options.add('nwchem',RottenOption(
                 keyword='task__tce__mp2',  #not sure if need here but need to distinguish between MP2/MP3/MP4 and TCE MBn theory
