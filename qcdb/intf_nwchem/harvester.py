@@ -11,7 +11,7 @@ from ..pdict import PreservingDict
 from ..exceptions import *
 from ..molecule import Molecule
 from ..orient import OrientMols
-
+from decimal import Decimal
 from ..moptions.options import conv_float2negexp
 #from . import nwc_movecs
 
@@ -149,12 +149,12 @@ def harvest_outfile_pass(outtext):
             print('matched scs-mp2')
             psivar['MP2 SAME-SPIN CORRELATION ENERGY'] = Decimal(mobj.group(1)) * Decimal(mobj.group(2))
             psivar['MP2 OPPOSITE-SPIN CORRELATION ENERGY'] = Decimal(mobj.group(3)) * Decimal(mobj.group(4))
-            psivar['CUSTOM SCS-MP2 CORRELATION ENERGY'] = 0.5 * (float(psivar['MP2 SAME-SPIN CORRELATION ENERGY']) +
-                                                                 float(psivar['MP2 OPPOSITE-SPIN CORRELATION ENERGY']))
-            psivar['CUSTOM SCS-MP2 TOTAL ENERGY'] = float(psivar['CUSTOM SCS-MP2 CORRELATION ENERGY']) + float(
-                mobj.group(6))
-            psivar['SCS-MP2 CORRELATION ENERGY'] = mobj.group(5)
-            psivar['SCS-MP2 TOTAL ENERGY'] = mobj.group(6)
+            #psivar['CUSTOM SCS-MP2 CORRELATION ENERGY'] = 0.5 * (float(psivar['MP2 SAME-SPIN CORRELATION ENERGY']) +
+                                                                # float(psivar['MP2 OPPOSITE-SPIN CORRELATION ENERGY']))
+           # psivar['CUSTOM SCS-MP2 TOTAL ENERGY'] = float(psivar['CUSTOM SCS-MP2 CORRELATION ENERGY']) + float(
+            #    mobj.group(6))
+            #psivar['SCS-MP2 CORRELATION ENERGY'] = mobj.group(5)
+            #psivar['SCS-MP2 TOTAL ENERGY'] = mobj.group(6)
 
             print(mobj.group(1))  #ess
             print(mobj.group(2))  #fss
@@ -1034,6 +1034,10 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         mdccmd = f'task ccsd {runtyp}\n\n'
     elif lowername == 'nwc-ccsd(t)':
         mdccmd = f'task ccsd(t) {runtyp}\n\n'
+    elif lowername == 'nwc-pbe':
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-tddft':
+        mdccmd = f'task tddft {runtyp} \n\n'
     elif lowername  == 'nwc-tce':
         mdccmd = f'task tce {runtyp} \n\n'
         istce = ropts.scroll['NWCHEM']['TCE__MODULE'].value
@@ -1355,11 +1359,11 @@ def nwchem_gradient_list():
     val.append('nwc-scf')
     val.append('nwc-hf')
     val.append('nwc-mp2')
-#    val.append('nwc-dft')
+    val.append('nwc-dft')
     val.append('nwc-ccsd')
-#    val.append('nwc-ccsdt')
-#    val.append('nwc-ccsdtq')
-#    val.append('nwc-ccsd(t)')
+    val.append('nwc-ccsdt')
+    val.append('nwc-ccsdtq')
+    val.append('nwc-ccsd(t)')
 #    val.append('nwc-lccd')
 #    val.append('nwc-tce-mp2')
 #    val.append('nwc-tce-mp3')
@@ -1368,7 +1372,7 @@ def nwchem_gradient_list():
 #    val.append('nwc-eom-ccsdt')
 #    val.append('nwc-eom-ccsdtq')
 #    val.extend(dft_functionals_list())
-#    val.append('nwc-tddft')
+    val.append('nwc-tddft')
 
     return val
 
