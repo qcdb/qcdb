@@ -154,6 +154,11 @@ def load_qcdb_defaults(options):
             glossary="""Convergence criterion for geometry optmization: maximum force
       (internal coordinates, atomic units)."""))
 
+    options.add('qcdb', RottenOption(
+        keyword='qc_module',
+        default='',
+        validator=lambda x: x.lower(),
+        glossary= """Select alternate implementations."""))
       #/*- Convergence criterion for geometry optmization: rms force
       #(internal coordinates, atomic units). -*/
       #options.add_double("RMS_FORCE_G_CONVERGENCE", 3.0e-4);
