@@ -96,14 +96,15 @@ def harvest_outfile_pass(outtext):
             psivar['NUCLEAR REPULSION ENERGY'] = mobj.group(1)
 
         #Process DFT (RDFT, RODFT,UDFT, SODFT [SODFT for nwchem versions before nwchem 6.8])
-        mobj = re.search(
-            r'^\s+' + r'Total DFT energy' + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'Nuclear repulsion energy' + r'\s+' +
-            NUMBER + r'\s*$', outtext, re.MULTILINE)
+        #mobj = re.search(
+        #    r'^\s+' + r'Total DFT energy' + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'Nuclear repulsion energy' + r'\s+' +
+        #    NUMBER + r'\s*$', outtext, re.MULTILINE)
+        mobj = re.search(r'^\s+' + r'(?:Total SCF energy)' + r'\s+=\s*' + NUMBER + r's*$', outtext, re.MULTILINE)
         if mobj:
             print('matched DFT')
             #print (mobj.group(1))
             psivar['DFT TOTAL ENERGY'] = mobj.group(1)
-            psivar['NUCLEAR REPULSION ENERGY'] = mobj.group(2)
+        #    psivar['NUCLEAR REPULSION ENERGY'] = mobj.group(2)
 
         #SODFT [for nwchem 6.8+]
         mobj = re.search(
@@ -989,7 +990,7 @@ def muster_dft_w_dispersion(opt):
         options['NWCHEM']['NWCHEM_DFT_DISP']['value'] = ['vdw', 3]
 
     elif (val == 'PBE0-D3'):
-        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['pbe0']
+        options['NWCHEM']['NWCHEM__DFT_XC']['value'] = ['pbe0']
         options['NWCHEM']['NWCHEM_DFT_DISP']['value'] = ['vdw', 3]
 
     else:
@@ -1031,13 +1032,24 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
     elif lowername == 'nwc-mp2':
         mdccmd = f'task mp2 {runtyp}\n\n'
     elif lowername == 'nwc-ccsd':
-        mdccmd = f'task ccsd {runtyp}\n\n'
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp}\n\n'
+            ropts.require('NWCHEM', 'tce__ccsd', True, **kwgs)
+        else:
+             mdccmd = f'task ccsd {runtyp}\n\n'
     elif lowername == 'nwc-ccsd(t)':
-        mdccmd = f'task ccsd(t) {runtyp}\n\n'
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp} \n\n'
+            ropts.require('NWCHEM', 'tce__ccsd(t)', True, **kwgs)
+        else:
+            mdccmd = f'task ccsd(t) {runtyp}\n\n'
     elif lowername == 'nwc-pbe':
+        ropts.require('NWCHEM', 'xc_pbe0', True, **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-tddft':
         mdccmd = f'task tddft {runtyp} \n\n'
+    elif lowername == 'nwc-ccsdtq':
+        mdccmd = f'task tce {runtyp} \n\n'
     elif lowername  == 'nwc-tce':
         mdccmd = f'task tce {runtyp} \n\n'
         istce = ropts.scroll['NWCHEM']['TCE__MODULE'].value
