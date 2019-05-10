@@ -27,12 +27,13 @@ def check_ccsdtq(return_value):
 def test_1_ccsdtq():
     qcdb.set_options({
         'basis': '6-31g*',
-        #'memory': '2000 mb',
-        'nwchem_memory': '[total, 2000, global, 1700,mb]',
+        'memory': '20000 mb',
+        #'nwchem_memory': '[total, 2000, global, 1700,mb]',
         #'nwchem_verify'    : True,
         'nwchem_tce__dft': False,
-        'nwchem_tce__module': 'CCSDTQ',
-        'nwchem_tce' : True,
+	'nwchem_tce__scf': True,
+        'nwchem_tce__ccsdtq': True,
+        'qc_module'	: 'tce',
         'nwchem_tce__thresh': 1.0e-7
         })
     print('Testing CCSDTQ (df)...')
