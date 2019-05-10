@@ -612,18 +612,18 @@ def load_nwchem_defaults(options):
         Will use fractional occupation of the orbital levels during the initial cycles of SCF convergence (A.D. Rabuck and G. Scuseria, J. Chem. Phys 110, 695(1999). 
         This option specifies the number of cycles the Rabuck method is active.'''))
 
-    options.add(
-        'nwchem',
-        RottenOption(
-            keyword='dft__xc',
-            default='none',
-            validator=parsers.enum(
-                '''none acm b3lyp beckehandh pbe0 becke97 becke97-1 becke97-2 becke97-3 becke98 hcth hcth120 hcth 147 hcth407
-        becke97ggal hcth407p optx hcthp14 mpw91 mpwlk xft97 cft97 ft97 op bop pbeop HFexch becke88 xperdew91 xpbe96 gill96 lyp perdew81
-        perdew86 perdew 91 cpbe96 pw91lda slater vwn_1 vwn_2 vwn_3 vwn_4 vwn_5 vwn_1_rpa'''),
-            glossary=
-            'Can specify the exchange-correlation functionals in the DFT Module. See NWChem manual for the full list of options.'
-        ))
+    #options.add(
+    #    'nwchem',
+    #    RottenOption(
+    #        keyword='dft__xc',
+    #        default='none',
+    #        validator=parsers.enum(
+    #            '''none acm b3lyp beckehandh pbe0 becke97 becke97-1 becke97-2 becke97-3 becke98 hcth hcth120 hcth 147 hcth407
+    #    becke97ggal hcth407p optx hcthp14 mpw91 mpwlk xft97 cft97 ft97 op bop pbeop HFexch becke88 xperdew91 xpbe96 gill96 lyp perdew81
+    #    perdew86 perdew 91 cpbe96 pw91lda slater vwn_1 vwn_2 vwn_3 vwn_4 vwn_5 vwn_1_rpa'''),
+    #        glossary=
+    #        'Can specify the exchange-correlation functionals in the DFT Module. See NWChem manual for the full list of options.'   ))
+    #look for DFT__XC section for boolean functionals
 
     #DFT block [continued]
     options.add(
@@ -723,7 +723,19 @@ def load_nwchem_defaults(options):
             default='none',
             validator=parsers.enum('none low medium high debug'),
             glossary='No print options for the DFT block. Default is none.'))
+    #DFT XC [Functionals]
+    options.add('nwchem', RottenOption(
+        keyword = 'dft__xc_pbe0',
+        default = False,
+        validator = parsers.boolean,
+        glossary = 'DFT functional PBE'))
 
+    options.add('nwchem', RottenOption(
+        keyword= 'dft_xc_becke97',
+        default = False,
+        validator = parsers.boolean,
+        glossary = 'DFT functional  Becke97'))
+        
     #CCSD block
     options.add(
             'nwchem',
@@ -794,7 +806,7 @@ def load_nwchem_defaults(options):
         glossary= 'TCE module option of ionization potential EOMCCSD.'))
 
     options.add('nwchem', RottenOption(
-        keyword='tce__ccsd_pr_t',
+        keyword='tce__ccsd(t)',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of coupled cluster singles, doubles with perturbative connected triples'))
