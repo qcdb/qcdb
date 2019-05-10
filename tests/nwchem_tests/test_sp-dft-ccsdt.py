@@ -23,9 +23,9 @@ def check_dft(return_value, is_dft):
         ccsdt_corl = -0.046141098399779
     else: #change values for non-dft
         ref = -74.963048525888
-        ccsdt_tot = -95.263267683066744
-        ccsdt_corl = -0.046141098399779
-        nre = 9.187334240165
+        ccsdt_tot = -75.012605624645104
+        ccsdt_corl = -0.049557089026546
+        nre = 9.187333574703
 
 
     assert compare_values(ref, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft ref')
@@ -37,19 +37,18 @@ def check_dft(return_value, is_dft):
 @using_nwchem
 def test_1_dft():
     qcdb.set_options({
-        'memory': '600 mb',
+        'memory': '6000 mb',
         'basis': 'sto-3g',
         #'nwchem_dft__convergence__density': 1.0e-12,
-        #'nwchem_dft_xc': 'b3lyp',
+        #'nwchem_dft__xc_b3lyp': True,
         #add grid options
         'nwchem_tce__dft': True,
-        'nwchem_tce' : True,
-        'nwchem_tce__module': 'CCSDT',
+        'qc_module' : 'tce',
+        'nwchem_tce__ccsdt': True,
         'nwchem_tce__thresh': 1.0e-12,
 #        'nwchem_task__tce': 'energy'
     })
-    #print(jrec['qcvars'])
-    print('Testing DFT energy...')
+    print('Testing CCSDT-DFT energy...')
     val = qcdb.energy('nwc-ccsdt')
     check_dft(val, is_dft=True)
 
@@ -58,14 +57,14 @@ def test_1_dft():
 def test_2_ccsdt():
     qcdb.set_options({
         'basis': 'sto-3g',
-        'memory': '600 mb',
-        'nwchem_tce__dft': True,
-        'nwchem_tce' : True,
-        'nwchem_tce__module': 'CCSDT',
+        'memory': '6000 mb',
+        'nwchem_tce__dft': False,
+        'nwchem_tce__scf': True,
+        'qc_module' :   'tce',
+        'nwchem_tce__ccsdt': True,
         'nwchem_tce__thresh': 1.0e-12,
 #        'nwchem_task_tce': 'energy'
     })
-    # print(jrec['qcvars'])
-    print('Test CCSDT energy ...')
+    print('Test CCSDT-SCF energy ...')
     val = qcdb.energy('nwc-ccsdt')
     check_dft(val, is_dft=False)
