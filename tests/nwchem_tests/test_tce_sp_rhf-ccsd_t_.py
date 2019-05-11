@@ -36,15 +36,16 @@ def check_ccsd_t_(return_value):
 def test_1_ccsd_t_():
     qcdb.set_options({
         'basis': 'cc-pvdz',
-        'memory': '600 mb',
-        'nwchem_scf': 'rhf',
-        'nwchem_scf_thresh': 1.0e-12,
-        'nwchem_tce_dft': False,
-        'nwchem_tce_module': 'CCSD(T)',
-        'nwchem_tce': True,
-        'nwchem_tce_thresh': 1.0e-12,
-        'nwchem_task_tce': 'energy'
+        'memory': '6000 mb',
+        'nwchem_scf__rhf': True,
+        'nwchem_scf__thresh': 1.0e-12,
+        'nwchem_tce__dft': False,
+        #'nwchem_tce__ccsd': True,
+        'nwchem_tce__ccsd(t)': True, 
+        'qc_module'  : 'tce',
+        'nwchem_tce__thresh': 1.0e-12,
+        #'nwchem_task_tce': 'energy'
     })
-    print('     Testing ccsd(t) ...')
+    print('     Testing ccsd...')
     val = qcdb.energy('nwc-ccsd(t)')
     check_ccsd_t_(val)
