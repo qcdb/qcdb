@@ -725,17 +725,47 @@ def load_nwchem_defaults(options):
             glossary='No print options for the DFT block. Default is none.'))
     #DFT XC [Functionals]
     options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_acm',
+        default= False,
+        validator = parsers.boolean,
+        glossary= 'DFT functional acm'))
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_beckehandh',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'DFT functional beckehandh'))
+    options.add('nwchem', RottenOption(
         keyword = 'dft__xc_pbe0',
         default = False,
         validator = parsers.boolean,
         glossary = 'DFT functional PBE'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'dft_xc_becke97',
+        keyword= 'dft__xc_becke97',
         default = False,
         validator = parsers.boolean,
         glossary = 'DFT functional  Becke97'))
-        
+
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_b3lyp',
+        default= False,
+        validator= parsers.boolean,
+        glossary = 'DFT functional B3LYP'))
+    
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_becke97-1',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'DFT functional becke97-1'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_becke_97-2',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'DFT functional becke97-3'))
+
+   # options.add('nwchem', RottenOption(
+       # keyword=
     #CCSD block
     options.add(
             'nwchem',
