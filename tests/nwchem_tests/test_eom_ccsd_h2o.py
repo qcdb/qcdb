@@ -75,17 +75,19 @@ def check_eomccsd(return_value):
 def test_1_eomccsd():
     qcdb.set_options({
         'basis'     :       '6-31g*',
+        'memory'    :       '15000 mb',
+        'scf__e_convergence'    : 1.0e-10,
         #'nwchem_memory' :   '1500 mb',
-        'nwchem_memory' :   '[total, 1500, stack, 400, heap, 400, global, 700, mb]', #The way nwchem speak for memory may need to change
+        #'nwchem_memory' :   '[total, 1500, stack, 400, heap, 400, global, 700, mb]', #The way nwchem speak for memory may need to change
         #'nwchem_stack_memory'  :   '400 mb',
         #'nwchem_heap_memory'   :   '400 mb',
         #'nwchem_global_memory' :   '700 mb',
-        'nwchem_scf_thresh'     :   1.0e-10,
-        'nwchem_scf_tol2e'      :   1.0e-10,
-        'nwchem_scf'            :   'RHF',
+        'nwchem_scf__thresh'     :   1.0e-10,
+        'nwchem_scf__tol2e'      :   1.0e-10,
+        'nwchem_scf__rhf'       :   True,
         'nwchem_tce'            :   True,
-        'nwchem_tce_module'     :   'CCSD',
-        'nwchem_tce_nroots'     :   3
+        'nwchem_tce__module'     :   'CCSD',
+        'nwchem_tce__nroots'     :   3
         })
     print('Testing EOM-CCSD...')
     val = qcdb.energy('nwc-eom-ccsd')
