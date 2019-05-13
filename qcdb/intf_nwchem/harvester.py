@@ -627,8 +627,7 @@ def muster_inherited_options(ropts, verbose=1):
     # qcdb/memory [B] --> nwchem/total_memory [MB]
     qopt = ropts.scroll['QCDB']['MEMORY']
     if do_translate or qopt.is_required():
-        mem = str(int(0.000001 * qopt.value / 8)) + ' mb'
-        print('MEME', qopt.value, mem)
+        mem = str(int(0.000001 * qopt.value)) + ' mb'
         ropts.suggest('NWCHEM', 'memory', mem, **kwgs)
 
 #    # qcdb/puream --> cfour/spherical
