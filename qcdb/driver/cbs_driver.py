@@ -91,7 +91,7 @@ def _cbs_gufunc(func, total_method_name, molecule, **kwargs):
         method_name = method_list[0]
         basis = basis_list[0]
 
-        print('gufunc pre opt')
+        #print('gufunc pre opt')
         #print(pe.nu_options.print_changed())
         #print('gufunc pre opt', pe.active_options)
         # Save some global variables so we can reset them later

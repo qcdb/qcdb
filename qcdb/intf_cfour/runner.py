@@ -20,7 +20,7 @@ from .bas import extract_basis_from_genbas, format_basis_for_cfour, format_molec
 
 
 def run_cfour(name, molecule, options, **kwargs):
-    print('\nhit run_cfour', name, kwargs)
+    #print('\nhit run_cfour', name, kwargs)
 
     #calledby = inspect.stack()
     #print('CALLEDBY')
@@ -58,13 +58,14 @@ def run_cfour(name, molecule, options, **kwargs):
     jobrec['options'] = copy.deepcopy(options)
 
 
-    print('comin in')
+    #print('comin in')
     #print(jobrec['options'])
-    print(jobrec['options'].print_changed())
+    #PRprint(jobrec['options'].print_changed())
 
     #try:
     jobrec = cfour_driver(jobrec)
 
+    pp.pprint(jobrec)
     return jobrec
 
 
@@ -161,8 +162,8 @@ def cfour_plant(jobrec):  # jobrec@i -> cfour@i
     #else:
     #    memcmd, memkw = qcdb.cfour.muster_memory(mem)
 
-    print('in cfour_plant')
-    pp.pprint(jobrec)
+    #print('in cfour_plant')
+    #pp.pprint(jobrec)
 
     molcmd = format_molecule_for_cfour(jobrec['molecule'], jobrec['options'], verbose=1)
 
@@ -186,8 +187,8 @@ def cfour_plant(jobrec):  # jobrec@i -> cfour@i
     # Handle calc type and quantum chemical method
     harvester.nu_muster_modelchem(jobrec['method'], jobrec['dertype'], jobrec['options'])
 
-    print('HH')
-    print(jobrec['options'].print_changed())
+    #print('HH')
+    #print(jobrec['options'].print_changed(history=False))
 
     # Handle driver vs input/default keyword reconciliation
 
@@ -214,7 +215,7 @@ def cfour_plant(jobrec):  # jobrec@i -> cfour@i
     #zmat = memcmd + molcmd + optcmd + mdccmd + psicmd + bascmd + litcmd
     zmat = molcmd + optcmd + bascmd
     cfourrec['zmat'] = zmat
-    print('<<< ZMAT||{}||>>>\n'.format(zmat))
+    #print('<<< ZMAT||{}||>>>\n'.format(zmat))
     cfourrec['command'] = ['xcfour']
 
 #    tmp_zmat = """UHF-SCF energy calculation

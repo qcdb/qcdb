@@ -484,7 +484,6 @@ def harvest_outfile_pass(outtext):
 
         if mobj:
             print('matched geom')
-            print(mobj.groups())
 
             #dinky molecule w/ charge and multiplicity
             if mobj.group(1) == 'angstroms':

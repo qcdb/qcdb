@@ -45,9 +45,9 @@ def run_nwchem(name, molecule, options, **kwargs):
 
     jobrec['options'] = copy.deepcopy(options)
 
-    print('comin in')
+    #print('comin in')
     #print(jobrec['options'])
-    print(jobrec['options'].print_changed())
+    #PRprint(jobrec['options'].print_changed())
 
     #try:
     jobrec = nwchem_driver(jobrec)
@@ -138,8 +138,8 @@ def nwchem_plant(jobrec):  # jobrec@i -> engine@i
   #  harvester.nu_muster_modelchem(jobrec['method'], jobrec['dertype'], jobrec['options'])
     mdccmd = format_modelchem_for_nwchem(jobrec['method'], jobrec['dertype'], jobrec['options'], sysinfo=None)
 
-    print('HH')
-    print(jobrec['options'].print_changed())
+    #PRprint('Touched Keywords')
+    #PRprint(jobrec['options'].print_changed(history=False))
 
     # Handle driver vs input/default keyword reconciliation
 
