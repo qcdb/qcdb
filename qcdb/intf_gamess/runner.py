@@ -115,7 +115,6 @@ def gamess_driver(jobrec):
 #    print('[5] {} JOBREC POST-HARVEST (j@io) <<<'.format('CFOUR'))
 #    pp.pprint(ret)
 #    print('>>>')
-#    print('[6] REAL JOBREC')
     jobrec.pop('qcschema_input')
     progvars = PreservingDict(ret['extras']['qcvars'])
     qcvars.build_out(progvars)

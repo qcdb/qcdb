@@ -1,6 +1,6 @@
 import collections
 
-from qcengine.util import which, which_import
+from qcelemental.util import which, which_import
 
 from .. import data_dir
 from ..molecule import Molecule
