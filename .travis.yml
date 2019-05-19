@@ -11,10 +11,12 @@ matrix:
   - os: linux
     env:
       - PYTHON_VER='3.6'
+      - PROG=FULL
 
   - os: linux
     env:
       - PYTHON_VER='3.7'
+      - PROG=FULL
 
 before_install:
   - uname -a
