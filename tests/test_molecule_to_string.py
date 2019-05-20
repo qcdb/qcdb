@@ -1,6 +1,7 @@
 import pint
 import pytest
 
+import qcdb 
 from .utils import *
 from .addons import *
 

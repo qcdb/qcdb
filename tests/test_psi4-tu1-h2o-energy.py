@@ -4,6 +4,8 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from .utils import *
 from .addons import *
 
+import qcdb
+
 
 @using_psi4
 def test_tu1a():

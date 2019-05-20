@@ -4,6 +4,7 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from .utils import *
 from .addons import *
 
+import qcdb
 
 #! conventional and density-fitting mp2 test of mp2 itself and setting scs-mp2
 
