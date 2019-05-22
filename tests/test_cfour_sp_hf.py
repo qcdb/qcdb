@@ -4,6 +4,7 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from .utils import *
 from .addons import *
 
+import qcdb
 
 @using_cfour
 def test_sp_uhf_scf():

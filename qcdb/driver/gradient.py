@@ -44,6 +44,7 @@ import pprint
 pp = pprint.PrettyPrinter(width=120)
 
 from .. import moptions
+from ..exceptions import FeatureNotImplemented
 from . import pe
 from . import driver_util
 from . import driver_helpers
@@ -210,7 +211,7 @@ def gradient(name, **kwargs):
             return jobrec['qcvars']['CURRENT GRADIENT'].data
 
     else:
-        raise FeatureNotImplemented("""gradient(dertype=0)""")
+        raise FeatureNotImplemented("""gradient(dertype=0)""" + package + lowername)
 #        core.print_out("""gradient() will perform gradient computation by finite difference of analytic energies.\n""")
 #
 #        opt_iter = kwargs.get('opt_iter', 1)

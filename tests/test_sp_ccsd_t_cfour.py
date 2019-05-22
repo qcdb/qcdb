@@ -4,6 +4,7 @@ import sys
 from .utils import *
 from .addons import *
 
+import qcdb
 
 @pytest.fixture
 def h2o():

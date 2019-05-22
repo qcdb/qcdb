@@ -431,8 +431,7 @@ def format_option_for_nwchem(opt, val, lop_off=True):
 
     # complete hack
     if opt.upper() == 'MEMORY':
-        print(text)
-        return opt.lower(), f'{val}' # mb'
+        return opt.lower(), f'{val} byte'
 
 
     elif isinstance(val, list):

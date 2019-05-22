@@ -115,7 +115,6 @@ def gamess_driver(jobrec):
 #    print('[5] {} JOBREC POST-HARVEST (j@io) <<<'.format('CFOUR'))
 #    pp.pprint(ret)
 #    print('>>>')
-#    print('[6] REAL JOBREC')
     jobrec.pop('qcschema_input')
     progvars = PreservingDict(ret['extras']['qcvars'])
     qcvars.build_out(progvars)
@@ -282,8 +281,8 @@ def gamess_plant(jobrec):  # jobrec@i -> gamess@i
 
     muster_modelchem(jobrec['method'], jobrec['dertype'], jobrec['options'], sysinfo)
 
-    print('HH')
-    print(jobrec['options'].print_changed(history=False))
+    #print('HH')
+    #print(jobrec['options'].print_changed(history=False))
 
 #    # Handle driver vs input/default keyword reconciliation
 #

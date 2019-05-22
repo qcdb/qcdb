@@ -6,6 +6,7 @@ from .addons import *
 
 import numpy as np
 
+import qcdb
 
 ##! Various gradients for a strained helium dimer and water molecule
 #

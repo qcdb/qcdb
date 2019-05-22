@@ -36,7 +36,7 @@ import qcelemental as qcel
 
 from ..util import parse_dertype
 from .libmintsmolecule import *
-from ..testutil import compare_values, compare_integers, compare_molrecs
+from ..testing import compare_values, compare, compare_molrecs
 from ..bfs import BFS
 
 
@@ -1548,7 +1548,7 @@ class Molecule(LibmintsMolecule):
             validated_molrec = qcel.molparse.from_arrays(speclabel=False, verbose=0, domain='qm', **molrec)
             forgive.append('fragment_charges')
             forgive.append('fragment_multiplicities')
-        compare_molrecs(validated_molrec, molrec, 6, 'to_dict', forgive=forgive, verbose=0)
+        compare_molrecs(validated_molrec, molrec, 'to_dict', atol=1.e-6, forgive=forgive, verbose=0)
 
         # from_arrays overwrites provenance
         validated_molrec['provenance'] = copy.deepcopy(molrec['provenance'])
@@ -1770,7 +1770,7 @@ class Molecule(LibmintsMolecule):
         """Finds shift, rotation, and atom reordering of `concern_mol` that best
         aligns with `ref_mol`.
 
-        Wraps :py:func:`qcdb.align.B787` for :py:class:`qcdb.Molecule` or
+        Wraps :py:func:`qcel.molutil.align.B787` for :py:class:`qcdb.Molecule` or
         :py:class:`psi4.core.Molecule`. Employs the Kabsch, Hungarian, and
         Uno algorithms to exhaustively locate the best alignment for
         non-oriented, non-ordered structures.
@@ -1816,12 +1816,10 @@ class Molecule(LibmintsMolecule):
             determined by `concern_mol` type.
 
         """
-        from ..align import B787
-
         rgeom, rmass, relem, relez, runiq = ref_mol.to_arrays()
         cgeom, cmass, celem, celez, cuniq = concern_mol.to_arrays()
 
-        rmsd, solution = B787(
+        rmsd, solution = qcel.molutil.B787(
             cgeom=cgeom,
             rgeom=rgeom,
             cuniq=cuniq,
@@ -1855,21 +1853,21 @@ class Molecule(LibmintsMolecule):
         compare_values(
             concern_mol.nuclear_repulsion_energy(),
             amol.nuclear_repulsion_energy(),
-            4,
             'Q: concern_mol-->returned_mol NRE uncorrupted',
-            verbose=verbose - 1)
+            atol=1.e-4,
+            quiet=(verbose < 2))
         if mols_align:
             compare_values(
                 ref_mol.nuclear_repulsion_energy(),
                 amol.nuclear_repulsion_energy(),
-                4,
                 'Q: concern_mol-->returned_mol NRE matches ref_mol',
-                verbose=verbose - 1)
-            compare_integers(
+                atol=1.e-4,
+                quiet=(verbose < 2))
+            compare(
                 True,
                 np.allclose(ref_mol.geometry(), amol.geometry(), atol=4),
                 'Q: concern_mol-->returned_mol geometry matches ref_mol',
-                verbose=verbose - 1)
+                quiet=(verbose < 2))
 
         return rmsd, solution, amol
 
@@ -1921,12 +1919,10 @@ class Molecule(LibmintsMolecule):
         None
 
         """
-        from ..align import compute_scramble
-
         rgeom, rmass, relem, relez, runiq = ref_mol.to_arrays()
         nat = rgeom.shape[0]
 
-        perturbation = compute_scramble(
+        perturbation = qcel.molutil.compute_scramble(
             rgeom.shape[0],
             do_shift=do_shift,
             do_rotate=do_rotate,
@@ -1959,16 +1955,16 @@ class Molecule(LibmintsMolecule):
             run_mirror=do_mirror,
             verbose=verbose)
 
-        compare_integers(
-            True, np.allclose(solution.shift, perturbation.shift, atol=6), 'shifts equiv', verbose=verbose - 1)
+        compare(
+            True, np.allclose(solution.shift, perturbation.shift, atol=6), 'shifts equiv', quiet=(verbose < 2))
         if not do_resort:
-            compare_integers(
+            compare(
                 True,
                 np.allclose(solution.rotation.T, perturbation.rotation),
                 'rotations transpose',
-                verbose=verbose - 1)
+                quiet=(verbose < 2))
         if solution.mirror:
-            compare_integers(True, do_mirror, 'mirror allowed', verbose=verbose - 1)
+            compare(True, do_mirror, 'mirror allowed', quiet=(verbose < 2))
 
     def set_fragment_pattern(self, frl, frt, frc, frm):
         """Set fragment member data through public method analogous to psi4.core.Molecule"""

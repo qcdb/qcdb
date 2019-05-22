@@ -452,6 +452,13 @@ qcvardefs['CURRENT ENERGY'] = {
    the geometry optimizer.
 """}
 
+qcvardefs['CURRENT DIPOLE'] = {
+    'units': 'e a0',
+    'dimension': '(3,)',
+    'glossary': """
+   The total dipole of the most recent stage of a calculation (frequently overwritten).
+"""}
+
 qcvardefs['CURRENT GRADIENT'] = {
     'units': 'Eh/a0',
     'dimension': '({nat}, 3)',
