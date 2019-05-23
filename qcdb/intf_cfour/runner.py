@@ -5,6 +5,8 @@ pp = pprint.PrettyPrinter(width=120)
 import inspect
 from decimal import Decimal
 
+import qcengine as qcng
+
 from .. import __version__
 from .. import moptions
 from .. import qcvars
@@ -35,7 +37,7 @@ def run_cfour(name, molecule, options, **kwargs):
     prov['creator'] = 'QCDB'
     prov['version'] = __version__
     prov['routine'] = sys._getframe().f_code.co_name
-    jobrec['provenance'] = [prov]
+#    jobrec['provenance'] = [prov]
 
     #jobrec['molecule'] = {'qm': molecule.to_dict(np_out=False)}
     jobrec['molecule'] = molecule.to_dict(np_out=False)
@@ -55,8 +57,20 @@ def run_cfour(name, molecule, options, **kwargs):
 #        popts[k] = v['value']
 #    jobrec['options'] = popts
 
-    jobrec['options'] = copy.deepcopy(options)
+    qcschema_input = {
+        'schema_name': 'qcschema_input',
+        'schema_version': 1,
+        'driver': inspect.stack()[1][3],
+        'model': {
+            'method': name,
+            'basis': '(auto)',
+        },
+        'molecule': molecule.to_schema(dtype=2),
+        'extras': {},
+    }
 
+    jobrec['options'] = copy.deepcopy(options)
+    jobrec['qcschema_input'] = qcschema_input
 
     #print('comin in')
     #print(jobrec['options'])
@@ -122,9 +136,47 @@ def cfour_driver(jobrec):
         pp.pprint(cfourrec)
         print('>>>\n')
 
-    cfour_subprocess(cfourrec)  # updates cfourrec
+#    cfour_subprocess(cfourrec)  # updates cfourrec
 
+
+#    # find environment by merging PSIPATH and PATH environment variables
+#    # * `path` kwarg gets precedence
+#    # * filter out None values as subprocess will fault on them
+#    lenv = {
+#        'HOME': os.environ.get('HOME'),
+#        'PATH': (':'.join([os.path.abspath(x) for x in os.environ.get('PSIPATH', '').split(':') if x != '']) +
+#                 ':' + os.environ.get('PATH')),# +
+##                 ':' + qcdb.get_datadir() + '/basis'),
+##        'GENBAS_PATH': qcdb.get_datadir() + '/basis',
+#        'CFOUR_NUM_CORES': os.environ.get('CFOUR_NUM_CORES'),
+#        'MKL_NUM_THREADS': os.environ.get('MKL_NUM_THREADS'),
+#        'OMP_NUM_THREADS': os.environ.get('OMP_NUM_THREADS'),
+#        'LD_LIBRARY_PATH': os.environ.get('LD_LIBRARY_PATH')
+#        }
+#    if 'executable_path' in cfourrec:
+#        lenv['PATH'] = cfourrec['executable_path'] + ':' + lenv['PATH']
+
+
+    qcschema_input = jobrec['qcschema_input']
+    qcschema_input['extras']['infiles'] = {
+        'ZMAT': cfourrec['zmat'],
+        'GENBAS': cfourrec['genbas'],
+    }
+    ret = qcng.compute(qcschema_input, 'cfour').dict()
+    jobrec.pop('qcschema_input')
     if verbose >= 4:
+        print('[3] {}REC POST-ENGINE (m@io) <<<'.format('CFOUR'))
+        pp.pprint(ret)
+        print('>>>\n')
+
+#    cfourrec['stdout'] = ret['stdout']
+    jobrec['raw_output'] = ret['stdout']
+    jobrec['provenance'] = ret['provenance']
+    cfourrec['outfiles'] = ret['extras']['outfiles']
+    cfourrec['progvars'] = ret['extras']['qcvars']
+    #qcvars.build_out(progvars)
+
+    if verbose >= 5:
         print('[3] {}REC POST-SUBPROCESS (m@io) <<<'.format('CFOUR'))
         pp.pprint(cfourrec)
         print('>>>\n')
@@ -137,6 +189,17 @@ def cfour_driver(jobrec):
         print('>>>')
 
     return jobrec
+
+
+    #ret = qcng.compute(qcschema_input, 'gamess').dict()
+    #jobrec.pop('qcschema_input')
+    #progvars = PreservingDict(ret['extras']['qcvars'])
+    #qcvars.build_out(progvars)
+    #calcinfo = qcvars.certify(progvars, plump=True, nat=len(jobrec['molecule']['mass']))
+    #jobrec['raw_output'] = ret['stdout']
+    #jobrec['qcvars'] = calcinfo
+    #jobrec['success'] = True
+
 
 
 def cfour_plant(jobrec):  # jobrec@i -> cfour@i
@@ -253,74 +316,9 @@ def cfour_plant(jobrec):  # jobrec@i -> cfour@i
     return cfourrec
 
 
-
-
 def cfour_harvest(jobrec, cfourrec):  # jobrec@i, cfourrec@io -> jobrec@io
-    """Processes raw results from read-only `cfourrec` into QCAspect fields in returned `jobrec`."""
 
-    try:
-        pass
-        #jobrec['molecule']['real']
-        #jobrec['do_gradient']
-    except KeyError as err:
-        raise KeyError(
-            'Required fields missing from ({})'.format(jobrec.keys())) from err
-
-    try:
-        cfourrec['stdout']
-        #if jobrec['do_gradient'] is True:
-        #    dftd3rec['dftd3_gradient']
-    except KeyError as err:
-        raise KeyError('Required fields missing from ({})'.format(
-            cfourrec.keys())) from err
-
-    # amalgamate output
-    text = cfourrec['stdout']
-    text += '\n  <<<  Cfour {} {} Results  >>>\n\n'.format('', '') #name.lower(), calledby.capitalize()))  # banner()
-
-    c4files = {}
-    for fl in ['GRD', 'FCMFINAL', 'DIPOL']:
-        field = 'output_' + fl.lower()
-        if field in cfourrec:
-            text += '  Cfour scratch file {} has been read\n'.format(fl)
-            text += cfourrec[field]
-            c4files[fl] = cfourrec[field]
-
-
-    #if molecule.name() == 'blank_molecule_psi4_yo':
-    #    qcdbmolecule = None
-    #else:
-    #    molecule.update_geometry()
-    #    qcdbmolecule = qcdb.Molecule(molecule.create_psi4_string_from_molecule())
-    #    qcdbmolecule.update_geometry()
-    qmol = Molecule(jobrec['molecule'])
-
-    # c4mol, if it exists, is dinky, just a clue to geometry of cfour results
-    psivar, c4hess, c4grad, c4mol, version, errorTMP = harvester.harvest(qmol, cfourrec['stdout'], **c4files)
-
-    jobrec['error'] += errorTMP
-    # Absorb results into psi4 data structures
-    #for key in psivar.keys():
-    #    core.set_variable(key.upper(), float(psivar[key]))
-    #calcinfo = qcvars.certify_qcvars(psivar)
-    #jobrec['qcvars'] = {info.lbl: info for info in calcinfo}
-    progvars = PreservingDict(psivar)
-
-    #if qcdbmolecule is None and c4mol is not None:
-    #    molecule = geometry(c4mol.create_psi4_string_from_molecule(), name='blank_molecule_psi4_yo')
-    #    molecule.update_geometry()
-    #    # This case arises when no Molecule going into calc (cfour {} block) but want
-    #    #   to know the orientation at which grad, properties, etc. are returned (c4mol).
-    #    #   c4mol is dinky, w/o chg, mult, dummies and retains name
-    #    #   blank_molecule_psi4_yo so as to not interfere with future cfour {} blocks
-
-    if c4grad is not None:
-        progvars['CURRENT GRADIENT'] = c4grad
-        #mat = core.Matrix.from_list(c4grad)
-        #core.set_gradient(mat)
-
-    if c4hess is not None:
-        progvars['CURRENT HESSIAN'] = c4hess
+    progvars = PreservingDict(cfourrec['progvars'])
 
     # badly placed
     # Cfour's SCS-MP2 is non adjustible and only valid for UHF
@@ -336,32 +334,21 @@ def cfour_harvest(jobrec, cfourrec):  # jobrec@i, cfourrec@io -> jobrec@io
         progvars["CUSTOM SCS-MP2 CORRELATION ENERGY"] = custom_scsmp2_corl
 
     qcvars.build_out(progvars)
-    calcinfo = qcvars.certify(progvars)
-    text += print_variables(calcinfo)
-
-    jobrec['raw_output'] = text
+    calcinfo = qcvars.certify(progvars, plump=True, nat=len(jobrec['molecule']['mass']))
     jobrec['qcvars'] = calcinfo
 
-    prov = {}
-    prov['creator'] = 'Cfour'
-    prov['routine'] = sys._getframe().f_code.co_name
-    prov['version'] = version
-    jobrec['provenance'].append(prov)
+    jobrec['success'] = True
 
     return jobrec
 
-
-
-    """
-    Required Input Fields
-    ---------------------
-
-    Optional Input Fields
-    ---------------------
-
-    Output Fields
-    -------------
-
-    """
-
+#    # amalgamate output
+#    text = cfourrec['stdout']
+#    text += '\n  <<<  Cfour {} {} Results  >>>\n\n'.format('', '') #name.lower(), calledby.capitalize()))  # banner()
+#
+#    for fl, contents in cfourrec['outputs'].items():
+#        if contents is not None:
+#            text += f'\n  Cfour scratch file {fl} has been read.\n'
+#            text += contents
+#    text += print_variables(calcinfo)
+#    jobrec['raw_output'] = text
 

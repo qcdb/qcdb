@@ -87,6 +87,7 @@ def test_1a():
     assert compare_arrays(ref_scf_dz, jrec['qcvars']['CURRENT GRADIENT'].data, 6, "[1a] SCF/cc-pVDZ Hessian")
     assert compare_arrays(ref_scf_dz, qcdb.get_variable('CURRENT GRADIENT'), 6, "[1a] SCF/cc-pVDZ Hessian")
     #assert compare_arrays(ref_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1a] SCF/cc-pVDZ Hessian")
+    # TODO provenance kill list
     assert ['QCDB', 'Psi4'] == [d['creator'] for d in jrec['provenance']], "[1a] prov"
 
     print(jrec['provenance'])
@@ -101,7 +102,7 @@ def test_1b():
     assert compare_arrays(ref_scf_dz, jrec['qcvars']['CURRENT GRADIENT'].data, 6, "[1b] SCF/cc-pVDZ Hessian")
     assert compare_arrays(ref_scf_dz, qcdb.get_variable('CURRENT GRADIENT'), 6, "[1b] SCF/cc-pVDZ Hessian")
     #assert compare_arrays(ref_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1b] SCF/cc-pVDZ Hessian")
-    assert ['QCDB', 'Cfour'] == [d['creator'] for d in jrec['provenance']], "[1b] prov"
+    assert 'CFOUR' == jrec['provenance']['creator'], "[1b] prov"
 
 
 @using_psi4
@@ -113,6 +114,7 @@ def test_1c():
     assert compare_arrays(ref_scf_dz_y, jrec['qcvars']['CURRENT GRADIENT'].data, 6, "[1c] SCF/cc-pVDZ Hessian")
     assert compare_arrays(ref_scf_dz_y, qcdb.get_variable('CURRENT GRADIENT'), 6, "[1c] SCF/cc-pVDZ Hessian")
     #assert compare_arrays(ref_scf_dz_y, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1c] SCF/cc-pVDZ Hessian")
+    # TODO provenance kill list
     assert ['QCDB', 'Psi4'] == [d['creator'] for d in jrec['provenance']], "[1c] prov"
     print(jrec['provenance'])
 
@@ -126,7 +128,7 @@ def test_1d():
     assert compare_arrays(ref_scf_dz_y, jrec['qcvars']['CURRENT GRADIENT'].data, 6, "[1d] SCF/cc-pVDZ Hessian")
     assert compare_arrays(ref_scf_dz_y, qcdb.get_variable('CURRENT GRADIENT'), 6, "[1d] SCF/cc-pVDZ Hessian")
     #assert compare_arrays(ref_scf_dz_y, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1d] SCF/cc-pVDZ Hessian")
-    assert ['QCDB', 'Cfour'] == [d['creator'] for d in jrec['provenance']], "[1d] prov"
+    assert 'CFOUR' == jrec['provenance']['creator'], "[1d] prov"
 
 
 #def hide_test_2():
