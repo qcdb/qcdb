@@ -16,11 +16,10 @@ print(h2o)
 def check_dft(return_value, is_df):
     if is_df:
         ref = -75.234018772521
+        assert compare_values(ref, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'DFT total')  #TEST
     else:
         ref = -74.964662543238
-
-    assert compare_values(ref, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'DFT total')  #TEST
-    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'HF total')  #TEST
+        assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'HF total')  #TEST
 
 
 @using_nwchem
