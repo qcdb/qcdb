@@ -1028,7 +1028,7 @@ def nu_muster_modelchem(name, dertype, ropts, verbose=1):
 
     elif lowername == 'c4-ccsd-dboc':
         ropts.require('CFOUR', 'CALC_LEVEL', 'CCSD', accession=accession, verbose=verbose)
-        ropts.require('CFOUR', 'DERIV_LEVEL', 'ONE', accession=accession, verbose=verbose)
+        ropts.require('CFOUR', 'DERIV_LEVEL', 'FIRST', accession=accession, verbose=verbose)
         ropts.require('CFOUR', 'DBOC', 'ON', accession=accession, verbose=verbose)
         ropts.suggest('CFOUR', 'CC_PROGRAM', 'ECC', accession=accession, verbose=verbose)
 
