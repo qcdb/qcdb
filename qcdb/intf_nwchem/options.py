@@ -612,20 +612,10 @@ def load_nwchem_defaults(options):
         Will use fractional occupation of the orbital levels during the initial cycles of SCF convergence (A.D. Rabuck and G. Scuseria, J. Chem. Phys 110, 695(1999). 
         This option specifies the number of cycles the Rabuck method is active.'''))
 
-    #options.add(
-    #    'nwchem',
-    #    RottenOption(
-    #        keyword='dft__xc',
-    #        default='none',
     #        validator=parsers.enum(
-    #            '''none acm b3lyp beckehandh pbe0 becke97 becke97-1 becke97-2 becke97-3 becke98 hcth hcth120 hcth 147 hcth407
-    #    becke97ggal hcth407p optx hcthp14 mpw91 mpwlk xft97 cft97 ft97 op bop pbeop HFexch becke88 xperdew91 xpbe96 gill96 lyp perdew81
+    #            ''' acm b3lyp beckehandh pbe0 becke97 becke97-1 becke97-2 becke97-3 becke98 hcth hcth120 hcth 147 hcth407
+    #    becke97ggal cth407p optx hcthp14 mpw91 mpwlk xft97 cft97 ft97 op bop pbeop HFexch becke88 xperdew91 xpbe96 gill96 lyp perdew81
     #    perdew86 perdew 91 cpbe96 pw91lda slater vwn_1 vwn_2 vwn_3 vwn_4 vwn_5 vwn_1_rpa'''),
-    #        glossary=
-    #        'Can specify the exchange-correlation functionals in the DFT Module. See NWChem manual for the full list of options.'   ))
-    #look for DFT__XC section for boolean functionals
-
-    #DFT block [continued]
     options.add(
         'nwchem',
         RottenOption(
@@ -705,7 +695,7 @@ def load_nwchem_defaults(options):
             default=False,
             validator=parsers.boolean,
             glossary='Fukui indices analysis: on/off. Default is off(false).'))
-    #DFT Arrays- dft_disp
+    
     options.add(
         'nwchem',
         RottenOption(
@@ -729,11 +719,13 @@ def load_nwchem_defaults(options):
         default= False,
         validator = parsers.boolean,
         glossary= 'DFT functional acm'))
+    
     options.add('nwchem', RottenOption(
         keyword= 'dft__xc_beckehandh',
         default= False,
         validator= parsers.boolean,
         glossary= 'DFT functional beckehandh'))
+    
     options.add('nwchem', RottenOption(
         keyword = 'dft__xc_pbe0',
         default = False,
@@ -762,10 +754,118 @@ def load_nwchem_defaults(options):
         keyword= 'dft__xc_becke_97-2',
         default= False,
         validator= parsers.boolean,
+        glossary= 'DFT functional becke97-2'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_becke97-3',
+        default= False,
+        validator= parsers.boolean,
         glossary= 'DFT functional becke97-3'))
 
-   # options.add('nwchem', RottenOption(
-       # keyword=
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_hcth',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'DFT functional hcth'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_hcth120',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'DFT functional hcth120'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_hcth147',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'DFT functional hcth147'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_hcth407',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'DFT functional hcth407'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_becke97ggal',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'DFT functional becke97ggal'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_hcth407p',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'DFT functional hcth407p'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_optx',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'DFT functional optx'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_hcthp14',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'DFT functional hcthp14'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_mpw91',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'DFT functional mpw91'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_mpw1k',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'DFT functional mpw1k'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_xft97',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'DFT functional xft97'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_cft97',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'DFT functional cft97'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_ft97',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'DFT functional ft97'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_op',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'DFT functional op'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_bop',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'DFT functional bop'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_pbeop',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'DFT functional pbeop'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'dft__xc_HFexch',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'DFT functional Hartree-Fock exchange-correlation'))
+
+    #Need to add rest of XC with Exchange-Correlation and value differences in local/nonlocal
+
     #CCSD block
     options.add(
             'nwchem',

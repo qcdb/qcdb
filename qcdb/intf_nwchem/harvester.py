@@ -97,7 +97,8 @@ def harvest_outfile_pass(outtext):
 
         #Process DFT (RDFT, RODFT,UDFT, SODFT [SODFT for nwchem versions before nwchem 6.8])
         mobj = re.search(
-                r'^\s+' + r'(?:Total DFT energy)' + r'\s+=\s' + NUMBER + r's*$', outtext, re.MULTILINE)
+                r'^\s+' + r'Total DFT energy' + r'\s+=\s' + NUMBER + r's*$', outtext, re.MULTILINE)                
+                #r'^\s+' + r'(?:Total DFT energy)' + r'\s+=\s' + NUMBER + r's*$', outtext, re.MULTILINE)
         if mobj:
             print('matched DFT')
             print (mobj.group(1))
@@ -1031,6 +1032,7 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         mdccmd = f'task scf {runtyp}\n\n'
     elif lowername == 'nwc-mp2':
         mdccmd = f'task mp2 {runtyp}\n\n'
+    #CC options
     elif lowername == 'nwc-ccsd':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp}\n\n'
@@ -1049,16 +1051,20 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
             ropts.require('NWCHEM', 'tce__ccsd(t)', True, **kwgs)
         else:
             mdccmd = f'task ccsd(t) {runtyp}\n\n'
+    #DFT xc functionals
     elif lowername == 'nwc-pbe':
         ropts.require('NWCHEM', 'xc_pbe0', True, **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-b3lyp':
+        ropts.require('NWCHEM', 'xc_b3lyp', True, **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-tddft':
         mdccmd = f'task tddft {runtyp} \n\n'
     elif lowername == 'nwc-ccsdtq':
         mdccmd = f'task tce {runtyp} \n\n'
-    elif lowername  == 'nwc-tce':
-        mdccmd = f'task tce {runtyp} \n\n'
-        istce = ropts.scroll['NWCHEM']['TCE__MODULE'].value
+    #elif lowername  == 'nwc-tce':
+    #    mdccmd = f'task tce {runtyp} \n\n'
+    #    istce = ropts.scroll['NWCHEM']['TCE__MODULE'].value
 
     else:
         raise ValidationError(f"""Requested NWChem computational method {lowername} is not available.""")
