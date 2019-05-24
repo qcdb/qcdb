@@ -68,7 +68,7 @@ def test_1_dft():
         'basis': '6-31g**',
         'memory' : '3000 mb',
         'nwchem_charge': 1,
-        'nwchem_dft__xc': 'b3lyp',
+        'nwchem_dft__xc_b3lyp': True,
         'nwchem_dft__mult': 2,
         'nwchem_tddft__nroots': 10
     })
