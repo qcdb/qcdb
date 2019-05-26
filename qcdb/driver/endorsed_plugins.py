@@ -7,6 +7,8 @@ from .. import intf_dftd3
 from .. import intf_nwchem
 from .. import intf_gamess
 
+from qcengine.programs import register_program
+register_program(intf_cfour.QcdbCFOURExecutor(), check=False)
 
 if which('psi4') and which_import('psi4'):
     import psi4
