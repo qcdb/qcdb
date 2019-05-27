@@ -32,12 +32,6 @@ functionality, namely single-point energies, geometry optimizations,
 properties, and vibrational frequency calculations.
 
 """
-from __future__ import print_function
-from __future__ import absolute_import
-#   import os
-#   import re
-#   import sys
-#   import shutil
 
 import copy
 import pprint

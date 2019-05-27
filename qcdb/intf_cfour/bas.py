@@ -2,34 +2,23 @@ import os
 import re
 import uuid
 import collections
+from typing import List, Union
 
 import qcelemental as qcel
 
 from ..driver import pe
 
-try:
-    basestring
-except NameError:
-    basestring = str
 
+def format_molecule(molrec, ropts, verbose: int=1):
+    kwgs = {'accession': uuid.uuid4(), 'verbose': verbose}
 
-def format_molecule_for_cfour(molrec, ropts, verbose=1):
-    accession=3456
+    molcmd, moldata = qcel.molparse.to_string(molrec, dtype='cfour', units='Bohr', return_data=True)
 
-    units = 'Bohr'
-    molcmd = qcel.molparse.to_string(molrec, dtype='cfour', units=units)
-
-    ropts.require('CFOUR', 'CHARGE', int(molrec['molecular_charge']), accession=accession, verbose=verbose)
-    ropts.require('CFOUR', 'MULTIPLICITY', molrec['molecular_multiplicity'], accession=accession, verbose=verbose)
-    ropts.require('CFOUR', 'UNITS', units.upper(), accession=accession, verbose=verbose)
-    ropts.require('CFOUR', 'COORDINATES', 'CARTESIAN', accession=accession, verbose=verbose)
-
-    #ropts['CFOUR']['CFOUR_CHARGE']['clobber'] = True
-    #ropts['CFOUR']['CFOUR_MULTIPLICITY']['clobber'] = True
-    #ropts['CFOUR']['CFOUR_UNITS']['clobber'] = True
-    #ropts['CFOUR']['CFOUR_COORDINATES']['clobber'] = True
+    for key, val in moldata['keywords'].items():
+        ropts.require('CFOUR', key, val, **kwgs)
 
     return molcmd
+
 
 def format_basis_for_cfour(molrec, ropts, native_puream, verbose=1): #puream):
     """Function to print the BASIS=SPECIAL block for Cfour according
@@ -40,9 +29,7 @@ def format_basis_for_cfour(molrec, ropts, native_puream, verbose=1): #puream):
     """
     accession = uuid.uuid4()
 
-    text = []
-    for iat, elem in enumerate(molrec['elem']):
-        text.append("""{}:CD_{}""".format(elem.upper(), iat + 1))
+    text = [f"""{elem.upper()}:CD_{iat + 1}""" for iat, elem in enumerate(molrec['elem'])]
     text.append('')
     text.append('')
     text = '\n'.join(text)
@@ -61,6 +48,7 @@ def format_basis_for_cfour(molrec, ropts, native_puream, verbose=1): #puream):
     #options['CFOUR']['CFOUR_SPHERICAL']['superclobber'] = True
 
     return text
+
 
 def old_format_basis_for_cfour(molrec, puream):
     """Function to print the BASIS=SPECIAL block for Cfour according
@@ -89,7 +77,7 @@ def old_format_basis_for_cfour(molrec, puream):
     return text, options
 
 
-def extract_basis_from_genbas(basis, elem, exact=True, verbose=1):
+def extract_basis_from_genbas(basis: str, elem: Union[str, List], exact: bool=True, verbose: int=1) -> str:
     """
 
     Parameters
@@ -123,13 +111,7 @@ def extract_basis_from_genbas(basis, elem, exact=True, verbose=1):
         genbas = handle.read()
     
     toks = re.split('(^[A-Z]{1,2}:.*$)', genbas, flags=re.MULTILINE)
-    #allbas = dict(zip(toks[1::2], toks[::2]))
     allbas = dict(zip(toks[1::2], toks[2::2]))
-    #print('AAA', toks[0])
-    #print('BBB', toks[1])
-    #print('CCC', toks[2])
-    #print('YYY', toks[-2])
-    #print('ZZZ', toks[-1])
 
     wantedbas = {}
     for basline, basblock in allbas.items():
@@ -141,7 +123,7 @@ def extract_basis_from_genbas(basis, elem, exact=True, verbose=1):
             if baskey[1].startswith(basis[:5]) and baskey[0] in uelems:  # loose match to accomodate composing
                 wantedbas[basline] = basblock
 
-    wanted_genbas = ''.join('{}\n{}\n'.format(k, v) for k, v in wantedbas.items())
+    wanted_genbas = ''.join(f'{k}\n{v}\n' for k, v in wantedbas.items())
     if verbose >= 2:
         print('Bases plucked: {}'.format(wantedbas.keys()))
 

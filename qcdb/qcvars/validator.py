@@ -5,13 +5,7 @@ from qcelemental import Datum
 from ..exceptions import *
 from ..pdict import PreservingDict
 from .glossary import qcvardefs
-
 from .psivardefs import wfn_psivars
-
-try:
-    basestring
-except NameError:
-    basestring = str
 
 
 def certify(dicary, plump=False, nat=None):
@@ -59,7 +53,7 @@ def build_out(rawvars, verbose=1):
         data_rich_args = []
 
         for pv in action['args']:
-            if isinstance(pv, basestring):
+            if isinstance(pv, str):
                 if pv in rawvars:
                     data_rich_args.append(rawvars[pv])
                 else:
@@ -93,7 +87,7 @@ def expand_qcvars(qcvars, qvdefs, verbose=1):
         data_rich_args = []
 
         for pv in action['args']:
-            if isinstance(pv, basestring):
+            if isinstance(pv, str):
                 if pv in qcvars:
                     data_rich_args.append(qcvars[pv])
                 else:
