@@ -1,4 +1,7 @@
-from ..datastructures import *
+import numpy as np
+
+from qcelemental import Datum
+
 from ..exceptions import *
 from ..pdict import PreservingDict
 from .glossary import qcvardefs
@@ -26,13 +29,13 @@ def certify(dicary, plump=False, nat=None):
             doi = qcvardefs[pv].get('doi', None)
             if plump and isinstance(var, np.ndarray) and var.ndim == 1:
                 var = var.reshape(eval(qcvardefs[pv]['dimension'].format(nat=nat)))
-            calcinfo.append(QCAspect(pv, qcvardefs[pv]['units'], var, '', doi, qcvardefs[pv]['glossary']))
+            calcinfo.append(Datum(pv, qcvardefs[pv]['units'], var, doi=doi, glossary=qcvardefs[pv]['glossary']))
 
         else:
             defined = sorted(qcvardefs.keys())
             raise ValidationError('Undefined QCvar!: {}\n{}'.format(pv, '\n\t'.join(defined)))
 
-    return {info.lbl: info for info in calcinfo}
+    return {info.label: info for info in calcinfo}
 
 
 def build_out(rawvars, verbose=1):

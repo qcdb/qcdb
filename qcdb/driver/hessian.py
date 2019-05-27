@@ -54,7 +54,6 @@ from . import pe
 from . import driver_util
 from . import driver_helpers
 from . import cbs_driver
-from ..datastructures import QCAspect
 from .proc_table import procedures
 from .gradient import gradient
 

@@ -111,7 +111,7 @@ def extract_basis_from_genbas(basis, elem, exact=True, verbose=1):
 
     no error raised if elem missing
     """
-    if isinstance(elem, basestring):
+    if isinstance(elem, str):
         uelems = [elem.upper()]
     else:
         uelems = set(el.upper() for el in elem)

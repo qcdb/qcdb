@@ -2,17 +2,17 @@ import collections
 
 import numpy as np
 
-class QCAspect(collections.namedtuple('QCAspect', 'lbl units data comment doi glossary')):
+class QCAspect(collections.namedtuple('QCAspect', 'label units data comment doi glossary')):
     """Facilitates the storage of quantum chemical results by labeling them with basic metadata.
 
     Attributes
     ----------
-    lbl : str
+    label : str
         Official label for `data`, often qcvar. May contain spaces.
     units : str
         ASCII, LaTeX-like representation of units, without square brackets.
     data : float or :py:class:`numpy.ndarray`
-        Value for `lbl`.
+        Value for `label`.
     comment : str, optional
         Additional notes.
     doi : str, optional
@@ -21,14 +21,14 @@ class QCAspect(collections.namedtuple('QCAspect', 'lbl units data comment doi gl
         Extended description or definition.
 
     """
-    def __new__(cls, lbl, units, data, comment='', doi=None, glossary=''):
-        return super(QCAspect, cls).__new__(cls, lbl, units, data, comment, doi, glossary)
+    def __new__(cls, label, units, data, comment='', doi=None, glossary=''):
+        return super(QCAspect, cls).__new__(cls, label, units, data, comment, doi, glossary)
 
     def __str__(self, label=''):
         width = 40
         text = []
         text.append('-' * width)
-        text.append('{:^{width}}'.format('QCAspect ' + self.lbl, width=width))
+        text.append('{:^{width}}'.format('QCAspect ' + self.label, width=width))
         if label:
             text.append('{:^{width}}'.format(label))
         text.append('-' * width)

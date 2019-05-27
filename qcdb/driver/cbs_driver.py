@@ -6,8 +6,9 @@ pp = pprint.PrettyPrinter(width=120)
 
 import numpy as np
 
+from qcelemental import Datum
+
 from ..exceptions import *
-from ..datastructures import *
 from . import pe
 from . import driver_util
 from . import driver_helpers
@@ -1088,7 +1089,7 @@ def cbs(func, label, **kwargs):
     #core.set_variable('CURRENT REFERENCE ENERGY', GRAND_NEED[0]['d_energy'])
     #core.set_variable('CURRENT CORRELATION ENERGY', finalenergy - GRAND_NEED[0]['d_energy'])
     #core.set_variable('CURRENT ENERGY', finalenergy)
-    calcinfo.append(QCAspect('CBS NUMBER', '', Njobs, ''))  # TODO not really a result
+    calcinfo.append(Datum('CBS NUMBER', '', Njobs))
 
     # new skeleton wavefunction w/mol, highest-SCF basis (just to choose one), & not energy
     jobrec = {}
@@ -1101,30 +1102,30 @@ def cbs(func, label, **kwargs):
 
     if ptype == 'energy':
         finalquantity = finalenergy
-        calcinfo.append(QCAspect('CURRENT ENERGY', 'Eh', finalquantity, ''))
+        calcinfo.append(Datum('CURRENT ENERGY', 'Eh', finalquantity))
 
     elif ptype == 'gradient':
-        calcinfo.append(QCAspect('CURRENT ENERGY', 'Eh', finalenergy, ''))
+        calcinfo.append(Datum('CURRENT ENERGY', 'Eh', finalenergy))
 
         finalquantity = finalgradient
-        calcinfo.append(QCAspect('CURRENT GRADIENT', 'Eh/a0', finalquantity, ''))
+        calcinfo.append(Datum('CURRENT GRADIENT', 'Eh/a0', finalquantity))
         if finalquantity.shape[0] < 20:
             print('CURRENT GRADIENT')
             print(finalquantity)
 
     elif ptype == 'hessian':
-        calcinfo.append(QCAspect('CURRENT ENERGY', 'Eh', finalenergy, ''))
-        calcinfo.append(QCAspect('CURRENT GRADIENT', 'Eh/a0', finalgradient, ''))
+        calcinfo.append(Datum('CURRENT ENERGY', 'Eh', finalenergy))
+        calcinfo.append(Datum('CURRENT GRADIENT', 'Eh/a0', finalgradient))
 
         finalquantity = finalhessian
-        calcinfo.append(QCAspect('CURRENT HESSIAN', 'Eh/a0/a0', finalquantity, ''))
+        calcinfo.append(Datum('CURRENT HESSIAN', 'Eh/a0/a0', finalquantity))
         if finalquantity.shape[0] < 20:
             print('CURRENT GRADIENT')
             print(finalquantity)
             print('CURRENT HESSIAN')
             print(finalquantity)
 
-    jobrec['qcvars'] = {info.lbl: info for info in calcinfo}
+    jobrec['qcvars'] = {info.label: info for info in calcinfo}
     pp.pprint(jobrec)
     pe.active_qcvars = copy.deepcopy(jobrec['qcvars'])
 
