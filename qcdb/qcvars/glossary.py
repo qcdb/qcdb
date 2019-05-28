@@ -891,6 +891,24 @@ qcvardefs['SCS(N)-MP2 TOTAL ENERGY'] = {
    and reference.
 """}
 
+qcvardefs['CUSTOM SCS-MP2(N) CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   Changeable quantity. The MP2-like correlation
+   energy by any reweighting of SAME-SPIN or
+   OPPOSITE-SPIN components. Depending on weights,
+   this may equal any of MP2, SCS-MP2, SCS(N)-MP2,
+   etc. quantities.
+"""}
+
+qcvardefs['CUSTOM SCS-MP2(N) TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total energy built from
+   CUSTOM SCS-MP2 CORRELATION ENERGY and reference.
+"""}
+
+
 qcvardefs['CUSTOM D2 DISPERSION CORRECTION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
