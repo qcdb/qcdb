@@ -27,7 +27,7 @@ def check_ccsdtq(return_value):
 def test_1_ccsdtq():
     qcdb.set_options({
         'basis': '6-31g*',
-        'memory': '20000 mb',
+        'memory': '2000 mb',
         #'nwchem_memory': '[total, 2000, global, 1700,mb]',
         #'nwchem_verify'    : True,
         'nwchem_tce__dft': False,

@@ -52,7 +52,7 @@ def check_ccsd_t_2(return_value, is_5050):
 def test_1_a5050_no():
     qcdb.set_options({
         'basis': 'cc-pvdz',
-        'memory': '6000 mb',
+        'memory': '600 mb',
         'nwchem_scf__rhf': True,
         'nwchem_scf__thresh': 1.0e-12,
         #'nwchem_tce__dft': False,
@@ -69,7 +69,7 @@ def test_1_a5050_no():
 def test_2_a5050():
     qcdb.set_options({
         'basis': 'cc-pvdz',
-        'memory': '6000 mb',
+        'memory': '600 mb',
         'nwchem_scf__rhf': True,
         'nwchem_scf__thresh': 1.0e-12,
         #'nwchem_tce__dft': False,

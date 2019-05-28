@@ -36,7 +36,7 @@ def check_mp2(return_value, is5050):
 def test_1_a5050_no():
     qcdb.set_options({
         'basis': 'cc-pvdz', 
-        'memory': '4000 mb', 
+        'memory': '400 mb', 
         'scf__e_convergence': 1.0e-8,
         'nwchem_mp2__tight': True, 
         #'nwchem_scf__thresh': 1.0e-8,
@@ -53,7 +53,7 @@ def test_1_a5050_no():
 def test_2_a5050():
     qcdb.set_options({
         'basis': 'cc-pvdz', 
-        'memory': '4000 mb', 
+        'memory': '400 mb', 
         'scf__e_convergence': 1.0e-8,
         'nwchem_mp2__tight': True, 
         #'nwchem_scf__thresh': 1.0e-8,
