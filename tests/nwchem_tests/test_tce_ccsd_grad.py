@@ -38,7 +38,7 @@ def check_ccsd(return_value, is_df):
 def test_1_ccsd_df():
     qcdb.set_options({
         'basis'     :   'sto-3g',
-        'memory'    :   '15000 mb',
+        'memory'    :   '1500 mb',
         'qc_module' :   'tce',
         #'scf__e_convergence': 1.0e-10,
         'nwchem_dft__rdft':   True,
@@ -54,7 +54,7 @@ def test_1_ccsd_df():
 def test_2_ccsd_df():
     qcdb.set_options({
         'basis'     :   'sto-3g',
-        'memory'    :   '15000 mb',
+        'memory'    :   '1500 mb',
         'qc_module' :   'tce',
         'scf__e_convergence': 1.0e-10,
         'nwchem_scf__rhf':   True,

@@ -31,7 +31,7 @@ def test_1_dft_tot():
         'scf__d_convergence': 1.0e-7,
         'nwchem_charge': 0,
         'nwchem_dft__direct': True,
-        'nwchem_dft__xc_pbe0': True,
+        'nwchem_dft__xc__pbe0': True,
         #'nwchem_dft__convergence__energy': 1.0e-7,
         #'nwchem_dft__convergence__density': 1.0e-7,
         #'nwchem_task_dft':'energy'
