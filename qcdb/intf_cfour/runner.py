@@ -10,7 +10,7 @@ from qcelemental.models import ResultInput
 
 import qcengine as qcng
 from qcengine.programs.util import PreservingDict
-from qcengine.programs.cfour import CFOURExecutor
+from qcengine.programs.cfour import CFOURHarness
 from qcengine.programs.cfour.keywords import format_keywords, format_keyword
 
 from .. import qcvars
@@ -38,7 +38,7 @@ def run_cfour(name, molecule, options, **kwargs):
             'provenance': provenance_stamp(__name__),
         })
 
-    jobrec = qcng.compute(resi, "cfour", raise_error=True).dict()
+    jobrec = qcng.compute(resi, "qcdb-cfour", raise_error=True).dict()
 
     hold_qcvars = jobrec['extras'].pop('qcdb:qcvars')
     jobrec['qcvars'] = {key: qcel.Datum(**dval) for key, dval in hold_qcvars.items()}
@@ -53,7 +53,7 @@ def _print_helper(label, dicary, do_print):
         print('>>>')
 
 
-class QcdbCFOURExecutor(CFOURExecutor):
+class QcdbCFOURHarness(CFOURHarness):
     def compute(self, input_model: 'ResultInput', config: 'JobConfig') -> 'Result':
         self.found(raise_error=True)
 

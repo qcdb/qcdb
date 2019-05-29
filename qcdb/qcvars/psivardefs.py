@@ -33,22 +33,22 @@ from decimal import Decimal as Dm
 def _difference(args):
     minuend, subtrahend = args
     return minuend - subtrahend
- 
- 
+
+
 def _product(args):
     multiplicand, multiplier = args
     return multiplicand * multiplier
- 
- 
+
+
 def _spin_component_scaling(args):
     os_scale, ss_scale, tot_corl, ss_corl = args
     return os_scale * (tot_corl - ss_corl) + ss_scale * ss_corl
- 
- 
+
+
 def _spin_component_scaling_wsing(args):
     os_scale, ss_scale, tot_corl, ss_corl, s_corl = args
     return os_scale * (tot_corl - ss_corl) + ss_scale * ss_corl + s_corl
- 
+
 
 def _dispersion_weighting_wsing(args):
     omega, hb_mtd, dd_mtd, s_corl = args
@@ -59,7 +59,7 @@ def omega(args):
     alpha, beta, ratio = args
     return 0.5 * (1.0 + np.tanh(alpha + beta * ratio))
 
- 
+
 def _linear(args):
     coeff, varss = args
     return sum(c * v for c, v in zip(args))
@@ -111,8 +111,18 @@ def wfn_psivars():
         'args': [Dm(6) / Dm(5), Dm(1) / Dm(3), 'MP2 CORRELATION ENERGY', 'MP2 SAME-SPIN CORRELATION ENERGY', 'MP2 SINGLES ENERGY']})
     pv0.append({
         'form': 'SCS-MP2 TOTAL ENERGY',
-        'func': sum, 
+        'func': sum,
         'args': ['HF TOTAL ENERGY', 'SCS-MP2 CORRELATION ENERGY']})
+
+    # SCS(N)-MP2
+    pv0.append({
+        'form': 'SCS(N)-MP2 CORRELATION ENERGY',
+        'func': _spin_component_scaling_wsing,
+        'args': [Dm(0), Dm(1.76), 'MP2 CORRELATION ENERGY', 'MP2 SAME-SPIN CORRELATION ENERGY', 'MP2 SINGLES ENERGY']})
+    pv0.append({
+        'form': 'SCS(N)-MP2 TOTAL ENERGY',
+        'func': sum,
+        'args': ['HF TOTAL ENERGY', 'SCS(N)-MP2 CORRELATION ENERGY']})
 
     # DW-MP2
     # only defined at the (IE) reaction level (like SAPT)
@@ -127,7 +137,7 @@ def wfn_psivars():
     #    'args': ['DW_MP2 OMEGA', 'MP2 CORRELATION ENERGY', 'SCS-MP2 CORRELATION ENERGY', 'MP2 SINGLES ENERGY']})
     #pv0.append({
     #    'form': 'DW-MP2 TOTAL ENERGY',
-    #    'func': sum, 
+    #    'func': sum,
     #    'args': ['HF TOTAL ENERGY', 'DW-MP2 CORRELATION ENERGY']})
 
     # MPN
@@ -189,15 +199,15 @@ def wfn_psivars():
         for fctl in ['B3LYP', 'B3LYP5', 'PBE', 'B97', 'BLYP', 'BP86', 'PBE0', 'WPBE']:
             pv0.extend(_solve_in_turn(
                 args=['{}{} TOTAL ENERGY'.format(fctl, dash),
-                      '{} FUNCTIONAL TOTAL ENERGY'.format('B97-D' if fctl == 'B97' else fctl), 
+                      '{} FUNCTIONAL TOTAL ENERGY'.format('B97-D' if fctl == 'B97' else fctl),
                       '{}{} DISPERSION CORRECTION ENERGY'.format(fctl, dash)],
                 coeff=[-1, 1, 1]))
 
     #   fctl + DH
     for fctl in ['B2PLYP', 'DSD-PBEP86', 'PBE0-2', 'B2GPPLYP', 'PTPSS', 'PWPB95', 'DSD-BLYP', 'PBE0-DH']:
         pv0.extend(_solve_in_turn(
-            args=['{} TOTAL ENERGY'.format(fctl), 
-                  '{} FUNCTIONAL TOTAL ENERGY'.format(fctl), 
+            args=['{} TOTAL ENERGY'.format(fctl),
+                  '{} FUNCTIONAL TOTAL ENERGY'.format(fctl),
                   '{} DOUBLE-HYBRID CORRECTION ENERGY'.format(fctl)],
             coeff=[-1, 1, 1]))
 
@@ -207,7 +217,7 @@ def wfn_psivars():
         for fctl in ['B2PLYP']:
             pv0.extend(_solve_in_turn(
                 args=['{}{} TOTAL ENERGY'.format(fctl, dash),
-                      '{} TOTAL ENERGY'.format(fctl), 
+                      '{} TOTAL ENERGY'.format(fctl),
                       '{}{} DISPERSION CORRECTION ENERGY'.format(fctl, dash)],
                 coeff=[-1, 1, 1]))
 
@@ -220,7 +230,7 @@ def wfn_psivars():
 
     pv0.extend(_solve_in_turn(
         args=['WB97X-D TOTAL ENERGY',
-              'WB97X FUNCTIONAL TOTAL ENERGY', 
+              'WB97X FUNCTIONAL TOTAL ENERGY',
               'WB97-CHG DISPERSION CORRECTION ENERGY'],
         coeff=[-1, 1, 1]))
 
@@ -239,9 +249,9 @@ def sapt_psivars():
     pv1 = collections.OrderedDict()
     pv1['SAPT EXCHSCAL1'] = {'func': lambda x: 1.0 if x[0] < 1.0e-5 else x[0] / x[1],
                              'args': ['SAPT EXCH10 ENERGY', 'SAPT EXCH10(S^2) ENERGY']}  # special treatment in pandas
-    pv1['SAPT EXCHSCAL3'] = {'func': lambda x: x[0] ** 3, 
+    pv1['SAPT EXCHSCAL3'] = {'func': lambda x: x[0] ** 3,
                              'args': ['SAPT EXCHSCAL1']}
-    pv1['SAPT EXCHSCAL'] = {'func': lambda x: x[0] ** x[1], 
+    pv1['SAPT EXCHSCAL'] = {'func': lambda x: x[0] ** x[1],
                             'args': ['SAPT EXCHSCAL1', 'SAPT ALPHA']}
     pv1['SAPT HF(2) ALPHA=0.0 ENERGY'] = {'func': lambda x: x[0] - (x[1] + x[2] + x[3] + x[4]),
                                           'args': ['SAPT HF TOTAL ENERGY', 'SAPT ELST10,R ENERGY', 'SAPT EXCH10 ENERGY',

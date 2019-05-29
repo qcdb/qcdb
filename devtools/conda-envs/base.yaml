@@ -7,8 +7,8 @@ dependencies:
   - numpy
   - nomkl
   - python
-  - qcelemental
-  - qcengine
+  #- qcelemental
+  #- qcengine
   - pint
   - pydantic>=0.20
 
@@ -22,3 +22,7 @@ dependencies:
   - pytest>=3.9.1
   - pytest-cov
   - codecov
+
+  - pip:
+    - git+https://github.com/loriab/QCEngine.git@cfour1#egg=qcengine
+    - git+https://github.com/MolSSI/QCElemental.git@cfour1#egg=qcelemental

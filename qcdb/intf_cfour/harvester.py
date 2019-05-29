@@ -208,7 +208,7 @@ def nu_muster_modelchem(name, dertype, ropts, verbose=1):
         #ropts.require('CFOUR', 'DERIV_LEVEL', 'SECOND', accession=accession, verbose=verbose)
         ropts.require('CFOUR', 'VIBRATION', 'EXACT', accession=accession, verbose=verbose)
     else:
-        raise ValidationError("""Requested Cfour dertype %d is not available.""" % (dertype))
+        raise ValidationError(f"""Requested Cfour dertype '{dertype}' is not available.""")
 
     if lowername == 'c4-cfour':
         pass
@@ -262,7 +262,7 @@ def nu_muster_modelchem(name, dertype, ropts, verbose=1):
         ropts.suggest('CFOUR', 'CC_PROGRAM', 'NCC', accession=accession, verbose=verbose)
 
     else:
-        raise ValidationError("""Requested Cfour computational methods %d is not available.""" % (lowername))
+        raise ValidationError(f"""Requested Cfour computational method '{lowername}' is not available.""")
 
 #    # Set clobbering
 #    if 'CFOUR_DERIV_LEVEL' in options['CFOUR']:

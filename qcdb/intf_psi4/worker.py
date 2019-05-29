@@ -53,6 +53,7 @@ def psi4_subprocess(psi4rec):  # psi4rec@i -> psi4rec@io
         tmpdir = psi4rec['scratch_location']
     else:
         tmpdir = os.environ['HOME'] + os.sep + 'psi4_' + jobuuid
+#    tmpdir = '/scratch/psilocaluser/psi4_' + jobuuid
     if not os.path.exists(tmpdir):
         os.mkdir(tmpdir)
     os.chdir(tmpdir)
