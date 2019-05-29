@@ -1,4 +1,4 @@
-from qcengine.util import which, which_import
+from qcelemental.util import which, which_import
 
 from .proc_table import procedures
 from .. import intf_psi4
@@ -23,14 +23,17 @@ if which('psi4') and which_import('psi4'):
     procedures['properties']['psi4'] = {}
     for mtd in psi4.driver.proc_table.procedures['properties']:
         procedures['properties']['psi4'][mtd.lower()] = intf_psi4.run_psi4
+        procedures['properties']['psi4']['p4-' + mtd.lower()] = intf_psi4.run_psi4
 
     procedures['gradient']['psi4'] = {}
     for mtd in psi4.driver.proc_table.procedures['gradient']:
         procedures['gradient']['psi4'][mtd.lower()] = intf_psi4.run_psi4
+        procedures['gradient']['psi4']['p4-' + mtd.lower()] = intf_psi4.run_psi4
 
     procedures['hessian']['psi4'] = {}
     for mtd in psi4.driver.proc_table.procedures['hessian']:
         procedures['hessian']['psi4'][mtd.lower()] = intf_psi4.run_psi4
+        procedures['hessian']['psi4']['p4-' + mtd.lower()] = intf_psi4.run_psi4
 
 if which('xcfour'):
 

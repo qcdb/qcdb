@@ -452,6 +452,13 @@ qcvardefs['CURRENT ENERGY'] = {
    the geometry optimizer.
 """}
 
+qcvardefs['CURRENT DIPOLE'] = {
+    'units': 'e a0',
+    'dimension': '(3,)',
+    'glossary': """
+   The total dipole of the most recent stage of a calculation (frequently overwritten).
+"""}
+
 qcvardefs['CURRENT GRADIENT'] = {
     'units': 'Eh/a0',
     'dimension': '({nat}, 3)',
@@ -884,6 +891,24 @@ qcvardefs['SCS(N)-MP2 TOTAL ENERGY'] = {
    and reference.
 """}
 
+qcvardefs['CUSTOM SCS-MP2(N) CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   Changeable quantity. The MP2-like correlation
+   energy by any reweighting of SAME-SPIN or
+   OPPOSITE-SPIN components. Depending on weights,
+   this may equal any of MP2, SCS-MP2, SCS(N)-MP2,
+   etc. quantities.
+"""}
+
+qcvardefs['CUSTOM SCS-MP2(N) TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total energy built from
+   CUSTOM SCS-MP2 CORRELATION ENERGY and reference.
+"""}
+
+
 qcvardefs['CUSTOM D2 DISPERSION CORRECTION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
@@ -1058,6 +1083,24 @@ qcvardefs['CCSD DBOC ENERGY'] = {
    A correction to the Born-Oppenheimer Approximation, calculated
    at the coupled cluster singles and doubles level of theory.
 """}
+
+qcvardefs['CUSTOM SCS-CCSD CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   Changeable quantity. The CCSD-like correlation
+   energy by any reweighting of SAME-SPIN or
+   OPPOSITE-SPIN components. Depending on weights,
+   this may equal any of CCSD, SCS-CCSD,
+   etc. quantities.
+"""}
+
+qcvardefs['CUSTOM SCS-CCSD TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total energy built from
+   CUSTOM SCS-CCSD CORRELATION ENERGY and reference.
+"""}
+
 
 qcvardefs['CCSDT (PBE) TOTAL ENERGY'] = {
     'units': 'Eh',

@@ -182,7 +182,7 @@ def compare_molrecs(expected, computed, tol, label, forgive=None, verbose=1, rel
     `expected` to `tol` number of digits (for float arrays).
 
     """
-    from .align import B787
+    from qcelemental.molutil.align import B787
 
     thresh = 10 ** -tol if tol >= 1 else tol
 

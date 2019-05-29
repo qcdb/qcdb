@@ -1,7 +1,5 @@
-from .np_blockwise import blockwise_expand, blockwise_contract
-from .np_rand3drot import random_rotation_matrix
 from .mpl import plot_coord
-from .misc import distance_matrix, update_with_error, standardize_efp_angles_units, filter_comments, unnp
+from .misc import update_with_error, filter_comments
 from .regex import yes, no, der0th, der1st, der2nd, parse_dertype
 from .paths import search_file, import_ignorecase
 from .text import banner, find_approximate_string_matches

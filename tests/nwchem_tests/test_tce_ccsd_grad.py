@@ -39,13 +39,14 @@ def test_1_ccsd_df():
     qcdb.set_options({
         'basis'     :   'sto-3g',
         'memory'    :   '1500 mb',
-        'nwchem_scf':   'rhf',
-        'nwchem_scf_thresh'     :   1.0e-10,
-        'nwchem_scf_tol2e'      :   1.0e-10,
-        'nwchem_tce':   True,
-        'nwchem_tce_module'     :   'CCSD'
+        'qc_module' :   'tce',
+        #'scf__e_convergence': 1.0e-10,
+        'nwchem_dft__rdft':   True,
+        #'nwchem_scf__thresh'     :   1.0e-10,
+        #'nwchem_scf__tol2e'      :   1.0e-10,
+        'nwchem_tce__ccsd'     : True
         })
-    print('Testing ccsd(dft-hf)...')
+    print('Testing ccsd(dft)...')
     val = qcdb.gradient('nwc-ccsd')
     check_ccsd(val, is_df=True)
 
@@ -54,14 +55,13 @@ def test_2_ccsd_df():
     qcdb.set_options({
         'basis'     :   'sto-3g',
         'memory'    :   '1500 mb',
-        'nwchem_scf':   'rhf',
-        'nwchem_scf_thresh'     :   1.0e-10,
-        'nwchem_scf_tol2e'      :   1.0e-10,
-        'nwchem_tce':   True,
-        'nwchem_tce_module'     :   'CCSD'
+        'qc_module' :   'tce',
+        'scf__e_convergence': 1.0e-10,
+        'nwchem_scf__rhf':   True,
+        #'nwchem_scf__thresh'     :   1.0e-10,
+        'nwchem_scf__tol2e'      :   1.0e-10,
+        'nwchem_tce__ccsd'     : True
         })
-    print('Testing ccsd(dft-hf)...')
+    print('Testing ccsd(hf)...')
     val = qcdb.gradient('nwc-ccsd')
     check_ccsd(val, is_df=False)
-
-

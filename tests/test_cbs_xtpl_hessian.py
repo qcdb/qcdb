@@ -8,6 +8,7 @@ import numpy as np
 
 from qcdb.hessparse import load_hessian
 
+import qcdb
 
 #! Various gradients for a strained helium dimer and water molecule
 

@@ -11,10 +11,12 @@ matrix:
   - os: linux
     env:
       - PYTHON_VER='3.6'
+      - PROG=FULL
 
   - os: linux
     env:
       - PYTHON_VER='3.7'
+      - PROG=FULL
 
 before_install:
   - uname -a
@@ -22,31 +24,31 @@ before_install:
   - df -h
   - ulimit -a
 
-install:
-  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH="$HOME/miniconda/bin:$PATH"
-  - hash -r
-  - conda config --set always_yes yes --set changeps1 no
-  - conda update -q conda
-  - conda info -a
+  # Setup python environment
+  - source devtools/travis-ci/before_install.sh
+  - python -V
 
-# Build out environment
-  #- conda create -n tenv python=$PYTHON_VER cmake numpy ci-psi4 psi4 -c psi4/label/dev -c psi4
-  - conda create -n tenv python=$PYTHON_VER cmake numpy nomkl qcelemental=0.1.2 -c psi4
-  - source activate tenv
-  - conda install pytest pytest-cov codecov deepdiff pint -c conda-forge
-  - conda list
-    #- git clone https://github.com/MolSSI/QCElemental.git
-    # cd QCElemental && python setup.py install
+install:
+    # Create test environment for package
+  - |
+    if [ $PROG == "MINIMAL" ]; then
+      python devtools/scripts/conda_env.py -n=test -p=$PYTHON_VER devtools/conda-envs/minimal.yaml
+    elif [ $PROG == "FULL" ]; then
+      python devtools/scripts/conda_env.py -n=test -p=$PYTHON_VER devtools/conda-envs/base.yaml
+    else
+      echo "ERROR: No match for PROG ($PROG)."
+      exit 1
+    fi
+  - source activate test
 
 before_script:
   - python -V
+  - conda list
   - cd ${TRAVIS_BUILD_DIR}
   - > 
       cmake -Bbuild -H. 
       -DCMAKE_BUILD_TYPE=Release
-      -DPYTHON_EXECUTABLE="${HOME}/miniconda/envs/tenv/bin/python"
+      -DPYTHON_EXECUTABLE="${HOME}/miniconda/envs/test/bin/python"
       -DCMAKE_INSTALL_PREFIX=${HOME}/qcdb-install
   - cd build
   - make -j2
@@ -60,4 +62,3 @@ notifications:
 
 after_success:
   - codecov
-

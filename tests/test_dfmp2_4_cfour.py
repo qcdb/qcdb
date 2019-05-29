@@ -3,6 +3,7 @@ import sys
 
 import numpy as np
 
+import qcdb
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from .utils import *
 from .addons import *

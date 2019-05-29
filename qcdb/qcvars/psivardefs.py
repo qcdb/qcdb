@@ -114,16 +114,6 @@ def wfn_psivars():
         'func': sum, 
         'args': ['HF TOTAL ENERGY', 'SCS-MP2 CORRELATION ENERGY']})
 
-    # SCS(N)-MP2
-    pv0.append({
-        'form': 'SCS(N)-MP2 CORRELATION ENERGY',
-        'func': _spin_component_scaling_wsing,
-        'args': [Dm(0), Dm(1.76), 'MP2 CORRELATION ENERGY', 'MP2 SAME-SPIN CORRELATION ENERGY', 'MP2 SINGLES ENERGY']})
-    pv0.append({
-        'form': 'SCS(N)-MP2 TOTAL ENERGY',
-        'func': sum, 
-        'args': ['HF TOTAL ENERGY', 'SCS(N)-MP2 CORRELATION ENERGY']})
-
     # DW-MP2
     # only defined at the (IE) reaction level (like SAPT)
     #    dwmp2['DW-MP2 OMEGA'][mt] = \

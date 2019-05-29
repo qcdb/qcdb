@@ -241,7 +241,7 @@ def format_options_for_nwchem(options):
         nesting = group_key.split('__')
         if len(nesting) == 1:
             group, key = 'aaaglobal', nesting[0]
-        elif len(nesting) == 2:
+        elif len(nesting) >= 2:
             group, key = nesting
         else:
             raise ValueError('Nesting!' + nesting)
@@ -431,8 +431,7 @@ def format_option_for_nwchem(opt, val, lop_off=True):
 
     # complete hack
     if opt.upper() == 'MEMORY':
-        print(text)
-        return opt.lower(), f'{val}' # mb'
+        return opt.lower(), f'{val} byte'
 
 
     elif isinstance(val, list):

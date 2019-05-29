@@ -136,7 +136,7 @@ def test_qmol_11a():
 
     asdf = qcdb.Molecule(fullans)
 
-    assert compare_molrecs(fullans, asdf.to_dict(), 4, tnm(), relative_geoms='align')
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
 
@@ -146,7 +146,7 @@ def test_qmol_11b():
 
     asdf = qcdb.Molecule(geom=[0., 0., 0., 1., 0., 0.], elez=[8, 1], fix_com=True)
 
-    assert compare_molrecs(fullans, asdf.to_dict(), 4, tnm(), relative_geoms='align')
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
 
@@ -156,7 +156,7 @@ def test_qmol_11c():
 
     asdf = qcdb.Molecule("""nocom\n8 0 0 0\n1 1 0 0""", dtype='psi4')
 
-    assert compare_molrecs(fullans, asdf.to_dict(), 4, tnm(), relative_geoms='align')
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
 
@@ -166,7 +166,7 @@ def test_qmol_11d():
 
     asdf = qcdb.Molecule("""nocom\n8 0 0 0\n1 1 0 0""", dtype='psi4+')
 
-    assert compare_molrecs(fullans, asdf.to_dict(), 4, tnm(), relative_geoms='align')
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
 
@@ -176,7 +176,7 @@ def test_qmol_11e():
 
     asdf = qcdb.Molecule("""2\n\nO 0 0 0 \n1 1 0 0 """, dtype='xyz', fix_com=True)
 
-    assert compare_molrecs(fullans, asdf.to_dict(), 4, tnm(), relative_geoms='align')
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
 
@@ -186,7 +186,7 @@ def test_qmol_11f():
 
     asdf = qcdb.Molecule.from_dict(fullans)
 
-    assert compare_molrecs(fullans, asdf.to_dict(), 4, tnm(), relative_geoms='align')
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
 
@@ -196,7 +196,7 @@ def test_qmol_11g():
 
     asdf = qcdb.Molecule.from_arrays(geom=[0., 0., 0., 1., 0., 0.], elez=[8, 1], fix_com=True)
 
-    assert compare_molrecs(fullans, asdf.to_dict(), 4, tnm(), relative_geoms='align')
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
 
@@ -206,7 +206,7 @@ def test_qmol_11h():
 
     asdf = qcdb.Molecule.from_string("""nocom\n8 0 0 0\n1 1 0 0""")
 
-    assert compare_molrecs(fullans, asdf.to_dict(), 4, tnm(), relative_geoms='align')
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
 
@@ -216,7 +216,7 @@ def test_qmol_11i():
 
     asdf = qcdb.Molecule.from_string("""nocom\n8 0 0 0\n1 1 0 0""")
 
-    assert compare_molrecs(fullans, asdf.to_dict(), 4, tnm(), relative_geoms='align')
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
 
@@ -226,7 +226,7 @@ def test_qmol_11j():
 
     asdf = qcdb.Molecule.from_string("""2\n\nO 0 0 0 \n1 1 0 0 """, fix_com=True)
 
-    assert compare_molrecs(fullans, asdf.to_dict(), 4, tnm(), relative_geoms='align')
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
 
@@ -282,7 +282,7 @@ def test_qmol_12():
 
     asdf = qcdb.Molecule(geom=[0., 0., 0., 1., 0., 0.], elez=[8, 1], fix_com=True)
 
-    assert compare_molrecs(fullans, asdf.to_dict(), 4, tnm(), relative_geoms='align')
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
     import json
@@ -291,5 +291,5 @@ def test_qmol_12():
 
     asdf2 = qcdb.Molecule(dmol)
 
-    assert compare_molrecs(fullans, asdf2.to_dict(), 4, tnm(), relative_geoms='align')
+    assert compare_molrecs(fullans, asdf2.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
     assert compare_integers(2, asdf2.natom(), tnm())
