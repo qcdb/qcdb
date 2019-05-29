@@ -30,7 +30,7 @@ def muster_and_format_molecule_and_basis_for_gamess(molrec, ropts, qbs, verbose=
     if pg == 'ATOM':
         pgn, naxis = 'Dnh', 2
     elif pg == 'C_inf_v':
-        pgn, naxis = 'Cnv', 4
+        pgn, naxis = 'Cnv', 2
     elif pg == 'D_inf_h':
         pgn, naxis = 'Dnh', 4
     elif pg == 'Sn':
