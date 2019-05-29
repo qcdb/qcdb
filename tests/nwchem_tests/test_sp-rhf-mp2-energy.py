@@ -19,8 +19,8 @@ def check_mp2(return_value, is5050):
     mp2_tot = -76.230777733733
     scs_mp2_tot = -76.226922314540
     scs_corl = -0.200161577112
-    os = -0.152487590397 * float(6/5)
-    ss = -0.051529405908 * float(1/3) 
+    os = -0.152487590397 * (6/5)
+    ss = -0.051529405908 * (1/3) 
     a5050corl = 0.5 * (os + ss)
     a5050tot = a5050corl + ref
     assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'scf total')
