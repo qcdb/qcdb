@@ -891,6 +891,24 @@ qcvardefs['SCS(N)-MP2 TOTAL ENERGY'] = {
    and reference.
 """}
 
+qcvardefs['CUSTOM SCS-MP2(N) CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   Changeable quantity. The MP2-like correlation
+   energy by any reweighting of SAME-SPIN or
+   OPPOSITE-SPIN components. Depending on weights,
+   this may equal any of MP2, SCS-MP2, SCS(N)-MP2,
+   etc. quantities.
+"""}
+
+qcvardefs['CUSTOM SCS-MP2(N) TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total energy built from
+   CUSTOM SCS-MP2 CORRELATION ENERGY and reference.
+"""}
+
+
 qcvardefs['CUSTOM D2 DISPERSION CORRECTION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
@@ -1057,6 +1075,41 @@ qcvardefs['CCSD CORRELATION ENERGY'] = {
 #                               & = E_{\text{S}} + E_{\text{D}} \\
          \end{align*}
 
+"""}
+
+qcvardefs['CUSTOM SCS-CCSD CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   Changeable quantity. The CCSD-like correlation
+   energy by any reweighting of SAME-SPIN or
+   OPPOSITE-SPIN components. Depending on weights,
+   this may equal any of CCSD, SCS-CCSD, SCS(N)-CCSD,
+   etc. quantities.
+"""}
+
+qcvardefs['CUSTOM SCS-CCSD TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total energy built from
+   CUSTOM SCS-CCSD CORRELATION ENERGY and reference.
+"""}
+#Double check reference, since copy code text from SCS-MP2
+qcvardefs['SCS(N)-CCSD CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'doi': '10.1021/ct6002737',
+    'glossary': r"""
+   The CCSD-like correlation energy by reweighting
+   CCSD DOUBLES ENERGY by 0 opposite-spin
+   and 1.76 same-spin contributions, with any singles
+   carried along.
+"""}
+
+qcvardefs['SCS(N)-CCSD TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'doi': '10.1021/ct6002737',
+    'glossary': r"""
+   The total energy built from SCS(N)-CCSD CORRELATION ENERGY
+   and reference.
 """}
 
 qcvardefs['CCSDT (PBE) TOTAL ENERGY'] = {

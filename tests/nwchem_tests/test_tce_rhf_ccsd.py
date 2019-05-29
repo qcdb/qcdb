@@ -1,4 +1,4 @@
-#! single-point CCSD(T)/cc-pvdz on water
+#! single-point CCSD/cc-pvdz on water
 import os
 import sys
 from ..utils import *
@@ -15,20 +15,14 @@ print(h2o)
 
 
 def check_ccsd_t_(return_value):
-    ref = -76.026744421192
-    nre = 9.187334240165
-    ccsdcorl = -0.213350416141872
-    ccsdtot = -76.240094837333771
-    ccsd_t_corr = -0.003062727448805
-    ccsd_t_corl = -0.216413143590677
-    ccsd_t_tot = -76.243157564782578
+    ref = -76.026760733967
+    nre = 9.187333574703
+    ccsdcorl = -0.213341251859034
+    ccsdtot = -76.240101985825859
 
     assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
     assert compare_values(ccsdcorl, qcdb.get_variable('CCSD CORRELATION ENERGY'), 5, 'ccsd corl')
     assert compare_values(ccsdtot, qcdb.get_variable('CCSD TOTAL ENERGY'), 5, 'ccsd total')
-    assert compare_values(ccsd_t_corr, qcdb.get_variable('(T) CORRECTION ENERGY'), 5, 'ccsd(t) corr')
-    assert compare_values(ccsd_t_corl, qcdb.get_variable('CCSD(T) CORRELATION ENERGY'), 5, 'ccsd(t) corl')
-    assert compare_values(ccsd_t_tot, qcdb.get_variable('CCSD(T) TOTAL ENERGY'), 5, 'ccsd(t) tot')
     assert compare_values(nre, qcdb.get_variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
 
 
@@ -40,12 +34,10 @@ def test_1_ccsd_t_():
         'nwchem_scf__rhf': True,
         'nwchem_scf__thresh': 1.0e-12,
         'nwchem_tce__dft': False,
-        #'nwchem_tce__ccsd': True,
-        'nwchem_tce__ccsd(t)': True, 
+        'nwchem_tce__ccsd': True,
         'qc_module'  : 'tce',
         'nwchem_tce__thresh': 1.0e-12,
-        #'nwchem_task_tce': 'energy'
     })
     print('     Testing ccsd...')
-    val = qcdb.energy('nwc-ccsd(t)')
+    val = qcdb.energy('nwc-ccsd')
     check_ccsd_t_(val)

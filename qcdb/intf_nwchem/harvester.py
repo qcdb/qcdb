@@ -11,7 +11,7 @@ from ..pdict import PreservingDict
 from ..exceptions import *
 from ..molecule import Molecule
 from ..orient import OrientMols
-
+from decimal import Decimal
 from ..moptions.options import conv_float2negexp
 #from . import nwc_movecs
 
@@ -97,18 +97,18 @@ def harvest_outfile_pass(outtext):
 
         #Process DFT (RDFT, RODFT,UDFT, SODFT [SODFT for nwchem versions before nwchem 6.8])
         mobj = re.search(
-            r'^\s+' + r'Total DFT energy' + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'Nuclear repulsion energy' + r'\s+' +
-            NUMBER + '\s*$', outtext, re.MULTILINE)
+                r'^\s+' + r'Total DFT energy' + r'\s+=\s' + NUMBER + r's*$', outtext, re.MULTILINE)                
+                #r'^\s+' + r'(?:Total DFT energy)' + r'\s+=\s' + NUMBER + r's*$', outtext, re.MULTILINE)
         if mobj:
             print('matched DFT')
-            #print (mobj.group(1))
+            print (mobj.group(1))
             psivar['DFT TOTAL ENERGY'] = mobj.group(1)
-            psivar['NUCLEAR REPULSION ENERGY'] = mobj.group(2)
+        #    psivar['NUCLEAR REPULSION ENERGY'] = mobj.group(2)
 
         #SODFT [for nwchem 6.8+]
         mobj = re.search(
             r'^\s+' + r'Total SO-DFT energy' + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'Nuclear repulsion energy' +
-            r'\s+' + NUMBER + '\s*$', outtext, re.MULTILINE)
+            r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE)
         if mobj:
             print('matched DFT')
             #print (mobj.group(1))
@@ -149,12 +149,12 @@ def harvest_outfile_pass(outtext):
             print('matched scs-mp2')
             psivar['MP2 SAME-SPIN CORRELATION ENERGY'] = Decimal(mobj.group(1)) * Decimal(mobj.group(2))
             psivar['MP2 OPPOSITE-SPIN CORRELATION ENERGY'] = Decimal(mobj.group(3)) * Decimal(mobj.group(4))
-            psivar['CUSTOM SCS-MP2 CORRELATION ENERGY'] = 0.5 * (float(psivar['MP2 SAME-SPIN CORRELATION ENERGY']) +
-                                                                 float(psivar['MP2 OPPOSITE-SPIN CORRELATION ENERGY']))
-            psivar['CUSTOM SCS-MP2 TOTAL ENERGY'] = float(psivar['CUSTOM SCS-MP2 CORRELATION ENERGY']) + float(
-                mobj.group(6))
-            psivar['SCS-MP2 CORRELATION ENERGY'] = mobj.group(5)
-            psivar['SCS-MP2 TOTAL ENERGY'] = mobj.group(6)
+            #psivar['CUSTOM SCS-MP2 CORRELATION ENERGY'] = 0.5 * (float(psivar['MP2 SAME-SPIN CORRELATION ENERGY']) +
+                                                                # float(psivar['MP2 OPPOSITE-SPIN CORRELATION ENERGY']))
+           # psivar['CUSTOM SCS-MP2 TOTAL ENERGY'] = float(psivar['CUSTOM SCS-MP2 CORRELATION ENERGY']) + float(
+            #    mobj.group(6))
+            #psivar['SCS-MP2 CORRELATION ENERGY'] = mobj.group(5)
+            #psivar['SCS-MP2 TOTAL ENERGY'] = mobj.group(6)
 
             print(mobj.group(1))  #ess
             print(mobj.group(2))  #fss
@@ -659,11 +659,12 @@ def muster_inherited_options(ropts, verbose=1):
 #    damp = int(10 * ropts.scroll['QCDB']['SCF__DAMPING_PERCENTAGE'].value)
 #    ropts.suggest('CFOUR', 'SCF_DAMPING', damp, **kwgs)
 
-    # qcdb/e_convergence --> nwchem/ccsd(t)__thresh
+    # qcdb/e_convergence --> nwchem/ccsd(t)__thresh or dft__convergence__energy
     qopt = ropts.scroll['QCDB']['E_CONVERGENCE']
     if qopt.disputed():
         conv = conv_float2negexp(qopt.value)
         ropts.suggest('NWCHEM', 'ccsd__thresh', conv, **kwgs)
+        ropts.suggest('NWCHEM', 'dft__convergence__energy', conv, **kwgs)
 
 
 def muster_memory(mem):
@@ -989,7 +990,7 @@ def muster_dft_w_dispersion(opt):
         options['NWCHEM']['NWCHEM_DFT_DISP']['value'] = ['vdw', 3]
 
     elif (val == 'PBE0-D3'):
-        options['NWCHEM']['NWCHEM_DFT_XC']['value'] = ['pbe0']
+        options['NWCHEM']['NWCHEM__DFT_XC']['value'] = ['pbe0']
         options['NWCHEM']['NWCHEM_DFT_DISP']['value'] = ['vdw', 3]
 
     else:
@@ -1030,10 +1031,39 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         mdccmd = f'task scf {runtyp}\n\n'
     elif lowername == 'nwc-mp2':
         mdccmd = f'task mp2 {runtyp}\n\n'
+    #CC options
     elif lowername == 'nwc-ccsd':
-        mdccmd = f'task ccsd {runtyp}\n\n'
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp}\n\n'
+            ropts.require('NWCHEM', 'tce__ccsd', True, **kwgs)
+        else:
+             mdccmd = f'task ccsd {runtyp}\n\n'
+    elif lowername == 'nwc-ccsdt':
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp} \n\n'
+            ropts.require('NWCHEM', 'tce__ccsdt', True, **kwgs)
+        else:
+            mdccmd = f'task ccsdt {runtyp}\n\n'
     elif lowername == 'nwc-ccsd(t)':
-        mdccmd = f'task ccsd(t) {runtyp}\n\n'
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp} \n\n'
+            ropts.require('NWCHEM', 'tce__ccsd(t)', True, **kwgs)
+        else:
+            mdccmd = f'task ccsd(t) {runtyp}\n\n'
+    #DFT xc functionals
+    elif lowername == 'nwc-pbe':
+        ropts.require('NWCHEM', 'xc__pbe0', True, **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-b3lyp':
+        ropts.require('NWCHEM', 'xc_b3lyp', True, **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-tddft':
+        mdccmd = f'task tddft {runtyp} \n\n'
+    elif lowername == 'nwc-ccsdtq':
+        mdccmd = f'task tce {runtyp} \n\n'
+    #elif lowername  == 'nwc-tce':
+    #    mdccmd = f'task tce {runtyp} \n\n'
+    #    istce = ropts.scroll['NWCHEM']['TCE__MODULE'].value
 
     else:
         raise ValidationError(f"""Requested NWChem computational method {lowername} is not available.""")
@@ -1352,11 +1382,11 @@ def nwchem_gradient_list():
     val.append('nwc-scf')
     val.append('nwc-hf')
     val.append('nwc-mp2')
-#    val.append('nwc-dft')
+    val.append('nwc-dft')
     val.append('nwc-ccsd')
-#    val.append('nwc-ccsdt')
-#    val.append('nwc-ccsdtq')
-#    val.append('nwc-ccsd(t)')
+    val.append('nwc-ccsdt')
+    val.append('nwc-ccsdtq')
+    val.append('nwc-ccsd(t)')
 #    val.append('nwc-lccd')
 #    val.append('nwc-tce-mp2')
 #    val.append('nwc-tce-mp3')
@@ -1365,7 +1395,7 @@ def nwchem_gradient_list():
 #    val.append('nwc-eom-ccsdt')
 #    val.append('nwc-eom-ccsdtq')
 #    val.extend(dft_functionals_list())
-#    val.append('nwc-tddft')
+    val.append('nwc-tddft')
 
     return val
 

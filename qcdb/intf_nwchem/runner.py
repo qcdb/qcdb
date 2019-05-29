@@ -3,7 +3,7 @@ import copy
 import pprint
 pp = pprint.PrettyPrinter(width=120)
 import inspect
-
+from decimal import Decimal
 from .. import __version__
 from .. import moptions
 from .. import qcvars
@@ -156,7 +156,7 @@ def nwchem_plant(jobrec):  # jobrec@i -> engine@i
     #zmat = molcmd + optcmd + bascmd
     nwchemrec['nwchem.nw'] = 'echo\n' + molcmd + bascmd + optcmd + mdccmd
 #OLD    nwchemrec['nwchem.nw'] = write_input(jobrec['method'], jobrec['dertype'], jobrec['molecule'], jobrec['options']) #molecule)
-    #print('<<< ZMAT||\n{}\n||>>>\n'.format(nwchemrec['nwchem.nw']))
+    print('<<< ZMAT||\n{}\n||>>>\n'.format(nwchemrec['nwchem.nw']))
     nwchemrec['command'] = ['nwchem']  # subnw?
 
     return nwchemrec
@@ -214,6 +214,26 @@ def nwchem_harvest(jobrec, nwchemrec):  # jobrec@i, enginerec@io -> jobrec@io
     #calcinfo = qcvars.certify_qcvars(psivar)
     #jobrec['qcvars'] = {info.lbl: info for info in calcinfo}
     progvars = PreservingDict(psivar)
+    if "MP2 OPPOSITE-SPIN CORRELATION ENERGY" in progvars and "MP2 SAME-SPIN CORRELATION ENERGY" in progvars:
+        oss_opt = jobrec['options'].scroll['QCDB']['MP2_OS_SCALE']
+        sss_opt = jobrec['options'].scroll['QCDB']['MP2_SS_SCALE'] 
+        custom_scsmp2_corl = \
+                Decimal(oss_opt.value) * progvars["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] + \
+                Decimal(sss_opt.value) * progvars["MP2 SAME-SPIN CORRELATION ENERGY"]
+        if "MP2 SINGLES ENERGY" in progvars:
+            custom_scsmp2_corl += progvars["MP2 SINGLES ENERGY"]
+        progvars["CUSTOM SCS-MP2 CORRELATION ENERGY"] = custom_scsmp2_corl
+
+    if "CCSD OPPOSITE-SPIN CORRELATION ENERGY" in progvars and "CCSD SAME-SPIN CORRELATION ENERGY" in progvars:
+        oss_opt = jobrec['options'].scroll['QCDB']['CCSD_OS_SCALE']
+        sss_opt = jobrec['options'].scroll['QCDB']['CCSD_SS_SCALE'] 
+        custom_scsmp2_corl = \
+                Decimal(oss_opt.value) * progvars["CCSD OPPOSITE-SPIN CORRELATION ENERGY"] + \
+                Decimal(sss_opt.value) * progvars["CCSD SAME-SPIN CORRELATION ENERGY"]
+        if "CCSD SINGLES ENERGY" in progvars:
+            custom_scsccsd_corl += progvars["CCSD SINGLES ENERGY"]
+        progvars["CUSTOM SCS-CCSD CORRELATION ENERGY"] = custom_scsccsd_corl
+    
 
     #if qcdbmolecule is None and c4mol is not None:
     #    molecule = geometry(c4mol.create_psi4_string_from_molecule(), name='blank_molecule_psi4_yo')
@@ -382,9 +402,6 @@ def write_input(name, dertype, molecule, ropts):
    # print ("#########NWCHEM INPUT PRINT##########")
    # print (nwinput)
    # print ("#########NWCHEM INPUT END##########")
-
-    return nwinput
-
     if "MP2 OPPOSITE-SPIN CORRELATION ENERGY" in progvars and "MP2 SAME-SPIN CORRELATION ENERGY" in progvars:
         oss_opt = jobrec['options'].scroll['QCDB']['MP2_OS_SCALE']
         sss_opt = jobrec['options'].scroll['QCDB']['MP2_SS_SCALE'] 
@@ -394,3 +411,16 @@ def write_input(name, dertype, molecule, ropts):
         if "MP2 SINGLES ENERGY" in progvars:
             custom_scsmp2_corl += progvars["MP2 SINGLES ENERGY"]
         progvars["CUSTOM SCS-MP2 CORRELATION ENERGY"] = custom_scsmp2_corl
+
+    if "CCSD OPPOSITE-SPIN CORRELATION ENERGY" in progvars and "CCSD SAME-SPIN CORRELATION ENERGY" in progvars:
+        oss_opt = jobrec['options'].scroll['QCDB']['CCSD_OS_SCALE']
+        sss_opt = jobrec['options'].scroll['QCDB']['CCSD_SS_SCALE'] 
+        custom_scsmp2_corl = \
+                Decimal(oss_opt.value) * progvars["CCSD OPPOSITE-SPIN CORRELATION ENERGY"] + \
+                Decimal(sss_opt.value) * progvars["CCSD SAME-SPIN CORRELATION ENERGY"]
+        if "CCSD SINGLES ENERGY" in progvars:
+            custom_scsccsd_corl += progvars["CCSD SINGLES ENERGY"]
+        progvars["CUSTOM SCS-CCSD CORRELATION ENERGY"] = custom_scsccsd_corl
+
+
+    return nwinput
