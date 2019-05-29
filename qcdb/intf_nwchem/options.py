@@ -279,10 +279,10 @@ def load_nwchem_defaults(options):
     options.add(
         'nwchem',
         RottenOption(
-            keyword='scf__nr', 
-            default=0.1, 
-            validator=lambda x: float(x), 
-            glossary='Control Netwon-Raphson value.'))
+            keyword= 'scf__nr', 
+            default= 0.1, 
+            validator= lambda x: float(x), 
+            glossary= 'Control Newton-Raphson value.'))
 
     options.add(
         'nwchem',
@@ -425,19 +425,12 @@ def load_nwchem_defaults(options):
             glossary='Scaling factor for opposite spin'))
 
     #DFT block
-    #options.add(
-    #    'nwchem',
-    #    RottenOption(
-    #        keyword='dft',
-    #        default='rdft',
-    #        validator=parsers.enum("RDFT RODFT UDFT ODFT"),
-    #        glossary='Defining DFT wavefunction: RDFT, RODFT, UDFT, ODFT (Open shell, singlet).'))
     options.add(
             'nwchem',
             RottenOption(
                 keyword= 'dft__rdft',
                 default= True,
-                validator= parsers.boolean, #switching over to boolean instead of enum for driver simplicity
+                validator= parsers.boolean, 
                 glossary= 'Defining DFT wavefunction, using restricted DFT. Default is on.'))
 
     options.add(
@@ -727,7 +720,7 @@ def load_nwchem_defaults(options):
         glossary= 'DFT functional beckehandh'))
     
     options.add('nwchem', RottenOption(
-        keyword = 'dft__xc_pbe0',
+        keyword = 'dft__xc__pbe0',
         default = False,
         validator = parsers.boolean,
         glossary = 'DFT functional PBE'))

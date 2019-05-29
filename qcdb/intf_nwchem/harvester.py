@@ -659,11 +659,12 @@ def muster_inherited_options(ropts, verbose=1):
 #    damp = int(10 * ropts.scroll['QCDB']['SCF__DAMPING_PERCENTAGE'].value)
 #    ropts.suggest('CFOUR', 'SCF_DAMPING', damp, **kwgs)
 
-    # qcdb/e_convergence --> nwchem/ccsd(t)__thresh
+    # qcdb/e_convergence --> nwchem/ccsd(t)__thresh or dft__convergence__energy
     qopt = ropts.scroll['QCDB']['E_CONVERGENCE']
     if qopt.disputed():
         conv = conv_float2negexp(qopt.value)
         ropts.suggest('NWCHEM', 'ccsd__thresh', conv, **kwgs)
+        ropts.suggest('NWCHEM', 'dft__convergence__energy', conv, **kwgs)
 
 
 def muster_memory(mem):
@@ -1051,7 +1052,7 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
             mdccmd = f'task ccsd(t) {runtyp}\n\n'
     #DFT xc functionals
     elif lowername == 'nwc-pbe':
-        ropts.require('NWCHEM', 'xc_pbe0', True, **kwgs)
+        ropts.require('NWCHEM', 'xc__pbe0', True, **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-b3lyp':
         ropts.require('NWCHEM', 'xc_b3lyp', True, **kwgs)

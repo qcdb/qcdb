@@ -241,7 +241,7 @@ def format_options_for_nwchem(options):
         nesting = group_key.split('__')
         if len(nesting) == 1:
             group, key = 'aaaglobal', nesting[0]
-        elif len(nesting) == 2:
+        elif len(nesting) >= 2:
             group, key = nesting
         else:
             raise ValueError('Nesting!' + nesting)
