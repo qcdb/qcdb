@@ -10,6 +10,7 @@ dependencies:
   #- qcelemental
   #- qcengine
   - pint
+  - pip
   - pydantic>=0.20
 
     # Optional depends
@@ -24,5 +25,5 @@ dependencies:
   - codecov
 
   - pip:
-    - git+https://github.com/loriab/QCEngine.git@master#egg=qcengine
+    - git+https://github.com/MolSSI/QCEngine.git@master#egg=qcengine
     - git+https://github.com/MolSSI/QCElemental.git@master#egg=qcelemental
