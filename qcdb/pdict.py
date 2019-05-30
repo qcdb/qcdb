@@ -87,8 +87,7 @@ class PreservingDict(dict):
                     (self[key].quantize(places, rounding=ROUND_FLOOR).compare(
                          value.quantize(places, rounding=ROUND_FLOOR)) != 0)):
                     raise ParsingValidationError(
-                        """Output file yielded both %s and %s as values for quantity %s.""" %
-                        (self[key].to_eng_string(), value.to_eng_string(), key))
+                        f"""Output file yielded both {self[key].to_eng_string()} ({candidate_exp}) and {value.to_eng_string()} ({existing_exp}) as values for quantity {key}.""")
                 if self.verbose >= 2:
                     print("""Resetting variable {} to {}""".format(key, best_value.to_eng_string()))
             else:

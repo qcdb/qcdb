@@ -4,7 +4,6 @@ import math
 import numpy as np
 
 from ..exceptions import *
-#from ..datastructures import *
 #from . import pe
 #from . import driver_util
 #from . import driver_helpers

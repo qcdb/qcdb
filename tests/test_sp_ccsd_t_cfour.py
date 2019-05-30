@@ -145,8 +145,8 @@ def test_sp_rhf_ccsd_t_ao_ecc(h2o):
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=h2o)
 
     check_rhf(tnm=sys._getframe().f_code.co_name, fc=False)
-    assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['raw_output']
-    assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['raw_output']
+    assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['stdout']
+    assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
 
 
@@ -165,8 +165,8 @@ def test_sp_rhf_ccsd_t_ao(h2o):
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=h2o)
 
     check_rhf(tnm=sys._getframe().f_code.co_name, fc=False)
-    assert 'CC_PROGRAM           ICCPRO         VCC' in jrec['raw_output']
-    assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['raw_output']
+    assert 'CC_PROGRAM           ICCPRO         VCC' in jrec['stdout']
+    assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
 
 @using_cfour
@@ -183,8 +183,8 @@ def test_sp_rhf_ccsd_t_ecc(h2o):
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=h2o)
 
     check_rhf(tnm=sys._getframe().f_code.co_name, fc=False)
-    assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['raw_output']
-    assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['raw_output']
+    assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['stdout']
+    assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['stdout']
 
 
 @using_cfour
@@ -201,8 +201,8 @@ def test_sp_rhf_ccsd_t_(h2o):
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=h2o)
 
     check_rhf(tnm=sys._getframe().f_code.co_name, fc=False)
-    assert 'CC_PROGRAM           ICCPRO         VCC' in jrec['raw_output']
-    assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['raw_output']
+    assert 'CC_PROGRAM           ICCPRO         VCC' in jrec['stdout']
+    assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['stdout']
 
 
 @using_cfour
@@ -221,8 +221,8 @@ def test_sp_rhf_ccsd_t_fc(h2o):
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=h2o)
 
     check_rhf(tnm=sys._getframe().f_code.co_name, fc=True)
-    assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['raw_output']
-    assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['raw_output']
+    assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['stdout']
+    assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
 
 @using_cfour
@@ -240,8 +240,8 @@ def test_sp_rhf_ccsd_t_ncc(h2o):
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=h2o)
 
     check_rhf(tnm=sys._getframe().f_code.co_name, fc=False)
-    assert 'CC_PROGRAM           ICCPRO         NCC' in jrec['raw_output']
-    assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['raw_output']
+    assert 'CC_PROGRAM           ICCPRO         NCC' in jrec['stdout']
+    assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
 
 @using_cfour
@@ -261,8 +261,8 @@ def test_sp_uhf_ccsd_t_ao_ecc(nh2):
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=nh2)
 
     check_uhf(tnm=sys._getframe().f_code.co_name, fc=False)
-    assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['raw_output']
-    assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['raw_output']
+    assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['stdout']
+    assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
 
 @using_cfour
@@ -282,8 +282,8 @@ def test_sp_uhf_ccsd_t_ao(nh2):
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=nh2)
 
     check_uhf(tnm=sys._getframe().f_code.co_name, fc=False)
-    assert 'CC_PROGRAM           ICCPRO         VCC' in jrec['raw_output']
-    assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['raw_output']
+    assert 'CC_PROGRAM           ICCPRO         VCC' in jrec['stdout']
+    assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
 
 @using_cfour
@@ -302,8 +302,8 @@ def test_sp_uhf_ccsd_t_ecc(nh2):
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=nh2)
 
     check_uhf(tnm=sys._getframe().f_code.co_name, fc=False)
-    assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['raw_output']
-    assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['raw_output']
+    assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['stdout']
+    assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['stdout']
 
 
 @using_cfour
@@ -322,8 +322,8 @@ def test_sp_uhf_ccsd_t_(nh2):
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=nh2)
 
     check_uhf(tnm=sys._getframe().f_code.co_name, fc=False)
-    assert 'CC_PROGRAM           ICCPRO         VCC' in jrec['raw_output']
-    assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['raw_output']
+    assert 'CC_PROGRAM           ICCPRO         VCC' in jrec['stdout']
+    assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['stdout']
 
 
 @using_cfour
@@ -343,8 +343,8 @@ def test_sp_rohf_ccsd_t_(nh2):
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=nh2)
 
     check_rohf(tnm=sys._getframe().f_code.co_name, fc=False, prog='vcc')
-    assert 'CC_PROGRAM           ICCPRO         VCC' in jrec['raw_output']
-    assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['raw_output']
+    assert 'CC_PROGRAM           ICCPRO         VCC' in jrec['stdout']
+    assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['stdout']
 
 
 @using_cfour
@@ -365,8 +365,8 @@ def test_sp_rohf_ccsd_t_ao(nh2):
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=nh2, prog='vcc')
 
     check_rohf(tnm=sys._getframe().f_code.co_name, fc=False, prog='vcc')
-    assert 'CC_PROGRAM           ICCPRO         VCC' in jrec['raw_output']
-    assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['raw_output']
+    assert 'CC_PROGRAM           ICCPRO         VCC' in jrec['stdout']
+    assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
 
 @using_cfour
@@ -386,8 +386,8 @@ def test_sp_rohf_ccsd_t_ao_ecc(nh2):
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=nh2)
 
     check_rohf(tnm=sys._getframe().f_code.co_name, fc=False, prog='ecc')
-    assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['raw_output']
-    assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['raw_output']
+    assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['stdout']
+    assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
 
 @using_cfour
@@ -408,6 +408,6 @@ def test_sp_rohf_ccsd_t_fc(nh2):
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=nh2)
 
     check_rohf(tnm=sys._getframe().f_code.co_name, fc=True, prog='ecc')
-    assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['raw_output']
-    assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['raw_output']
+    assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['stdout']
+    assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['stdout']
 

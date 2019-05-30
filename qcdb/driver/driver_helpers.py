@@ -301,8 +301,8 @@ def print_variables(qcvars=None):
 
     largest_key = max(len(k) for k in qcvars) + 2  # for quotation marks
     for k, qca in sorted(qcvars.items()):
-        if k != qca.lbl:
-            raise ValidationError('Huh? {} != {}'.format(k, qca.label))
+        if k != qca.label:
+            raise ValidationError(f'Huh? {k} != {qca.label}')
 
         if isinstance(qca.data, np.ndarray):
             data = np.array_str(qca.data, max_line_width=120, precision=8, suppress_small=True)
