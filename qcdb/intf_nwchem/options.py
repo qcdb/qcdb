@@ -908,7 +908,7 @@ def load_nwchem_defaults(options):
         keyword='tce__ccsd',
         default= False,
         validator= parsers.boolean,
-        glossary= 'TCE module option of coupled cluster singles and doubles (CCSD).'))
+        glossary= 'TCE module option of coupled cluster singles and doubles (CCSD). Can also activate EOM-CCSD with the tce__nroots option set.'))
    
     options.add('nwchem', RottenOption(
         keyword= 'tce__ccsd_act',
@@ -1164,86 +1164,3 @@ def load_nwchem_defaults(options):
         default=1, 
         validator=parsers.positive_integer, 
         glossary='Tile size in Tensor Contraction Engine (TCE).'))
-    
-    #TASK block- do we need? pytests ensure what action we're implementing into qcdb
-    options.add('nwchem', RottenOption(
-        keyword='task__hf',
-        default='energy',
-        validator=lambda x: x.upper(),
-        glossary='Specify HF (via SCF) task between: energy, gradient, and hessian. Default is energy.'))
-    
-    options.add('nwchem', RottenOption(
-        keyword='task__scf',
-        default='',
-        validator=lambda x: x.upper(),
-        glossary=
-        'Specify Self-consistent theory task between: energy, gradient, and hessian. Default is no specified option and will run energy.'
-            ))
-    
-    options.add('nwchem',  RottenOption(
-        keyword='task__mcscf',
-        default='',
-        validator=lambda x: x.upper(),
-        glossary=
-        'Specify Multiconfiguration self-consistent (MCSCF) theory task between: energy, gradient, and hessian. Default is no specified option and will run energy.'
-            ))
-    
-    options.add('nwchem', RottenOption(
-        keyword='task__mp2',
-        default='energy',
-        validator=lambda x: x.upper(),
-        glossary='Specify MP2 [semi-direct] task between: energy, gradient, and hessian. Default is energy.'))
-    
-    options.add('nwchem', RottenOption(
-        keyword='task__direct__mp2',
-        default='energy',
-        validator=lambda x: x.upper(),
-        glossary='Specify MP2 [direct] task between: energy, gradient, and hessian. Default is energy.'))
-    
-   # options.add('nwchem', RottenOption(
-       # keyword='task__rimp2',
-      #  default='energy',
-     #   validator=lambda x: x.upper(),
-    #    glossary='Specify RIMP2 task between: energy, gradient, and hessian. Default is energy.'))
-    
-   # options.add('nwchem', RottenOption(
-       # keyword='task__dft',
-       # default='energy',
-        #validator=lambda x: x.upper(),
-        #glossary='Specify DFT task between: energy, gradient, and hessian. Default is energy.'))
-    
-   # options.add('nwchem',RottenOption(
-    #    keyword='task__sodft',
-     #   default='energy',
-      #  validator=lambda x: x.upper(),
-       # glossary='Specify SODFT task between: energy, gradient, and hessian. Default is energy.'))
-    
-    #options.add('nwchem', RottenOption(
-     #   keyword='task__tce',
-      #  default='energy',
-       # validator=lambda x: x.upper(),
-        #glossary='Specify TCE task between: energy, gradient, and hessian. Default is energy.'))
-    
-    options.add('nwchem',RottenOption(
-                keyword='task__tce__mp2',  #not sure if need here but need to distinguish between MP2/MP3/MP4 and TCE MBn theory
-                default='energy',
-                validator=lambda x: x.upper(),
-                glossary='Specify TCE MP2 task between: energy, gradient, and hessian. Default is energy.'))
-    
-    options.add('nwchem', RottenOption(
-         keyword='task__ccsd',
-         default='energy',
-         validator=lambda x: x.upper(),
-         glossary='Specify CCSD task between energy, gradient, and hessian. Default is energy.'))
-    
-    options.add('nwchem', RottenOption(
-         keyword='task__ccsd(t)',
-         default='energy',
-         validator=lambda x: x.upper(),
-         glossary='Specify CCSD(T) task between energy, gradient, and hessian. Default is energy.'))
-    
-    options.add('nwchem', RottenOption(
-        keyword='task__ccsdt',
-        default='energy',
-        validator=lambda x: x.upper(),
-        glossary='Specify CCSDT task between energy, gradient, and hessian. Default is energy.'))

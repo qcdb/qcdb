@@ -97,7 +97,7 @@ def harvest_outfile_pass(outtext):
 
         #Process DFT (RDFT, RODFT,UDFT, SODFT [SODFT for nwchem versions before nwchem 6.8])
         mobj = re.search(
-                r'^\s+' + r'Total DFT energy' + r'\s+=\s' + NUMBER + r's*$', outtext, re.MULTILINE)                
+                r'^\s+' + r'Total DFT energy' + NUMBER + r's*$', outtext, re.MULTILINE)                
                 #r'^\s+' + r'(?:Total DFT energy)' + r'\s+=\s' + NUMBER + r's*$', outtext, re.MULTILINE)
         if mobj:
             print('matched DFT')
@@ -199,25 +199,25 @@ def harvest_outfile_pass(outtext):
             print(mobj.group(2))
             print(mobj.group(4))
 
-            psivar['%s CORRELATION ENERGY' % (mobj.group(1))] = mobj.group(2)
-            psivar['%s TOTAL ENERGY' % (mobj.group(1))] = mobj.group(4)
+            psivar['CI%s CORRELATION ENERGY' % (mobj.group(1))] = mobj.group(2)
+            psivar['CI%s TOTAL ENERGY' % (mobj.group(1))] = mobj.group(4)
 
         #Process MP calculation through tce [dertype] command
-        mp_name = ''
-        mobj = re.search(
-            r'^\s+' + r'Iterations converged' + r'\s*' + r'^\s+' + r'MBPT' + r'(.*?)' +
-            r' correlation energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*' + r'^\s+' + r'(.*?)' +
-            r' total energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*$', outtext, re.MULTILINE)
+        #mp_name = ''
+        #mobj = re.search(
+        #    r'^\s+' + r'Iterations converged' + r'\s*' + r'^\s+' + r'MBPT' + r'(.*?)' +
+        #    r' correlation energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*' + r'^\s+' + r'(.*?)' +
+        #    r' total energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*$', outtext, re.MULTILINE)
 
-        if mobj:
-            mp_name = mobj.group(1)
-            print('matched %s' % (mobj.group(1)))
-            print(mobj.group(1))
-            print(mobj.group(2))
-            print(mobj.group(4))
+        #if mobj:
+        #    mp_name = mobj.group(1)
+        #    print('matched %s' % (mobj.group(1)))
+        #    print(mobj.group(1))
+        #    print(mobj.group(2))
+        #    print(mobj.group(4))
 
-            psivar['%s CORRELATION ENERGY' % (mobj.group(1))] = mobj.group(2)
-            psivar['%s TOTAL ENERGY' % (mobj.group(1))] = mobj.group(4)
+        #    psivar['MP%s CORRELATION ENERGY' % (mobj.group(1))] = mobj.group(2)
+        #    psivar['MP%s TOTAL ENERGY' % (mobj.group(1))] = mobj.group(4)
 
         #Process CC calculation through tce [dertype] command
         cc_name = ''
@@ -354,24 +354,6 @@ def harvest_outfile_pass(outtext):
             print(mobj)
             print("matched CR =")
 
-        #TCE- ROHF and UHF
-        # mobj = re.findall(
-        #    r'^\s+' + 'Total SCF energy' + '^\s+' + NUMBER +
-        #   r'^\s*' + r'^\s+' + r'CCSD correlation energy / hartree' + r'\s+' + NUMBER +
-        #  r'^\s*' + r'\s+' + r'CCSD total energy / hartree' + r'\s+'+ NUMBER + r's*$',
-        # outtext, re.MULTILINE)
-    # if mobj:
-    #    print(mobj) #print list
-    #   print('CCSD Energy = ')
-    #  psivar['HF TOTAL ENERGY'] = mobj.group(1)
-    # psivar['CCSD CORRELATION ENERGY'] = mobj.group(2)
-    #psivar['CCSD TOTAL ENERGY'] = mobj.group(3)
-
-    # No symmetry
-#                psivar ['EOM-%s ROOT 0 -> ROOT %d EXCITATION ENERGY' %(cc_name, nroot+1)] = \
-#                    ext_energy_list[nroot] #in hartree
-#                psivar ['EOM-%s ROOT 0 -> ROOT %d TOTAL ENERGY' %(cc_name, nroot+1)] = \
-#                    psivar['%s TOTAL ENERGY' %(cc_name)] + Decimal(ext_energy_list[nroot])
 
 #Process TDDFT
 #       1) Spin allowed
@@ -596,10 +578,10 @@ def harvest_outfile_pass(outtext):
         psivar['CURRENT CORRELATION ENERGY'] = psivar['%s CORRELATION ENERGY' % (ci_name)]
         psivar['CURRENT ENERGY'] = psivar['%s TOTAL ENERGY' % (ci_name)]
 
-    if ('%s TOTAL ENERGY' % (mp_name) in psivar and \
-       ('%s CORRELATION ENERGY' % (mp_name) in psivar)):
-        psivar['CURRENT CORRELATION ENERGY'] = psivar['%s CORRELATION ENERGY' % (mp_name)]
-        psivar['CURRENT ENERGY'] = psivar['%s TOTAL ENERGY' % (mp_name)]
+    #if ('%s TOTAL ENERGY' % (mp_name) in psivar and \
+    #   ('%s CORRELATION ENERGY' % (mp_name) in psivar)):
+    #    psivar['CURRENT CORRELATION ENERGY'] = psivar['%s CORRELATION ENERGY' % (mp_name)]
+    #    psivar['CURRENT ENERGY'] = psivar['%s TOTAL ENERGY' % (mp_name)]
 
     if ('EOM-%s TOTAL ENERGY' % (cc_name) in psivar) and \
        ('%s EXCITATION ENERGY' %(cc_name) in psivar):
@@ -1030,7 +1012,11 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         #ropts.require('NWCHEM', 'task__scf', runtyp, **kwgs)
         mdccmd = f'task scf {runtyp}\n\n'
     elif lowername == 'nwc-mp2':
-        mdccmd = f'task mp2 {runtyp}\n\n'
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp}\n\n'
+            ropts.require('NWCHEM', 'tce__mp2', True, **kwgs)
+        else:
+            mdccmd = f'task mp2 {runtyp} \n\n'
     #CC options
     elif lowername == 'nwc-ccsd':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
@@ -1050,6 +1036,25 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
             ropts.require('NWCHEM', 'tce__ccsd(t)', True, **kwgs)
         else:
             mdccmd = f'task ccsd(t) {runtyp}\n\n'
+    elif lowername == 'nwc-ccsdtq':
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp} \n\n'
+            ropts.require('NWCHEM', 'tce__ccsdtq', True, **kwgs)
+
+    elif lowername == 'nwc-cisd':
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp} \n\n'
+            ropts.require('NWCHEM', 'tce__cisd', True, **kwgs)
+    elif lowername == 'nwc-cisdt':
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp} \n\n'
+            ropts.require('NWCHEM', 'tce__cisdt', True, **kwgs)
+
+    elif lowername == 'nwc-eom-ccsd':
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp} \n\n'
+            ropts.require('NWCHEM', 'tce__ccsd', True, **kwgs)
+
     #DFT xc functionals
     elif lowername == 'nwc-pbe':
         ropts.require('NWCHEM', 'xc__pbe0', True, **kwgs)
@@ -1057,13 +1062,10 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
     elif lowername == 'nwc-b3lyp':
         ropts.require('NWCHEM', 'xc_b3lyp', True, **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
+
     elif lowername == 'nwc-tddft':
         mdccmd = f'task tddft {runtyp} \n\n'
-    elif lowername == 'nwc-ccsdtq':
-        mdccmd = f'task tce {runtyp} \n\n'
-    #elif lowername  == 'nwc-tce':
-    #    mdccmd = f'task tce {runtyp} \n\n'
-    #    istce = ropts.scroll['NWCHEM']['TCE__MODULE'].value
+
 
     else:
         raise ValidationError(f"""Requested NWChem computational method {lowername} is not available.""")
@@ -1071,249 +1073,189 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
     return mdccmd
 
 
-def muster_modelchem(name, dertype):
-    """Transform calculation method *name* and derivative level *dertype*
-    into options for NWChem. While deliberately requested pieces,
-    generally nwchem__nwchem_task ...  is set to complain if contradicted 
-    ('clobber' set to True), 
-    other 'recommended' settings, can be countermanded by keywords in input file
-    ('clobber' set to False). Occasionally, we want these pieces to actually
-    overcome keywords in input file ('superclobber' set to True). 
+#def muster_modelchem(name, dertype):
+#    """Transform calculation method *name* and derivative level *dertype*
+#    into options for NWChem. While deliberately requested pieces,
+#    generally nwchem__nwchem_task ...  is set to complain if contradicted 
+#    ('clobber' set to True), 
+#    other 'recommended' settings, can be countermanded by keywords in input file
+#    ('clobber' set to False). Occasionally, we want these pieces to actually
+#    overcome keywords in input file ('superclobber' set to True). 
+#
+#    """
 
-    """
+#    elif lowername == 'nwc-mcscf':
+#        if dertype == 0:
+#            options['NWCHEM']['NWCHEM_TASK_MCSCF']['value'] = 'energy'
+#        elif dertype == 1:
+#            options['NWCHEM']['NWCHEM_TASK_MCSCF']['value'] = 'gradient'
+#        elif dertype == 2:
+#            options['NWCHEM']['NWCHEM_TASK_MCSCF']['value'] = 'hessian'
+#
+#    elif lowername == 'nwc-dft':
+#        if dertype == 0:
+#            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'energy'
+#        elif dertype == 1:
+#            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'gradient'
+#        elif dertype == 2:
+#            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'hessian'
+#
+#    elif lowername == 'nwc-sodft':
+#        if dertype == 0:
+#            options['NWCHEM']['NWCHEM_TASK_SODFT']['value'] = 'energy'
+#        elif dertype == 1:
+#            options['NWCHEM']['NWCHEM_TASK_SODFT']['value'] = 'gradient'
+#        elif dertype == 2:
+#            options['NWCHEM']['NWCHEM_TASK_SODFT']['value'] = 'hessian'
+#
+#    elif lowername == 'nwc-mp2':
+#        if dertype == 0:
+#            options['NWCHEM']['NWCHEM_TASK_MP2']['value'] = 'energy'
+#        elif dertype == 1:
+#            options['NWCHEM']['NWCHEM_TASK_MP2']['value'] = 'gradient'
+#        elif dertype == 2:
+#            options['NWCHEM']['NWCHEM_TASK_MP2']['value'] = 'hessian'
+#
+#    elif lowername == 'nwc-mp3':
+#        if dertype == 0:
+#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
+#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp3'
+#        elif dertype == 1:
+#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
+#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp3'
+#        elif dertype == 2:
+#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
+#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp3'
+#
+#    elif lowername == 'nwc-mp4':
+#        if dertype == 0:
+#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
+#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp4'
+#        elif dertype == 1:
+#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
+#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp4'
+#        elif dertype == 2:
+#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
+#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp4'
+#
+#    elif lowername == 'nwc-eom-ccsd':
+#        if dertype == 0:
+#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
+#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsd'
+#        elif dertype == 1:
+#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
+#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsd'
+#        elif dertype == 2:
+#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
+#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsd'
+#
+#    elif lowername == 'nwc-eom-ccsdt':
+#        if dertype == 0:
+#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
+#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdt'
+#        elif dertype == 1:
+#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
+#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdt'
+#        elif dertype == 2:
+#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
+#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdt'
+#
+#    elif lowername == 'nwc-eom-ccsdtq':
+#        if dertype == 0:
+#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
+#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
+#        elif dertype == 1:
+#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
+#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
+#        elif dertype == 2:
+#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
+#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
+#
+#    elif lowername == 'nwc-lccd':
+#        if dertype == 0:
+#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
+#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'lccd'
+#        elif dertype == 1:
+#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
+#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'lccd'
+#        elif dertype == 2:
+#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
+#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'lccd'
+#    
+#    elif lowername == 'nwc-cisd':
+#        if dertype == 0:
+#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
+#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'cisd'
+#        elif dertype == 1:
+#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
+#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'cisd'
+#        elif dertype == 2:
+#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
+#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'cisd'
+#
+#    elif lowername in dft_functionals_list():
+#        if dertype == 0:
+#            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'energy'
+#            options['SCF']['DFT_FUNCTIONAL']['value'] = lowername[4:].upper()
+#            options['NWCHEM']['NWCHEM_DFT_XC']['value'] = muster_dft_functionals(options)
+#        elif dertype == 1:
+#            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'gradient'
+#            options['SCF']['DFT_FUNCTIONAL']['value'] = lowername[4:].upper()
+#            options['NWCHEM']['NWCHEM_DFT_XC']['value'] = muster_dft_functionals(options)
+#        elif dertype == 2:
+#            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'hessian'
+#            options['SCF']['DFT_FUNCTIONAL']['value'] = lowername[4:].upper()
+#            options['NWCHEM']['NWCHEM_DFT_XC']['value'] = muster_dft_functionals(options)
 
-    text = ''
-    lowername = name.lower()
-    options = defaultdict(lambda: defaultdict(dict))
+#    elif lowername == 'nwc-tddft':
+#        if dertype == 0:
+#            options['NWCHEM']['NWCHEM_TASK_TDDFT']['value'] = 'energy'
+#        elif dertype == 1:
+#            options['NWCHEM']['NWCHEM_TASK_TDDFT']['value'] = 'gradient'
+#        elif dertype == 2:
+#            options['NWCHEM']['NWCHEM_TASK_TDDFT']['value'] = 'hessian'
 
-    if lowername == 'nwchem':
-        pass
-    elif lowername == 'nwc-scf':
-        if dertype == 0:
-            options['NWCHEM']['NWCHEM_TASK_SCF']['value'] = 'energy'
-        elif dertype == 1:
-            options['NWCHEM']['NWCHEM_TASK_SCF']['value'] = 'gradient'
-        elif dertype == 2:
-            options['NWCHEM']['NWCHEM_TASK_SCF']['value'] = 'hessian'
-
-    elif lowername == 'nwc-hf':
-        if dertype == 0:
-            options['NWCHEM']['NWCHEM_TASK_SCF']['value'] = 'energy'
-        elif dertype == 1:
-            options['NWCHEM']['NWCHEM_TASK_SCF']['value'] = 'gradient'
-        elif dertype == 2:
-            options['NWCHEM']['NWCHEM_TASK_SCF']['value'] = 'hessian'
-
-    elif lowername == 'nwc-mcscf':
-        if dertype == 0:
-            options['NWCHEM']['NWCHEM_TASK_MCSCF']['value'] = 'energy'
-        elif dertype == 1:
-            options['NWCHEM']['NWCHEM_TASK_MCSCF']['value'] = 'gradient'
-        elif dertype == 2:
-            options['NWCHEM']['NWCHEM_TASK_MCSCF']['value'] = 'hessian'
-
-    elif lowername == 'nwc-dft':
-        if dertype == 0:
-            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'energy'
-        elif dertype == 1:
-            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'gradient'
-        elif dertype == 2:
-            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'hessian'
-
-    elif lowername == 'nwc-sodft':
-        if dertype == 0:
-            options['NWCHEM']['NWCHEM_TASK_SODFT']['value'] = 'energy'
-        elif dertype == 1:
-            options['NWCHEM']['NWCHEM_TASK_SODFT']['value'] = 'gradient'
-        elif dertype == 2:
-            options['NWCHEM']['NWCHEM_TASK_SODFT']['value'] = 'hessian'
-
-    elif lowername == 'nwc-mp2':
-        if dertype == 0:
-            options['NWCHEM']['NWCHEM_TASK_MP2']['value'] = 'energy'
-        elif dertype == 1:
-            options['NWCHEM']['NWCHEM_TASK_MP2']['value'] = 'gradient'
-        elif dertype == 2:
-            options['NWCHEM']['NWCHEM_TASK_MP2']['value'] = 'hessian'
-
-    elif lowername == 'nwc-tce-mp2':
-        if dertype == 0:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp2'
-        elif dertype == 1:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp2'
-        elif dertype == 2:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp2'
-
-    elif lowername == 'nwc-mp3':
-        if dertype == 0:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp3'
-        elif dertype == 1:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp3'
-        elif dertype == 2:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp3'
-
-    elif lowername == 'nwc-mp4':
-        if dertype == 0:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp4'
-        elif dertype == 1:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp4'
-        elif dertype == 2:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp4'
-
-    elif lowername == 'nwc-ccsd':
-        if dertype == 0:
-            options['NWCHEM']['NWCHEM_TASK_CCSD']['value'] = 'energy'
-        elif dertype == 1:
-            options['NWCHEM']['NWCHEM_TASK_CCSD']['value'] = 'gradient'
-        elif dertype == 2:
-            options['NWCHEM']['NWCHEM_TASK_CCSD']['value'] = 'hessian'
-
-    elif lowername == 'nwc-ccsd(t)':
-        if dertype == 0:
-            options['NWCHEM']['NWCHEM_TASK_CCSD(T)']['value'] = 'energy'
-        elif dertype == 1:
-            options['NWCHEM']['NWCHEM_TASK_CCSD(T)']['value'] = 'gradient'
-        elif dertype == 2:
-            options['NWCHEM']['NWCHEM_TASK_CCSD(T)']['value'] = 'hessian'
-
-    elif lowername == 'nwc-ccsdt':
-        if dertype == 0:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdt'
-        elif dertype == 1:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdt'
-        elif dertype == 2:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdt'
-
-    elif lowername == 'nwc-ccsdtq':
-        if dertype == 0:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
-        elif dertype == 1:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
-        elif dertype == 2:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
-
-    elif lowername == 'nwc-eom-ccsd':
-        if dertype == 0:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsd'
-        elif dertype == 1:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsd'
-        elif dertype == 2:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsd'
-
-    elif lowername == 'nwc-eom-ccsdt':
-        if dertype == 0:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdt'
-        elif dertype == 1:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdt'
-        elif dertype == 2:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdt'
-
-    elif lowername == 'nwc-eom-ccsdtq':
-        if dertype == 0:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
-        elif dertype == 1:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
-        elif dertype == 2:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
-
-    elif lowername == 'nwc-lccd':
-        if dertype == 0:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'lccd'
-        elif dertype == 1:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'lccd'
-        elif dertype == 2:
-            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'lccd'
-
-    elif lowername in dft_functionals_list():
-        if dertype == 0:
-            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'energy'
-            options['SCF']['DFT_FUNCTIONAL']['value'] = lowername[4:].upper()
-            options['NWCHEM']['NWCHEM_DFT_XC']['value'] = muster_dft_functionals(options)
-        elif dertype == 1:
-            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'gradient'
-            options['SCF']['DFT_FUNCTIONAL']['value'] = lowername[4:].upper()
-            options['NWCHEM']['NWCHEM_DFT_XC']['value'] = muster_dft_functionals(options)
-        elif dertype == 2:
-            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'hessian'
-            options['SCF']['DFT_FUNCTIONAL']['value'] = lowername[4:].upper()
-            options['NWCHEM']['NWCHEM_DFT_XC']['value'] = muster_dft_functionals(options)
-
-    elif lowername == 'nwc-tddft':
-        if dertype == 0:
-            options['NWCHEM']['NWCHEM_TASK_TDDFT']['value'] = 'energy'
-        elif dertype == 1:
-            options['NWCHEM']['NWCHEM_TASK_TDDFT']['value'] = 'gradient'
-        elif dertype == 2:
-            options['NWCHEM']['NWCHEM_TASK_TDDFT']['value'] = 'hessian'
-
-    else:
-        raise ValidationError("""Requested NWChem computational methods %s is not available.""" % (lowername))
+#    else:
+#        raise ValidationError("""Requested NWChem computational methods %s is not available.""" % (lowername))
 
     #Set clobbering
-    if 'NWCHEM_TASK_SCF' in options['NWCHEM']:
-        options['NWCHEM']['NWCHEM_TASK_SCF']['clobber'] = True
-        options['NWCHEM']['NWCHEM_TASK_SCF']['superclobber'] = True
+#    if 'NWCHEM_TASK_SCF' in options['NWCHEM']:
+#        options['NWCHEM']['NWCHEM_TASK_SCF']['clobber'] = True
+#        options['NWCHEM']['NWCHEM_TASK_SCF']['superclobber'] = True
 
-    if 'NWCHEM_TASK_MCSCF' in options['NWCHEM']:
-        options['NWCHEM']['NWCHEM_TASK_MCSCF']['clobber'] = True
-        options['NWCHEM']['NWCHEM_TASK_MCSCF']['superclobber'] = True
+#    if 'NWCHEM_TASK_MCSCF' in options['NWCHEM']:
+#        options['NWCHEM']['NWCHEM_TASK_MCSCF']['clobber'] = True
+#        options['NWCHEM']['NWCHEM_TASK_MCSCF']['superclobber'] = True
 
-    if 'NWCHEM_TASK_DFT' in options['NWCHEM']:
-        options['NWCHEM']['NWCHEM_TASK_DFT']['clobber'] = True
-        options['NWCHEM']['NWCHEM_TASK_DFT']['superclobber'] = True
+#    if 'NWCHEM_TASK_DFT' in options['NWCHEM']:
+#        options['NWCHEM']['NWCHEM_TASK_DFT']['clobber'] = True
+#        options['NWCHEM']['NWCHEM_TASK_DFT']['superclobber'] = True
 
-    if 'NWCHEM_TASK_SODFT' in options['NWCHEM']:
-        options['NWCHEM']['NWCHEM_TASK_SODFT']['clobber'] = True
-        options['NWCHEM']['NWCHEM_TASK_SODFT']['superclobber'] = True
+#    if 'NWCHEM_TASK_SODFT' in options['NWCHEM']:
+#        options['NWCHEM']['NWCHEM_TASK_SODFT']['clobber'] = True
+#        options['NWCHEM']['NWCHEM_TASK_SODFT']['superclobber'] = True
 
-    if 'NWCHEM_TASK_MP2' in options['NWCHEM']:
-        options['NWCHEM']['NWCHEM_TASK_MP2']['clobber'] = True
-        options['NWCHEM']['NWCHEM_TASK_MP2']['superclobber'] = True
+#    if 'NWCHEM_TASK_MP2' in options['NWCHEM']:
+#        options['NWCHEM']['NWCHEM_TASK_MP2']['clobber'] = True
+#        options['NWCHEM']['NWCHEM_TASK_MP2']['superclobber'] = True
 
-    if 'NWCHEM_TASK_CCSD' in options['NWCHEM']:
-        options['NWCHEM']['NWCHEM_TASK_CCSD']['clobber'] = True
-        options['NWCHEM']['NWCHEM_TASK_CCSD']['superclobber'] = True
+#    if 'NWCHEM_TASK_CCSD' in options['NWCHEM']:
+#        options['NWCHEM']['NWCHEM_TASK_CCSD']['clobber'] = True
+#        options['NWCHEM']['NWCHEM_TASK_CCSD']['superclobber'] = True
 
-    if 'NWCHEM_TASK_CCSD(T)' in options['NWCHEM']:
-        options['NWCHEM']['NWCHEM_TASK_CCSD(T)']['clobber'] = True
-        options['NWCHEM']['NWCHEM_TASK_CCSD(T)']['superclobber'] = True
+#    if 'NWCHEM_TASK_CCSD(T)' in options['NWCHEM']:
+#        options['NWCHEM']['NWCHEM_TASK_CCSD(T)']['clobber'] = True
+#        options['NWCHEM']['NWCHEM_TASK_CCSD(T)']['superclobber'] = True
 
-    if 'NWCHEM_TASK_TCE' in options['NWCHEM']:
-        options['NWCHEM']['NWCHEM_TASK_TCE']['clobber'] = True
-        options['NWCHEM']['NWCHEM_TASK_TCE']['superclobber'] = True
+#    if 'NWCHEM_TASK_TCE' in options['NWCHEM']:
+#        options['NWCHEM']['NWCHEM_TASK_TCE']['clobber'] = True
+#        options['NWCHEM']['NWCHEM_TASK_TCE']['superclobber'] = True
 
-    if 'NWCHEM_TASK_TDDFT' in options['NWCHEM']:
-        options['NWCHEM']['NWCHEM_TASK_TDDFT']['clobber'] = True
-        options['NWCHEM']['NWCHEM_TASK_TDDFT']['superclobber'] = True
+#    if 'NWCHEM_TASK_TDDFT' in options['NWCHEM']:
+#        options['NWCHEM']['NWCHEM_TASK_TDDFT']['clobber'] = True
+#        options['NWCHEM']['NWCHEM_TASK_TDDFT']['superclobber'] = True
 
-    return text, options
+#    return text, options
 
 
 def harvest(p4Mol, nwout, **largs):  #check orientation and scratch files
@@ -1359,8 +1301,10 @@ def nwchem_list():
     val.append('nwc-ccsdt')
     val.append('nwc-ccsdtq')
     val.append('nwc-ccsd(t)')
+    val.append('nwc-cisd')
+    val.append('nwc-cisdt')
+    val.append('nwc-cisdtq')
     val.append('nwc-lccd')
-    val.append('nwc-tce-mp2')
     val.append('nwc-tce-mp3')
     val.append('nwc-tce-mp4')
     val.append('nwc-eom-ccsd')
