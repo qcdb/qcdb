@@ -149,13 +149,7 @@ def harvest_outfile_pass(outtext):
             print('matched scs-mp2')
             psivar['MP2 SAME-SPIN CORRELATION ENERGY'] = Decimal(mobj.group(1)) * Decimal(mobj.group(2))
             psivar['MP2 OPPOSITE-SPIN CORRELATION ENERGY'] = Decimal(mobj.group(3)) * Decimal(mobj.group(4))
-            #psivar['CUSTOM SCS-MP2 CORRELATION ENERGY'] = 0.5 * (float(psivar['MP2 SAME-SPIN CORRELATION ENERGY']) +
-                                                                # float(psivar['MP2 OPPOSITE-SPIN CORRELATION ENERGY']))
-           # psivar['CUSTOM SCS-MP2 TOTAL ENERGY'] = float(psivar['CUSTOM SCS-MP2 CORRELATION ENERGY']) + float(
-            #    mobj.group(6))
-            #psivar['SCS-MP2 CORRELATION ENERGY'] = mobj.group(5)
-            #psivar['SCS-MP2 TOTAL ENERGY'] = mobj.group(6)
-
+            
             print(mobj.group(1))  #ess
             print(mobj.group(2))  #fss
             print(mobj.group(3))  #eos
@@ -201,23 +195,6 @@ def harvest_outfile_pass(outtext):
 
             psivar['CI%s CORRELATION ENERGY' % (mobj.group(1))] = mobj.group(2)
             psivar['CI%s TOTAL ENERGY' % (mobj.group(1))] = mobj.group(4)
-
-        #Process MP calculation through tce [dertype] command
-        #mp_name = ''
-        #mobj = re.search(
-        #    r'^\s+' + r'Iterations converged' + r'\s*' + r'^\s+' + r'MBPT' + r'(.*?)' +
-        #    r' correlation energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*' + r'^\s+' + r'(.*?)' +
-        #    r' total energy / hartree' + r'\s+=\s*' + NUMBER + r'\s*$', outtext, re.MULTILINE)
-
-        #if mobj:
-        #    mp_name = mobj.group(1)
-        #    print('matched %s' % (mobj.group(1)))
-        #    print(mobj.group(1))
-        #    print(mobj.group(2))
-        #    print(mobj.group(4))
-
-        #    psivar['MP%s CORRELATION ENERGY' % (mobj.group(1))] = mobj.group(2)
-        #    psivar['MP%s TOTAL ENERGY' % (mobj.group(1))] = mobj.group(4)
 
         #Process CC calculation through tce [dertype] command
         cc_name = ''
@@ -295,8 +272,8 @@ def harvest_outfile_pass(outtext):
             psivar['SCS-CCSD TOTAL ENERGY'] = mobj.group(6)
             psivar['CUSTOM SCS-CCSD CORRELATION ENERGY'] = 0.5 * (float(
                 psivar['CCSD SAME-SPIN CORRELATION ENERGY']) + float(psivar['CCSD OPPOSITE-SPIN CORRELATION ENERGY']))
-            psivar['CUSTOM SCS-CCSD TOTAL ENERGY'] = float(mobj.group(6)) + float(
-                psivar['CUSTOM SCS-CCSD CORRERLATION ENERGY'])
+            #psivar['CUSTOM SCS-CCSD TOTAL ENERGY'] = float(mobj.group(6)) + float(
+            #    psivar['CUSTOM SCS-CCSD CORRERLATION ENERGY'])
 
         #Process EOM-[cc_name] #nwchem_tce_dipole = false
         # Parsed information: each symmetry, root excitation energy in eV and total energy in hartree
@@ -1049,6 +1026,10 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp} \n\n'
             ropts.require('NWCHEM', 'tce__cisdt', True, **kwgs)
+    elif lowername == 'nwc-cisdtq':
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp} \n\n'
+            ropts.require('NWCHEM', 'tce__cisdtq', True, **kwgs)
 
     elif lowername == 'nwc-eom-ccsd':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
