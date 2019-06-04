@@ -163,10 +163,66 @@ def load_nwchem_defaults(options):
     options.add(
         'nwchem',
         RottenOption(
+            keyword= 'scf__singlet',
+            default= True,
+            validator= parsers.boolean,
+            glossary= 'Keyword to specify number of singly occupied orbitals for calculation. Singlet refers to closed shell and is the default.'))
+    options.add('nwchem', 
+        RottenOption(
+            keyword= 'scf__doublet',
+            default= False,
+            validator= parsers.boolean,
+            glossary= 'Specifies one singly occupied orbital.'))
+    
+    options.add('nwchem',
+        RottenOption(
+            keyword= 'scf__triplet',
+            default= False,
+            validator= parsers.boolean,
+            glossary= 'Specifies two singly occupied orbitals.'))
+
+    options.add('nwchem',
+        RottenOption(
+            keyword= 'scf__quartet',
+            default= False,
+            validator= parsers.boolean,
+            glossary= 'Specifies three singly occupied orbitals.'))
+
+    options.add('nwchem',
+        RottenOption(
+            keyword= 'scf__quintet',
+            default= False,
+            validator= parsers.boolean,
+            glossary= 'Specifies four singly occupied orbitals.'))
+
+    options.add('nwchem',
+        RottenOption(
+            keyword= 'scf__sextet',
+            default= False,
+            validator= parsers.boolean,
+            glossary= 'Specifies five singly occupied orbitals.'))
+
+    options.add('nwchem',
+        RottenOption(
+            keyword= 'scf__septet',
+            default= False,
+            validator= parsers.boolean,
+            glossary= 'Specifies six singly occupied orbitals.'))
+
+    options.add('nwchem',
+        RottenOption(
+            keyword= 'scf__octet',
+            default= False,
+            validator= parsers.boolean,
+            glossary= 'Specifies seven singly occupied orbitals.'))
+    
+    options.add(
+        'nwchem',
+        RottenOption(
             keyword='scf__nopen',
             default=1,
             validator=parsers.nonnegative_integer,
-            glossary='Specifies the number of open shells in wave function.'))
+            glossary='Specifies the number of open shells in wave function, must be used if the number of singly occupied orbitals is more than seven.'))
 
     options.add(
         'nwchem',
