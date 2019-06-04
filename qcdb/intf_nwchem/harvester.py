@@ -196,7 +196,7 @@ def harvest_outfile_pass(outtext):
             psivar['CI%s CORRELATION ENERGY' % (mobj.group(1))] = mobj.group(2)
             psivar['CI%s TOTAL ENERGY' % (mobj.group(1))] = mobj.group(4)
 
-        #Process CC calculation through tce [dertype] command
+        #Process calculation through tce [dertype] command
         cc_name = ''
         mobj = re.search(
             r'^\s+' + r'Iterations converged' + r'\s*' + r'^\s+' + r'(.*?)' + r' correlation energy / hartree' +
@@ -212,7 +212,15 @@ def harvest_outfile_pass(outtext):
 
             psivar['%s CORRELATION ENERGY' % (mobj.group(1))] = mobj.group(2)
             psivar['%s TOTAL ENERGY' % (mobj.group(1))] = mobj.group(4)
-
+            if mobj.group(1) == 'MBPT(2)':
+                psivar['MP2 TOTAL ENERGY'] = mobj.group(4)
+                psivar['MP2 CORRELATION ENERGY'] = mobj.group(2)
+            elif mobj.group(1) == 'MBPT(3)':
+                psivar['MP3 TOTAL ENERGY'] = mobj.group(4)
+                psivar['MP3 CORRELATION ENERGY'] = mobj.group(2)
+            elif mobj.group(1) == 'MBPT(4)':
+                psivar['MP4 TOTAL ENERGY'] = mobj.group(4)
+                psivar['MP4 CORRELATION ENERGY'] = mobj.group(2)
         # Process CC '()' correction part through tce [dertype] command
         mobj = re.search(
             r'^\s+' + cc_name + r'\(' + r'(.*?)' + r'\)' + r'\s+' + r'correction energy / hartree' + r'\s+=\s*' +
