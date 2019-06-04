@@ -805,14 +805,14 @@ qcvardefs['DMRG-CASPT2 TOTAL ENERGY'] = {
 #
 #   The total electronic energy [H] for the local CCSD level of theory.
 
-qcvardefs['MP2 TOTAL ENERGY'] =  {
+qcvardefs['MP2 TOTAL ENERGY'] = qcvardefs['MBPT(2) TOTAL ENERGY'] =  {
     'units': 'Eh',
     'glossary': r"""
    The total electronic energy
    for the MP2 level of theory.
 """}
 
-qcvardefs['MP2 CORRELATION ENERGY'] = {
+qcvardefs['MP2 CORRELATION ENERGY'] = qcvardefs['MBPT(2) CORRELATION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    The correlation energy component
@@ -1036,25 +1036,25 @@ qcvardefs['MP2.5 CORRELATION ENERGY'] = {
 #   for the labeled |MollerPlesset| perturbation theory level.
 #   *n* is MP perturbation order.
 
-qcvardefs['MP3 TOTAL ENERGY'] = {
+qcvardefs['MP3 TOTAL ENERGY'] = qcvardefs['MBPT(3) TOTAL ENERGY'] =  {
     'units': 'Eh',
     'glossary': r"""
    The total electronic energy for 3-order Perturbation theory.
 """}
 
-qcvardefs['MP3 CORRELATION ENERGY'] = {
+qcvardefs['MP3 CORRELATION ENERGY'] = qcvardefs['MBPT(3) CORRELATION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    The correlation energy component for 3-order Perturbation theory.
 """}
 
-qcvardefs['MP4 TOTAL ENERGY'] = {
+qcvardefs['MP4 TOTAL ENERGY'] = qcvardefs['MBPT(4) TOTAL ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    The total electronic energy for 4-order Perturbation theory.
 """}
 
-qcvardefs['MP4 CORRELATION ENERGY'] = {
+qcvardefs['MP4 CORRELATION ENERGY'] = qcvardefs['MBPT(4) CORRELATION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    The correlation energy component for 4-order Perturbation theory.

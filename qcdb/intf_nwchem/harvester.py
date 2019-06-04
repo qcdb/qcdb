@@ -198,29 +198,20 @@ def harvest_outfile_pass(outtext):
 
         #Process calculation through tce [dertype] command
         cc_name = ''
-        mobj = re.search(
+        mobj = re.findall(
             r'^\s+' + r'Iterations converged' + r'\s*' + r'^\s+' + r'(.*?)' + r' correlation energy / hartree' +
             r'\s+=\s*' + NUMBER + r'\s*' + r'^\s+' + r'(.*?)' + r' total energy / hartree' + r'\s+=\s*' + NUMBER +
-            r'\s*$', outtext, re.MULTILINE)
-
+            r'\s*$', outtext, re.MULTILINE | re.DOTALL) 
+        
+        #mobj now lists, not groups
         if mobj:
-            cc_name = mobj.group(1)
-            print('matched %s' % (mobj.group(1)))
-            print(mobj.group(1))  #cc_name
-            print(mobj.group(2))  #cc_name corl. energy
-            print(mobj.group(4))  #cc_name total energy
+            for mobj_list in mobj:
+               print('matched %s' % mobj_list[0])
+               print(mobj_list)
+               psivar['%s CORRELATION ENERGY' % mobj_list[0]] = mobj_list[1]
+               psivar['%s TOTAL ENERGY' % mobj_list[2]] = mobj_list[3]
+            
 
-            psivar['%s CORRELATION ENERGY' % (mobj.group(1))] = mobj.group(2)
-            psivar['%s TOTAL ENERGY' % (mobj.group(1))] = mobj.group(4)
-            if mobj.group(1) == 'MBPT(2)':
-                psivar['MP2 TOTAL ENERGY'] = mobj.group(4)
-                psivar['MP2 CORRELATION ENERGY'] = mobj.group(2)
-            elif mobj.group(1) == 'MBPT(3)':
-                psivar['MP3 TOTAL ENERGY'] = mobj.group(4)
-                psivar['MP3 CORRELATION ENERGY'] = mobj.group(2)
-            elif mobj.group(1) == 'MBPT(4)':
-                psivar['MP4 TOTAL ENERGY'] = mobj.group(4)
-                psivar['MP4 CORRELATION ENERGY'] = mobj.group(2)
         # Process CC '()' correction part through tce [dertype] command
         mobj = re.search(
             r'^\s+' + cc_name + r'\(' + r'(.*?)' + r'\)' + r'\s+' + r'correction energy / hartree' + r'\s+=\s*' +
@@ -996,12 +987,21 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
     elif lowername in ['nwc-scf', 'nwc-hf']:
         #ropts.require('NWCHEM', 'task__scf', runtyp, **kwgs)
         mdccmd = f'task scf {runtyp}\n\n'
+    #MPn options
     elif lowername == 'nwc-mp2':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp}\n\n'
             ropts.require('NWCHEM', 'tce__mp2', True, **kwgs)
         else:
             mdccmd = f'task mp2 {runtyp} \n\n'
+    elif lowername == 'nwc-mp3':
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp}\n\n'
+            ropts.require('NWCHEM', 'tce__mp3', True, **kwgs)
+    elif lowername == 'nwc-mp4':    
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp}\n\n'
+            ropts.require('NWCHEM', 'tce__mp4', True, **kwgs)
     #CC options
     elif lowername == 'nwc-ccsd':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
@@ -1025,7 +1025,7 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp} \n\n'
             ropts.require('NWCHEM', 'tce__ccsdtq', True, **kwgs)
-
+    #TCE only opts
     elif lowername == 'nwc-cisd':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp} \n\n'
@@ -1097,36 +1097,6 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
 #        elif dertype == 2:
 #            options['NWCHEM']['NWCHEM_TASK_SODFT']['value'] = 'hessian'
 #
-#    elif lowername == 'nwc-mp2':
-#        if dertype == 0:
-#            options['NWCHEM']['NWCHEM_TASK_MP2']['value'] = 'energy'
-#        elif dertype == 1:
-#            options['NWCHEM']['NWCHEM_TASK_MP2']['value'] = 'gradient'
-#        elif dertype == 2:
-#            options['NWCHEM']['NWCHEM_TASK_MP2']['value'] = 'hessian'
-#
-#    elif lowername == 'nwc-mp3':
-#        if dertype == 0:
-#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp3'
-#        elif dertype == 1:
-#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp3'
-#        elif dertype == 2:
-#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp3'
-#
-#    elif lowername == 'nwc-mp4':
-#        if dertype == 0:
-#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp4'
-#        elif dertype == 1:
-#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp4'
-#        elif dertype == 2:
-#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'mp4'
-#
 #    elif lowername == 'nwc-eom-ccsd':
 #        if dertype == 0:
 #            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
@@ -1171,17 +1141,6 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
 #            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
 #            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'lccd'
 #    
-#    elif lowername == 'nwc-cisd':
-#        if dertype == 0:
-#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'cisd'
-#        elif dertype == 1:
-#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'cisd'
-#        elif dertype == 2:
-#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'cisd'
-#
 #    elif lowername in dft_functionals_list():
 #        if dertype == 0:
 #            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'energy'
@@ -1285,6 +1244,8 @@ def nwchem_list():
     val.append('nwc-scf')
     val.append('nwc-hf')
     val.append('nwc-mp2')
+    val.append('nwc-mp3')
+    val.append('nwc-mp4')
     val.append('nwc-dft')
     val.append('nwc-ccsd')
     val.append('nwc-ccsdt')
