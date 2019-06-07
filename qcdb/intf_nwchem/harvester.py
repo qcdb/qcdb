@@ -24,7 +24,7 @@ def harvest_output(outtext):
     pass_psivar = []
     pass_coord = []
     pass_grad = []
-
+    print(pass_coord)
     for outpass in re.split(r' Line search:', outtext, re.MULTILINE):
         psivar, nwcoord, nwgrad, version, error = harvest_outfile_pass(outpass)
         pass_psivar.append(psivar)
@@ -33,9 +33,9 @@ def harvest_output(outtext):
 
 
 #       print ('\n\nXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n')
-#       print (outpass)
-#       print (psivar, nwcoord, nwgrad)
-#       print (psivar, nwgrad)
+        #print (outpass)
+        #print (psivar, nwcoord, nwgrad)
+        #print (psivar, nwgrad)
 #       print ('\n\nxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n')
 
     retindx = -1 if pass_coord[-1] else -2
@@ -51,7 +51,6 @@ def harvest_output(outtext):
     #       print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
 
     return pass_psivar[retindx], pass_coord[retindx], pass_grad[retindx], version, error
-
 
 def harvest_outfile_pass(outtext):
     """Function to read NWChem output file *outtext* and parse important 
@@ -97,7 +96,7 @@ def harvest_outfile_pass(outtext):
 
         #Process DFT (RDFT, RODFT,UDFT, SODFT [SODFT for nwchem versions before nwchem 6.8])
         mobj = re.search(
-                r'^\s+' + r'Total DFT energy' + NUMBER + r's*$', outtext, re.MULTILINE)                
+                r'^\s+' + r'(?:Total DFT energy)' + NUMBER + r's*$', outtext, re.MULTILINE)                
                 #r'^\s+' + r'(?:Total DFT energy)' + r'\s+=\s' + NUMBER + r's*$', outtext, re.MULTILINE)
         if mobj:
             print('matched DFT')
@@ -116,11 +115,10 @@ def harvest_outfile_pass(outtext):
             psivar['NUCLEAR REPULSION ENERGY'] = mobj.group(2)
 
         #MCSCF
-        mobj = re.search(r'^\s+' + r'Total SCF energy' + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'One-electron energy' +
+        mobj = re.findall(r'^\s+' + r'Total SCF energy' + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'One-electron energy' +
                          r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'Two-electron energy' + r'\s+' + NUMBER + r'\s*' +
-                         r'^\s+' + r'The MCSCF is already converged' + r'\s*'
-                         r'^\s+' + r'Total MCSCF energy' + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE)  #MCSCF
-        if mobj:
+                         r'^\s+' + r'Total MCSCF energy' + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE | re.DOTALL)  #MCSCF
+        if mobj:# Need to change to accommodate find all instances
             print('matched mcscf')  #MCSCF energy calculation
             psivar['HF TOTAL ENERGY'] = mobj.group(1)
             psivar['ONE-ELECTRON ENERGY'] = mobj.group(2)
@@ -179,22 +177,9 @@ def harvest_outfile_pass(outtext):
             psivar['MP2 CORRELATION ENERGY'] = mobj.group(2)
             psivar['MP2 TOTAL ENERGY'] = mobj.group(3)
 
-        #Process CI calculation through tce [dertype] command
-        ci_name = ''
-        mobj = re.search(
-            r'^\s+' + r'Iterations converged' + r'\s*' + r'^\s+' + r'CI' + r'(.*?)' + r' correlation energy / hartree'
-            + r'\s+=\s*' + NUMBER + r'\s*' + r'^\s+' + r'(.*?)' + r' total energy / hartree' + r'\s+=\s*' + NUMBER +
-            r'\s*$', outtext, re.MULTILINE)
+        #4) Direct MP2
 
-        if mobj:
-            ci_name = mobj.group(1)
-            print('matched %s' % (mobj.group(1)))
-            print(mobj.group(1))
-            print(mobj.group(2))
-            print(mobj.group(4))
-
-            psivar['CI%s CORRELATION ENERGY' % (mobj.group(1))] = mobj.group(2)
-            psivar['CI%s TOTAL ENERGY' % (mobj.group(1))] = mobj.group(4)
+        #5) RI-MP2
 
         #Process calculation through tce [dertype] command
         cc_name = ''
@@ -445,8 +430,7 @@ def harvest_outfile_pass(outtext):
 
             #dinky molecule w/ charge and multiplicity
             if mobj.group(1) == 'angstroms':
-                molxyz = '%d \n%d %d tag\n' % (len(mobj.group(2).splitlines()), out_charge, out_mult
-                                               )  # unit = angstrom
+                molxyz = '%d \n%d %d tag\n' % (len(mobj.group(2).splitlines()), out_charge, out_mult)  # unit = angstrom
                 for line in mobj.group(2).splitlines():
                     lline = line.split()
                     molxyz += '%s %16s %16s %16s\n' % (lline[-5], lline[-3], lline[-2], lline[-1])
@@ -1003,6 +987,10 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
             mdccmd = f'task tce {runtyp}\n\n'
             ropts.require('NWCHEM', 'tce__mp4', True, **kwgs)
     #CC options
+    elif lowername == 'nwc-ccd':
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp} \n\n'
+            ropts.require('NWCHEM', 'tce__ccd', True, **kwgs)
     elif lowername == 'nwc-ccsd':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp}\n\n'
@@ -1025,6 +1013,17 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp} \n\n'
             ropts.require('NWCHEM', 'tce__ccsdtq', True, **kwgs)
+    elif lowername =='nwc-eom-ccsd':
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp} \n\n'
+            ropts.require('NWCHEM', 'tce__ccsd', True, **kwgs)
+            ropts.suggest('NWCHEM', 'tce__nroots', 1, **kwgs)
+    #elif lowername == 'nwc-eom-ccsdt':
+    #    if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+    #        ropts.require('NWCHEM', 'tce__ccsdt, True, ** kwgs)
+
+   # elif lowername == 'nwc-ccsd_act':
+    
     #TCE only opts
     elif lowername == 'nwc-cisd':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
@@ -1038,12 +1037,25 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp} \n\n'
             ropts.require('NWCHEM', 'tce__cisdtq', True, **kwgs)
+    elif lowername == 'nwc-qcisd':
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp} \n\n'
+            ropts.require('NWCHEM', 'tce__qcisd', True, **kwgs)
 
     elif lowername == 'nwc-eom-ccsd':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp} \n\n'
             ropts.require('NWCHEM', 'tce__ccsd', True, **kwgs)
 
+    elif lowername == 'nwc-lccd':
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp} \n\n'
+            ropts.require('NWCHEM', 'tce__lccd', True, **kwgs)
+    elif lowername == 'nwc-lccsd':
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp} \n\n'
+            ropts.require('NWCHEM', 'tce__lccsd', True, **kwgs)
+        
     #DFT xc functionals
     elif lowername == 'nwc-pbe':
         ropts.require('NWCHEM', 'xc__pbe0', True, **kwgs)
@@ -1130,17 +1142,6 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
 #            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
 #            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
 #
-#    elif lowername == 'nwc-lccd':
-#        if dertype == 0:
-#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'energy'
-#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'lccd'
-#        elif dertype == 1:
-#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'gradient'
-#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'lccd'
-#        elif dertype == 2:
-#            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
-#            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'lccd'
-#    
 #    elif lowername in dft_functionals_list():
 #        if dertype == 0:
 #            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'energy'
@@ -1236,7 +1237,7 @@ def harvest(p4Mol, nwout, **largs):  #check orientation and scratch files
 
 def nwchem_list():
     """Return an array of NWChem methods with energies. Appended
-    to procedures['energy'].
+    to procedures[qcdb.energy()].
 
     """
     val = []
@@ -1250,13 +1251,13 @@ def nwchem_list():
     val.append('nwc-ccsd')
     val.append('nwc-ccsdt')
     val.append('nwc-ccsdtq')
+    val.append('nwc-ccsd[t]')
     val.append('nwc-ccsd(t)')
     val.append('nwc-cisd')
     val.append('nwc-cisdt')
     val.append('nwc-cisdtq')
     val.append('nwc-lccd')
-    val.append('nwc-tce-mp3')
-    val.append('nwc-tce-mp4')
+    val.append('nwc-lccsd')
     val.append('nwc-eom-ccsd')
     val.append('nwc-eom-ccsdt')
     val.append('nwc-eom-ccsdtq')
