@@ -313,7 +313,7 @@ def harvest_outfile_pass(outtext):
             r'CR-' + r'(w+)' + r'\s+' + r'excitation energy \(eV\)' + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE)
         if mobj:
             print(mobj)
-            print("matched CR =")
+            print("matched CR")
 
 
 #Process TDDFT
@@ -532,16 +532,6 @@ def harvest_outfile_pass(outtext):
     if 'CCSD(T) TOTAL ENERGY' in psivar and 'CCSD(T) CORRELATION ENERGY' in psivar:
         psivar['CURRENT CORRELATION ENERGY'] = psivar['CCSD(T) CORRELATION ENERGY']
         psivar['CURRENT ENERGY'] = psivar['CCSD(T) TOTAL ENERGY']
-
-    if ('%s TOTAL ENERGY' % (ci_name) in psivar and \
-       ('%s CORRELATION ENERGY' % (ci_name) in psivar)):
-        psivar['CURRENT CORRELATION ENERGY'] = psivar['%s CORRELATION ENERGY' % (ci_name)]
-        psivar['CURRENT ENERGY'] = psivar['%s TOTAL ENERGY' % (ci_name)]
-
-    #if ('%s TOTAL ENERGY' % (mp_name) in psivar and \
-    #   ('%s CORRELATION ENERGY' % (mp_name) in psivar)):
-    #    psivar['CURRENT CORRELATION ENERGY'] = psivar['%s CORRELATION ENERGY' % (mp_name)]
-    #    psivar['CURRENT ENERGY'] = psivar['%s TOTAL ENERGY' % (mp_name)]
 
     if ('EOM-%s TOTAL ENERGY' % (cc_name) in psivar) and \
        ('%s EXCITATION ENERGY' %(cc_name) in psivar):
@@ -965,12 +955,22 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
               #'properties': 'prop',
              }[dertype]
 
+    theory = {0: 'scf',
+              1: 'dft',
+              }[dertype] #temp, may need to change only two options
+
     if lowername == 'nwc-nwchem':
         pass
 
     elif lowername in ['nwc-scf', 'nwc-hf']:
         #ropts.require('NWCHEM', 'task__scf', runtyp, **kwgs)
         mdccmd = f'task scf {runtyp}\n\n'
+    
+    #property
+    elif lowername == 'nwc-property':
+        mdccmd = f'task {theory} property \n\n'
+        #ropts.suggest('NWCHEM', task__scf', theory, **kwgs)
+
     #MPn options
     elif lowername == 'nwc-mp2':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
@@ -1017,7 +1017,7 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp} \n\n'
             ropts.require('NWCHEM', 'tce__ccsd', True, **kwgs)
-            ropts.suggest('NWCHEM', 'tce__nroots', 1, **kwgs)
+            ropts.suggest('NWCHEM', 'tce__nroots', 4, **kwgs)
     #elif lowername == 'nwc-eom-ccsdt':
     #    if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
     #        ropts.require('NWCHEM', 'tce__ccsdt, True, ** kwgs)
@@ -1042,11 +1042,6 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
             mdccmd = f'task tce {runtyp} \n\n'
             ropts.require('NWCHEM', 'tce__qcisd', True, **kwgs)
 
-    elif lowername == 'nwc-eom-ccsd':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            mdccmd = f'task tce {runtyp} \n\n'
-            ropts.require('NWCHEM', 'tce__ccsd', True, **kwgs)
-
     elif lowername == 'nwc-lccd':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp} \n\n'
@@ -1055,7 +1050,24 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp} \n\n'
             ropts.require('NWCHEM', 'tce__lccsd', True, **kwgs)
-        
+    elif lowername == 'nwc-cc2':
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp} \n\n'
+            ropts.require('NWCHEM', 'tce__cc2', True, **kwgs)
+    elif lowername == 'nwc-lr-ccsd':
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp} \n\n'
+            ropts.require('NWCHEM', 'tce__lr-ccsd', True, **kwgs)
+    elif lowername == 'nwc-ccsdta':
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp} \n\n'
+            ropts.require('NWCHEM', 'tce__ccsdta', True, **kwgs)
+    elif lowername == 'nwc-eaccsd':
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp} \n\n'
+            ropts.require('NWCHEM', 'tce__eaccsd', True, **kwgs)
+            ropts.suggest('NWCHEM', 'tce__nroots', 4, **kwgs)
+
     #DFT xc functionals
     elif lowername == 'nwc-pbe':
         ropts.require('NWCHEM', 'xc__pbe0', True, **kwgs)
@@ -1248,11 +1260,16 @@ def nwchem_list():
     val.append('nwc-mp3')
     val.append('nwc-mp4')
     val.append('nwc-dft')
+    val.append('nwc-cc2')
     val.append('nwc-ccsd')
     val.append('nwc-ccsdt')
     val.append('nwc-ccsdtq')
     val.append('nwc-ccsd[t]')
     val.append('nwc-ccsd(t)')
+    val.append('nwc-eaccsd')
+    val.append('nwc-eom-ccsd')
+    val.append('nwc-eom-ccsdt')
+    val.append('nwc-eom-ccsdtq')
     val.append('nwc-cisd')
     val.append('nwc-cisdt')
     val.append('nwc-cisdtq')
@@ -1283,9 +1300,6 @@ def nwchem_gradient_list():
     val.append('nwc-ccsdtq')
     val.append('nwc-ccsd(t)')
 #    val.append('nwc-lccd')
-#    val.append('nwc-tce-mp2')
-#    val.append('nwc-tce-mp3')
-#    val.append('nwc-tce-mp4')
 #    val.append('nwc-eom-ccsd')
 #    val.append('nwc-eom-ccsdt')
 #    val.append('nwc-eom-ccsdtq')

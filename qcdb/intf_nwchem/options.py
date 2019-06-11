@@ -133,7 +133,73 @@ def load_nwchem_defaults(options):
             default='',
             validator=lambda x: x.lower(),
             glossary='This is just a dummy so can throw an error. Only basis-passing implemented at present.'))
+    #Property block
+    options.add('nwchem', RottenOption(
+        keyword= 'property__all',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'All keyword under property generates information about all currently available properties in NWCHEM.'))
+    
+    options.add('nwchem', RottenOption(
+        keyword= 'property__nbofile',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Creates an input file to be used as input to the stand-alone NBO code. All other properties are calculated upon request.'))
 
+    options.add('nwchem', RottenOption(
+        keyword= 'property__dipole',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Determine dipole moment of molecule.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'property__quadrupole',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Determine quadrople moment'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'property__octupole',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Determine octupole moment'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'property__mulliken',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Mulliken population analysis and bond order analysis'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'property__esp',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Electrostatic potential (diamagnetic shielding) at nuclei'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'property__efield',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Electric field at nuclei'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'property__efieldgrad',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Electric field gradient at nuclei'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'property__electrondensity',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Electron and spin density at nuclei'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'property__hyperfine',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'NMR hyperfine coupling (Fermi-Contact and Spin-Dipole expectation values'))
+    #Property adds: shielding, spinspin
 
     #SCF block
     options.add(
