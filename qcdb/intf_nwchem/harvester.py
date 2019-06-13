@@ -96,13 +96,13 @@ def harvest_outfile_pass(outtext):
 
         #Process DFT (RDFT, RODFT,UDFT, SODFT [SODFT for nwchem versions before nwchem 6.8])
         mobj = re.search(
-                r'^\s+' + r'(?:Total DFT energy)' + NUMBER + r's*$', outtext, re.MULTILINE)                
-                #r'^\s+' + r'(?:Total DFT energy)' + r'\s+=\s' + NUMBER + r's*$', outtext, re.MULTILINE)
+                r'^\s+' + r'Total DFT energy' + r'\s' + NUMBER + r'\s*$',
+                outtext, re.MULTILINE)
         if mobj:
+            process(mobj)
             print('matched DFT')
             print (mobj.group(1))
             psivar['DFT TOTAL ENERGY'] = mobj.group(1)
-        #    psivar['NUCLEAR REPULSION ENERGY'] = mobj.group(2)
 
         #SODFT [for nwchem 6.8+]
         mobj = re.search(
@@ -115,9 +115,15 @@ def harvest_outfile_pass(outtext):
             psivar['NUCLEAR REPULSION ENERGY'] = mobj.group(2)
 
         #MCSCF
-        mobj = re.findall(r'^\s+' + r'Total SCF energy' + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'One-electron energy' +
-                         r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'Two-electron energy' + r'\s+' + NUMBER + r'\s*' +
-                         r'^\s+' + r'Total MCSCF energy' + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE | re.DOTALL)  #MCSCF
+        sym = []
+        mobj = re.findall(
+                r'^\s+' + r'Total SCF energy' + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'One-electron energy' +
+                r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'Two-electron energy' + r'\s+' + NUMBER + r'\s*' +
+                r'^\s+' + r'Total MCSCF energy' + r'\s+' + NUMBER + r'\s*$', 
+                outtext, re.MULTILINE | re.DOTALL)
+
+        #for mobj_list in mobj:
+
         if mobj:# Need to change to accommodate find all instances
             print('matched mcscf')  #MCSCF energy calculation
             psivar['HF TOTAL ENERGY'] = mobj.group(1)
@@ -264,23 +270,30 @@ def harvest_outfile_pass(outtext):
         # psivar name might need to be fixed
         # each root excitation energy is extracted from the last iteration of right hand side
         mobj = re.findall(
-            r'^\s+' + r'Excited-state calculation' + r'\s+' + r'\(\s+' + r'(.*?)' + r'\s+' + r'symmetry\)' + r'\s*' +
-            r'^\s+' + r'=========================================' + r'\s*' + r'(?:.*?)'
-            +  #Skip to line before right-hand side iterations
-            r'^\s+' + r'EOM-' + cc_name + r' right-hand side iterations' + r'\s*' + r'(?:.*?)' + r'^\s+' + r'Iteration'
-            + r'\s+\d+\s+' + r'using' + r'\s+\d+\s+' + r'trial vectors' + r'\s*' +
-            r'((?:\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+(?:(\s+\d+\.\d+\s+\d+\.\d+)?)\s*\n)+)' + r'^\s+' +
-            r'--------------------------------------------------------------' + r'\s*' + r'^\s+' +
-            r'Iterations converged' + r'\s*$',
-            outtext,
-            re.MULTILINE | re.DOTALL)
-
+            #r'^\s+' + r'Excited-state calculation' + r'\s+' + r'\(\s+' + r'(.*?)' + r'\s+' + r'symmetry\)' + r'\s*' +
+            #r'^\s+' + r'=========================================' + r'\s*' + r'(?:.*?)'
+            #+  #Skip to line before right-hand side iterations
+            #r'^\s+' + r'EOM-' + cc_name + r' right-hand side iterations' + r'\s*' + r'(?:.*?)' + r'^\s+' + r'Iteration'
+            #+ r'\s+\d+\s+' + r'using' + r'\s+\d+\s+' + r'trial vectors' + r'\s*' +
+            #r'((?:\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+(?:(\s+\d+\.\d+\s+\d+\.\d+)?)\s*\n)+)' + r'^\s+' +
+            #r'--------------------------------------------------------------' + r'\s*' + r'^\s+' +
+            #r'Iterations converged' + r'\s*$',
+            #outtext,
+            #re.MULTILINE | re.DOTALL)
+            r'^\s+' + r'Excited-state calculation' + r'\s+' + r'\((.*?)\)' + r'\s*' +
+            r'^\s+' + r'EOM-' + cc_name + r'\s+right-hand side iterations' + r'\s*'+  #capture cc_name
+            r'^\s+' + r'Iterations converged' + r'\s*' + #skip to excitation
+            r'^\s+' + r'Excited state root\s+\d{1,2}\s*'+
+            r'^\s+' + r'Excitation energy / hartree' + r'\s+=\s+' + NUMBER + r'\s*' +
+            r'^\s+' + r'/ eV\s+' + r'\s+=\s+' + NUMBER + r'\s*$',
+            outtext, re.MULTILINE | re.DOTALL)
+        
         if mobj:
             ext_energy = {}  #dic
 
             ext_energy_list = []
             for mobj_list in mobj:
-                print('matched EOM-%s - %s symmetry' % (cc_name, mobj_list[0]))  #cc_name, symmetry
+                print('matched EOM-%s - %s symmetry' % (cc_name, mob_list[0]))  #cc_name, symmetry
                 print(mobj_list)
                 count = 0
                 for line in mobj_list[1].splitlines():
@@ -307,14 +320,13 @@ def harvest_outfile_pass(outtext):
                             ext_energy_list[nroot] #in hartree
                         psivar ['EOM-%s ROOT 0 -> ROOT %d TOTAL ENERGY - %s SYMMETRY' %(cc_name, nroot+1, symm)] = \
                             psivar['%s TOTAL ENERGY' %(cc_name)] + Decimal(ext_energy_list[nroot]) #in hartree
-        #TCE_CR_EOMCCSD(T) information
-        mobj = re.search(
-            r'^\s+' + r'CR-' + r'(w+)' + r'\s+' + r'total energy / hartree' + r'\s+' + NUMBER + r'\s*' + r'^\s+' +
-            r'CR-' + r'(w+)' + r'\s+' + r'excitation energy \(eV\)' + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE)
-        if mobj:
-            print(mobj)
-            print("matched CR")
-
+        gssym = ''
+        gs = re.search(
+            r'^\s+' + r'Ground-state symmetry is' + gssym + r'\s*$', outtext, re.MULTILINE)
+        
+        if gs:
+            print('matched ground-state symmetry')
+            psivar['GROUND-STATE SYMMETRY'] = gssym.group(1)
 
 #Process TDDFT
 #       1) Spin allowed
@@ -1275,6 +1287,7 @@ def nwchem_list():
     val.append('nwc-cisdtq')
     val.append('nwc-lccd')
     val.append('nwc-lccsd')
+    val.append('nwc-ccd')
     val.append('nwc-eom-ccsd')
     val.append('nwc-eom-ccsdt')
     val.append('nwc-eom-ccsdtq')

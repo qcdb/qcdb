@@ -38,8 +38,8 @@ def test_1_dft():
     qcdb.set_options({
         'memory': '6000 mb',
         'basis': 'sto-3g',
-        #'nwchem_dft__convergence__density': 1.0e-12,
-        #'nwchem_dft__xc_b3lyp': True,
+        'nwchem_dft__convergence__density': 1.0e-12,
+        'nwchem_dft__xc_b3lyp': True,
         #add grid options
         'nwchem_tce__dft': True,
         'qc_module' : 'tce',

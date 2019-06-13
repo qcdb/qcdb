@@ -14,9 +14,9 @@ h2o = qcdb.set_molecule('''
 print(h2o)
 
 def check_eomccsd(return_value):
-    ref     =       -76.010536996935
-    ccsd_tot=       -76.207786730633430
-    ccsd_corl=      -0.197249733698711
+    ref     =       -75.633713836043
+    ccsd_tot=       -75.942608958748735
+    ccsd_corl=      -0.308895122705897
     root1_exc=      0.317644190387170
     root1_tot=      -75.89014254
     root2_exc=      0.399118315871657
@@ -85,9 +85,9 @@ def test_1_eomccsd():
         'nwchem_scf__thresh'     :   1.0e-10,
         'nwchem_scf__tol2e'      :   1.0e-10,
         'nwchem_scf__rhf'       :   True,
-        'nwchem_tce'            :   True,
-        'nwchem_tce__module'     :   'CCSD',
-        'nwchem_tce__nroots'     :   3
+        'qc_module'             :   'tce',
+        'nwchem_tce__ccsd'      :   True,
+        'nwchem_tce__nroots'     :   12
         })
     print('Testing EOM-CCSD...')
     val = qcdb.energy('nwc-eom-ccsd')

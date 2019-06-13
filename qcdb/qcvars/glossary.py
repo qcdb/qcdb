@@ -1484,6 +1484,12 @@ qcvardefs['B97-0 FUNCTIONAL TOTAL ENERGY'] = {
    functional energy for original hybrid B97-0 w/o disp correction ORPHAN
 """}
 
+qcvardefs['GROUND STATE SYMMETRY'] = {
+        'units': None,
+        'glossary': r"""
+        Ground state symmetry value of an excited state calculation.
+        """}
+
 #.. psivar:: UNCP-CORRECTED 2-BODY INTERACTION ENERGY
 #
 #   The interaction energy [H] considering only two-body interactions,
@@ -1542,6 +1548,6 @@ define_dashd_qcvars('blyp', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
 define_dashd_qcvars('pbe0', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
 define_dashd_qcvars('wpbe', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
 #define_dashd_qcvars('wb97x', dashes=['d'])
-define_ex_transition_qcvars(4, 'ccsd', ['b1', 'a1', 'a2', 'b2'])
+define_ex_transition_qcvars(4, 'ccsd', ['B1', 'A1', 'A2', 'B2'])
 define_prop_qcvars('ccsd')
 define_prop_qcvars('cc')  # TODO reconsider

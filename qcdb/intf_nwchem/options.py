@@ -1197,6 +1197,12 @@ def load_nwchem_defaults(options):
         glossary= 'TCE module option of Moller-Plesset perturbation theory to the fourth order (MP4).'))
 
     options.add('nwchem', RottenOption(
+        keyword= 'tce__dipole',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Dipole moment calculation  built into TCE for both ground- and excited-states.'))
+
+    options.add('nwchem', RottenOption(
         keyword='tce__thresh',
         default=1.e-4,
         validator=parsers.parse_convergence,
