@@ -57,7 +57,7 @@ class QcdbCFOURHarness(CFOURHarness):
     def compute(self, input_model: 'ResultInput', config: 'JobConfig') -> 'Result':
         self.found(raise_error=True)
 
-        verbose = 2
+        verbose = 1
 
         _print_helper(f'[1] {self.name} RESULTINPUT PRE-PLANT', input_model.dict(), verbose >= 3)
 
@@ -93,6 +93,7 @@ class QcdbCFOURHarness(CFOURHarness):
         }
 
         molrec = qcel.molparse.from_schema(input_model.molecule.dict())
+        molrec['fix_symmetry'] = 'c1'  # write _all_ atoms to GENBAS
         ropts = input_model.extras['qcdb:options']
 
         molcmd = format_molecule(molrec, ropts, verbose=1)
