@@ -1,454 +1,425 @@
-#
-# @BEGIN LICENSE
-#
-# Psi4: an open-source quantum chemistry software package
-#
-# Copyright (c) 2007-2017 The Psi4 Developers.
-#
-# The copyrights for code used from other parties are included in
-# the corresponding files.
-#
-# This file is part of Psi4.
-#
-# Psi4 is free software; you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, version 3.
-#
-# Psi4 is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License along
-# with Psi4; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-#
-# @END LICENSE
-#
-
-from __future__ import absolute_import
-from __future__ import print_function
 import struct
+from typing import Dict, List
 
 
-def getrec(reclabelarray, verbose=False):
+def getrec(reclabelarray: List[bytes], bjobarc: bytes, bjaindx: bytes, *, verbose: bool=False) -> Dict[bytes, bytes]:
     """Reads binary files JOBARC and JAINDX and returns contents
     of each record in *reclabelarray*.
 
     """
     knownlabels = {
-        "AU_LENGT": 'DOUBLE',
-        "CHARGE_E": 'DOUBLE',
-        "AMU     ": 'DOUBLE',
-        "NUC_MAGN": 'DOUBLE',
-        "MASS_ELE": 'DOUBLE',
-        "MASS_PRO": 'DOUBLE',
-        "HBAR    ": 'DOUBLE',
-        "AU_MASSP": 'DOUBLE',
-        "SP_LIGHT": 'DOUBLE',
-        "AU_EV   ": 'DOUBLE',
-        "AVOGADRO": 'DOUBLE',
-        "AU_ENERG": 'DOUBLE',
-        "AU_CM-1 ": 'DOUBLE',
-        "CM-1_KCA": 'DOUBLE',
-        "CM-1_KJ ": 'DOUBLE',
-        "AU_DIPOL": 'DOUBLE',
-        "AU_VELOC": 'DOUBLE',
-        "AU_TIME ": 'DOUBLE',
-        "EL_GFACT": 'DOUBLE',
-        "EA_IRREP": 'INTEGER',
-        "UHFRHF  ": 'INTEGER',
-        "IFLAGS  ": 'INTEGER',
-        "IFLAGS2 ": 'INTEGER',
-        "OCCUPYA ": 'INTEGER',
-        "NUMDROPA": 'INTEGER',
-        "JODAFLAG": 'INTEGER',
-        "TITLE   ": 'CHARACTER',
-        "NCNSTRNT": 'INTEGER',
-        "ICNSTRNT": 'INTEGER',
-        "VCNSTRNT": 'DOUBLE',
-        "NMPROTON": 'INTEGER',
-        "NREALATM": 'INTEGER',
-        "COORDINT": 'DOUBLE',
-        "VARNAINT": 'DOUBLE',
-        "COORD000": 'DOUBLE',
-        "ROTCONST": 'DOUBLE',
-        "ORIENT2 ": 'DOUBLE',  # input orientation into interial frame
-        "LINEAR  ": 'INTEGER',
-        "NATOMS  ": 'INTEGER',
-        "COORD   ": 'DOUBLE',
-        "ORIENTMT": 'DOUBLE',  # input orientation from ZMAT (mostly useful for Cartesians) to Cfour standard orientation
-        "ATOMMASS": 'DOUBLE',
-        "ORIENT3 ": 'DOUBLE',
-        "FULLPTGP": 'CHARACTER',
-        "FULLORDR": 'INTEGER',
-        "FULLNIRR": 'INTEGER',
-        "FULLNORB": 'INTEGER',
-        "FULLSYOP": 'DOUBLE',
-        "FULLPERM": 'INTEGER',
-        "FULLMEMB": 'INTEGER',
-        "FULLPOPV": 'INTEGER',
-        "FULLCLSS": 'INTEGER',
-        "FULLSTGP": 'CHARACTER',
-        "ZMAT2MOL": 'INTEGER',
-        "COMPPTGP": 'CHARACTER',
-        "COMPORDR": 'INTEGER',
-        "COMPNIRR": 'INTEGER',
-        "COMPNORB": 'INTEGER',
-        "COMPSYOP": 'DOUBLE',
-        "COMPPERM": 'INTEGER',
-        "COMPMEMB": 'INTEGER',
-        "COMPPOPV": 'INTEGER',
-        "COMPCLSS": 'INTEGER',
-        "COMPSTGP": 'CHARACTER',
-        "BMATRIX ": 'DOUBLE',
-        "NUCREP  ": 'DOUBLE',
-        "TIEDCORD": 'INTEGER',
-        "MPVMZMAT": 'INTEGER',
-        "ATOMCHRG": 'INTEGER',
-        "NTOTSHEL": 'INTEGER',
-        "NTOTPRIM": 'INTEGER',
-        "BASISEXP": 'DOUBLE',
-        "BASISCNT": 'DOUBLE',
-        "SHELLSIZ": 'INTEGER',
-        "SHELLPRM": 'INTEGER',
-        "SHELLANG": 'INTEGER',
-        "SHELLLOC": 'INTEGER',
-        "SHOFFSET": 'INTEGER',
-        "SHELLORB": 'INTEGER',
-        "PROFFSET": 'INTEGER',
-        "PRIMORBT": 'INTEGER',
-        "FULSHLNM": 'INTEGER',
-        "FULSHLTP": 'INTEGER',
-        "FULSHLSZ": 'INTEGER',
-        "FULSHLAT": 'INTEGER',
-        "JODAOUT ": 'INTEGER',
-        "NUMIIII ": 'INTEGER',
-        "NUMIJIJ ": 'INTEGER',
-        "NUMIIJJ ": 'INTEGER',
-        "NUMIJKL ": 'INTEGER',
-        "NBASTOT ": 'INTEGER',
-        "NAOBASFN": 'INTEGER',
-        "NUMBASIR": 'INTEGER',
-        "FAOBASIR": 'DOUBLE',
-        "AO2SO   ": 'DOUBLE',
-        "FULLSOAO": 'DOUBLE',
-        "FULLAOSO": 'DOUBLE',
-        "AO2SOINV": 'DOUBLE',
-        "CART3CMP": 'DOUBLE',
-        "CART2CMP": 'DOUBLE',
-        "CMP3CART": 'DOUBLE',
-        "CMP2CART": 'DOUBLE',
-        "ANGMOMBF": 'INTEGER',
-        "NBASATOM": 'INTEGER',
-        "NAOBFORB": 'INTEGER',
-        "MAP2ZMAT": 'INTEGER',
-        "CENTERBF": 'INTEGER',
-        "CNTERBF0": 'INTEGER',
-        "ANMOMBF0": 'INTEGER',
-        "CMP2ZMAT": 'DOUBLE',
-        "ZMAT2CMP": 'DOUBLE',
-        "OVERLAP ": 'DOUBLE',
-        "ONEHAMIL": 'DOUBLE',
-        "AOOVRLAP": 'DOUBLE',
-        "SHALFMAT": 'DOUBLE',
-        "SCFEVCA0": 'DOUBLE',
-        "RPPBMAT ": 'DOUBLE',
-        "OCCUPYA0": 'INTEGER',
-        "SYMPOPOA": 'INTEGER',
-        "SYMPOPVA": 'INTEGER',
-        "SCFEVLA0": 'DOUBLE',
-        "SCFDENSA": 'DOUBLE',
-        "FOCKA   ": 'DOUBLE',
-        "SMHALF  ": 'DOUBLE',
-        "EVECOAOA": 'DOUBLE',
-        "ONEHMOA ": 'DOUBLE',
-        "NOCCORB ": 'INTEGER',
-        "NVRTORB ": 'INTEGER',
-        "SCFENEG ": 'DOUBLE',
-        "TOTENERG": 'DOUBLE',
-        "IRREPALP": 'INTEGER',
-        "OMEGA_A ": 'DOUBLE',
-        "EVECAOXA": 'DOUBLE',
-        "EVALORDR": 'DOUBLE',
-        "EVECAO_A": 'DOUBLE',
-        "EVCSYMAF": 'CHARACTER',
-        "EVCSYMAC": 'CHARACTER',
-        "TESTVECT": 'DOUBLE',
-        "MODROPA ": 'INTEGER',
-        "VRHARMON": 'DOUBLE',
-        "NEWRECRD": 'INTEGER',
-        "VRCORIOL": 'DOUBLE',
-        "VRQUADRA": 'DOUBLE',
-        "VRANHARM": 'DOUBLE',
-        "REFINERT": 'DOUBLE',
-        "DIDQ    ": 'DOUBLE',
-        "REFCOORD": 'DOUBLE',
-        "REFDIPOL": 'DOUBLE',
-        "REFGRADI": 'DOUBLE',
-        "REFDIPDR": 'DOUBLE',
-        "REFNORMC": 'DOUBLE',
-        "REFD2EZ ": 'DOUBLE',
-        "REFFREQS": 'DOUBLE',
-        "REFORIEN": 'DOUBLE',
-        "NUSECORD": 'INTEGER',
-        "NZMATANH": 'INTEGER',
-        "ISELECTQ": 'INTEGER',
-        "NEXTGEOM": 'DOUBLE',
-        "NEXTGEO1": 'DOUBLE',
-        "FCMDISPL": 'DOUBLE',
-        "GRDDISPL": 'DOUBLE',
-        "DPMDISPL": 'DOUBLE',
-        "DIPDISPL": 'DOUBLE',
-        "NMRDISPL": 'DOUBLE',
-        "SRTDISPL": 'DOUBLE',
-        "CHIDISPL": 'DOUBLE',
-        "POLDISPL": 'DOUBLE',
-        "EFGDISPL": 'DOUBLE',
-        "THEDISPL": 'DOUBLE',
-        "JFCDISPL": 'DOUBLE',
-        "JSDDISPL": 'DOUBLE',
-        "JSODISPL": 'DOUBLE',
-        "JDSODISP": 'DOUBLE',
-        "CUBCOUNT": 'INTEGER',
-        "FCMMAPER": 'DOUBLE',
-        "QPLSMINS": 'INTEGER',
-        "CUBCOORD": 'INTEGER',
-        "PASS1   ": 'INTEGER',
-        "REFFORDR": 'INTEGER',
-        "REFFSYOP": 'DOUBLE',
-        "REFFPERM": 'INTEGER',
-        "REFNUMIC": 'INTEGER',
-        "REFAMAT ": 'DOUBLE',
-        "REFTTEN ": 'DOUBLE',
-        "REFLINER": 'INTEGER',
-        "DIPOLMOM": 'DOUBLE',
-        "POLARTEN": 'DOUBLE',
-        "CHITENSO": 'DOUBLE',
-        "EFGTENSO": 'DOUBLE',
-        "IRREPPOP": 'INTEGER',
-        "REORDERA": 'INTEGER',
-        "IRREPBET": 'INTEGER',
-        "SCFEVLB0": 'DOUBLE',
-        "SCFEVCB0": 'DOUBLE',
-        "IRREPCOU": 'INTEGER',
-        "IDROPA  ": 'INTEGER',
-        "OCCSCF  ": 'INTEGER',
-        "VRTSCF  ": 'INTEGER',
-        "SCFEVECA": 'DOUBLE',
-        "NCOMPA  ": 'INTEGER',
-        "NBASCOMP": 'INTEGER',
-        "SCFEVALA": 'DOUBLE',
-        "SCFEVALB": 'DOUBLE',
-        "SVAVA0  ": 'INTEGER',
-        "SVAVA0X ": 'INTEGER',
-        "SVAVA0I ": 'INTEGER',
-        "SVBVB0  ": 'INTEGER',
-        "SVBVB0X ": 'INTEGER',
-        "SVBVB0I ": 'INTEGER',
-        "SOAOA0  ": 'INTEGER',
-        "SOAOA0X ": 'INTEGER',
-        "SOAOA0I ": 'INTEGER',
-        "SOBOB0  ": 'INTEGER',
-        "SOBOB0X ": 'INTEGER',
-        "SOBOB0I ": 'INTEGER',
-        "SVAVA1  ": 'INTEGER',
-        "SVAVA1X ": 'INTEGER',
-        "SVAVA1I ": 'INTEGER',
-        "SVBVB1  ": 'INTEGER',
-        "SVBVB1X ": 'INTEGER',
-        "SVBVB1I ": 'INTEGER',
-        "SOAOA1  ": 'INTEGER',
-        "SOAOA1X ": 'INTEGER',
-        "SOAOA1I ": 'INTEGER',
-        "SOBOB1  ": 'INTEGER',
-        "SOBOB1X ": 'INTEGER',
-        "SOBOB1I ": 'INTEGER',
-        "SVAOA2  ": 'INTEGER',
-        "SVAOA2X ": 'INTEGER',
-        "SVAOA2I ": 'INTEGER',
-        "SVBOB2  ": 'INTEGER',
-        "SVBOB2X ": 'INTEGER',
-        "SVBOB2I ": 'INTEGER',
-        "SOBVA2  ": 'INTEGER',
-        "SOBVA2X ": 'INTEGER',
-        "SOBVA2I ": 'INTEGER',
-        "SVBOA2  ": 'INTEGER',
-        "SVBOA2X ": 'INTEGER',
-        "SVBOA2I ": 'INTEGER',
-        "SVAVB2  ": 'INTEGER',
-        "SVAVB2X ": 'INTEGER',
-        "SVAVB2I ": 'INTEGER',
-        "SOAOB2  ": 'INTEGER',
-        "SOAOB2X ": 'INTEGER',
-        "SOAOB2I ": 'INTEGER',
-        "SOAVA2  ": 'INTEGER',
-        "SOAVA2X ": 'INTEGER',
-        "SOAVA2I ": 'INTEGER',
-        "SOBVB2  ": 'INTEGER',
-        "SOBVB2X ": 'INTEGER',
-        "SOBVB2I ": 'INTEGER',
-        "SOAVB2  ": 'INTEGER',
-        "SOAVB2X ": 'INTEGER',
-        "SOAVB2I ": 'INTEGER',
-        "SVAVA2  ": 'INTEGER',
-        "SVAVA2X ": 'INTEGER',
-        "SVAVA2I ": 'INTEGER',
-        "SVBVB2  ": 'INTEGER',
-        "SVBVB2X ": 'INTEGER',
-        "SVBVB2I ": 'INTEGER',
-        "SOAOA2  ": 'INTEGER',
-        "SOAOA2X ": 'INTEGER',
-        "SOAOA2I ": 'INTEGER',
-        "SOBOB2  ": 'INTEGER',
-        "SOBOB2X ": 'INTEGER',
-        "SOBOB2I ": 'INTEGER',
-        "SYMPOPOB": 'INTEGER',
-        "SYMPOPVB": 'INTEGER',
-        "T2NORM  ": 'DOUBLE',
-        "MOIOVEC ": 'INTEGER',
-        "MOIOWRD ": 'INTEGER',
-        "MOIOSIZ ": 'INTEGER',
-        "MOIODIS ": 'INTEGER',
-        "MOIOFIL ": 'INTEGER',
-        "ISYMTYP ": 'INTEGER',
-        "TOTRECMO": 'INTEGER',
-        "TOTWRDMO": 'INTEGER',
-        "RELDENSA": 'DOUBLE',
-        "IINTERMA": 'DOUBLE',
-        "OCCNUM_A": 'DOUBLE',
-        "SCRATCH ": 'DOUBLE',
-        "SETUP2  ": 'INTEGER',
-        "MOLHES2 ": 'INTEGER',
-        "GRAD2   ": 'INTEGER',
-        "COORDMAS": 'INTEGER',
-        "NUCMULT ": 'INTEGER',
-        "SYMCOORD": 'DOUBLE',
-        "SYMCOOR2": 'DOUBLE',
-        "SYMCOOR3": 'DOUBLE',
-        "SYMMLENG": 'INTEGER',
-        "SKIP    ": 'INTEGER',
-        "NSYMPERT": 'INTEGER',
-        "NPERTB  ": 'INTEGER',
-        "TRANSINV": 'INTEGER',
-        "IBADNUMB": 'INTEGER',
-        "IBADINDX": 'INTEGER',
-        "IBADIRRP": 'INTEGER',
-        "IBADPERT": 'INTEGER',
-        "IBADSPIN": 'INTEGER',
-        "TREATPER": 'INTEGER',
-        "MAXAODSZ": 'INTEGER',
-        "PERTINFO": 'INTEGER',
-        "GRADIENT": 'DOUBLE',
-        "HESSIANM": 'DOUBLE',
-        "GRDZORDR": 'DOUBLE',
-        "D2EZORDR": 'DOUBLE',
-        "REALCORD": 'DOUBLE',
-        "DUMSTRIP": 'INTEGER',
-        "BMATRIXC": 'DOUBLE',
-        "REALATOM": 'INTEGER',
-        "NORMCORD": 'DOUBLE',
-        "DIPDERIV": 'DOUBLE',
-        "I4CDCALC": 'DOUBLE',
-        "FREQUENC": 'DOUBLE',
-        "RATMMASS": 'DOUBLE',
-        "RATMPOSN": 'INTEGER',
-        "DEGENERT": 'INTEGER',
-        "REFSHILD": 'DOUBLE',
-        "CORIZETA": 'DOUBLE',
-        "NMPOINTX": 'INTEGER',
-        "REFD3EDX": 'DOUBLE',
-        "BPPTOB  ": 'DOUBLE',
-        "BPTOB   ": 'DOUBLE',
-        "BSRTOB  ": 'DOUBLE',
-        "BARTOB  ": 'DOUBLE',
-        "VRTOTAL ": 'DOUBLE',
-        "D2DIPOLE": 'DOUBLE',
-        "D3DIPOLE": 'DOUBLE',
-        "D1DIPOLE": 'DOUBLE',
-        "REFNORM2": 'DOUBLE',
-        "NUSECOR2": 'INTEGER',
-        "FCMDISP2": 'DOUBLE',
-        "RGTDISPL": 'DOUBLE',
-        "CUBCOOR1": 'INTEGER',
-        "CUBCOOR2": 'INTEGER',
-        "REFFPEM2": 'INTEGER',
-        "RGTTENSO": 'DOUBLE',
-        "REFFPER2": 'INTEGER',
-        "REFD4EDX": 'DOUBLE',
-        "ZPE_ANHA": 'DOUBLE',
-        "OPENSLOT": 'INTEGER',
+        b"AU_LENGT": 'DOUBLE',
+        b"CHARGE_E": 'DOUBLE',
+        b"AMU     ": 'DOUBLE',
+        b"NUC_MAGN": 'DOUBLE',
+        b"MASS_ELE": 'DOUBLE',
+        b"MASS_PRO": 'DOUBLE',
+        b"HBAR    ": 'DOUBLE',
+        b"AU_MASSP": 'DOUBLE',
+        b"SP_LIGHT": 'DOUBLE',
+        b"AU_EV   ": 'DOUBLE',
+        b"AVOGADRO": 'DOUBLE',
+        b"AU_ENERG": 'DOUBLE',
+        b"AU_CM-1 ": 'DOUBLE',
+        b"CM-1_KCA": 'DOUBLE',
+        b"CM-1_KJ ": 'DOUBLE',
+        b"AU_DIPOL": 'DOUBLE',
+        b"AU_VELOC": 'DOUBLE',
+        b"AU_TIME ": 'DOUBLE',
+        b"EL_GFACT": 'DOUBLE',
+        b"EA_IRREP": 'INTEGER',
+        b"UHFRHF  ": 'INTEGER',
+        b"IFLAGS  ": 'INTEGER',
+        b"IFLAGS2 ": 'INTEGER',
+        b"OCCUPYA ": 'INTEGER',
+        b"NUMDROPA": 'INTEGER',
+        b"JODAFLAG": 'INTEGER',
+        b"TITLE   ": 'CHARACTER',
+        b"NCNSTRNT": 'INTEGER',
+        b"ICNSTRNT": 'INTEGER',
+        b"VCNSTRNT": 'DOUBLE',
+        b"NMPROTON": 'INTEGER',
+        b"NREALATM": 'INTEGER',
+        b"COORDINT": 'DOUBLE',
+        b"VARNAINT": 'DOUBLE',
+        b"COORD000": 'DOUBLE',
+        b"ROTCONST": 'DOUBLE',
+        b"ORIENT2 ": 'DOUBLE',  # input orientation into interial frame
+        b"LINEAR  ": 'INTEGER',
+        b"NATOMS  ": 'INTEGER',
+        b"COORD   ": 'DOUBLE',
+        b"ORIENTMT": 'DOUBLE',  # input orientation from ZMAT (mostly useful for Cartesians) to Cfour standard orientation
+        b"ATOMMASS": 'DOUBLE',
+        b"ORIENT3 ": 'DOUBLE',
+        b"FULLPTGP": 'CHARACTER',
+        b"FULLORDR": 'INTEGER',
+        b"FULLNIRR": 'INTEGER',
+        b"FULLNORB": 'INTEGER',
+        b"FULLSYOP": 'DOUBLE',
+        b"FULLPERM": 'INTEGER',
+        b"FULLMEMB": 'INTEGER',
+        b"FULLPOPV": 'INTEGER',
+        b"FULLCLSS": 'INTEGER',
+        b"FULLSTGP": 'CHARACTER',
+        b"ZMAT2MOL": 'INTEGER',
+        b"COMPPTGP": 'CHARACTER',
+        b"COMPORDR": 'INTEGER',
+        b"COMPNIRR": 'INTEGER',
+        b"COMPNORB": 'INTEGER',
+        b"COMPSYOP": 'DOUBLE',
+        b"COMPPERM": 'INTEGER',
+        b"COMPMEMB": 'INTEGER',
+        b"COMPPOPV": 'INTEGER',
+        b"COMPCLSS": 'INTEGER',
+        b"COMPSTGP": 'CHARACTER',
+        b"BMATRIX ": 'DOUBLE',
+        b"NUCREP  ": 'DOUBLE',
+        b"TIEDCORD": 'INTEGER',
+        b"MPVMZMAT": 'INTEGER',
+        b"ATOMCHRG": 'INTEGER',
+        b"NTOTSHEL": 'INTEGER',
+        b"NTOTPRIM": 'INTEGER',
+        b"BASISEXP": 'DOUBLE',
+        b"BASISCNT": 'DOUBLE',
+        b"SHELLSIZ": 'INTEGER',
+        b"SHELLPRM": 'INTEGER',
+        b"SHELLANG": 'INTEGER',
+        b"SHELLLOC": 'INTEGER',
+        b"SHOFFSET": 'INTEGER',
+        b"SHELLORB": 'INTEGER',
+        b"PROFFSET": 'INTEGER',
+        b"PRIMORBT": 'INTEGER',
+        b"FULSHLNM": 'INTEGER',
+        b"FULSHLTP": 'INTEGER',
+        b"FULSHLSZ": 'INTEGER',
+        b"FULSHLAT": 'INTEGER',
+        b"JODAOUT ": 'INTEGER',
+        b"NUMIIII ": 'INTEGER',
+        b"NUMIJIJ ": 'INTEGER',
+        b"NUMIIJJ ": 'INTEGER',
+        b"NUMIJKL ": 'INTEGER',
+        b"NBASTOT ": 'INTEGER',
+        b"NAOBASFN": 'INTEGER',
+        b"NUMBASIR": 'INTEGER',
+        b"FAOBASIR": 'DOUBLE',
+        b"AO2SO   ": 'DOUBLE',
+        b"FULLSOAO": 'DOUBLE',
+        b"FULLAOSO": 'DOUBLE',
+        b"AO2SOINV": 'DOUBLE',
+        b"CART3CMP": 'DOUBLE',
+        b"CART2CMP": 'DOUBLE',
+        b"CMP3CART": 'DOUBLE',
+        b"CMP2CART": 'DOUBLE',
+        b"ANGMOMBF": 'INTEGER',
+        b"NBASATOM": 'INTEGER',
+        b"NAOBFORB": 'INTEGER',
+        b"MAP2ZMAT": 'INTEGER',
+        b"CENTERBF": 'INTEGER',
+        b"CNTERBF0": 'INTEGER',
+        b"ANMOMBF0": 'INTEGER',
+        b"CMP2ZMAT": 'DOUBLE',
+        b"ZMAT2CMP": 'DOUBLE',
+        b"OVERLAP ": 'DOUBLE',
+        b"ONEHAMIL": 'DOUBLE',
+        b"AOOVRLAP": 'DOUBLE',
+        b"SHALFMAT": 'DOUBLE',
+        b"SCFEVCA0": 'DOUBLE',
+        b"RPPBMAT ": 'DOUBLE',
+        b"OCCUPYA0": 'INTEGER',
+        b"SYMPOPOA": 'INTEGER',
+        b"SYMPOPVA": 'INTEGER',
+        b"SCFEVLA0": 'DOUBLE',
+        b"SCFDENSA": 'DOUBLE',
+        b"FOCKA   ": 'DOUBLE',
+        b"SMHALF  ": 'DOUBLE',
+        b"EVECOAOA": 'DOUBLE',
+        b"ONEHMOA ": 'DOUBLE',
+        b"NOCCORB ": 'INTEGER',
+        b"NVRTORB ": 'INTEGER',
+        b"SCFENEG ": 'DOUBLE',
+        b"TOTENERG": 'DOUBLE',
+        b"IRREPALP": 'INTEGER',
+        b"OMEGA_A ": 'DOUBLE',
+        b"EVECAOXA": 'DOUBLE',
+        b"EVALORDR": 'DOUBLE',
+        b"EVECAO_A": 'DOUBLE',
+        b"EVCSYMAF": 'CHARACTER',
+        b"EVCSYMAC": 'CHARACTER',
+        b"TESTVECT": 'DOUBLE',
+        b"MODROPA ": 'INTEGER',
+        b"VRHARMON": 'DOUBLE',
+        b"NEWRECRD": 'INTEGER',
+        b"VRCORIOL": 'DOUBLE',
+        b"VRQUADRA": 'DOUBLE',
+        b"VRANHARM": 'DOUBLE',
+        b"REFINERT": 'DOUBLE',
+        b"DIDQ    ": 'DOUBLE',
+        b"REFCOORD": 'DOUBLE',
+        b"REFDIPOL": 'DOUBLE',
+        b"REFGRADI": 'DOUBLE',
+        b"REFDIPDR": 'DOUBLE',
+        b"REFNORMC": 'DOUBLE',
+        b"REFD2EZ ": 'DOUBLE',
+        b"REFFREQS": 'DOUBLE',
+        b"REFORIEN": 'DOUBLE',
+        b"NUSECORD": 'INTEGER',
+        b"NZMATANH": 'INTEGER',
+        b"ISELECTQ": 'INTEGER',
+        b"NEXTGEOM": 'DOUBLE',
+        b"NEXTGEO1": 'DOUBLE',
+        b"FCMDISPL": 'DOUBLE',
+        b"GRDDISPL": 'DOUBLE',
+        b"DPMDISPL": 'DOUBLE',
+        b"DIPDISPL": 'DOUBLE',
+        b"NMRDISPL": 'DOUBLE',
+        b"SRTDISPL": 'DOUBLE',
+        b"CHIDISPL": 'DOUBLE',
+        b"POLDISPL": 'DOUBLE',
+        b"EFGDISPL": 'DOUBLE',
+        b"THEDISPL": 'DOUBLE',
+        b"JFCDISPL": 'DOUBLE',
+        b"JSDDISPL": 'DOUBLE',
+        b"JSODISPL": 'DOUBLE',
+        b"JDSODISP": 'DOUBLE',
+        b"CUBCOUNT": 'INTEGER',
+        b"FCMMAPER": 'DOUBLE',
+        b"QPLSMINS": 'INTEGER',
+        b"CUBCOORD": 'INTEGER',
+        b"PASS1   ": 'INTEGER',
+        b"REFFORDR": 'INTEGER',
+        b"REFFSYOP": 'DOUBLE',
+        b"REFFPERM": 'INTEGER',
+        b"REFNUMIC": 'INTEGER',
+        b"REFAMAT ": 'DOUBLE',
+        b"REFTTEN ": 'DOUBLE',
+        b"REFLINER": 'INTEGER',
+        b"DIPOLMOM": 'DOUBLE',
+        b"POLARTEN": 'DOUBLE',
+        b"CHITENSO": 'DOUBLE',
+        b"EFGTENSO": 'DOUBLE',
+        b"IRREPPOP": 'INTEGER',
+        b"REORDERA": 'INTEGER',
+        b"IRREPBET": 'INTEGER',
+        b"SCFEVLB0": 'DOUBLE',
+        b"SCFEVCB0": 'DOUBLE',
+        b"IRREPCOU": 'INTEGER',
+        b"IDROPA  ": 'INTEGER',
+        b"OCCSCF  ": 'INTEGER',
+        b"VRTSCF  ": 'INTEGER',
+        b"SCFEVECA": 'DOUBLE',
+        b"NCOMPA  ": 'INTEGER',
+        b"NBASCOMP": 'INTEGER',
+        b"SCFEVALA": 'DOUBLE',
+        b"SCFEVALB": 'DOUBLE',
+        b"SVAVA0  ": 'INTEGER',
+        b"SVAVA0X ": 'INTEGER',
+        b"SVAVA0I ": 'INTEGER',
+        b"SVBVB0  ": 'INTEGER',
+        b"SVBVB0X ": 'INTEGER',
+        b"SVBVB0I ": 'INTEGER',
+        b"SOAOA0  ": 'INTEGER',
+        b"SOAOA0X ": 'INTEGER',
+        b"SOAOA0I ": 'INTEGER',
+        b"SOBOB0  ": 'INTEGER',
+        b"SOBOB0X ": 'INTEGER',
+        b"SOBOB0I ": 'INTEGER',
+        b"SVAVA1  ": 'INTEGER',
+        b"SVAVA1X ": 'INTEGER',
+        b"SVAVA1I ": 'INTEGER',
+        b"SVBVB1  ": 'INTEGER',
+        b"SVBVB1X ": 'INTEGER',
+        b"SVBVB1I ": 'INTEGER',
+        b"SOAOA1  ": 'INTEGER',
+        b"SOAOA1X ": 'INTEGER',
+        b"SOAOA1I ": 'INTEGER',
+        b"SOBOB1  ": 'INTEGER',
+        b"SOBOB1X ": 'INTEGER',
+        b"SOBOB1I ": 'INTEGER',
+        b"SVAOA2  ": 'INTEGER',
+        b"SVAOA2X ": 'INTEGER',
+        b"SVAOA2I ": 'INTEGER',
+        b"SVBOB2  ": 'INTEGER',
+        b"SVBOB2X ": 'INTEGER',
+        b"SVBOB2I ": 'INTEGER',
+        b"SOBVA2  ": 'INTEGER',
+        b"SOBVA2X ": 'INTEGER',
+        b"SOBVA2I ": 'INTEGER',
+        b"SVBOA2  ": 'INTEGER',
+        b"SVBOA2X ": 'INTEGER',
+        b"SVBOA2I ": 'INTEGER',
+        b"SVAVB2  ": 'INTEGER',
+        b"SVAVB2X ": 'INTEGER',
+        b"SVAVB2I ": 'INTEGER',
+        b"SOAOB2  ": 'INTEGER',
+        b"SOAOB2X ": 'INTEGER',
+        b"SOAOB2I ": 'INTEGER',
+        b"SOAVA2  ": 'INTEGER',
+        b"SOAVA2X ": 'INTEGER',
+        b"SOAVA2I ": 'INTEGER',
+        b"SOBVB2  ": 'INTEGER',
+        b"SOBVB2X ": 'INTEGER',
+        b"SOBVB2I ": 'INTEGER',
+        b"SOAVB2  ": 'INTEGER',
+        b"SOAVB2X ": 'INTEGER',
+        b"SOAVB2I ": 'INTEGER',
+        b"SVAVA2  ": 'INTEGER',
+        b"SVAVA2X ": 'INTEGER',
+        b"SVAVA2I ": 'INTEGER',
+        b"SVBVB2  ": 'INTEGER',
+        b"SVBVB2X ": 'INTEGER',
+        b"SVBVB2I ": 'INTEGER',
+        b"SOAOA2  ": 'INTEGER',
+        b"SOAOA2X ": 'INTEGER',
+        b"SOAOA2I ": 'INTEGER',
+        b"SOBOB2  ": 'INTEGER',
+        b"SOBOB2X ": 'INTEGER',
+        b"SOBOB2I ": 'INTEGER',
+        b"SYMPOPOB": 'INTEGER',
+        b"SYMPOPVB": 'INTEGER',
+        b"T2NORM  ": 'DOUBLE',
+        b"MOIOVEC ": 'INTEGER',
+        b"MOIOWRD ": 'INTEGER',
+        b"MOIOSIZ ": 'INTEGER',
+        b"MOIODIS ": 'INTEGER',
+        b"MOIOFIL ": 'INTEGER',
+        b"ISYMTYP ": 'INTEGER',
+        b"TOTRECMO": 'INTEGER',
+        b"TOTWRDMO": 'INTEGER',
+        b"RELDENSA": 'DOUBLE',
+        b"IINTERMA": 'DOUBLE',
+        b"OCCNUM_A": 'DOUBLE',
+        b"SCRATCH ": 'DOUBLE',
+        b"SETUP2  ": 'INTEGER',
+        b"MOLHES2 ": 'INTEGER',
+        b"GRAD2   ": 'INTEGER',
+        b"COORDMAS": 'INTEGER',
+        b"NUCMULT ": 'INTEGER',
+        b"SYMCOORD": 'DOUBLE',
+        b"SYMCOOR2": 'DOUBLE',
+        b"SYMCOOR3": 'DOUBLE',
+        b"SYMMLENG": 'INTEGER',
+        b"SKIP    ": 'INTEGER',
+        b"NSYMPERT": 'INTEGER',
+        b"NPERTB  ": 'INTEGER',
+        b"TRANSINV": 'INTEGER',
+        b"IBADNUMB": 'INTEGER',
+        b"IBADINDX": 'INTEGER',
+        b"IBADIRRP": 'INTEGER',
+        b"IBADPERT": 'INTEGER',
+        b"IBADSPIN": 'INTEGER',
+        b"TREATPER": 'INTEGER',
+        b"MAXAODSZ": 'INTEGER',
+        b"PERTINFO": 'INTEGER',
+        b"GRADIENT": 'DOUBLE',
+        b"HESSIANM": 'DOUBLE',
+        b"GRDZORDR": 'DOUBLE',
+        b"D2EZORDR": 'DOUBLE',
+        b"REALCORD": 'DOUBLE',
+        b"DUMSTRIP": 'INTEGER',
+        b"BMATRIXC": 'DOUBLE',
+        b"REALATOM": 'INTEGER',
+        b"NORMCORD": 'DOUBLE',
+        b"DIPDERIV": 'DOUBLE',
+        b"I4CDCALC": 'DOUBLE',
+        b"FREQUENC": 'DOUBLE',
+        b"RATMMASS": 'DOUBLE',
+        b"RATMPOSN": 'INTEGER',
+        b"DEGENERT": 'INTEGER',
+        b"REFSHILD": 'DOUBLE',
+        b"CORIZETA": 'DOUBLE',
+        b"NMPOINTX": 'INTEGER',
+        b"REFD3EDX": 'DOUBLE',
+        b"BPPTOB  ": 'DOUBLE',
+        b"BPTOB   ": 'DOUBLE',
+        b"BSRTOB  ": 'DOUBLE',
+        b"BARTOB  ": 'DOUBLE',
+        b"VRTOTAL ": 'DOUBLE',
+        b"D2DIPOLE": 'DOUBLE',
+        b"D3DIPOLE": 'DOUBLE',
+        b"D1DIPOLE": 'DOUBLE',
+        b"REFNORM2": 'DOUBLE',
+        b"NUSECOR2": 'INTEGER',
+        b"FCMDISP2": 'DOUBLE',
+        b"RGTDISPL": 'DOUBLE',
+        b"CUBCOOR1": 'INTEGER',
+        b"CUBCOOR2": 'INTEGER',
+        b"REFFPEM2": 'INTEGER',
+        b"RGTTENSO": 'DOUBLE',
+        b"REFFPER2": 'INTEGER',
+        b"REFD4EDX": 'DOUBLE',
+        b"ZPE_ANHA": 'DOUBLE',
+        b"OPENSLOT": 'INTEGER',
 
-        "BOLTZMAN": 'DOUBLE',
-        "MRCCOCC ": 'INTEGER',
-        "ABELPTGP": 'CHARACTER',
-        "ABELORDR": 'INTEGER',
-        "ABELNIRR": 'INTEGER',
-        "ABELNORB": 'INTEGER',
-        "ABELSYOP": 'DOUBLE',
-        "ABELPERM": 'INTEGER',
-        "ABELMEMB": 'INTEGER',
-        "ABELPOPV": 'INTEGER',
-        "ABELCLSS": 'INTEGER',
-        "ABELSTGP": 'CHARACTER',
-        "REALCHRG": 'INTEGER',      # atom/mol? charge taking into acct edp
-        "NSOSCF  ": 'INTEGER',      # whether is spin orbital calc?
-        "SCFVCFLA": 'DOUBLE',       # scf vector expanded from sph to cart basis for symm anal - determin orb sym
-        "EFG_SYM1": 'INTEGER',       # symmetry property of components of electric field gradient  integrals
-        "EFG_SYM2": 'INTEGER',       # symm prop of comp of EFG
+        b"BOLTZMAN": 'DOUBLE',
+        b"MRCCOCC ": 'INTEGER',
+        b"ABELPTGP": 'CHARACTER',
+        b"ABELORDR": 'INTEGER',
+        b"ABELNIRR": 'INTEGER',
+        b"ABELNORB": 'INTEGER',
+        b"ABELSYOP": 'DOUBLE',
+        b"ABELPERM": 'INTEGER',
+        b"ABELMEMB": 'INTEGER',
+        b"ABELPOPV": 'INTEGER',
+        b"ABELCLSS": 'INTEGER',
+        b"ABELSTGP": 'CHARACTER',
+        b"REALCHRG": 'INTEGER',      # atom/mol? charge taking into acct edp
+        b"NSOSCF  ": 'INTEGER',      # whether is spin orbital calc?
+        b"SCFVCFLA": 'DOUBLE',       # scf vector expanded from sph to cart basis for symm anal - determin orb sym
+        b"EFG_SYM1": 'INTEGER',       # symmetry property of components of electric field gradient  integrals
+        b"EFG_SYM2": 'INTEGER',       # symm prop of comp of EFG
 
-        "DCTDISPL": 'DOUBLE',
-        "DANGERUS": 'INTEGER',   #?
-        "FULLCHAR": 'CHARACTER', #?
-        "FULLDEGN": 'CHARACTER', #?
-        "FULLLABL": 'CHARACTER', #?
-        "FULLNIRX": 'CHARACTER', #?
-        "COMPCHAR": 'CHARACTER', #?
-        "COMPDEGN": 'CHARACTER', #?
-        "COMPLABL": 'CHARACTER', #?
-        "COMPNIRX": 'CHARACTER', #?
-        "ROTVECX ": 'CHARACTER', #?
-        "ROTVECY ": 'CHARACTER', #?
-        "ROTVECZ ": 'CHARACTER', #?
-        "COMPNSYQ": 'CHARACTER', #?
-        "COMPSYQT": 'CHARACTER', #?
-        "COMPSYMQ": 'CHARACTER', #?
-        "TRAVECX ": 'CHARACTER', #?
-        "TRAVECY ": 'CHARACTER', #?
-        "TRAVECZ ": 'CHARACTER', #?
-        "NVIBSYM ": 'CHARACTER', #?
-        "NUMVIBRT": 'CHARACTER', #?
-        "SBGRPSYM": 'CHARACTER', #?
-        "ORDERREF": 'CHARACTER', #?
-        "OPERSREF": 'CHARACTER', #?
-        "NVIBSYMF": 'CHARACTER', #?
-        "FULLNSYQ": 'CHARACTER', #?
-        "FULLSYQT": 'CHARACTER', #?
-        "FULLSYMQ": 'CHARACTER', #?
-        "INVPSMAT": 'CHARACTER', #?
-        "FDCOORDS": 'CHARACTER', #?
-        "FDCALCTP": 'CHARACTER', #?
-        "NUMPOINT": 'CHARACTER', #?
-        "NPTIRREP": 'CHARACTER', #?
-        "GRDPOINT": 'CHARACTER', #?
-        "DIPPOINT": 'CHARACTER', #?
-        "ENGPOINT": 'CHARACTER', #?
-        "PASS1FIN": 'CHARACTER', #?
-        "REFENERG": 'CHARACTER', #?
-        "NEXTCALC": 'CHARACTER', #?
-        "PRINSPIN": 'CHARACTER', #?
-        "PRINFROM": 'CHARACTER', #?
-        "PRININTO": 'CHARACTER', #?
-        "NEXTGEOF": 'CHARACTER', #?
-        "ZPE_HARM": 'DOUBLE', #?
-        "NDROPPED": 'INTEGER',
-        "REFCPTGP": 'INTEGER', #?
-        "REFFPTGP": 'INTEGER', #?
+        b"DCTDISPL": 'DOUBLE',
+        b"DANGERUS": 'INTEGER',   #?
+        b"FULLCHAR": 'CHARACTER', #?
+        b"FULLDEGN": 'CHARACTER', #?
+        b"FULLLABL": 'CHARACTER', #?
+        b"FULLNIRX": 'CHARACTER', #?
+        b"COMPCHAR": 'CHARACTER', #?
+        b"COMPDEGN": 'CHARACTER', #?
+        b"COMPLABL": 'CHARACTER', #?
+        b"COMPNIRX": 'CHARACTER', #?
+        b"ROTVECX ": 'CHARACTER', #?
+        b"ROTVECY ": 'CHARACTER', #?
+        b"ROTVECZ ": 'CHARACTER', #?
+        b"COMPNSYQ": 'CHARACTER', #?
+        b"COMPSYQT": 'CHARACTER', #?
+        b"COMPSYMQ": 'CHARACTER', #?
+        b"TRAVECX ": 'CHARACTER', #?
+        b"TRAVECY ": 'CHARACTER', #?
+        b"TRAVECZ ": 'CHARACTER', #?
+        b"NVIBSYM ": 'CHARACTER', #?
+        b"NUMVIBRT": 'CHARACTER', #?
+        b"SBGRPSYM": 'CHARACTER', #?
+        b"ORDERREF": 'CHARACTER', #?
+        b"OPERSREF": 'CHARACTER', #?
+        b"NVIBSYMF": 'CHARACTER', #?
+        b"FULLNSYQ": 'CHARACTER', #?
+        b"FULLSYQT": 'CHARACTER', #?
+        b"FULLSYMQ": 'CHARACTER', #?
+        b"INVPSMAT": 'CHARACTER', #?
+        b"FDCOORDS": 'CHARACTER', #?
+        b"FDCALCTP": 'CHARACTER', #?
+        b"NUMPOINT": 'CHARACTER', #?
+        b"NPTIRREP": 'CHARACTER', #?
+        b"GRDPOINT": 'CHARACTER', #?
+        b"DIPPOINT": 'CHARACTER', #?
+        b"ENGPOINT": 'CHARACTER', #?
+        b"PASS1FIN": 'CHARACTER', #?
+        b"REFENERG": 'CHARACTER', #?
+        b"NEXTCALC": 'CHARACTER', #?
+        b"PRINSPIN": 'CHARACTER', #?
+        b"PRINFROM": 'CHARACTER', #?
+        b"PRININTO": 'CHARACTER', #?
+        b"NEXTGEOF": 'CHARACTER', #?
+        b"ZPE_HARM": 'DOUBLE', #?
+        b"NDROPPED": 'INTEGER',
+        b"REFCPTGP": 'INTEGER', #?
+        b"REFFPTGP": 'INTEGER', #?
         }
 
-    with open('JAINDX', mode='rb') as file:  # b is important -> binary
-        fileContent = file.read()
-        fileLength = len(fileContent)
+    #with open('JAINDX', mode='rb') as file:  # b is important -> binary
+    fileContent = bjaindx #file.read()
+    fileLength = len(fileContent)
 
     if fileLength == 16012:
         srcints = 4
@@ -527,7 +498,7 @@ def getrec(reclabelarray, verbose=False):
     if verbose:
         print('%10s%10d%10d' % ('end', poss, posf))
 
-    nrecs = jaindx.index('OPENSLOT')  # number of active records
+    nrecs = jaindx.index(b'OPENSLOT')  # number of active records
 
     if verbose:
         print('\n')
@@ -542,8 +513,8 @@ def getrec(reclabelarray, verbose=False):
 
         print('\n<<<  JOBARC  >>>\n')
 
-    with open('JOBARC', mode='rb') as file:  # b is important -> binary
-        fileContent = file.read()
+    #with open('JOBARC', mode='rb') as file:  # b is important -> binary
+    fileContent = bjobarc #file.read()
 
     returnRecords = {}
     poss = 0

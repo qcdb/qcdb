@@ -1,3 +1,5 @@
+import pprint
+pp = pprint.PrettyPrinter(width=120)
 from typing import Dict
 
 from .. import __version__
@@ -11,3 +13,12 @@ def provenance_stamp(routine: str) -> Dict[str, str]:
 
     """
     return {'creator': 'QCDB', 'version': __version__, 'routine': routine}
+
+
+def print_jobrec(label, dicary, do_print):
+    """Consolidate jobrec debug printing."""
+
+    if do_print:
+        print(label + ' <<<')
+        pp.pprint(dicary)
+        print('>>>')

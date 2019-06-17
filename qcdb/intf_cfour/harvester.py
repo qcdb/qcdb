@@ -33,9 +33,10 @@ from collections import defaultdict
 import numpy as np
 
 import qcelemental as qcel
+from qcelemental.models import Molecule
 
 from ..exceptions import *
-from ..molecule import Molecule
+#from ..molecule import Molecule
 from ..moptions.options import conv_float2negexp
 
 
@@ -573,14 +574,13 @@ def format_fjobarc(energy, amap, elem, coordinates, gradient, dipole):
     return fja
 
 
-def backtransform(chgeMol, permMol, chgeGrad=None, chgeDip=None):
-    """Here, *chgeMol* and *chgeGrd* need to be turned into the native Cfour
-    orientation embodied by *permMol*. Currently for vpt2.
+def backtransform(chgeMol: 'Molecule', permMol: 'Molecule', chgeGrad=None, chgeDip=None):
+    """Return `chgeMol` and `chgeGrd` to the native Cfour orientation embodied by `permMol`. Currently for vpt2.
 
 <         p4c4 = OrientMols(p4Mol, outMol)
 <         oriCoord = p4c4.transform_coordinates2(outMol)
 ---
->         # TODO watch out - haven't seen atom_map=False yet
+>         # TODO watch out - haven't seen atom_map=False yet  # May 2019 we have now
 >         rmsd, mill, amol = outMol.B787(p4Mol, atoms_map=True, mols_align=True, verbose=0)
 >         oriCoord = mill.align_coordinates(outMol.geometry(np_out=True))
 
@@ -602,18 +602,17 @@ def backtransform(chgeMol, permMol, chgeGrad=None, chgeDip=None):
 
     """
     # Set up array reorientation object -- opposite than usual
-    rmsd, mill, amol = chgeMol.B787(permMol, atoms_map=True, mols_align=True, verbose=0)
-    oriCoord = mill.align_coordinates(chgeMol.geometry(np_out=False))
-    p4Elem = []
-    for at in range(chgeMol.natom()):
-        p4Elem.append(chgeMol.Z(at))
-    oriElem = mill.align_atoms(np.array(p4Elem))
+    amol, data = chgeMol.align(permMol, atoms_map=False, mols_align=True, verbose=0)
+    mill = data['mill']
+
+    oriCoord = mill.align_coordinates(chgeMol.geometry)
+    oriElem = mill.align_atoms(np.array(chgeMol.atomic_numbers))
     oriElemMap = mill.atommap
 
     oriGrad = None if chgeGrad is None else mill.align_gradient(np.array(chgeGrad))
     oriDip = None if chgeDip is None else mill.align_vector(np.array(chgeDip))
 
-    if chgeGrad and chgeDip:
+    if chgeGrad is not None and chgeDip is not None:
         return oriElemMap, oriElem, oriCoord, oriGrad, oriDip
     else:
         return oriElemMap, oriElem, oriCoord
@@ -669,18 +668,18 @@ def jajo2mol(jajodic):
     from JAINDX and JOBARC.
 
     """
-    map = jajodic['MAP2ZMAT']
-    elem = jajodic['ATOMCHRG']
-    coord = jajodic['COORD   ']
+    zmap = jajodic[b'MAP2ZMAT']
+    elem = jajodic[b'ATOMCHRG']
+    coord = jajodic[b'COORD   ']
     Nat = len(elem)
 
     molxyz = '%d bohr\n\n' % (Nat)
     # TODO chgmult, though not really necessary for reorientation
     for at in range(Nat):
-        posn = map[at] - 1
+        posn = zmap[at] - 1
         el = 'GH' if elem[posn] == 0 else qcel.periodictable.to_E(elem[posn])
         posn *= 3
         molxyz += '%s %21.15f %21.15f %21.15f\n' % (el, coord[posn], coord[posn + 1], coord[posn + 2])
-    mol = Molecule.init_with_xyz(molxyz, no_com=True, no_reorient=True, contentsNotFilename=True)
+    mol = Molecule(validate=False, **qcel.molparse.to_schema(qcel.molparse.from_string(molxyz, dtype='xyz+', fix_com=True, fix_orientation=True)["qm"], dtype=2))
 
     return mol

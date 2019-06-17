@@ -18,24 +18,25 @@ def clean_nu_options():
 def load_nu_options():
     global nu_options
 
-    load_qcdb_defaults(nu_options)
-    if which('xcfour') and which_import('psi4'):
-        load_cfour_defaults_from_psi4(nu_options)
-    if which('nwchem'):
-        load_nwchem_defaults(nu_options)
-    if which('rungms'):
-        load_gamess_defaults(nu_options)
-    if which('psi4') and which_import('psi4'):
-        load_psi4_defaults(nu_options)
-    try:
-        import resp
-    except ImportError:
-        print('import resp_qcdb FAIL')
-    else:
-        print('resp at', resp.__file__)
-        resp.load_defaults(nu_options)
+    load_options(nu_options)
     #print('OPTIONS LOADED')
     #print(nu_options)
+
+
+def load_options(options):
+    """Initialize program options defaults onto `options`."""
+
+    load_qcdb_defaults(options)
+    if which('xcfour') and which_import('psi4'):
+        load_cfour_defaults_from_psi4(options)
+    if which('nwchem'):
+        load_nwchem_defaults(options)
+    if which('rungms'):
+        load_gamess_defaults(options)
+    if which('psi4') and which_import('psi4'):
+        load_psi4_defaults(options)
+    if which_import('resp'):
+        resp.load_defaults(nu_options)
 
 
 nu_options = None

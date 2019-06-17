@@ -1,6 +1,4 @@
 import copy
-import pprint
-pp = pprint.PrettyPrinter(width=120)
 import inspect
 from typing import Any, Dict, Optional
 from decimal import Decimal
@@ -16,7 +14,7 @@ from qcengine.programs.cfour.keywords import format_keywords, format_keyword
 from .. import qcvars
 #from ..driver.driver_helpers import print_variables
 from ..libmintsbasisset import BasisSet
-from ..util import provenance_stamp
+from ..util import print_jobrec, provenance_stamp
 from . import harvester
 from .bas import extract_basis_from_genbas, format_basis_for_cfour, format_molecule
 
@@ -46,28 +44,21 @@ def run_cfour(name, molecule, options, **kwargs):
     return jobrec
 
 
-def _print_helper(label, dicary, do_print):
-    if do_print:
-        print(label + ' <<<')
-        pp.pprint(dicary)
-        print('>>>')
-
-
 class QcdbCFOURHarness(CFOURHarness):
     def compute(self, input_model: 'ResultInput', config: 'JobConfig') -> 'Result':
         self.found(raise_error=True)
 
         verbose = 1
 
-        _print_helper(f'[1] {self.name} RESULTINPUT PRE-PLANT', input_model.dict(), verbose >= 3)
+        print_jobrec(f'[1] {self.name} RESULTINPUT PRE-PLANT', input_model.dict(), verbose >= 3)
 
         job_inputs = self.qcdb_build_input(input_model, config)
 
-        _print_helper(f'[2] {self.name}REC PRE-ENGINE', job_inputs, verbose >= 4)
+        print_jobrec(f'[2] {self.name}REC PRE-ENGINE', job_inputs, verbose >= 4)
 
         success, dexe = self.execute(job_inputs)
 
-        _print_helper(f'[3] {self.name}REC POST-ENGINE', dexe, verbose >= 4)
+        print_jobrec(f'[3] {self.name}REC POST-ENGINE', dexe, verbose >= 4)
 
         if not success:
             output_model = input_model
@@ -77,11 +68,11 @@ class QcdbCFOURHarness(CFOURHarness):
         dexe["outfiles"]["stderr"] = dexe["stderr"]
         output_model = self.parse_output(dexe["outfiles"], input_model)
 
-        _print_helper(f'[4a] {self.name} RESULT POST-HARVEST', output_model.dict(), verbose >= 5)
+        print_jobrec(f'[4a] {self.name} RESULT POST-HARVEST', output_model.dict(), verbose >= 5)
 
         output_model = self.qcdb_post_parse_output(input_model, output_model)
 
-        _print_helper(f'[4] {self.name} RESULT POST-POST-HARVEST', output_model.dict(), verbose >= 2)
+        print_jobrec(f'[4] {self.name} RESULT POST-POST-HARVEST', output_model.dict(), verbose >= 2)
 
         return output_model
 
@@ -89,7 +80,7 @@ class QcdbCFOURHarness(CFOURHarness):
                          template: Optional[str] = None) -> Dict[str, Any]:
         cfourrec = {
             'infiles': {},
-            'scratch_location': config.scratch_directory,
+            'scratch_directory': config.scratch_directory,
         }
 
         molrec = qcel.molparse.from_schema(input_model.molecule.dict())
@@ -103,7 +94,11 @@ class QcdbCFOURHarness(CFOURHarness):
 
         _qcdb_basis = ropts.scroll['QCDB']['BASIS'].value
         _cfour_basis = ropts.scroll['CFOUR']['BASIS'].value
-        if _qcdb_basis == '':
+        if input_model.model.basis != '(auto)' and not ropts.scroll['QCDB']['BASIS'].disputed() and not ropts.scroll['CFOUR']['BASIS'].disputed():
+            qbs = BasisSet.pyconstruct(molrec, 'BASIS', input_model.model.basis)
+            cfourrec['infiles']['GENBAS'] = qbs.print_detail_cfour()
+            bascmd = format_basis_for_cfour(molrec, ropts, qbs.has_puream())
+        elif _qcdb_basis == '':
             _, cased_basis = format_keyword('CFOUR_BASIS', _cfour_basis)
             cfourrec['infiles']['GENBAS'] = extract_basis_from_genbas(cased_basis,
                                                                       input_model.molecule.symbols,

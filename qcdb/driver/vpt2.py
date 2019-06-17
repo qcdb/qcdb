@@ -257,6 +257,7 @@ def vpt2(name, **kwargs):
             },
             'model': {
                 'method': 'c4-scf', #'hf',
+                #'basis': '6-31g',
                 'basis': 'sto-3g',
             },
             'molecule': molecule.to_schema(dtype=2),
@@ -289,11 +290,13 @@ def vpt2(name, **kwargs):
         print('{:_^45}'.format('  VPT2 Setup: Harmonic  '))
 
         # Generate the displacements that will form the harmonic freq
-        success, dexe = qcng.util.execute(['xjoda'], cfourrec['infiles'], [],
-                                          scratch_location=config.scratch_directory, scratch_messy=True)
+        scrkwgs = {'scratch_directory': config.scratch_directory, 'scratch_messy': True, 'scratch_suffix': '_000'}
+        success, dexe = qcng.util.execute(['xjoda'], cfourrec['infiles'], [], **scrkwgs)
         partial = dexe['stdout']
-        success, dexe = qcng.util.execute(['xsymcor'], {}, ['zmat*'],
-                                          scratch_location=config.scratch_directory, scratch_messy=False, scratch_name=Path(dexe['scratch_directory']).name, scratch_exist_ok=True)
+
+        scrkwgs.update({'scratch_name': Path(dexe['scratch_directory']).name, 'scratch_exist_ok': True})
+        scrkwgs.update({'scratch_messy': scratch_messy})
+        success, dexe = qcng.util.execute(['xsymcor'], {}, ['zmat*'], **scrkwgs)
         partial += dexe['stdout']
     
         print(partial)  # partial.out
@@ -354,7 +357,7 @@ def vpt2(name, **kwargs):
 
                 fjobarc = vpt2_reaprun_files(zm12, shelf['linkage'], isSowReap, isC4notP4, isC4fully,
                     shelf['zmat'][zm12], #current_directory, psioh.get_default_path(), cfour_tmpdir,
-                    lowername, kwargs, shelf, config, package)
+                    lowername, kwargs, shelf['genbas'], config, package, scratch_messy=scratch_messy)
                 shelf['fjobarc'][zm12] = fjobarc
                 shelf.sync()
         shelf['status'] = 'harm_jobs_reaped'
@@ -366,46 +369,41 @@ def vpt2(name, **kwargs):
         for k, v in shelf.items():
             print('   {:_^20}'.format(k))
             #pp.pprint(v)
-        pp.pprint(shelf['zmat'].keys())
 
-        #ins = {k + '.fja': v for k, v in shelf['fjobarc'].items()}
-        #ins['ZMAT'] = shelf['zmat']['000-000']
-        #ins['GENBAS'] = shelf['genbas']
-        #pp.pprint(ins)
-        #success, dexe = qcng.util.execute(['xjoda'], ins, [],
-        #                                  scratch_location=config.scratch_directory, scratch_messy=True)
-        #pp.pprint(dexe)
-        #sys.exit()
+        #scrkwgs = {'scratch_directory': config.scratch_directory, 'scratch_messy': True, 'scratch_suffix': '_000'}
+        #scrkwgs.update({'scratch_name': Path(dexe['scratch_directory']).name, 'scratch_exist_ok': True})
+        #scrkwgs.update({'scratch_messy': scratch_messy})
 
         # Process the gradients into harmonic freq
-        success, dexe = qcng.util.execute(['xjoda'], {'ZMAT': shelf['zmat']['000-000'], 'GENBAS': shelf['genbas']}, [],
-                                          scratch_location=config.scratch_directory, scratch_messy=True)
-        print('xjoda', success)
+        scrkwgs = {'scratch_directory': config.scratch_directory, 'scratch_messy': True, 'scratch_suffix': '_000med'}
+        success, dexe = qcng.util.execute(['xjoda'], {'ZMAT': shelf['zmat']['000-000'], 'GENBAS': shelf['genbas']}, [], **scrkwgs)
         harmout = dexe['stdout']
-        success, dexe = qcng.util.execute(['xsymcor'], {}, [],
-                                          scratch_location=config.scratch_directory, scratch_messy=True, scratch_name=Path(dexe['scratch_directory']).name, scratch_exist_ok=True)
+
+        scrkwgs.update({'scratch_name': Path(dexe['scratch_directory']).name, 'scratch_exist_ok': True})
+        success, dexe = qcng.util.execute(['xsymcor'], {}, [], **scrkwgs)
         print('xsymcor', success)
         harmout += dexe['stdout']
+
         for zm12 in zmats0N:
             zm1, zm2 = zm12.split('-')
-            success, dexe = qcng.util.execute(['xja2fja'], {'FJOBARC': shelf['fjobarc'][zm12]}, [],
-                                              scratch_location=config.scratch_directory, scratch_messy=True, scratch_name=Path(dexe['scratch_directory']).name, scratch_exist_ok=True)
+            success, dexe = qcng.util.execute(['xja2fja'], {'FJOBARC': shelf['fjobarc'][zm12]}, [], **scrkwgs)
             print(zm12, 'xja2fja', success)
             harmout += dexe['stdout']
-            success, dexe = qcng.util.execute(['xsymcor'], {}, [],
-                                              scratch_location=config.scratch_directory, scratch_messy=True, scratch_name=Path(dexe['scratch_directory']).name, scratch_exist_ok=True)
+
+            success, dexe = qcng.util.execute(['xsymcor'], {}, [], **scrkwgs)
             print(zm12, 'xsymcor', success)
             harmout += dexe['stdout']
 
-        success, dexe = qcng.util.execute(['xjoda'], {}, [],
-                                          scratch_location=config.scratch_directory, scratch_messy=True, scratch_name=Path(dexe['scratch_directory']).name, scratch_exist_ok=True)
+        success, dexe = qcng.util.execute(['xjoda'], {}, [], **scrkwgs)
         print('xjoda', success)
         harmout += dexe['stdout']
+
         for zm in Path(dexe['scratch_directory']).glob('zmat*'):
             print('Removing', zm)
             os.remove(zm)
-        success, dexe = qcng.util.execute(['xcubic'], {}, ['zmat*'],
-                                          scratch_location=config.scratch_directory, scratch_messy=True, scratch_name=Path(dexe['scratch_directory']).name, scratch_exist_ok=True)
+
+        scrkwgs.update({'scratch_messy': scratch_messy})
+        success, dexe = qcng.util.execute(['xcubic'], {}, ['zmat*'], **scrkwgs)
         print('xcubic', success)
         harmout += dexe['stdout']
         #print('HARMOUT')
@@ -414,27 +412,6 @@ def vpt2(name, **kwargs):
         pp.pprint(shelf['zmat'].keys())    
         pp.pprint(shelf['fjobarc'].keys())    
 
-#def _run_cfour_module(command, infiles, outfiles, *, sequence: str) -> str:
-#    """Compact scratch and output handles for sequence of CFOUR calls.
-#
-#    Parameters
-#    ----------
-#    sequence : {'first', 'middle', 'last'}
-#
-#    """
-#    scrkwgs = {'scratch_location': config.scratch_directory}
-#    if sequence != 'last':
-#        scrkwgs['scratch_messy'] = True
-#    if sequence != 'first']
-#        scrkwgs['scratch_exist_ok'] = True
-#        
-#    # TODO failure handline
-#    success, dexe = qcng.util.execute(command, infiles, outfiles)
-#
-#    if sequence == 'first':
-#        return dexe['stdout'], dexe['scratch_directory']
-#    else:
-#        return dexe['stdout']
 
 
 #        os.chdir(psioh.get_default_path() + cfour_tmpdir + '/harm')  # psi_scratch/cfour/harm
@@ -467,24 +444,26 @@ def vpt2(name, **kwargs):
             #print('%s\n' % shelf['zmat'][zm12])
 
         zmatsN0 = [item for item in sorted(shelf['zmat'].keys()) if (item[:3] != '000' and item[-3:] == '000')]
-        for zm1_ in zmatsN0:
-            zm1, _ = zm1_.split('-')
+        for zmN0 in zmatsN0:
+            zm1, _ = zmN0.split('-')
 
             # Collect displacements along the normal coordinates generated by the harmonic freq.
             #   Further harmonic freqs are to be run at each of these to produce quartic force field.
             #   To carry these out, generate displacements for findif by gradient at each displacement.
 
-            success, dexe = qcng.util.execute(['xjoda'], {'ZMAT': shelf['zmat'][zm1_], 'GENBAS': shelf['genbas']}, [],
-                                          scratch_location=config.scratch_directory, scratch_messy=True)
-            success, dexe = qcng.util.execute(['xsymcor'], {}, ['zmat*'],
-                                          scratch_location=config.scratch_directory, scratch_messy=False, scratch_name=Path(dexe['scratch_directory']).name, scratch_exist_ok=True)
+            scrkwgs = {'scratch_directory': config.scratch_directory, 'scratch_messy': True, 'scratch_suffix': f'_{zmN0}'}
+            success, dexe = qcng.util.execute(['xjoda'], {'ZMAT': shelf['zmat'][zmN0], 'GENBAS': shelf['genbas']}, [], **scrkwgs)
+
+            scrkwgs.update({'scratch_name': Path(dexe['scratch_directory']).name, 'scratch_exist_ok': True})
+            scrkwgs.update({'scratch_messy': scratch_messy})
+            success, dexe = qcng.util.execute(['xsymcor'], {}, ['zmat*'], **scrkwgs)
 
             for fl, contents in dexe['outfiles']['zmat*'].items():
                 zm12 = zm1 + '-' + fl[-3:]
                 shelf['zmat'][zm12] = contents
                 shelf.sync()
                 print('  CFOUR scratch file %s for %s has been read\n' % (fl, zm12))
-                print('%s\n' % shelf['zmat'][zm12])
+                #print('%s\n' % shelf['zmat'][zm12])
 
 #        zmatsN0 = [item[-3:] for item in sorted(glob.glob('zmat*'))]
 #        os.chdir('..')  # psi_scratch/cfour
@@ -565,15 +544,15 @@ def vpt2(name, **kwargs):
                 return 0.0
 
         # Collect all results from gradients forming the anharmonic freq
-        for zm12 in zmatsNN:
-            zm1, zm2 = zm12.split('-')
-            if zm12 not in shelf['fjobarc']:
-                print('{:_^45}'.format(f'  VPT2 Computation: {zm12}'))
+        for zmNN in zmatsNN:
+            zm1, zm2 = zmNN.split('-')
+            if zmNN not in shelf['fjobarc']:
+                print('{:_^45}'.format(f'  VPT2 Computation: {zmNN}'))
 
-                fjobarc = vpt2_reaprun_files(zm12, shelf['linkage'], isSowReap, isC4notP4, isC4fully,
-                    shelf['zmat'][zm12], #current_directory, psioh.get_default_path(), cfour_tmpdir,
-                    lowername, kwargs, shelf, config, package)
-                shelf['fjobarc'][zm12] = fjobarc
+                fjobarc = vpt2_reaprun_files(zmNN, shelf['linkage'], isSowReap, isC4notP4, isC4fully,
+                    shelf['zmat'][zmNN],
+                    lowername, kwargs, shelf['genbas'], config, package, scratch_messy=scratch_messy)
+                shelf['fjobarc'][zmNN] = fjobarc
                 shelf.sync()
         shelf['status'] = 'anharm_jobs_reaped'
 
@@ -584,11 +563,8 @@ def vpt2(name, **kwargs):
 
         print('{:_^45}'.format('  VPT2 Results: Harmonic  '))
 
-        pprint.pprint(shelf['zmat'].keys())
-        pprint.pprint(shelf['fjobarc'].keys())
-
         # Process the gradients into harmonic freq
-        scrkwgs = {'scratch_location': config.scratch_directory, 'scratch_messy': True}
+        scrkwgs = {'scratch_directory': config.scratch_directory, 'scratch_messy': True, 'scratch_suffix': '_000final'}
         success, dexe = qcng.util.execute(['xjoda'], {'ZMAT': shelf['zmat']['000-000'], 'GENBAS': shelf['genbas']}, [], **scrkwgs)
         anharmout = dexe['stdout']
 
@@ -617,7 +593,7 @@ def vpt2(name, **kwargs):
         for zm1_ in zmatsN0:
             zm1, _ = zm1_.split('-')
 
-            scrkwgs = {'scratch_location': config.scratch_directory, 'scratch_messy': True, 'scratch_exist_ok': False}
+            scrkwgs = {'scratch_directory': config.scratch_directory, 'scratch_messy': True, 'scratch_suffix': f'_{zm1}final'}
             success, dexe = qcng.util.execute(['xjoda'], {'ZMAT': shelf['zmat'][zm1_], 'GENBAS': shelf['genbas']}, [], **scrkwgs)
             anharmout = dexe['stdout']
 
@@ -655,7 +631,7 @@ def vpt2(name, **kwargs):
         pprint.pprint(shelf['zmat'].keys())
         pprint.pprint(shelf['fjobarc'].keys())
 
-        scrkwgs = {'scratch_location': config.scratch_directory, 'scratch_messy': True}
+        scrkwgs = {'scratch_directory': config.scratch_directory, 'scratch_messy': True, 'scratch_suffix': '_000anharm'}
         success, dexe = qcng.util.execute(['ls'], {'JOBARC': jobarc0, 'JAINDX': jaindx0}, [], as_binary=['JOBARC', 'JAINDX'], **scrkwgs)
         anharmout = ''
         scrkwgs.update({'scratch_name': Path(dexe['scratch_directory']).name, 'scratch_exist_ok': True})
@@ -675,9 +651,7 @@ def vpt2(name, **kwargs):
         shelf['status'] = 'vpt2_completed'
 
     # Finish up
-    os.chdir(current_directory)
     shelf.close()
-#    optstash.restore()
 
 
 def vpt2_sow_files(item, linkage, isC4notP4, isC4fully, zmat, inputSansMol, inputGenbas):
@@ -722,7 +696,7 @@ print_out('VPT2 RESULT: linkage {0} for item {1} yields CURRENT DIPOLE being [%r
 
 
 #def vpt2_reaprun_files(item, linkage, isSowReap, isC4notP4, isC4fully, zmat, outdir, scrdir, c4scrdir, lowername, kwargs):
-def vpt2_reaprun_files(item, linkage, isSowReap, isC4notP4, isC4fully, zmat, lowername, kwargs, shelf, config, package):
+def vpt2_reaprun_files(item, linkage, isSowReap, isC4notP4, isC4fully, zmat, lowername, kwargs, genbas, config, package, scratch_messy):
     """Provided with the particular displacement number *item* and the
     associated *zmat* file with geometry and *linkage*, returns the
     FJOBARC contents. Depending on the mode settings of *isC4notP4*,
@@ -732,11 +706,8 @@ def vpt2_reaprun_files(item, linkage, isSowReap, isC4notP4, isC4fully, zmat, low
     scratch directory within.
 
     """
-#    os.chdir(outdir)  # current_directory
-    # Extract qcdb.Molecule at findif orientation
+    # Extract qcel.models.Molecule at findif orientation
     zmmol = harvest_zmat(zmat)
-#isSowReap= False isC4notP4= True isC4fully= False
-#isSowReap= False isC4notP4= False isC4fully= False
 
     # Cfour S/R Direct for gradients
     if isC4fully:
@@ -798,32 +769,23 @@ def vpt2_reaprun_files(item, linkage, isSowReap, isC4notP4, isC4fully, zmat, low
 
     # Psi4 for gradients
     else:
-        # Prepare Cfour skeleton calc directory
-#        os.chdir(scrdir + c4scrdir)  # psi_scratch/cfour
-#        if os.path.exists('scr.' + item):
-#            shutil.rmtree('scr.' + item)
-#        os.mkdir('scr.' + item)
-#        os.chdir('scr.' + item)  # psi_scratch/cfour/scr.000-004
-#        with open('ZMAT', 'w') as handle:
-#            handle.write(zmat)
-#        shutil.copy2('../harm/GENBAS', 'GENBAS')
 
         # Run Cfour skeleton calc and extract qcdb.Molecule at needed C4 orientation
-        success, dexe = qcng.util.execute(['xjoda'], {'ZMAT': zmat, 'GENBAS': shelf['genbas']},  [],
-                                          scratch_location=config.scratch_directory, 
-                                          scratch_messy=True)
-        success, dexe = qcng.util.execute(['xvmol'], {}, [],
-                                          scratch_location=config.scratch_directory, 
-                                          scratch_messy=True, scratch_name=Path(dexe['scratch_directory']).name, scratch_exist_ok=True)
-        success, dexe = qcng.util.execute(['xvmol2ja'], {}, ['JOBARC', 'JAINDX'], as_binary=['JOBARC', 'JAINDX'],
-                                          scratch_location=config.scratch_directory,
-                                          scratch_messy=False, scratch_name=Path(dexe['scratch_directory']).name, scratch_exist_ok=True)
+        scrkwgs = {'scratch_directory': config.scratch_directory, 'scratch_messy': True, 'scratch_suffix': f'_{item}skel'}
+        success, dexe = qcng.util.execute(['xjoda'], {'ZMAT': zmat, 'GENBAS': genbas},  [], **scrkwgs)
+        skel = dexe['stdout']
 
-        #with open('partial.out', 'w') as handle:
-        #    handle.write(run_cfour_module('xjoda'))
-        #    handle.write(run_cfour_module('xvmol'))
-        #    handle.write(run_cfour_module('xvmol2ja'))
-        print(f"""  CFOUR scratch file 'JOBARC (binary)' for {item} has been read\n""")
+        scrkwgs.update({'scratch_name': Path(dexe['scratch_directory']).name, 'scratch_exist_ok': True})
+        success, dexe = qcng.util.execute(['xvmol'], {}, [], **scrkwgs)
+        skel += dexe['stdout']
+
+        scrkwgs.update({'scratch_messy': scratch_messy})
+        success, dexe = qcng.util.execute(['xvmol2ja'], {}, ['JOBARC', 'JAINDX'], as_binary=['JOBARC', 'JAINDX'], **scrkwgs)
+        skel += dexe['stdout']
+
+        print(skel)  # partial.out
+
+        print(f"""  CFOUR scratch file 'JOBARC (binary)' for {item} has been read""")
         c4mol = jajo2mol(getrec([b'COORD   ', b'ATOMCHRG', b'MAP2ZMAT', b'IFLAGS  '], dexe['outfiles']['JOBARC'], dexe['outfiles']['JAINDX']))
 
         # S/R: Reap results from output file
@@ -839,10 +801,6 @@ def vpt2_reaprun_files(item, linkage, isSowReap, isC4notP4, isC4fully, zmat, low
 
         # C: Run the job and collect results
         else:
-#            core.IO.set_default_namespace(item)
-#            molecule = geometry(zmmol.create_psi4_string_from_molecule(), 'disp-' + item)
-#            molecule.update_geometry()
-#            gradient(lowername, **kwargs)
 
             resi = ResultInput(
                 **{
@@ -854,11 +812,11 @@ def vpt2_reaprun_files(item, linkage, isSowReap, isC4notP4, isC4fully, zmat, low
                         'method': lowername,
                         'basis': '(auto)',
                     },
-                    'molecule': zmmol, #.to_schema(dtype=2),
+                    'molecule': zmmol,
                     'provenance': provenance_stamp(__name__),
                 })
-            res = qcng.compute(resi, 'qcdb-' + package, raise_error=True) #'qcdb-ccfourrec = cfourharness.qcdb_build_input(resi, config)
-            pp.pprint(res.dict())
+            res = qcng.compute(resi, 'qcdb-' + package, raise_error=True)
+            #pp.pprint(res.dict())
 
             fje = res.extras['qcdb:qcvars']['CURRENT ENERGY']['data']
             fjgrd = res.extras['qcdb:qcvars']['CURRENT GRADIENT']['data']
@@ -867,15 +825,9 @@ def vpt2_reaprun_files(item, linkage, isSowReap, isC4notP4, isC4fully, zmat, low
             fjdip = [float(res.extras['qcdb:qcvars']['CURRENT DIPOLE X']['data']) / qcel.constants.dipmom_au2debye,
                      float(res.extras['qcdb:qcvars']['CURRENT DIPOLE Y']['data']) / qcel.constants.dipmom_au2debye,
                      float(res.extras['qcdb:qcvars']['CURRENT DIPOLE Z']['data']) / qcel.constants.dipmom_au2debye]
-#            fje = core.variable('CURRENT ENERGY')
-#            fjgrd = p4util.mat2arr(core.get_gradient())
-#            fjdip = [core.variable('CURRENT DIPOLE X') / constants.dipmom_au2debye,
-#                     core.variable('CURRENT DIPOLE Y') / constants.dipmom_au2debye,
-#                     core.variable('CURRENT DIPOLE Z') / constants.dipmom_au2debye]
 
         # Transform results into C4 orientation (defined by c4mol) & forge FJOBARC file
-        fjobarc = format_fjobarc(fje,
-            *backtransform(chgeMol=zmmol, permMol=c4mol, chgeGrad=fjgrd, chgeDip=fjdip))
+        fjobarc = format_fjobarc(fje, *backtransform(chgeMol=zmmol, permMol=c4mol, chgeGrad=fjgrd, chgeDip=fjdip))
 
     return fjobarc
 
