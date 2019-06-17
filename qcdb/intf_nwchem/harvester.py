@@ -204,8 +204,8 @@ def harvest_outfile_pass(outtext):
         
         #mobj now lists, not groups
         for mobj_list in mobj:
-            for i in mobj_list:
-                str.replace('MBPT', 'MP')
+           for i in mobj_list:
+               str.replace('MBPT', 'MP')
            print('matched %s' % mobj_list[0])
            print(mobj_list)
            psivar['%s CORRELATION ENERGY' % mobj_list[0]] = mobj_list[1]
