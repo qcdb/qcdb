@@ -130,6 +130,14 @@ def harvest_outfile_pass(outtext):
             psivar['ONE-ELECTRON ENERGY'] = mobj.group(2)
             psivar['TWO-ELECTRON ENERGY'] = mobj.group(3)
             psivar['MCSCF TOTAL ENERGY'] = mobj.group(4)
+	#for mobj_list in mobj:
+	    #for i in mobj_list:
+		#count += 0
+		#print('matched mcscf iteration %i', count)
+            	#psivar['HF TOTAL ENERGY'] = mobj.group(1)
+            	#psivar['ONE-ELECTRON ENERGY'] = mobj.group(2)
+            	#psivar['TWO-ELECTRON ENERGY'] = mobj.group(3)
+            	#psivar['MCSCF TOTAL ENERGY'] = mobj.group(4)
 
         #Process MP2 (Restricted, Unrestricted(RO n/a))
         #1)SCF-MP2
@@ -196,7 +204,8 @@ def harvest_outfile_pass(outtext):
         
         #mobj now lists, not groups
         if mobj:
-            for mobj_list in mobj:
+            str.replace('MBPT', 'MP') #should fix MBPT
+	    for mobj_list in mobj:
                print('matched %s' % mobj_list[0])
                print(mobj_list)
                psivar['%s CORRELATION ENERGY' % mobj_list[0]] = mobj_list[1]
@@ -293,7 +302,7 @@ def harvest_outfile_pass(outtext):
 
             ext_energy_list = []
             for mobj_list in mobj:
-                print('matched EOM-%s - %s symmetry' % (cc_name, mob_list[0]))  #cc_name, symmetry
+                print('matched EOM-%s - %s symmetry' % (cc_name, mobj_list[0]))  #cc_name, symmetry
                 print(mobj_list)
                 count = 0
                 for line in mobj_list[1].splitlines():
@@ -626,7 +635,6 @@ def muster_memory(mem):
     return text, options
 
 
-#May need to adjust options for qcdb driver ATL
 def muster_psi4options(opt, mol):
     """Translate psi4 keywords *opt* that have been explicitly set into
     their NWChem counterparts. Since explicitly set NWChem module keyword
@@ -1191,11 +1199,6 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
 #    else:
 #        raise ValidationError("""Requested NWChem computational methods %s is not available.""" % (lowername))
 
-    #Set clobbering
-#    if 'NWCHEM_TASK_SCF' in options['NWCHEM']:
-#        options['NWCHEM']['NWCHEM_TASK_SCF']['clobber'] = True
-#        options['NWCHEM']['NWCHEM_TASK_SCF']['superclobber'] = True
-
 #    if 'NWCHEM_TASK_MCSCF' in options['NWCHEM']:
 #        options['NWCHEM']['NWCHEM_TASK_MCSCF']['clobber'] = True
 #        options['NWCHEM']['NWCHEM_TASK_MCSCF']['superclobber'] = True
@@ -1208,27 +1211,9 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
 #        options['NWCHEM']['NWCHEM_TASK_SODFT']['clobber'] = True
 #        options['NWCHEM']['NWCHEM_TASK_SODFT']['superclobber'] = True
 
-#    if 'NWCHEM_TASK_MP2' in options['NWCHEM']:
-#        options['NWCHEM']['NWCHEM_TASK_MP2']['clobber'] = True
-#        options['NWCHEM']['NWCHEM_TASK_MP2']['superclobber'] = True
-
-#    if 'NWCHEM_TASK_CCSD' in options['NWCHEM']:
-#        options['NWCHEM']['NWCHEM_TASK_CCSD']['clobber'] = True
-#        options['NWCHEM']['NWCHEM_TASK_CCSD']['superclobber'] = True
-
-#    if 'NWCHEM_TASK_CCSD(T)' in options['NWCHEM']:
-#        options['NWCHEM']['NWCHEM_TASK_CCSD(T)']['clobber'] = True
-#        options['NWCHEM']['NWCHEM_TASK_CCSD(T)']['superclobber'] = True
-
-#    if 'NWCHEM_TASK_TCE' in options['NWCHEM']:
-#        options['NWCHEM']['NWCHEM_TASK_TCE']['clobber'] = True
-#        options['NWCHEM']['NWCHEM_TASK_TCE']['superclobber'] = True
-
 #    if 'NWCHEM_TASK_TDDFT' in options['NWCHEM']:
 #        options['NWCHEM']['NWCHEM_TASK_TDDFT']['clobber'] = True
 #        options['NWCHEM']['NWCHEM_TASK_TDDFT']['superclobber'] = True
-
-#    return text, options
 
 
 def harvest(p4Mol, nwout, **largs):  #check orientation and scratch files
