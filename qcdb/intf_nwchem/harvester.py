@@ -203,15 +203,14 @@ def harvest_outfile_pass(outtext):
             r'\s*$', outtext, re.MULTILINE | re.DOTALL) 
         
         #mobj now lists, not groups
-	for mobj_list in mobj:
-           for i in mobj_list:
-		str.replace('MBPT', 'MP')
-	   print('matched %s' % mobj_list[0])
+        for mobj_list in mobj:
+            for i in mobj_list:
+                str.replace('MBPT', 'MP')
+           print('matched %s' % mobj_list[0])
            print(mobj_list)
            psivar['%s CORRELATION ENERGY' % mobj_list[0]] = mobj_list[1]
            psivar['%s TOTAL ENERGY' % mobj_list[2]] = mobj_list[3]
             
-
         # Process CC '()' correction part through tce [dertype] command
         mobj = re.search(
             r'^\s+' + cc_name + r'\(' + r'(.*?)' + r'\)' + r'\s+' + r'correction energy / hartree' + r'\s+=\s*' +
