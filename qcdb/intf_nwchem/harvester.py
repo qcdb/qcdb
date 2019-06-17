@@ -203,13 +203,13 @@ def harvest_outfile_pass(outtext):
             r'\s*$', outtext, re.MULTILINE | re.DOTALL) 
         
         #mobj now lists, not groups
-        if mobj:
-            str.replace('MBPT', 'MP') #should fix MBPT
-	    for mobj_list in mobj:
-               print('matched %s' % mobj_list[0])
-               print(mobj_list)
-               psivar['%s CORRELATION ENERGY' % mobj_list[0]] = mobj_list[1]
-               psivar['%s TOTAL ENERGY' % mobj_list[2]] = mobj_list[3]
+	for mobj_list in mobj:
+           for i in mobj_list:
+		str.replace('MBPT', 'MP')
+	   print('matched %s' % mobj_list[0])
+           print(mobj_list)
+           psivar['%s CORRELATION ENERGY' % mobj_list[0]] = mobj_list[1]
+           psivar['%s TOTAL ENERGY' % mobj_list[2]] = mobj_list[3]
             
 
         # Process CC '()' correction part through tce [dertype] command
