@@ -225,6 +225,7 @@ def test_1d():
     print(jrec['provenance'])
 
 
+@pytest.mark.xfail(True, reason='Old Driver, Spring 2019', run=True)
 @using_psi4
 def test_2a():
     system1()
@@ -251,6 +252,7 @@ def test_2a():
     print(jrec['provenance'])
 
 
+@pytest.mark.xfail(True, reason='Old Driver, Spring 2019', run=True)
 @using_cfour
 def test_2b():
     system1()
@@ -396,6 +398,7 @@ def test_5b():
 
 # MP2 TESTS
 
+@pytest.mark.xfail(True, reason='Old Driver, Spring 2019', run=True)
 @using_psi4
 def test_6a():
     system1()
