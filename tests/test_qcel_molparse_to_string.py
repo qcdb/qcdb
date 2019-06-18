@@ -6,7 +6,7 @@ import pint
 import qcelemental
 from qcelemental.tests import test_molparse_to_string
 
-from psi4.driver import qcdb
+import qcdb
 
 pytestmark = pytest.mark.quick
 
