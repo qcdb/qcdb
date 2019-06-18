@@ -43,7 +43,7 @@ def muster_and_format_molecule_and_basis_for_gamess(molrec, ropts, qbs, verbose=
     uniq_atombas_lines.append('')  # empty cards -3- and -4-
 
     for iat in range(qmol.natom()):
-        if iat == qmol.atom_to_unique(iat):
+        if iat == qmol.unique(qmol.atom_to_unique(iat)):
             uniq_atombas_lines.append(all_atom_lines[iat])  # card -5U-
             uniq_atombas_lines.extend(atom_basisset[iat].splitlines()[1:])  # cards -6U- and -7U-
             uniq_atombas_lines.append('')  # card -8U-
