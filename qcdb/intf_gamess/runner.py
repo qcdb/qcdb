@@ -1,3 +1,4 @@
+from typing import Any, Dict, Optional
 import sys
 import copy
 import pprint
@@ -5,7 +6,13 @@ pp = pprint.PrettyPrinter(width=120)
 import inspect
 #from decimal import Decimal
 
+import qcelemental as qcel
+from qcelemental.models import ResultInput
+from qcelemental.util import which
+
 import qcengine as qcng
+from qcengine.programs.util import PreservingDict
+from qcengine.programs.gamess import GAMESSHarness
 
 from .. import __version__
 #from .. import moptions
@@ -14,289 +21,219 @@ from .. import qcvars
 #from ..exceptions import *
 #from ..iface_psi4.options import query_options_defaults_from_psi
 from ..libmintsbasisset import BasisSet
+from ..util import provenance_stamp
 from ..molecule import Molecule
 from ..pdict import PreservingDict
 from .molbasopt import muster_and_format_molecule_and_basis_for_gamess, format_options_for_gamess
 from .harvester import muster_modelchem, muster_inherited_options
 
 
-def run_gamess(name, molecule, options, **kwargs):
-#    print('\nhit run_gamess', name, kwargs)
-
-#    #calledby = inspect.stack()
-#    #print('CALLEDBY')
-#    #for cur in calledby:
-#    #    print('CUR', cur[3])
-
-    jobrec = {}
-    jobrec['error'] = ''
-    jobrec['success'] = None
-    prov = {}
-    prov
-    prov['creator'] = 'QCDB'
-    prov['version'] = __version__
-    prov['routine'] = sys._getframe().f_code.co_name
-    jobrec['provenance'] = [prov]
-
-    jobrec['molecule'] = molecule.to_dict(np_out=False)
-    jobrec['method'] = name
-    jobrec['dertype'] = ['energy', 'gradient', 'hessian'].index(inspect.stack()[1][3])
-
-#    #if 'MEMORY' in options['GLOBALS']:
-#    #    mem = options['GLOBALS'].pop('MEMORY')
-#    #    print('MEM', mem)
-#    #    jobrec['memory'] = mem['value']
+#def run_gamess_old(name, molecule, options, **kwargs):
 #
-##    popts = collections.defaultdict(lambda: collections.defaultdict(dict))
-##    #for k, v in options['GLOBALS'].items():
-##    for k, v in options['CFOUR'].items():
-##        print('C4 opt', k, v)
-##   #     psi4.core.set_global_option(k.upper(), v['value'])
-##        popts[k] = v['value']
-##    jobrec['options'] = popts
-
-    qcschema_input = {
-        'schema_name': 'qcschema_input',
-        'schema_version': 1,
-        'driver': inspect.stack()[1][3],
-        'model': {
-            'method': name,
-            'basis': '(auto)',
-        },
-        'molecule': molecule.to_schema(dtype=2),
-        'extras': {},
-    }
-
-    jobrec['options'] = copy.deepcopy(options)
-    jobrec['qcschema_input'] = qcschema_input
-
-
-#    print('comin in')
-#    #print(jobrec['options'])
-#PR    print(jobrec['options'].print_changed())
-
-    jobrec = gamess_driver(jobrec)
-
-    return jobrec
-
-
-def gamess_driver(jobrec):
-#    import json
+#    prov = {}
+#    prov['creator'] = 'QCDB'
+#    prov['version'] = __version__
+#    prov['routine'] = sys._getframe().f_code.co_name
+#    
 #
-#    try:
-#        #jobrec['dashlevel']
-#        #jobrec['dashparams']
-#        #jobrec['functional']
-#        jobrec['molecule']
-#        #jobrec['do_gradient']
-#    except KeyError as err:
-#        #raise KeyError(
-#        #    'Required fields missing from ({})'.format(jobrec.keys())) from err
-#        jobrec['error'] += repr(err) + 'Required fields missing from ({})'.format(jobrec.keys())
-#        return jobrec
-
-#    print('GAMESS_DRIVER jr', jobrec)
-
-    gamessrec = gamess_plant(jobrec)
-#    #cfourrec = cfour_plant(jobrec)
-#    ##cfourrec['scratch_messy'] = True
-#
-#    ## test json roundtrip
-#    #jcfourrec = json.dumps(cfourrec)
-#    #cfourrec = json.loads(jcfourrec)
-
-#    print('GAMESSREC')
-#    pp.pprint(gamessrec)
-
-    qcschema_input = jobrec['qcschema_input']
-    qcschema_input['extras']['gamess.inp'] = gamessrec['gamess.inp']
-
-    ret = qcng.compute(qcschema_input, 'gamess').dict()
-#    print('[5] {} JOBREC POST-HARVEST (j@io) <<<'.format('CFOUR'))
-#    pp.pprint(ret)
-#    print('>>>')
-    jobrec.pop('qcschema_input')
-    progvars = PreservingDict(ret['extras']['qcvars'])
-    qcvars.build_out(progvars)
-    calcinfo = qcvars.certify(progvars, plump=True, nat=len(jobrec['molecule']['mass']))
-    jobrec['raw_output'] = ret['stdout']
-    jobrec['qcvars'] = calcinfo
-    jobrec['success'] = True
-
-#    jobrec['qcvars'] = ret['extras']['qcvars']
-#    pp.pprint(jobrec)
-#    print('END [6]')
-
-
-
-
-#    #cfour_subprocess(cfourrec)  # updates cfourrec
-#
-#    #cfour_harvest(jobrec, cfourrec)  # ? updates jobrec ?
-#
-#    #print('QC', jobrec['qcvars'])
-#    #return jobrec
-#
-#    verbose = 1
-#
-#    if verbose >= 3:
-#        print('[1] {} JOBREC PRE-PLANT (j@i) <<<'.format('CFOUR'))
-#        pp.pprint(jobrec)
-#        print('>>>')
-#
-#    cfourrec = cfour_plant(jobrec)
-#
-#    # test json roundtrip
-#    jcfourrec = json.dumps(cfourrec)
-#    cfourrec = json.loads(jcfourrec)
-#
-#    if verbose >= 4:
-#        print('[2] {}REC PRE-SUBPROCESS (m@i) <<<'.format('CFOUR'))
-#        pp.pprint(cfourrec)
-#        print('>>>\n')
-#
-#    cfour_subprocess(cfourrec)  # updates cfourrec
-#
-#    if verbose >= 4:
-#        print('[3] {}REC POST-SUBPROCESS (m@io) <<<'.format('CFOUR'))
-#        pp.pprint(cfourrec)
-#        print('>>>\n')
-#
-#    cfour_harvest(jobrec, cfourrec)  # updates jobrec
-#
-#    if verbose >= 2:
-#        print('[4] {} JOBREC POST-HARVEST (j@io) <<<'.format('CFOUR'))
-#        pp.pprint(jobrec)
-#        print('>>>')
-
-    return jobrec
-
-
-#def psi4_plant(jobrec):  # jobrec@i -> psi4@i
-#    psi4rec = {}
-#    psi4rec['json'] = {}
-#
-#    opts = jobrec['options']
-#    # NOTE TODO very limited OPTIONS HANDSHAKE
-#    muster_inherited_options(opts)
-#
-#    psi4rec['json']['schema_name'] = 'qcschema_input'
-#    psi4rec['json']['schema_version'] = 1
-#    omem = opts.scroll['QCDB'].pop('MEMORY')
-#    psi4rec['json']['memory'] = omem.value
-#    psi4rec['json']['molecule'] = qcel.molparse.to_schema(jobrec['molecule'], dtype=2)
-#    psi4rec['json']['driver'] = jobrec['driver']
-#    mtd = jobrec['method']
-#    psi4rec['json']['model'] = {
-#        'method': mtd[3:] if mtd.startswith('p4-') else mtd,
-#        'basis': '(auto)',
+#    qcschema_input = {
+#        'schema_name': 'qcschema_input',
+#        'schema_version': 1,
+#        'driver': inspect.stack()[1][3],
+#        'model': {
+#            'method': name,
+#            'basis': '(auto)',
+#        },
+#        'molecule': molecule.to_schema(dtype=2),
+#        'extras': {},
 #    }
-#    psi4rec['json']['extras'] = {'wfn_qcvars_only': True}
-#    #psi4rec['json']['args'] = 
-#    psi4rec['json']['kwargs'] = jobrec['kwargs']
-#    #psi4rec['json']['scratch_location'] = 
-#    psi4rec['json']['return_output'] = True
 #
-#    #for hookkey, hookfunc in jobrec['hooks']['pre'].items():
-#    #    psi4rec['json']['in_' + hookkey] = hookfunc()
-#    if opts.scroll['PSI4']['GRIDDAT'].value != '':
-#        psi4rec['json']['infile_' + 'grid.dat'] = opts.scroll['PSI4']['GRIDDAT'].value
-#   
-#    popts = {}
-#    for k, v in opts.scroll['QCDB'].items():
-#        if v.disputed():
-#            popts[k] = v.value
+#    jobrec = {}
+#    jobrec['provenance'] = [prov]
+#    jobrec['error'] = ''
+#    jobrec['success'] = None
+#    jobrec['molecule'] = molecule.to_dict(np_out=False)
+#    jobrec['method'] = name
+#    jobrec['dertype'] = ['energy', 'gradient', 'hessian'].index(inspect.stack()[1][3])
 #
-#    for k, v in opts.scroll['PSI4'].items():
-#        if v.disputed():
-#            popts[k] = v.value
-#    psi4rec['json']['keywords'] = popts
-#    if 'BASIS' in psi4rec['json']['keywords']:
-#        psi4rec['json']['model']['basis'] =  psi4rec['json']['keywords']['BASIS']
-
-
-def gamess_plant(jobrec):  # jobrec@i -> gamess@i
-    gamessrec = {}
 #
-#    #return cfourrec
+#    jobrec['options'] = copy.deepcopy(options)
+#    jobrec['qcschema_input'] = qcschema_input
 #
-##def write_zmat(name, dertype, molecule):  # -> zmat
-#    """Returns string with contents of Cfour ZMAT file as gathered from
-#    active molecule, current keyword settings, and cfour {...} block.
+#    gamessrec = {}
+#    muster_inherited_options(jobrec['options'])
 #
-#    """
-#    import qcdb
-#    # Handle memory
-#    # I don't think memory belongs in jobrec. it goes in pkgrec (for pbs) and possibly duplicated in options (for prog)
-##    if 'memory' in jobrec:
-##        memcmd, memkw = harvester.muster_memory(jobrec['memory'])
-##    else:
-##        memcmd, memkw = '', {}
-#    #mem = int(0.000001 * core.get_memory())
-#    #if mem == 524:
-#    #    memcmd, memkw = '', {}
-#    #else:
-#    #    memcmd, memkw = qcdb.cfour.muster_memory(mem)
-
-#    print('in gamess_plant')
-#    pp.pprint(jobrec)
-
-#    molcmd = format_molecule_and_basis_for_gamess(jobrec['molecule'], jobrec['options'], verbose=1)
-
-    # Handle qcdb keywords implying gamess keyword values
-#    # if core.get_option('CFOUR', 'TRANSLATE_PSI4'):
-    muster_inherited_options(jobrec['options'])
-
-    qmol = Molecule(jobrec['molecule'])
-    _qcdb_basis = jobrec['options'].scroll['QCDB']['BASIS'].value
-    _gamess_basis = jobrec['options'].scroll['GAMESS']['BASIS__GBASIS'].value
-#    #if core.get_global_option('BASIS') == '':
-    if _qcdb_basis == '':
-        raise ValueError('gamess bas not impl')
-#        _, cased_basis = moptions.format_option_for_cfour('CFOUR_BASIS', _cfour_basis)
-#        cfourrec['genbas'] = extract_basis_from_genbas(cased_basis, jobrec['molecule']['elem'], exact=False)
-#        bascmd = ''
-    #else:
-    qbs = BasisSet.pyconstruct(jobrec['molecule'], 'BASIS', _qcdb_basis)
-
-#        #if qbs.has_ECP(): #    raise ValidationError("""ECPs not hooked up for Cfour""")
-    molbascmd = muster_and_format_molecule_and_basis_for_gamess(jobrec['molecule'], jobrec['options'], qbs, verbose=1)
-
-#    print(molbascmd)
-
-    # Handle calc type and quantum chemical method
-    nel = sum([z * int(real) for z, real in zip(jobrec['molecule']['elez'], jobrec['molecule']['real'])]) - jobrec['molecule']['molecular_charge']
-    nel = int(nel)
-    nfzc = qmol.nfrozen_core(depth=True)  # this will be default FC  # TODO change these values when user sets custom FC
-    nfzc = 0
-    # forcing nfc above. all these need to be reocmputed together for a consistent cidet input group
-    nels = nel - 2 * nfzc
-    nact = qbs.nbf() - nfzc
-    sysinfo = {
-        'nel': nel,
-        'ncore': nfzc,
-        'nact': nact,
-        'nels': nels,
-    }
-
-    muster_modelchem(jobrec['method'], jobrec['dertype'], jobrec['options'], sysinfo)
-
-    #print('HH')
-    #print(jobrec['options'].print_changed(history=False))
-
-#    # Handle driver vs input/default keyword reconciliation
+#    qmol = Molecule(jobrec['molecule'])
+#    _qcdb_basis = jobrec['options'].scroll['QCDB']['BASIS'].value
+#    _gamess_basis = jobrec['options'].scroll['GAMESS']['BASIS__GBASIS'].value
+#    if _qcdb_basis == '':
+#        raise ValueError('gamess bas not impl')
+#    qbs = BasisSet.pyconstruct(jobrec['molecule'], 'BASIS', _qcdb_basis)
 #
-    # Handle conversion of qcdb keyword structure into gamess format
-    resolved_options = {k: v.value for k, v in jobrec['options'].scroll['GAMESS'].items() if v.disputed()}
-    optcmd = format_options_for_gamess(resolved_options)
+#    molbascmd = muster_and_format_molecule_and_basis_for_gamess(jobrec['molecule'], jobrec['options'], qbs, verbose=1)
+#
+#
+#    # Handle calc type and quantum chemical method
+#    nel = sum([z * int(real) for z, real in zip(jobrec['molecule']['elez'], jobrec['molecule']['real'])]) - jobrec['molecule']['molecular_charge']
+#    nel = int(nel)
+#    nfzc = qmol.nfrozen_core(depth=True)  # this will be default FC  # TODO change these values when user sets custom FC
+#    nfzc = 0
+#
+#    # forcing nfc above. all these need to be reocmputed together for a consistent cidet input group
+#    nels = nel - 2 * nfzc
+#    nact = qbs.nbf() - nfzc
+#    sysinfo = {
+#        'nel': nel,
+#        'ncore': nfzc,
+#        'nact': nact,
+#        'nels': nels,
+#    }
+#
+#    muster_modelchem(jobrec['method'], jobrec['dertype'], jobrec['options'], sysinfo)
+#
+#    # Handle conversion of qcdb keyword structure into gamess format
+#    resolved_options = {k: v.value for k, v in jobrec['options'].scroll['GAMESS'].items() if v.disputed()}
+#    optcmd = format_options_for_gamess(resolved_options)
+#
+#    # Assemble input pieces
+#    gamessrec['gamess.inp'] = optcmd + molbascmd
+#
+#    qcschema_input = jobrec['qcschema_input']
+#    qcschema_input['extras']['gamess.inp'] = gamessrec['gamess.inp']
+#
+#
+#    ret = qcng.compute(qcschema_input, 'gamess').dict()
+#    jobrec.pop('qcschema_input')
+#    progvars = PreservingDict(ret['extras']['qcvars'])
+#    qcvars.build_out(progvars)
+#    calcinfo = qcvars.certify(progvars, plump=True, nat=len(jobrec['molecule']['mass']))
+#    jobrec['raw_output'] = ret['stdout']
+#    jobrec['qcvars'] = calcinfo
+#    jobrec['success'] = True
+#
+#    return jobrec
 
-#    # Handle text to be passed untouched to cfour
-#    litcmd = core.get_global_option('LITERAL_CFOUR')
 
-    # Assemble input pieces
-    gamessrec['gamess.inp'] = optcmd + molbascmd
+def run_gamess(name, molecule, options, **kwargs):
+#def run_gamess2(name, molecule, options, **kwargs):
 
-    return gamessrec
+    resi = ResultInput(
+        **{
+            'driver': inspect.stack()[1][3],
+            'extras': {
+                'qcdb:options': copy.deepcopy(options),
+            },
+            'model': {
+                'method': name,
+                'basis': '(auto)',
+            },
+            'molecule': molecule.to_schema(dtype=2),
+            'provenance': provenance_stamp(__name__),
+        })
+
+    jobrec = qcng.compute(resi, "qcdb-gamess", raise_error=True).dict()
+    hold_qcvars = jobrec['extras'].pop('qcdb:qcvars')
+    jobrec['qcvars'] = {key: qcel.Datum(**dval) for key, dval in hold_qcvars.items()}
+    return jobrec
+
+def _print_helper(label, dicary, do_print):
+    if do_print:
+        print(label + ' <<<')
+        pp.pprint(dicary)
+        print('>>>')
+
+
+class QcdbGAMESSHarness(GAMESSHarness):
+    def compute(self, input_model: 'ResultInput', config: 'JobConfig') -> 'Result':
+        self.found(raise_error=True)
+
+        verbose = 2
+
+        _print_helper(f'[1] {self.name} RESULTINPUT PRE-PLANT', input_model.dict(), verbose >= 3)
+
+        job_inputs = self.qcdb_build_input(input_model, config)
+
+        _print_helper(f'[2] {self.name}REC PRE-ENGINE', job_inputs, verbose >= 4)
+
+        success, dexe = self.execute(job_inputs)
+
+        _print_helper(f'[3] {self.name}REC POST-ENGINE', dexe, verbose >= 4)
+
+        if not success:
+            output_model = input_model
+            output_model["error"] = {"error_type": "execution_error", "error_message": dexe["stderr"]}
+
+        dexe["outfiles"]["stdout"] = dexe["stdout"]
+        dexe["outfiles"]["stderr"] = dexe["stderr"]
+        output_model = self.parse_output(dexe["outfiles"], input_model)
+
+        _print_helper(f'[4a] {self.name} RESULT POST-HARVEST', output_model.dict(), verbose >= 5)
+
+        output_model = self.qcdb_post_parse_output(input_model, output_model)
+
+        _print_helper(f'[4] {self.name} RESULT POST-POST-HARVEST', output_model.dict(), verbose >= 2)
+
+        return output_model
+
+    def qcdb_build_input(self, input_model: 'ResultInput', config: 'JobConfig',
+                         template: Optional[str] = None) -> Dict[str, Any]:
+        gamessrec = {
+            'infiles': {},
+            'scratch_directory': config.scratch_directory,
+        }
+
+        molrec = qcel.molparse.from_schema(input_model.molecule.dict())
+        ropts = input_model.extras['qcdb:options']
+
+        # Handle qcdb keywords implying gamess keyword values
+        muster_inherited_options(ropts)
+
+        _qcdb_basis = ropts.scroll['QCDB']['BASIS'].value
+        #_gamess_basis = ropts.scroll['GAMESS']['BASIS'].value
+        qbs = BasisSet.pyconstruct(molrec, 'BASIS', _qcdb_basis)
+
+        molbascmd = muster_and_format_molecule_and_basis_for_gamess(molrec, ropts, qbs)
+
+        nel = sum([z * int(real) for z, real in zip(molrec['elez'], molrec['real'])]) - molrec['molecular_charge']
+        nel = int(nel)
+        #nfzc = input_model.molecule.nfrozen_core(depth=True)  # this will be default FC  # TODO change these values when user sets custom FC
+        # not sure how to do this???
+        nfzc = 0
+
+        # forcing nfc above. all these need to be reocmputed together for a consistent cidet input group
+        nels = nel - 2 * nfzc
+        nact = qbs.nbf() - nfzc
+        sysinfo = {
+            'nel': nel,
+            'ncore': nfzc,
+            'nact': nact,
+            'nels': nels,
+        }
+
+        # Handle calc type and quantum chemical method
+        muster_modelchem(input_model.model.method, input_model.driver.derivative_int(), ropts, sysinfo)
+
+
+        # Handle conversion of psi4 keyword structure into cfour format
+        skma_options = {key: ropt.value for key, ropt in sorted(ropts.scroll['GAMESS'].items()) if ropt.disputed()}
+
+        #optcmd = format_keywords(skma_options)
+        optcmd = format_options_for_gamess(skma_options)
+
+        gamessrec['infiles']['gamess.inp'] = optcmd + molbascmd
+        gamessrec['commands'] = [which("rungms"), "gamess"]
+
+        return gamessrec
+
+    def qcdb_post_parse_output(self, input_model: 'ResultInput', output_model: 'Result') -> 'Result':
+
+        dqcvars = PreservingDict(copy.deepcopy(output_model.extras['qcvars']))
+        qcvars.build_out(dqcvars)
+        calcinfo = qcvars.certify(dqcvars, plump=True, nat=len(output_model.molecule.symbols))
+        output_model.extras['qcdb:qcvars'] = calcinfo
+
+        return output_model
+
 
 
 #def cfour_harvest(jobrec, cfourrec):  # jobrec@i, cfourrec@io -> jobrec@io
