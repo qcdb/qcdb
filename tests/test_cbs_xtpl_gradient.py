@@ -145,6 +145,7 @@ def test_1d():
 #    assert compare_arrays(ref_scf_dtz, scf_dtz, 6, "[3] SCF/cc-pV[DT]Z Gradient, dertype=0")
 
 
+@pytest.mark.xfail(True, reason='Old Driver, Spring 2019', run=True)
 @using_psi4
 def test_4a():
     system1()
@@ -154,6 +155,7 @@ def test_4a():
     pp.pprint(jrec)
 
 
+@pytest.mark.xfail(True, reason='Old Driver, Spring 2019', run=True)
 @using_cfour
 def test_4b():
     system1()

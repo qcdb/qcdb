@@ -7,3 +7,5 @@ from .optimize import optking, geometric
 #from .cbs_helpers import *
 #from .yaml import yaml_run
 #from .driver_helpers import *
+
+from .vpt2 import vpt2

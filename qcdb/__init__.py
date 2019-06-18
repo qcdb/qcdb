@@ -59,6 +59,7 @@ from .metadata import __version__, version_formatter
 #from .driver import *
 from .driver import energy, properties, hessian, gradient, frequency
 from .driver import optking, geometric
+from .driver import vpt2
 from .driver.cbs_driver import cbs
 from .driver.cbs_helpers import *
 from .driver.driver_helpers import get_variable, print_variables
