@@ -586,7 +586,7 @@ def load_nwchem_defaults(options):
     options.add('nwchem', RottenOption(
         keyword= 'tddft__symmetry',
         default= False,
-        validator= parsers.bolean,
+        validator= parsers.boolean,
         glossary= 'Module will generate initial guess vectors transforming as the same irreducible representation as TARGETSYM. This causes the final excited state roots to be exclusively dominated by those with the specificed irreducible representation. May be useful for those interested in just optically allowed transitions, or in the geometry optimization of an excited state root with a particular irreducible representation. By default, SYMMETRY not set. Requires TARGETSYM.'))
     options.add('nwchem', RottenOption(
         keyword= 'tddft__ecut',

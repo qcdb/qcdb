@@ -122,7 +122,7 @@ def nwchem_plant(jobrec):  # jobrec@i -> engine@i
     molcmd = muster_and_format_molecule_for_nwchem(jobrec['molecule'], jobrec['options'], verbose=1)
 
     _qcdb_basis = jobrec['options'].scroll['QCDB']['BASIS'].value
-    _gamess_basis = jobrec['options'].scroll['NWCHEM']['BASIS'].value
+    # TODO _gamess_basis = jobrec['options'].scroll['NWCHEM']['BASIS'].value
     if _qcdb_basis == '':
         raise ValueError('nwchem bas not impl. set with `basis cc-pvdz`, etc. to use qcdb (psi4) basis set library.')
     # create a qcdb.Molecule to reset PG to c1 so all atoms. but print_detail isn't transmitting in a way nwc is picking up on, so per-element for now
