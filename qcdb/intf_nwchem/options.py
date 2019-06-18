@@ -229,13 +229,13 @@ def load_nwchem_defaults(options):
     options.add('nwchem', RottenOption(
         keyword= 'raman__last',
         default= 8, #see what would be appropriate range? Just placeholder
-        validator= parsers,nonnegative_integer
+        validator= parsers,nonnegative_integer,
         glossary= 'Range of indices of normal modes used in the plot. Default is 7. Option FIRST and LAST modify the range of indices.'))
 
     options.add('nwchem', RottenOption(
         keyword= 'raman__width',
         default= 20.0,
-        validator= lambda x: float(x)
+        validator= lambda x: float(x),
         glossary= 'Controls width of smoothed peaks in Raman plot. Default is 20.0'))
 
     options.add('nwchem', RottenOption(
@@ -250,8 +250,8 @@ def load_nwchem_defaults(options):
         RottenOption(
             keyword='scf__rhf',
             default=True,
-            validator=parsers.boolean,  # rather have one kw as enum but that's not the nwc way ("RHF UHF ROHF"),
-            glossary='Reference wave function: RHF, UHF, ROHF. RHF is closed-shell default'))
+            validator=parsers.boolean, 
+            glossary='Default reference wave function for SCF calculations. Other options include UHF, ROHF.'))
 
     options.add(
         'nwchem',
