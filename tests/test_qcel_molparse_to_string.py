@@ -6,7 +6,6 @@ import pint
 import qcelemental
 from qcelemental.tests import test_molparse_to_string
 
-import psi4
 from psi4.driver import qcdb
 
 pytestmark = pytest.mark.quick
@@ -160,6 +159,7 @@ def test_to_string_mol(subjects, inp, expected):
     assert compare(_local_results[expected], smol)
 
 
+@using_psi4
 def test_provenance_connectivity_setting():
     he3 = psi4.geometry("""
     He
