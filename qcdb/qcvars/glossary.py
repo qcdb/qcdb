@@ -438,6 +438,42 @@ qcvardefs['CI CORRELATION ENERGY'] = {
 #
 #   .. math:: E_{\text{IE}} = E_{dimer} - \sum_{monomer}^{n}{E_{monomer}^{\text{CP}}}
 
+qcvardefs['CISD TOTAL ENERGY'] = {
+        'units': 'Eh',
+        'glossary': """
+        The total energy for a configuration interaction with singles and doubles calculation.
+        """}
+
+qcvardefs['CISD CORRELATION ENERGY'] = {
+        'units': 'Eh',
+        'glossary': """
+        The correlation energy corresponding to configuration interaction with single and doubles calculation.
+        """}
+
+qcvardefs['CISDT TOTAL ENERGY'] = {
+        'units': 'Eh',
+        'glossary': """
+        The total energy for a configuration interaction with singles, doubles, and triples calculation.
+        """}
+
+qcvardefs['CISDT CORRELATION ENERGY'] = {
+        'units': 'Eh',
+        'glossary': """
+        The correlation energy for a configuration interaction with singles, doubles, and triples calculation.
+        """}
+
+qcvardefs['CISDTQ TOTAL ENERGY'] = {
+        'units': 'Eh',
+        'glossary': """
+        The total energy for a configuration interaction with singles, doubles, triples, and quadruples calculation.
+        """}
+
+qcvardefs['CISDTQ CORRELATION ENERGY'] = {
+        'units': 'Eh',
+        'glossary': """
+        The correlation energy for a configuration interaction with singles, doubles, triples, and quadruples calculation.
+        """}
+
 qcvardefs['CURRENT CORRELATION ENERGY'] = {
     'units': 'Eh',
     'glossary': """
@@ -769,7 +805,7 @@ qcvardefs['DMRG-CASPT2 TOTAL ENERGY'] = {
 #
 #   The total electronic energy [H] for the local CCSD level of theory.
 
-qcvardefs['MP2 TOTAL ENERGY'] = {
+qcvardefs['MP2 TOTAL ENERGY'] = { 
     'units': 'Eh',
     'glossary': r"""
    The total electronic energy
@@ -1018,7 +1054,7 @@ qcvardefs['MP4 TOTAL ENERGY'] = {
    The total electronic energy for 4-order Perturbation theory.
 """}
 
-qcvardefs['MP4 CORRELATION ENERGY'] = {
+qcvardefs['MP4 CORRELATION ENERGY'] =  {
     'units': 'Eh',
     'glossary': r"""
    The correlation energy component for 4-order Perturbation theory.
@@ -1438,6 +1474,12 @@ qcvardefs['B97-0 FUNCTIONAL TOTAL ENERGY'] = {
    functional energy for original hybrid B97-0 w/o disp correction ORPHAN
 """}
 
+qcvardefs['GROUND-STATE SYMMETRY'] = {
+        'units': None,
+        'glossary': r"""
+        Ground state symmetry value of an excited state calculation.
+        """}
+
 #.. psivar:: UNCP-CORRECTED 2-BODY INTERACTION ENERGY
 #
 #   The interaction energy [H] considering only two-body interactions,
@@ -1496,6 +1538,6 @@ define_dashd_qcvars('blyp', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
 define_dashd_qcvars('pbe0', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
 define_dashd_qcvars('wpbe', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
 #define_dashd_qcvars('wb97x', dashes=['d'])
-define_ex_transition_qcvars(4, 'ccsd', ['b1', 'a1'])
+define_ex_transition_qcvars(4, 'ccsd', ['B1', 'A1', 'A2', 'B2'])
 define_prop_qcvars('ccsd')
 define_prop_qcvars('cc')  # TODO reconsider

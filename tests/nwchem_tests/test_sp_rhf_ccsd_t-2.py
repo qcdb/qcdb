@@ -16,7 +16,7 @@ h2o = qcdb.set_molecule('''
 print(h2o)
 
 
-def check_ccsd_t_2(return_value, is_5050):
+def check_ccsd_t_2(return_value):
         ref = -76.026760737428
         nre = 9.187334240165
         ccsd_corr = -0.213341272556805
@@ -41,9 +41,9 @@ def check_ccsd_t_2(return_value, is_5050):
         #assert compare_values(scstot, qcdb.get_variable('SCS-CCSD TOTAL ENERGY'), 5, 'scs ccsd tot')
         assert compare_values(ccsd_t_corl, qcdb.get_variable('CCSD(T) CORRELATION ENERGY'), 5, 'ccsd(t) corl')
         assert compare_values(ccsd_t_tot, qcdb.get_variable('CCSD(T) TOTAL ENERGY'), 5, 'ccsd(t) tot')
-        if is_5050:
-            assert compare_values(a5050corl, qcdb.get_variable('CUSTOM SCS-CCSD CORRELATION ENERGY'), 5, 'mp2 scscorl')
-            assert compare_values(a5050tot, qcdb.get_variable('CUSTOM SCS-CCSD TOTAL ENERGY'), 5, 'mp2 scstot')
+#        if is_5050:
+#            assert compare_values(a5050corl, qcdb.get_variable('CUSTOM SCS-CCSD CORRELATION ENERGY'), 5, 'mp2 scscorl')
+#            assert compare_values(a5050tot, qcdb.get_variable('CUSTOM SCS-CCSD TOTAL ENERGY'), 5, 'mp2 scstot')
        # assert compare_values(mp2tot, return_value, 5, 'mp2 return')
         assert compare_values(t_corr, qcdb.get_variable('(T) CORRECTION ENERGY'), 5, 'ccsd(t) correction')
 
@@ -55,29 +55,25 @@ def test_1_a5050_no():
         'memory': '600 mb',
         'nwchem_scf__rhf': True,
         'nwchem_scf__thresh': 1.0e-12,
-        #'nwchem_tce__dft': False,
-        #'nwchem_tce__module': 'ccsd(t)',
-        #'nwchem_tce': False,
-        #'nwchem_tce__thresh': 1.0e-12
     })
-    print("Testing MP2...")
+    print("Testing ccsd(t)...")
     val = qcdb.energy('nwc-ccsd(t)')
-    check_ccsd_t_2(val, is_5050=False)
+    check_ccsd_t_2(val)
 
 
-@using_nwchem
-def test_2_a5050():
-    qcdb.set_options({
-        'basis': 'cc-pvdz',
-        'memory': '600 mb',
-        'nwchem_scf__rhf': True,
-        'nwchem_scf__thresh': 1.0e-12,
-        #'nwchem_tce__dft': False,
-        #'nwchem_tce__module': 'ccsd(t)',
-        #'nwchem_tce': False,
-        #'nwchem_tce__thresh': 1.0e-12
-    })
-    print("testing mp2...")
-    val = qcdb.energy('nwc-ccsd(t)')
-    check_ccsd_t_2(val, is_5050=True)
+#@using_nwchem
+#def test_2_a5050():
+#    qcdb.set_options({
+#        'basis': 'cc-pvdz',
+#        'memory': '600 mb',
+#        'nwchem_scf__rhf': True,
+#        'nwchem_scf__thresh': 1.0e-12,
+#        #'nwchem_tce__dft': False,
+#        #'nwchem_tce__module': 'ccsd(t)',
+#        #'nwchem_tce': False,
+#        #'nwchem_tce__thresh': 1.0e-12
+#    })
+#    print("testing mp2...")
+#    val = qcdb.energy('nwc-ccsd(t)')
+#    check_ccsd_t_2(val, is_5050=True)
 
