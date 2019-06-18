@@ -229,7 +229,7 @@ def load_nwchem_defaults(options):
     options.add('nwchem', RottenOption(
         keyword= 'raman__last',
         default= 8, #see what would be appropriate range? Just placeholder
-        validator= parsers,nonnegative_integer,
+        validator= parsers.nonnegative_integer,
         glossary= 'Range of indices of normal modes used in the plot. Default is 7. Option FIRST and LAST modify the range of indices.'))
 
     options.add('nwchem', RottenOption(
