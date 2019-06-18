@@ -96,16 +96,7 @@ def load_nwchem_defaults(options):
             glossary=
             'NWChem generates redundant internal coordinates from user input Cartesian coordinates. Default is on.'))
 
-#    #Top level options
-#    options.add(
-#        'nwchem',
-#        RottenOption(
-#            keyword='symmetry',
-#            default='c1',
-#            validator=parsers.enum(' c1 c2v c3v d2h '),
-#            glossary='Optional symmetry directive that specifies the group of the molecule, \
-#        which can be automatically determined via the geometry autosym function.'))
-
+   #Top level options
     options.add(
         'nwchem',
         RottenOption(
@@ -124,15 +115,6 @@ def load_nwchem_defaults(options):
             'Top level print options which can be divided from most specific to least: debug, high, low, and none. Default is medium.'
         ))
 
-    #Basis block
-    ###Need to figure out how to delineate per atom basis attribution #TODO
-    options.add(
-        'nwchem',
-        RottenOption(
-            keyword='basis',
-            default='',
-            validator=lambda x: x.lower(),
-            glossary='This is just a dummy so can throw an error. Only basis-passing implemented at present.'))
     #Property block
     options.add('nwchem', RottenOption(
         keyword= 'property__all',
@@ -199,7 +181,68 @@ def load_nwchem_defaults(options):
         default= False,
         validator= parsers.boolean,
         glossary= 'NMR hyperfine coupling (Fermi-Contact and Spin-Dipole expectation values'))
-    #Property adds: shielding, spinspin
+    #Property adds: shielding, spinspin both use two integer inputs
+
+    #Raman block (used for polarizability calculations; req. property block)
+    options.add('nwchem', RottenOption(
+        keyword= 'raman__normal',
+        default= True,
+        validator= parsers.boolean,
+        glossary= 'Normal is default for Raman calculations in NWChem.'))
+    
+    options.add('nwchem', RottenOption(
+        keyword= 'raman__resonance',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Raman calculations using resonance. Default is normal.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'raman__lorentzian',
+        default= True,
+        validator= parsers.boolean,
+        glossary= 'Raman calculations using Lorentzian function. Is default.'))
+    
+    options.add('nwchem', RottenOption(
+        keyword= 'raman__gaussian',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Raman calculations using the Gaussian function. Default is Lorentzian function.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'raman__low',
+        default= 0.0,
+        validator= lambda x: float(x),
+        glossary= 'Range in that generates Raman spectrum plot in cm^-1. Option LOW and HIGH modify the frequency range'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'raman__high',
+        default= 0.0,
+        validator= lambda x: float(x),
+        glossary= 'Range in that generates Raman spectrum plot in cm^-1. Option LOW and HIGH modify the frequency range'))
+    
+    options.add('nwchem', RottenOption(
+        keyword= 'raman__first',
+        default= 7,
+        validator= parsers.nonnegative_integer,
+        glossary= 'Range of indices of normal modes used in the plot. Default is 7. Option FIRST and LAST modify the range of indices.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'raman__last',
+        default= 8, #see what would be appropriate range? Just placeholder
+        validator= parsers,nonnegative_integer
+        glossary= 'Range of indices of normal modes used in the plot. Default is 7. Option FIRST and LAST modify the range of indices.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'raman__width',
+        default= 20.0,
+        validator= lambda x: float(x)
+        glossary= 'Controls width of smoothed peaks in Raman plot. Default is 20.0'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'raman__dq',
+        default= 0.01,
+        validator= lambda x: float(x),
+        glossary= 'Size of the steps along the normal modes. Ir related to step size dR in numerical evaultions of the polarizability derivatives.'))
 
     #SCF block
     options.add(
@@ -465,6 +508,16 @@ def load_nwchem_defaults(options):
                 glossary= 'The Hessian used in the MCSCF optimization by default level shifted by 0.1 until the orbital gradient normal falls below 0.01 at which point the level shift is reduced to zero. The initial value of 0.1 can be changed as increasing the level shift may make convergence more stable in some instances.'))
 
     #TDDFT block
+    options.add('nwchem', RottenOption(
+        keyword= 'tddft__cis',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Option toggles the Tamm-Dancoff approximation of configuration interaction singles for TDDFT calculation. Default is RPA.')) 
+    options.add('nwchem', RottenOption(
+        keyword= 'tddft__rpa',
+        default= True,
+        validator= parsers.boolean,
+        glossary= 'Option defaults to RPA.'))
     options.add(
         'nwchem',
         RottenOption(
@@ -472,6 +525,12 @@ def load_nwchem_defaults(options):
             default=1,
             validator=lambda x: float(x),
             glossary='The number of excited state roots in a TDDFT caclulation.'))
+    options.add('nwchem', RottenOption(
+        keyword= 'tddft__maxvecs',
+        default= 1000,
+        validator= parsers.nonnegative_integer,
+        glossary= 'Limit the subspace size of Davidson\'s algorithm; in other words, it is the max number of trial vectors that a calculation is allowed to hold. Typically, 10 to 20 trial vectors are needed for each excited state root to be converged. However, it need not exceed the product of the number of occupied orbitals and the number of virtual orbitals. Default is 1000.'))
+
     options.add(
         'nwchem',
         RottenOption(
@@ -479,16 +538,24 @@ def load_nwchem_defaults(options):
             default=True,
             validator=parsers.boolean,
             glossary=
-            'Default is on. Requests the TDDFT calculatioin of singlet excited states when reference wave function is closed.'
-        ))
+            'Default is on. Requests the TDDFT calculation of singlet excited states when reference wave function is closed.'))
+    options.add('nwchem', RottenOption(
+        keyword= 'tddft__nosinglet',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Suppresses the calculation of singlet excited states when the reerence wave function is closed shell. Default is SINGLET.'))
     options.add(
         'nwchem',
         RottenOption(
             keyword='tddft__triplet',
             default=True,
             validator=parsers.boolean,
-            glossary='Default is on. Request the calculation of triplet excited states when reference wave function is closed.')
-    )
+            glossary='Default is on. Request the calculation of triplet excited states when reference wave function is closed.'))
+    options.add('nwchem', RottenOption(
+        keyword= 'tddft__notriplet',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Option suppresses the calculation of triplet excited states when the reference wave function is closed shell. The default option is TRIPLET.'))
     options.add(
         'nwchem',
         RottenOption(
@@ -505,6 +572,30 @@ def load_nwchem_defaults(options):
             default=100,
             validator=lambda x: float(x),
             glossary='Max iterations. Default is 100.'))
+    options.add('nwchem', RottenOption(
+        keyword= 'tddft__target',
+        default= 1,
+        validator= parsers.positive_integer,
+        glossary= 'Option specifies which excited state root is being used for the geometrical derivative calculation.' ))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'tddft__targetsym',
+        default= 'None', #Need parser for symmetry of interest?
+        validator= parsers.enum('None'),
+        glossary= 'Required option when examining excited state geometry optimization. It is common that the order of excited states changes due to the geometry changes over the course of optimization. For frequency calculations, TARGETSYM must be set to none.'))
+    options.add('nwchem', RottenOption(
+        keyword= 'tddft__symmetry',
+        default= False,
+        validator= parsers.bolean,
+        glossary= 'Module will generate initial guess vectors transforming as the same irreducible representation as TARGETSYM. This causes the final excited state roots to be exclusively dominated by those with the specificed irreducible representation. May be useful for those interested in just optically allowed transitions, or in the geometry optimization of an excited state root with a particular irreducible representation. By default, SYMMETRY not set. Requires TARGETSYM.'))
+    options.add('nwchem', RottenOption(
+        keyword= 'tddft__ecut',
+        default= 0.0,
+	validator= lambda x: float(x),
+        glossary= 'Option enables restricted excitation window TDDFT (REW-TDDFT). This is an approach best suited for core excitations. By specifying this keyword only excitations from occupied states below the energy cutoff will be considered.'))
+    #Need EWIN, Alpha, Beta opts that need two integer values
+    #Not implementing CIVECS yet
+    #GRAD block within TDDFT is too nested
 
     #MP2 block
     options.add(

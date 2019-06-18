@@ -974,9 +974,9 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
               #'properties': 'prop',
              }[dertype]
 
-    theory = {0: 'scf',
-              1: 'dft',
-              }[dertype] #temp, may need to change only two options
+    #theory = {0: 'scf',
+    #          1: 'dft',
+    #          }[dertype] #temp, may need to change only two options
 
     if lowername == 'nwc-nwchem':
         pass
@@ -986,8 +986,8 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         mdccmd = f'task scf {runtyp}\n\n'
     
     #property
-    elif lowername == 'nwc-property':
-        mdccmd = f'task {theory} property \n\n'
+    #elif lowername == 'nwc-property':
+    #    mdccmd = f'task {theory} property \n\n'
         #ropts.suggest('NWCHEM', task__scf', theory, **kwgs)
 
     #MPn options
@@ -1037,9 +1037,10 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
             mdccmd = f'task tce {runtyp} \n\n'
             ropts.require('NWCHEM', 'tce__ccsd', True, **kwgs)
             ropts.suggest('NWCHEM', 'tce__nroots', 4, **kwgs)
-    #elif lowername == 'nwc-eom-ccsdt':
-    #    if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-    #        ropts.require('NWCHEM', 'tce__ccsdt, True, ** kwgs)
+    elif lowername == 'nwc-eom-ccsdt':
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            ropts.require('NWCHEM', 'tce__ccsdt', True, ** kwgs)
+            ropts.suggest('NWCHEM', 'tce__nroots', 4, **kwgs)
 
    # elif lowername == 'nwc-ccsd_act':
     
