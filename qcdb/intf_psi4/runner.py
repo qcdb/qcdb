@@ -2,216 +2,240 @@ import sys
 import copy
 import pprint
 pp = pprint.PrettyPrinter(width=120)
+from typing import Any, Dict, Optional
 import inspect
 
 import numpy as np
 import qcelemental as qcel
+from qcelemental.models import ResultInput
+
+import qcengine as qcng
+from qcengine.programs.util import PreservingDict
+from qcengine.programs.psi4 import Psi4Harness
+#from qcengine.programs.cfour.keywords import format_keywords, format_keyword
 
 from .. import __version__
 from .. import qcvars
-from ..driver.driver_helpers import print_variables
+#from ..driver.driver_helpers import print_variables
 from ..exceptions import *
+from ..util import provenance_stamp
 from ..molecule import Molecule
 from ..pdict import PreservingDict
-from .worker import psi4_subprocess
+#from .worker import psi4_subprocess
 from .botanist import muster_inherited_options
 
 
+#def run_psi4_old(name, molecule, options, **kwargs):
+#
+#    if kwargs['ptype'] not in ['energy', 'properties', 'gradient', 'hessian']:
+#        raise ValidationError("""run_psi4: ptype not regonized: {}""".format(ptype))
+#
+#    prov = {}
+#    prov['creator'] = 'QCDB'
+#    prov['version'] = __version__
+#    prov['routine'] = sys._getframe().f_code.co_name
+#
+#    jobrec = {}
+#    jobrec['error'] = ''
+#    jobrec['success'] = None
+#    jobrec['return_output'] = True
+#    jobrec['provenance'] = [prov]
+#    jobrec['molecule'] = molecule.to_dict(np_out=False)
+#    jobrec['method'] = name
+#    jobrec['driver'] = kwargs['ptype']
+#    jobrec['kwargs'] = kwargs
+#    jobrec['options'] = copy.deepcopy(options)
+#    jobrec['hooks'] = kwargs.get('hooks', {})
+#
+#    try:
+#        jobrec['molecule']
+#        jobrec['method']
+#    except KeyError as err:
+#        jobrec['error'] += repr(err) + 'Required fields missing from ({})'.format(jobrec.keys())
+#        return jobrec
+#
+#
+#    psi4rec = {}
+#    psi4rec['json'] = {}
+#
+#    opts = jobrec['options']
+#    # NOTE TODO very limited OPTIONS HANDSHAKE
+#    muster_inherited_options(opts)
+#
+#    psi4rec['json']['schema_name'] = 'qcschema_input'
+#    psi4rec['json']['schema_version'] = 1
+#    omem = opts.scroll['QCDB'].pop('MEMORY')
+#    psi4rec['json']['memory'] = omem.value
+#    psi4rec['json']['molecule'] = qcel.molparse.to_schema(jobrec['molecule'], dtype=2)
+#    psi4rec['json']['driver'] = jobrec['driver']
+#    mtd = jobrec['method']
+#    psi4rec['json']['model'] = {
+#        'method': mtd[3:] if mtd.startswith('p4-') else mtd,
+#        'basis': '(auto)',
+#    }
+#    psi4rec['json']['extras'] = {'wfn_qcvars_only': True}
+#    psi4rec['json']['kwargs'] = jobrec['kwargs']
+#    psi4rec['json']['return_output'] = True
+#
+#    popts = {}
+#    for k, v in opts.scroll['QCDB'].items():
+#        if v.disputed():
+#            popts[k] = v.value
+#
+#    for k, v in opts.scroll['PSI4'].items():
+#        if v.disputed():
+#            popts[k] = v.value
+#    psi4rec['json']['keywords'] = popts
+#    if 'BASIS' in psi4rec['json']['keywords']:
+#        psi4rec['json']['model']['basis'] =  psi4rec['json']['keywords']['BASIS']
+#
+#    psi4rec['command'] = ['psi4', '--json', '--nthread', '6']  # TODO
+#
+#    psi4_subprocess(psi4rec)  # updates psi4rec
+#
+#    psi4rec = psi4rec['json']  # TODO NOT how this should be done figure out 1-tier/2-tier
+#
+#    try:
+#        pass
+#    except KeyError as err:
+#        raise KeyError(
+#            'Required fields missing from ({})'.format(jobrec.keys())) from err
+#
+#    try:
+#        psi4rec['raw_output']
+#    except KeyError as err:
+#        raise KeyError('Required fields missing from ({})'.format(
+#            psi4rec.keys())) from err
+#
+#    if not psi4rec['success']:
+#        raise RuntimeError(psi4rec['error'])
+#
+#    for fl in psi4rec.keys():
+#        if fl.startswith('outfile_'):
+#            jobrec[fl] = psi4rec[fl]
+#
+#    # Absorb results into qcdb data structures
+#    progvars = PreservingDict(psi4rec['extras']['qcvars'])
+#    for k in list(progvars.keys()):
+#        if k in ['DETCI AVG DVEC NORM', 'MCSCF TOTAL ENERGY']:
+#            progvars.pop(k)
+#
+#    qcvars.build_out(progvars)
+#    calcinfo = qcvars.certify(progvars, plump=True, nat=len(jobrec['molecule']['mass']))
+#
+#    jobrec['raw_output'] = psi4rec['raw_output']
+#    jobrec['qcvars'] = calcinfo
+#
+#    jobrec['provenance'].append(psi4rec['provenance'])
+#
+#    return jobrec
+
 def run_psi4(name, molecule, options, **kwargs):
-    #print('run_psi4 options <<<\n', options.print_changed(), '\n>>>')
 
-    #calledby = inspect.stack()
-    #print('CALLEDBY')
-    #for cur in calledby:
-    #    print('CUR', cur[3])
-    if kwargs['ptype'] not in ['energy', 'properties', 'gradient', 'hessian']:
-        raise ValidationError("""run_psi4: ptype not regonized: {}""".format(ptype))
+    resi = ResultInput(
+        **{
+            'driver': inspect.stack()[1][3],
+            'extras': {
+                'qcdb:options': copy.deepcopy(options),
+            },
+            'model': {
+                'method': name,
+                'basis': '(auto)',
+            },
+            'molecule': molecule.to_schema(dtype=2),
+            'provenance': provenance_stamp(__name__),
+        })
 
-    jobrec = {}
-    jobrec['error'] = ''
-    jobrec['success'] = None
-    jobrec['return_output'] = True
-    prov = {}
-    prov['creator'] = 'QCDB'
-    prov['version'] = __version__
-    prov['routine'] = sys._getframe().f_code.co_name
-    jobrec['provenance'] = [prov]
-
-    jobrec['molecule'] = molecule.to_dict(np_out=False)
-    jobrec['method'] = name
-    jobrec['driver'] = kwargs['ptype']
-    jobrec['kwargs'] = kwargs
-    jobrec['options'] = copy.deepcopy(options)
-    jobrec['hooks'] = kwargs.get('hooks', {})
-
-    jobrec = psi4_driver(jobrec)
+    jobrec = qcng.compute(resi, "qcdb-psi4", raise_error=True).dict()
+    hold_qcvars = jobrec['extras'].pop('qcdb:qcvars')
+    jobrec['qcvars'] = {key: qcel.Datum(**dval) for key, dval in hold_qcvars.items()}
+    pp.pprint(jobrec)
+    print(jobrec.keys())
+    print(jobrec['success'])
     return jobrec
 
-
-def psi4_driver(jobrec):
-    import json
-
-    try:
-        jobrec['molecule']
-        jobrec['method']
-    except KeyError as err:
-        #raise KeyError(
-        #    'Required fields missing from ({})'.format(jobrec.keys())) from err
-        jobrec['error'] += repr(err) + 'Required fields missing from ({})'.format(jobrec.keys())
-        return jobrec
-
-    #print('[1] PSI4 JOBREC PRE-PLANT (j@i) <<<')
-    #pp.pprint(jobrec)
-    #print('>>>')
-
-    psi4rec = psi4_plant(jobrec)
-
-#    # test json roundtrip
-#    jpsi4rec = json.dumps(psi4rec)
-#    psi4rec = json.loads(jpsi4rec)
-
-    #print('[2] PSI4REC PRE-SUBPROCESS (x@i) <<<')
-    #pp.pprint(psi4rec)
-    #print('>>>\n')
-
-    psi4_subprocess(psi4rec)  # updates psi4rec
-
-    #print('[3] PSI4REC POST-SUBPROCESS (x@io) <<<')
-    #pp.pprint(psi4rec)
-    #print('>>>\n')
-
-    psi4_harvest(jobrec, psi4rec)  # updates jobrec
-
-    #print('[4] PSI4 JOBREC POST-HARVEST (j@io) <<<')
-    #pp.pprint(jobrec)
-    #print('>>>')
-
-    return jobrec
-
-
-def psi4_plant(jobrec):  # jobrec@i -> psi4@i
-    psi4rec = {}
-    psi4rec['json'] = {}
-
-    opts = jobrec['options']
-    # NOTE TODO very limited OPTIONS HANDSHAKE
-    muster_inherited_options(opts)
-
-    psi4rec['json']['schema_name'] = 'qcschema_input'
-    psi4rec['json']['schema_version'] = 1
-    omem = opts.scroll['QCDB'].pop('MEMORY')
-    psi4rec['json']['memory'] = omem.value
-    psi4rec['json']['molecule'] = qcel.molparse.to_schema(jobrec['molecule'], dtype=2)
-    psi4rec['json']['driver'] = jobrec['driver']
-    mtd = jobrec['method']
-    psi4rec['json']['model'] = {
-        'method': mtd[3:] if mtd.startswith('p4-') else mtd,
-        'basis': '(auto)',
-    }
-    psi4rec['json']['extras'] = {'wfn_qcvars_only': True}
-    #psi4rec['json']['args'] = 
-    psi4rec['json']['kwargs'] = jobrec['kwargs']
-    #psi4rec['json']['scratch_location'] = 
-    psi4rec['json']['return_output'] = True
-
-    #for hookkey, hookfunc in jobrec['hooks']['pre'].items():
-    #    psi4rec['json']['in_' + hookkey] = hookfunc()
-
-    # March 2019 temporarily suspending GRIDDAT
-    #if opts.scroll['PSI4']['GRIDDAT'].value != '':
-    #    psi4rec['json']['infile_' + 'grid.dat'] = opts.scroll['PSI4']['GRIDDAT'].value
-    
-    popts = {}
-    for k, v in opts.scroll['QCDB'].items():
-        if v.disputed():
-            popts[k] = v.value
-
-    for k, v in opts.scroll['PSI4'].items():
-        if v.disputed():
-            popts[k] = v.value
-    psi4rec['json']['keywords'] = popts
-    if 'BASIS' in psi4rec['json']['keywords']:
-        psi4rec['json']['model']['basis'] =  psi4rec['json']['keywords']['BASIS']
-
-    # Handle qcdb keywords implying cfour keyword values
-#    if core.get_option('CFOUR', 'TRANSLATE_PSI4'):
-#    harvester.muster_inherited_options(jobrec['options'])
-
-    # Handle conversion of qcdb keyword structure into psi4 format
-    # * psi wants python anyways, so no action needed
-
-    #psi4rec['command'] = ['psi4', '--json']
-    psi4rec['command'] = ['psi4', '--json', '--nthread', '6']  # TODO
-
-    return psi4rec
+def _print_helper(label, dicary, do_print):
+    if do_print:
+        print(label + ' <<<')
+        pp.pprint(dicary)
+        print('>>>')
 
 
 
 
-def psi4_harvest(jobrec, psi4rec):  # jobrec@i, psi4rec@io -> jobrec@io
-    """Processes raw results from read-only `psi4rec` into QCAspect fields in returned `jobrec`."""
+class QcdbPsi4Harness(Psi4Harness):
 
-    psi4rec = psi4rec['json']  # TODO NOT how this should be done figure out 1-tier/2-tier
+    def compute(self, input_model: 'ResultInput', config: 'JobConfig') -> 'Result':
+        self.found(raise_error=True)
 
-    try:
-        pass
-        #jobrec['molecule']['real']
-        #jobrec['do_gradient']
-    except KeyError as err:
-        raise KeyError(
-            'Required fields missing from ({})'.format(jobrec.keys())) from err
+        verbose = 1
+        _print_helper(f'[1] {self.name} RESULTINPUT PRE-PLANT', input_model.dict(), verbose >= 3)
 
-    try:
-        psi4rec['raw_output']
-        #if jobrec['do_gradient'] is True:
-        #    dftd3rec['dftd3_gradient']
-    except KeyError as err:
-        raise KeyError('Required fields missing from ({})'.format(
-            psi4rec.keys())) from err
+        input_data = self.qcdb_build_input(input_model, config)
+        input_model = ResultInput(**input_data)
 
-    if not psi4rec['success']:
-        raise RuntimeError(psi4rec['error'])
+        _print_helper(f'[2] {self.name} RESULTINPUT PRE-ENGINE', input_model.dict(), verbose >= 4)
 
-    #c4files = {}
-    for fl in psi4rec.keys():
-        if fl.startswith('outfile_'):
-            jobrec[fl] = psi4rec[fl]
-    #for fl in ['GRD', 'FCMFINAL', 'DIPOL']:
-    #    field = 'output_' + fl.lower()
-    #    if field in cfourrec:
-    #        text += '  Cfour scratch file {} has been read\n'.format(fl)
-    #        text += cfourrec[field]
-    #        c4files[fl] = cfourrec[field]
+        output_model = Psi4Harness.compute(self, input_model=input_model, config=config)
 
-    # Absorb results into qcdb data structures
-    progvars = PreservingDict(psi4rec['extras']['qcvars'])
-    for k in list(progvars.keys()):
-        if k in ['DETCI AVG DVEC NORM', 'MCSCF TOTAL ENERGY']:
-            progvars.pop(k)
+        _print_helper(f'[3] {self.name} RESULT POST-ENGINE', output_model.dict(), verbose >= 4)
 
-    qcvars.build_out(progvars)
-    calcinfo = qcvars.certify(progvars, plump=True, nat=len(jobrec['molecule']['mass']))
+        # ???
+        if not output_model.success:
+            return output_model
 
-    jobrec['raw_output'] = psi4rec['raw_output']
-    jobrec['qcvars'] = calcinfo
+        _print_helper(f'[4a] {self.name} RESULT POST-HARVEST', output_model.dict(), verbose >= 5)
 
-    #prov = {}
-    #prov['creator'] = 'Psi4'
-    #prov['routine'] = sys._getframe().f_code.co_name
-    #prov['version'] = version
-    jobrec['provenance'].append(psi4rec['provenance'])
+        output_model = self.qcdb_post_parse_output(input_model, output_model)
 
-    return jobrec
+        _print_helper(f'[4] {self.name} RESULT POST-POST-HARVEST', output_model.dict(), verbose >= 2)
 
-    """
-    Required Input Fields
-    ---------------------
+        return output_model
 
-    Optional Input Fields
-    ---------------------
+    def qcdb_build_input(self, input_model: 'ResultInput', config: 'JobConfig',
+                         template: Optional[str] = None) -> Dict[str, Any]:
+        input_data = input_model.dict()
 
-    Output Fields
-    -------------
 
-    """
+        molrec = qcel.molparse.from_schema(input_model.molecule.dict())
+        ropts = input_model.extras['qcdb:options']
+
+        muster_inherited_options(ropts)
+        mtd = input_data['model']['method']
+        mtd =  mtd[3:] if mtd.startswith('p4-') else mtd
+        input_data['model']['method'] = mtd
+
+        # should we put this memory in the JobConfig object? I don't think the units agree
+        omem = ropts.scroll['QCDB'].pop('MEMORY')
+        #print(config.memory, '!!')
+        #config.memory = omem.value #???
+        #print(config.memory, '!!')
+
+        input_data['extras'] = {'wfn_qcvars_only' : True}
+        #input_data['kwargs'] = jobrec['kwargs']
+        #input_data['return_output'] = True
+
+        popts = {}
+        for k, v in ropts.scroll['QCDB'].items():
+            if v.disputed():
+                popts[k] = v.value
+
+        for k, v in ropts.scroll['PSI4'].items():
+            if v.disputed():
+                popts[k] = v.value
+        input_data['keywords'] = popts
+
+        if 'BASIS' in input_data['keywords']:
+            input_data['model']['basis'] =  input_data['keywords']['BASIS']
+
+        return input_data
+
+    def qcdb_post_parse_output(self, input_model: 'ResultInput', output_model: 'Result') -> 'Result':
+
+        dqcvars = PreservingDict(copy.deepcopy(output_model.extras['qcvars']))
+        qcvars.build_out(dqcvars)
+        calcinfo = qcvars.certify(dqcvars, plump=True, nat=len(output_model.molecule.symbols))
+        output_model.extras['qcdb:qcvars'] = calcinfo
+
+        return output_model
 
