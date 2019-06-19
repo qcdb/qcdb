@@ -183,6 +183,7 @@ class QcdbGAMESSHarness(GAMESSHarness):
         }
 
         molrec = qcel.molparse.from_schema(input_model.molecule.dict())
+        molrec['fix_symmetry'] = 'c1'  # write _all_ atoms to input
         ropts = input_model.extras['qcdb:options']
 
         # Handle qcdb keywords implying gamess keyword values
