@@ -921,154 +921,160 @@ def load_nwchem_defaults(options):
             glossary='No print options for the DFT block. Default is none.'))
     #DFT XC [Functionals]
     options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_acm',
-        default= False,
-        validator = parsers.boolean,
-        glossary= 'DFT functional acm'))
-    
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_beckehandh',
-        default= False,
-        validator= parsers.boolean,
-        glossary= 'DFT functional beckehandh'))
-    
-    options.add('nwchem', RottenOption(
-        keyword = 'dft__xc__pbe0',
-        default = False,
-        validator = parsers.boolean,
-        glossary = 'DFT functional PBE'))
+        keyword = 'dft__xc',
+        default = '',
+        validator = lambda x: x.lower(),
+        glossary = 'DFT functional'))
 
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_becke97',
-        default = False,
-        validator = parsers.boolean,
-        glossary = 'DFT functional  Becke97'))
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_acm',
+    #    default= False,
+    #    validator = parsers.boolean,
+    #    glossary= 'DFT functional acm'))
+    #
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_beckehandh',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary= 'DFT functional beckehandh'))
+    #
+    #options.add('nwchem', RottenOption(
+    #    keyword = 'dft__xc__pbe0',
+    #    default = False,
+    #    validator = parsers.boolean,
+    #    glossary = 'DFT functional PBE'))
 
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_b3lyp',
-        default= False,
-        validator= parsers.boolean,
-        glossary = 'DFT functional B3LYP'))
-    
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_becke97-1',
-        default= False,
-        validator= parsers.boolean,
-        glossary= 'DFT functional becke97-1'))
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_becke97',
+    #    default = False,
+    #    validator = parsers.boolean,
+    #    glossary = 'DFT functional  Becke97'))
 
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_becke_97-2',
-        default= False,
-        validator= parsers.boolean,
-        glossary= 'DFT functional becke97-2'))
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_b3lyp',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary = 'DFT functional B3LYP'))
+    #
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_becke97-1',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary= 'DFT functional becke97-1'))
 
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_becke97-3',
-        default= False,
-        validator= parsers.boolean,
-        glossary= 'DFT functional becke97-3'))
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_becke_97-2',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary= 'DFT functional becke97-2'))
 
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_hcth',
-        default= False,
-        validator= parsers.boolean,
-        glossary= 'DFT functional hcth'))
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_becke97-3',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary= 'DFT functional becke97-3'))
 
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_hcth120',
-        default= False,
-        validator= parsers.boolean,
-        glossary= 'DFT functional hcth120'))
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_hcth',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary= 'DFT functional hcth'))
 
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_hcth147',
-        default= False,
-        validator= parsers.boolean,
-        glossary= 'DFT functional hcth147'))
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_hcth120',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary= 'DFT functional hcth120'))
 
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_hcth407',
-        default= False,
-        validator= parsers.boolean,
-        glossary= 'DFT functional hcth407'))
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_hcth147',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary= 'DFT functional hcth147'))
 
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_becke97ggal',
-        default= False,
-        validator= parsers.boolean,
-        glossary= 'DFT functional becke97ggal'))
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_hcth407',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary= 'DFT functional hcth407'))
 
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_hcth407p',
-        default= False,
-        validator= parsers.boolean,
-        glossary= 'DFT functional hcth407p'))
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_becke97ggal',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary= 'DFT functional becke97ggal'))
 
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_optx',
-        default= False,
-        validator= parsers.boolean,
-        glossary= 'DFT functional optx'))
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_hcth407p',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary= 'DFT functional hcth407p'))
 
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_hcthp14',
-        default= False,
-        validator= parsers.boolean,
-        glossary= 'DFT functional hcthp14'))
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_optx',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary= 'DFT functional optx'))
 
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_mpw91',
-        default= False,
-        validator= parsers.boolean,
-        glossary= 'DFT functional mpw91'))
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_hcthp14',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary= 'DFT functional hcthp14'))
 
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_mpw1k',
-        default= False,
-        validator= parsers.boolean,
-        glossary= 'DFT functional mpw1k'))
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_mpw91',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary= 'DFT functional mpw91'))
 
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_xft97',
-        default= False,
-        validator= parsers.boolean,
-        glossary= 'DFT functional xft97'))
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_mpw1k',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary= 'DFT functional mpw1k'))
 
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_cft97',
-        default= False,
-        validator= parsers.boolean,
-        glossary= 'DFT functional cft97'))
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_xft97',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary= 'DFT functional xft97'))
 
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_ft97',
-        default= False,
-        validator= parsers.boolean,
-        glossary= 'DFT functional ft97'))
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_cft97',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary= 'DFT functional cft97'))
 
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_op',
-        default= False,
-        validator= parsers.boolean,
-        glossary= 'DFT functional op'))
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_ft97',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary= 'DFT functional ft97'))
 
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_bop',
-        default= False,
-        validator= parsers.boolean,
-        glossary= 'DFT functional bop'))
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_op',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary= 'DFT functional op'))
 
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_pbeop',
-        default= False,
-        validator= parsers.boolean,
-        glossary= 'DFT functional pbeop'))
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_bop',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary= 'DFT functional bop'))
 
-    options.add('nwchem', RottenOption(
-        keyword= 'dft__xc_HFexch',
-        default= False,
-        validator= parsers.boolean,
-        glossary= 'DFT functional Hartree-Fock exchange-correlation'))
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_pbeop',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary= 'DFT functional pbeop'))
+
+    #options.add('nwchem', RottenOption(
+    #    keyword= 'dft__xc_HFexch',
+    #    default= False,
+    #    validator= parsers.boolean,
+    #    glossary= 'DFT functional Hartree-Fock exchange-correlation'))
 
     #Need to add rest of XC with Exchange-Correlation and value differences in local/nonlocal
 
