@@ -147,7 +147,7 @@ class QcdbGAMESSHarness(GAMESSHarness):
     def compute(self, input_model: 'ResultInput', config: 'JobConfig') -> 'Result':
         self.found(raise_error=True)
 
-        verbose = 2
+        verbose = 4
 
         _print_helper(f'[1] {self.name} RESULTINPUT PRE-PLANT', input_model.dict(), verbose >= 3)
 
@@ -185,6 +185,7 @@ class QcdbGAMESSHarness(GAMESSHarness):
         molrec = qcel.molparse.from_schema(input_model.molecule.dict())
         molrecc1 = molrec.copy()
         molrecc1['fix_symmetry'] = 'c1'  # write _all_ atoms to input
+
         ropts = input_model.extras['qcdb:options']
 
         # Handle qcdb keywords implying gamess keyword values

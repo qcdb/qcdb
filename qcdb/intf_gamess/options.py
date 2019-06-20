@@ -42,8 +42,8 @@ def load_gamess_defaults(options):
     options.add('gamess', RottenOption(
             keyword='contrl__runtyp',
             default='energy',
-            validator=parsers.enum("ENERGY GRADIENT HESSIAN"),
-            glossary=""""""))
+            validator=parsers.enum("ENERGY GRADIENT HESSIAN MAKEFP"),
+            glossary="""For makefp runs, generally use 6-311++G(3d2pf) basis set"""))
 
     options.add('gamess', RottenOption(
             keyword='contrl__cityp',
@@ -182,3 +182,57 @@ def load_gamess_defaults(options):
             default=2, #None,
             validator=parsers.positive_integer,
             glossary="""Total number of active electrons."""))
+
+
+    # $MAKEFP
+
+    options.add('gamess', RottenOption(
+            keyword='makefp__frag',
+            default='FRAGNAME',
+            validator=lambda x: x.upper()[:8],
+            glossary="""a string of up to 8 letters to identify this EFP.
+            For example, WATER or BENZENE or CH3OH or ...
+            (default=FRAGNAME, which you can hand edit later)"""))
+
+    options.add('gamess', RottenOption(
+            keyword='makefp__screen',
+            default=True,
+            validator=parsers.boolean,
+            glossary="""A flag to generate screening information for the multipole electrostatics,
+            and maybe polarizability screening. 
+            (default=.TRUE. for RHF, so far ROHF is not coded)"""))
+
+    options.add('gamess', RottenOption(
+            keyword='makefp__pol',
+            default=True,
+            validator=parsers.boolean,
+            glossary="""A a flag to generate dipole polarizabilities. (default=.TRUE.)"""))
+
+    options.add('gamess', RottenOption(
+            keyword='makefp__exrep',
+            default=True,
+            validator=parsers.boolean,
+            glossary="""A a flag to generate exchange repulsion parameters. (default=.TRUE.)"""))
+
+    options.add('gamess', RottenOption(
+            keyword='makefp__chtr',
+            default=True,
+            validator=parsers.boolean,
+            glossary="""A a flag to generate charge transfer parameters.
+            (default=.TRUE. for RHF, so far ROHF is not coded)"""))
+
+    options.add('gamess', RottenOption(
+            keyword='makefp__ctvvo',
+            default=True,
+            validator=parsers.boolean,
+            glossary="""A a flag to specify what type of charge transfer data is generated. (default=.TRUE.)  
+            .FALSE. means all canonical virtuals are used.
+            .TRUE. means Valence Virtual Orbitals will be created, by forcing VVOS in $SCF is forced on.
+            The VVOs are many fewer in number, so the charge transfer calculation is greatly accelerated."""))
+
+    options.add('gamess', RottenOption(
+            keyword='makefp__disp',
+            default=True,
+            validator=parsers.boolean,
+            glossary="""A a flag to generate information for dispersion.
+            (default=.TRUE. for RHF, so far ROHF is not coded)"""))

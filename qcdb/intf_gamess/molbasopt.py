@@ -30,7 +30,7 @@ def muster_and_format_molecule_and_basis_for_gamess(molrec, ropts, qbs, verbose=
     if pg == 'ATOM':
         pgn, naxis = 'Dnh', 2
     elif pg == 'C_inf_v':
-        pgn, naxis = 'Cnv', 2
+        pgn, naxis = 'Cnv', 4 
     elif pg == 'D_inf_h':
         pgn, naxis = 'Dnh', 4
     elif pg == 'Sn':
@@ -39,8 +39,18 @@ def muster_and_format_molecule_and_basis_for_gamess(molrec, ropts, qbs, verbose=
         pgn, naxis = pg, qmol.full_pg_n()
 
     uniq_atombas_lines = gamess_data_record_cart.splitlines()[:2]  # $data and card -1-
-    uniq_atombas_lines.append(f""" {pgn} {naxis}""")  # card -2-
-    uniq_atombas_lines.append('')  # empty cards -3- and -4-
+    if pg == 'C1':
+        uniq_atombas_lines.append(f""" {pgn}""")  # card -2-
+        # no empty lines for cards -3- and -4- when C1 symmetry
+    elif pg == 'Cs':
+        uniq_atombas_lines.append(f""" {pgn}""")  # card -2-
+        uniq_atombas_lines.append('')  # empty cards -3- and -4-
+    elif pg == 'Ci':
+        uniq_atombas_lines.append(f""" {pgn}""")  # card -2-
+        uniq_atombas_lines.append('')  # empty cards -3- and -4-
+    else:
+        uniq_atombas_lines.append(f""" {pgn} {naxis}""")  # card -2-
+        uniq_atombas_lines.append('')  # empty cards -3- and -4-
 
     for iat in range(qmol.natom()):
         if iat == qmol.unique(qmol.atom_to_unique(iat)):

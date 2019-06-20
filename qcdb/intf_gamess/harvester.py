@@ -66,6 +66,7 @@ def muster_modelchem(name, dertype, ropts, sysinfo, verbose=1):
     runtyp = {0: 'energy',
               1: 'gradient',
               2: 'hessian',
+              3: 'makefp',
               #'properties': 'prop',
              }[dertype]
 
