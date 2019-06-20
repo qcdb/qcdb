@@ -23,7 +23,7 @@ def check_dft(return_value, is_df):
 
 
 @using_nwchem
-def test_1_dft_tot():
+def test_1_dft():
     qcdb.set_options({
         'basis': 'sto-3g',
         'memory': '3000 mb',
@@ -41,17 +41,13 @@ def test_1_dft_tot():
 
 
 @using_nwchem
-def test_2_dft(): #options okay here, pulling scf hf energy
+def test_2_hf():
     qcdb.set_options({
         'basis': 'sto-3g',
         'memory': '3000 mb',
         'e_convergence': 1.0e-7,
-        'scf__d_convergence': 1.0e-7,
-        'nwchem_charge': 0,
-        #'nwchem_dft__direct': True,
-        #'nwchem_dft__convergence__energy': 1.0e-7,
-        #'nwchem_dft__convergence__density': 1.0e-7
+        #'nwchem_charge': 0,
     })
     print('Testing HF energy...')
-    val2 = qcdb.energy('nwc-hf')
-    check_dft(val2, is_df=False)
+    value = qcdb.energy('nwc-hf')
+    check_dft(value, is_df=False)
