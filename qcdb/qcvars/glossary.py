@@ -1258,6 +1258,29 @@ qcvardefs['CCSD[T] CORRELATION ENERGY'] = {
    for the coupled cluster singles and doubles plus bracket perturbative triples level of theory.
 """}
 
+qcvardefs['LCCD TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total energy for linearized coupled cluster doubles level of theory. 
+"""}
+
+qcvardefs['LCCD CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The correlation energy for linearized coupled cluster doubles level of theory. 
+"""}
+qcvardefs['LCCSD TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total energy for linearized coupled cluster singles and doubles level of theory. 
+"""}
+
+qcvardefs['LCCSD CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The correlation energy for linearized coupled cluster singles and doubles level of theory. 
+"""}
+
 qcvardefs['NUCLEAR REPULSION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""

@@ -1088,8 +1088,8 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
             ropts.suggest('NWCHEM', 'tce__nroots', 4, **kwgs)
 
     #DFT xc functionals
-    elif lowername == 'nwc-pbe':
-        ropts.require('NWCHEM', 'xc__pbe0', True, **kwgs)
+    elif lowername == 'nwc-pbe0':
+        ropts.require('NWCHEM', 'xc', 'pbe0', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-b3lyp':
         ropts.require('NWCHEM', 'xc', 'b3lyp', **kwgs)
