@@ -1094,7 +1094,100 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
     elif lowername == 'nwc-b3lyp':
         ropts.require('NWCHEM', 'xc', 'b3lyp', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
-
+    elif lowername == 'nwc-b1b95':
+        ropts.require('NWCHEM', 'xc', 'b1b95', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-b97-1':
+        ropts.require('NWCHEM', 'xc', 'becke97-1', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-b97-2':
+        ropts.require('NWCHEM', 'xc', 'becke97-2', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-b97gga1':
+        ropts.require('NWCHEM', 'xc', 'becke97gga1', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-bhandh':
+        ropts.require('NWCHEM', 'xc', 'beckehandh', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-bop':
+        ropts.require('NWCHEM', 'xc', 'bop', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-d1df':
+        ropts.require('NWCHEM', 'xc', 'd1df', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-ft97':
+        ropts.require('NWCHEM', 'xc', 'ft97', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-hcth':
+        ropts.require('NWCHEM', 'xc', 'hcth', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-hcth120':
+        ropts.require('NWCHEM', 'xc', 'htch120', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-hcth407p':
+        ropts.require('NWCHEM', 'xc', 'hcth407p', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-hcthp14':
+        ropts.require('NWCHEM', 'xc', 'hcthp14', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-m05':
+        ropts.require('NWCHEM', 'xc', 'm05', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-m05-2x':
+        ropts.require('NWCHEM', 'xc', 'm05-2x', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-m06':
+        ropts.require('NWCHEM', 'xc', 'm06', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-m06-2x':
+        ropts.require('NWCHEM', 'xc', 'm06-2x', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-m06-hf':
+        ropts.require('NWCHEM', 'xc', 'm06-hf', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-m06-hf':
+        ropts.require('NWCHEM', 'xc', 'm06-hf', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-m08-hx':
+        ropts.require('NWCHEM', 'xc', 'm08-hx', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-m08-so':
+        ropts.require('NWCHEM', 'xc', 'm08-so', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-m11':
+        ropts.require('NWCHEM', 'xc', 'm11', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-m11-l':
+        ropts.require('NWCHEM', 'xc', 'm11-l', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-mpw1b95':
+        ropts.require('NWCHEM', 'xc', 'mpw1b95', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-mpw1k':
+        ropts.require('NWCHEM', 'xc', 'mpw1k', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-mpwb1k':
+        ropts.require('NWCHEM', 'xc', 'mpwb1k', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'pw6b95':
+        ropts.require('NWCHEM', 'xc', 'pw6b95', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-pwb6k':
+        ropts.require('NWCHEM', 'xc', 'pwb6k', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-tpssh':
+        ropts.require('NWCHEM', 'xc', 'xctpssh', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    #DFT functionals potential issues - multiple options or req conditions
+    elif lowername == 'nwc-b86bpbe':
+        ropts.suggest('NWCHEM', 'xc', 'becke86b', **kwgs) or \
+        ropts.suggest('NWCHEM', 'xc', 'cpbe96', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-blyp':
+        ropts.suggest('NWCHEM', 'xc', 'becke88', **kwgs) or \
+        ropts.suggest('NWCHEM', 'xc', 'lyp', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+     
     elif lowername == 'nwc-tddft':
         mdccmd = f'task tddft {runtyp} \n\n'
 
