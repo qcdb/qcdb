@@ -1180,12 +1180,12 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         mdccmd = f'task dft {runtyp} \n\n'
     #DFT functionals potential issues - multiple options or req conditions
     elif lowername == 'nwc-b86bpbe':
-        ropts.suggest('NWCHEM', 'xc', 'becke86b', **kwgs) or \
-        ropts.suggest('NWCHEM', 'xc', 'cpbe96', **kwgs)
+        ropts.require('NWCHEM', 'xc', 'becke86b', **kwgs)
+        ropts.require('NWCHEM', 'xc', 'cpbe96', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-blyp':
-        ropts.suggest('NWCHEM', 'xc', 'becke88', **kwgs) or \
-        ropts.suggest('NWCHEM', 'xc', 'lyp', **kwgs)
+        ropts.require('NWCHEM', 'xc', 'becke88', **kwgs)
+        ropts.require('NWCHEM', 'xc', 'lyp', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
      
     elif lowername == 'nwc-tddft':
@@ -1266,20 +1266,6 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
 #            options['NWCHEM']['NWCHEM_TASK_TCE']['value'] = 'hessian'
 #            options['NWCHEM']['NWCHEM_TCE_MODULE']['value'] = 'ccsdtq'
 #
-#    elif lowername in dft_functionals_list():
-#        if dertype == 0:
-#            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'energy'
-#            options['SCF']['DFT_FUNCTIONAL']['value'] = lowername[4:].upper()
-#            options['NWCHEM']['NWCHEM_DFT_XC']['value'] = muster_dft_functionals(options)
-#        elif dertype == 1:
-#            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'gradient'
-#            options['SCF']['DFT_FUNCTIONAL']['value'] = lowername[4:].upper()
-#            options['NWCHEM']['NWCHEM_DFT_XC']['value'] = muster_dft_functionals(options)
-#        elif dertype == 2:
-#            options['NWCHEM']['NWCHEM_TASK_DFT']['value'] = 'hessian'
-#            options['SCF']['DFT_FUNCTIONAL']['value'] = lowername[4:].upper()
-#            options['NWCHEM']['NWCHEM_DFT_XC']['value'] = muster_dft_functionals(options)
-
 #    elif lowername == 'nwc-tddft':
 #        if dertype == 0:
 #            options['NWCHEM']['NWCHEM_TASK_TDDFT']['value'] = 'energy'
@@ -1287,26 +1273,6 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
 #            options['NWCHEM']['NWCHEM_TASK_TDDFT']['value'] = 'gradient'
 #        elif dertype == 2:
 #            options['NWCHEM']['NWCHEM_TASK_TDDFT']['value'] = 'hessian'
-
-#    else:
-#        raise ValidationError("""Requested NWChem computational methods %s is not available.""" % (lowername))
-
-#    if 'NWCHEM_TASK_MCSCF' in options['NWCHEM']:
-#        options['NWCHEM']['NWCHEM_TASK_MCSCF']['clobber'] = True
-#        options['NWCHEM']['NWCHEM_TASK_MCSCF']['superclobber'] = True
-
-#    if 'NWCHEM_TASK_DFT' in options['NWCHEM']:
-#        options['NWCHEM']['NWCHEM_TASK_DFT']['clobber'] = True
-#        options['NWCHEM']['NWCHEM_TASK_DFT']['superclobber'] = True
-
-#    if 'NWCHEM_TASK_SODFT' in options['NWCHEM']:
-#        options['NWCHEM']['NWCHEM_TASK_SODFT']['clobber'] = True
-#        options['NWCHEM']['NWCHEM_TASK_SODFT']['superclobber'] = True
-
-#    if 'NWCHEM_TASK_TDDFT' in options['NWCHEM']:
-#        options['NWCHEM']['NWCHEM_TASK_TDDFT']['clobber'] = True
-#        options['NWCHEM']['NWCHEM_TASK_TDDFT']['superclobber'] = True
-
 
 def harvest(p4Mol, nwout, **largs):  #check orientation and scratch files
     """Parses all the pieces of output from NWChem: the stdout in
