@@ -88,7 +88,7 @@ def test_1a():
     assert compare_arrays(ref_scf_dz, qcdb.get_variable('CURRENT GRADIENT'), 6, "[1a] SCF/cc-pVDZ Hessian")
     #assert compare_arrays(ref_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1a] SCF/cc-pVDZ Hessian")
     # TODO provenance kill list
-    assert ['QCDB', 'Psi4'] == [d['creator'] for d in jrec['provenance']], "[1a] prov"
+    assert 'Psi4' == jrec['provenance']['creator'], "[1a] prov"
 
     print(jrec['provenance'])
 
@@ -115,7 +115,7 @@ def test_1c():
     assert compare_arrays(ref_scf_dz_y, qcdb.get_variable('CURRENT GRADIENT'), 6, "[1c] SCF/cc-pVDZ Hessian")
     #assert compare_arrays(ref_scf_dz_y, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1c] SCF/cc-pVDZ Hessian")
     # TODO provenance kill list
-    assert ['QCDB', 'Psi4'] == [d['creator'] for d in jrec['provenance']], "[1c] prov"
+    assert 'Psi4' == jrec['provenance']['creator'], "[1c] prov"
     print(jrec['provenance'])
 
 
