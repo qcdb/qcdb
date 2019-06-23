@@ -25,6 +25,7 @@ from ..util import provenance_stamp
 from ..molecule import Molecule
 from ..pdict import PreservingDict
 from .molbasopt import muster_and_format_molecule_and_basis_for_gamess, format_options_for_gamess
+from .molbasopt import muster_and_format_molecule_and_basis_for_gamess_efp
 from .harvester import muster_modelchem, muster_inherited_options
 
 
@@ -131,6 +132,19 @@ def run_gamess(name, molecule, options, **kwargs):
             'provenance': provenance_stamp(__name__),
         })
 
+    if 'efpfrag' in kwargs:
+        resi.extras['efpfrag'] = kwargs['efpfrag']
+
+    if 'number_of_atoms_in_frag_x' in kwargs:
+        resi.extras['number_of_atoms_in_frag_x'] = kwargs['number_of_atoms_in_frag_x']
+        print('run_gamess: number_of_atoms_in_frag_x = ', resi.extras['number_of_atoms_in_frag_x']) 
+       
+#    if 'efpfrag1' in kwargs:
+#       resi.extras['efpfrag1'] = kwargs['efpfrag1']
+#
+#    if 'efpfrag2' in kwargs:
+#        resi.extras['efpfrag2'] = kwargs['efpfrag2']
+
     jobrec = qcng.compute(resi, "qcdb-gamess", raise_error=True).dict()
     hold_qcvars = jobrec['extras'].pop('qcdb:qcvars')
     jobrec['qcvars'] = {key: qcel.Datum(**dval) for key, dval in hold_qcvars.items()}
@@ -182,18 +196,62 @@ class QcdbGAMESSHarness(GAMESSHarness):
             'scratch_directory': config.scratch_directory,
         }
 
-        molrec = qcel.molparse.from_schema(input_model.molecule.dict())
-        # molrec['fix_symmetry'] = 'c1'  # write _all_ atoms to input
-        ropts = input_model.extras['qcdb:options']
+        #print('printing method')
+        #print(input_model.model.dict()['method'])
+        #print(type(input_model.model.dict()['method']))
 
-        # Handle qcdb keywords implying gamess keyword values
-        muster_inherited_options(ropts)
+        gamess_method = input_model.model.dict()['method']
 
-        _qcdb_basis = ropts.scroll['QCDB']['BASIS'].value
-        #_gamess_basis = ropts.scroll['GAMESS']['BASIS'].value
-        qbs = BasisSet.pyconstruct(molrec, 'BASIS', _qcdb_basis)
+#        nfats = input_model.model.dict()['number_of_atoms_in_frag_x']
+#        print('nfats =', nfats)
 
-        molbascmd = muster_and_format_molecule_and_basis_for_gamess(molrec, ropts, qbs)
+        #fragatoms = input_model.model.dict()['number_of_atoms_in_fragx']
+        #ifragatoms = input_model.model.dict()['number_of_atoms_in_fragx']
+        
+        if gamess_method == 'gms-efp':
+            print('EFPFRAG found!\n', input_model.extras['efpfrag'])
+            print('ENF EFPFRAG')
+#            print('EFPFRAG1 found!\n', input_model.extras['number_of_atoms_in_frag_x'])
+#            print('ENF EFPFRAG1')
+            #print('EFPFRAG2 found!\n', input_model.extras['efpfrag2'])
+            #print('ENF EFPFRAG2')
+
+            #print(input_model.name.dict()['method'])
+            molrec = qcel.molparse.from_schema(input_model.molecule.dict())
+
+            # molrec['fix_symmetry'] = 'c1'  # write _all_ atoms to input
+            ropts = input_model.extras['qcdb:options']
+
+            # Handle qcdb keywords implying gamess keyword values
+            muster_inherited_options(ropts)
+            
+            _qcdb_basis = ropts.scroll['QCDB']['BASIS'].value
+            #_gamess_basis = ropts.scroll['GAMESS']['BASIS'].value
+            qbs = BasisSet.pyconstruct(molrec, 'BASIS', _qcdb_basis)
+
+            molbascmd = muster_and_format_molecule_and_basis_for_gamess_efp(molrec, ropts, qbs, efpnat=input_model.extras['number_of_atoms_in_frag_x'])
+           
+            print('molbascmd =', molbascmd) 
+
+        else:
+            #print(input_model.name.dict()['method'])
+            molrec = qcel.molparse.from_schema(input_model.molecule.dict())
+
+            molrecc1 = molrec.copy()
+
+            molrecc1['fix_symmetry'] = 'c1'  # write _all_ atoms to input
+
+            ropts = input_model.extras['qcdb:options']
+
+            # Handle qcdb keywords implying gamess keyword values
+            muster_inherited_options(ropts)
+
+            _qcdb_basis = ropts.scroll['QCDB']['BASIS'].value
+            #_gamess_basis = ropts.scroll['GAMESS']['BASIS'].value
+            qbs = BasisSet.pyconstruct(molrecc1, 'BASIS', _qcdb_basis)
+
+            molbascmd = muster_and_format_molecule_and_basis_for_gamess(molrec, ropts, qbs)
+
 
         nel = sum([z * int(real) for z, real in zip(molrec['elez'], molrec['real'])]) - molrec['molecular_charge']
         nel = int(nel)
@@ -221,7 +279,12 @@ class QcdbGAMESSHarness(GAMESSHarness):
         #optcmd = format_keywords(skma_options)
         optcmd = format_options_for_gamess(skma_options)
 
-        gamessrec['infiles']['gamess.inp'] = optcmd + molbascmd
+        if gamess_method == 'gms-efp':
+            gamessrec['infiles']['gamess.inp'] = optcmd + molbascmd + input_model.extras['efpfrag'] 
+        else:
+            gamessrec['infiles']['gamess.inp'] = optcmd + molbascmd
+ 
+        #gamessrec['outfiles'] = ['gamess.efp'] 
         gamessrec['commands'] = [which("rungms"), "gamess"]
 
         return gamessrec
