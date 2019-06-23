@@ -19,8 +19,8 @@ def check_tce_mp2(return_value):
     mp2_corl    =    -0.289910710222209
 
     assert compare_values(hf, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(mp2_tot, qcdb.get_variable('MBPT(2) TOTAL ENERGY'), 5, 'mbpt(2) tot')
-    assert compare_values(mp2_corl, qcdb.get_variable('MBPT(2) CORRELATION ENERGY'), 5, 'mbpt(2) corl')
+    assert compare_values(mp2_tot, qcdb.get_variable('MP2 TOTAL ENERGY'), 5, 'mbpt(2) tot')
+    assert compare_values(mp2_corl, qcdb.get_variable('MP2 CORRELATION ENERGY'), 5, 'mbpt(2) corl')
 
 @using_nwchem
 def test_1_mp2():
@@ -41,10 +41,10 @@ def check_tce_mp3(return_value):
     mp3_corl    =     0.010099934850061
 
     assert compare_values(hf, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(mp2_tot, qcdb.get_variable('MBPT(2) TOTAL ENERGY'), 5, 'mbpt(2) tot')
-    assert compare_values(mp2_corl, qcdb.get_variable('MBPT(2) CORRELATION ENERGY'), 5, 'mbpt(2) corl')
-    assert compare_values(mp3_tot, qcdb.get_variable('MBPT(3) TOTAL ENERGY'), 5, 'mp3 tot')
-    assert compare_values(mp3_corl, qcdb.get_variable('MBPT(3) CORRELATION ENERGY'), 5, 'mp3 corl')
+    assert compare_values(mp2_tot, qcdb.get_variable('MP2 TOTAL ENERGY'), 5, 'mbpt(2) tot')
+    assert compare_values(mp2_corl, qcdb.get_variable('MP2 CORRELATION ENERGY'), 5, 'mbpt(2) corl')
+    assert compare_values(mp3_tot, qcdb.get_variable('MP3 TOTAL ENERGY'), 5, 'mp3 tot')
+    assert compare_values(mp3_corl, qcdb.get_variable('MP3 CORRELATION ENERGY'), 5, 'mp3 corl')
 
 @using_nwchem
 def test_2_mp3():
@@ -67,12 +67,12 @@ def check_tce_mp4(return_value):
     mp4_corl    =    -0.040080749560086 
 
     assert compare_values(hf, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(mp2_tot, qcdb.get_variable('MBPT(2) TOTAL ENERGY'), 5, 'mbpt(2) tot')
-    assert compare_values(mp2_corl, qcdb.get_variable('MBPT(2) CORRELATION ENERGY'), 5, 'mbpt(2) corl')
-    assert compare_values(mp3_tot, qcdb.get_variable('MBPT(3) TOTAL ENERGY'), 5, 'mp3 tot')
-    assert compare_values(mp3_corl, qcdb.get_variable('MBPT(3) CORRELATION ENERGY'), 5, 'mp3 corl')
-    assert compare_values(mp4_tot, qcdb.get_variable('MBPT(4) TOTAL ENERGY'), 5, 'mp4 tot')
-    assert compare_values(mp4_corl, qcdb.get_variable('MBPT(4) CORRELATION ENERGY'), 5, 'mp4 corl')
+    assert compare_values(mp2_tot, qcdb.get_variable('MP2 TOTAL ENERGY'), 5, 'mbpt(2) tot')
+    assert compare_values(mp2_corl, qcdb.get_variable('MP2 CORRELATION ENERGY'), 5, 'mbpt(2) corl')
+    assert compare_values(mp3_tot, qcdb.get_variable('MP3 TOTAL ENERGY'), 5, 'mp3 tot')
+    assert compare_values(mp3_corl, qcdb.get_variable('MP3 CORRELATION ENERGY'), 5, 'mp3 corl')
+    assert compare_values(mp4_tot, qcdb.get_variable('MP4 TOTAL ENERGY'), 5, 'mp4 tot')
+    assert compare_values(mp4_corl, qcdb.get_variable('MP4 CORRELATION ENERGY'), 5, 'mp4 corl')
 
 @using_nwchem
 def test_3_mp4():
