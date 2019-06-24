@@ -23,4 +23,6 @@ def gamess_gradient_list():
     to procedures['gradient'].
         """
         val = []
+        val.append('gms-hf')
+        val.append('gms-scf')
         return val
