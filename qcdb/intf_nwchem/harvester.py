@@ -96,10 +96,9 @@ def harvest_outfile_pass(outtext):
 
         #Process DFT (RDFT, RODFT,UDFT, SODFT [SODFT for nwchem versions before nwchem 6.8])
         mobj = re.search(
-                r'^\s+' + r'Total DFT energy' + r'\s' + NUMBER + r'\s*$',
+                r'^\s+' + r'(?:Total DFT energy)' + r'\s+=\s*' + NUMBER + r'\s*$',
                 outtext, re.MULTILINE)
         if mobj:
-            process(mobj)
             print('matched DFT')
             print (mobj.group(1))
             psivar['DFT TOTAL ENERGY'] = mobj.group(1)
@@ -1093,7 +1092,7 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         ropts.require('NWCHEM', 'xc__pbe0', True, **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-b3lyp':
-        ropts.require('NWCHEM', 'xc_b3lyp', True, **kwgs)
+        ropts.require('NWCHEM', 'xc', 'b3lyp', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
 
     elif lowername == 'nwc-tddft':

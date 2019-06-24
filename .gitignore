@@ -109,7 +109,3 @@ psi.*.clean
 #NWChem tests
 /tests/nwchem_tests/uncheck_tests*
 qcenvs
-
-#QCArchive packages
-QCElemental/*
-QCEngine/*

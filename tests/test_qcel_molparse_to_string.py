@@ -124,6 +124,7 @@ def test_to_string_error(inp):
 ])  # yapf: disable
 def test_to_string_xyz(subjects, inp, expected):
     if subjects == 'pmol':
+        import psi4
         mol = psi4.core.Molecule.from_string(_results[inp[0]])
         smol = mol.to_string(**inp[1])
 
@@ -149,6 +150,7 @@ def test_to_string_xyz(subjects, inp, expected):
 ])  # yapf: disable
 def test_to_string_mol(subjects, inp, expected):
     if subjects == 'pmol':
+        import psi4
         mol = psi4.core.Molecule.from_string(_local_results[inp[0]])
 
     elif subjects == 'qmol':
@@ -161,6 +163,7 @@ def test_to_string_mol(subjects, inp, expected):
 
 @using_psi4
 def test_provenance_connectivity_setting():
+    import psi4
     he3 = psi4.geometry("""
     He
     He 1 3.
