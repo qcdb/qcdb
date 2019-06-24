@@ -149,9 +149,9 @@ def run_psi4(name, molecule, options, **kwargs):
     jobrec = qcng.compute(resi, "qcdb-psi4", raise_error=True).dict()
     hold_qcvars = jobrec['extras'].pop('qcdb:qcvars')
     jobrec['qcvars'] = {key: qcel.Datum(**dval) for key, dval in hold_qcvars.items()}
-    pp.pprint(jobrec)
-    print(jobrec.keys())
-    print(jobrec['success'])
+    #pp.pprint(jobrec)
+    #print(jobrec.keys())
+    #print(jobrec['success'])
     return jobrec
 
 def _print_helper(label, dicary, do_print):
@@ -233,6 +233,9 @@ class QcdbPsi4Harness(Psi4Harness):
     def qcdb_post_parse_output(self, input_model: 'ResultInput', output_model: 'Result') -> 'Result':
 
         dqcvars = PreservingDict(copy.deepcopy(output_model.extras['qcvars']))
+        for k in list(dqcvars.keys()):
+            if k in ['DETCI AVG DVEC NORM', 'MCSCF TOTAL ENERGY']:
+                dqcvars.pop(k)
         qcvars.build_out(dqcvars)
         calcinfo = qcvars.certify(dqcvars, plump=True, nat=len(output_model.molecule.symbols))
         output_model.extras['qcdb:qcvars'] = calcinfo
