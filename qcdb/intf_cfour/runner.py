@@ -62,7 +62,7 @@ class QcdbCFOURHarness(CFOURHarness):
 
         if not success:
             output_model = input_model
-            output_model["error"] = {"error_type": "execution_error", "error_message": output["stderr"]}
+            output_model["error"] = {"error_type": "execution_error", "error_message": dexe["stderr"]}
 
         dexe["outfiles"]["stdout"] = dexe["stdout"]
         dexe["outfiles"]["stderr"] = dexe["stderr"]

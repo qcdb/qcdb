@@ -10,14 +10,14 @@ h2o = qcdb.set_molecule('''
     H    0.000000000000000   1.079252144093028   1.474611055780858
     O    0.000000000000000   0.000000000000000   0.000000000000000
     H    0.000000000000000   1.079252144093028  -1.47461105578085
-        ''')
+       units au ''')
 
 print(h2o)
 
 def check_lccd(return_value):
-    hf      =   -74.506112017705
-    lccd_tot=   -75.012682861990669
-    lccd_corl=   -0.049777455819604
+    hf      =   -74.962663062066
+    lccd_tot=   -75.013238394202133
+    lccd_corl=   -0.050575332136568
 
     assert compare_values(hf, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
     assert compare_values(lccd_tot, qcdb.get_variable('LCCD TOTAL ENERGY'), 5, 'lccd tot')
@@ -40,9 +40,9 @@ def test_1_lccd():
     check_lccd(val)
 
 def check_lccsd(return_value):
-    hf      =   -74.506112017705  
-    lccsd_tot   = -75.013554624840296
-    lccsd_corl  =   -0.050891562718781
+    hf      =   -74.962663062066
+    lccsd_tot   = -75.01355462478978
+    lccsd_corl  =   -0.050891562718417
 
     assert compare_values(hf, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
     assert compare_values(lccsd_tot, qcdb.get_variable('LCCSD TOTAL ENERGY'), 5, 'lccd tot')

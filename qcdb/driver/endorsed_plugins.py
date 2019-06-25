@@ -11,6 +11,7 @@ from qcengine.programs import register_program
 register_program(intf_cfour.QcdbCFOURHarness(name='QCDB-CFOUR'))
 register_program(intf_gamess.QcdbGAMESSHarness(name='QCDB-GAMESS'))
 register_program(intf_psi4.QcdbPsi4Harness(name='QCDB-Psi4'))
+register_program(intf_nwchem.QcdbNWChemHarness(name='QCDB-NWChem'))
 
 if which('psi4') and which_import('psi4'):
     import psi4

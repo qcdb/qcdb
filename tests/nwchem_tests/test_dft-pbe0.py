@@ -15,7 +15,7 @@ print(h2o)
 
 def check_dft(return_value, is_df):
     if is_df:
-        ref = -75.234018772521
+        ref = -75.251809079677
         assert compare_values(ref, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'DFT total')  #TEST
     else:
         ref = -74.964662543238
@@ -23,36 +23,31 @@ def check_dft(return_value, is_df):
 
 
 @using_nwchem
-def test_1_dft_tot():
+def test_1_dft():
     qcdb.set_options({
         'basis': 'sto-3g',
         'memory': '3000 mb',
-        'e_convergence': 1.0e-7,
-        'scf__d_convergence': 1.0e-7,
+        #'e_convergence': 1.0e-7,
+        #'scf__d_convergence': 1.0e-7,
         'nwchem_charge': 0,
         'nwchem_dft__direct': True,
-        'nwchem_dft__xc__pbe0': True,
+        'nwchem_dft__xc': 'pbe0',
         #'nwchem_dft__convergence__energy': 1.0e-7,
         #'nwchem_dft__convergence__density': 1.0e-7,
-        #'nwchem_task_dft':'energy'
     })
     print('Testing DFT total energy...')
-    val = qcdb.energy('nwc-pbe')
+    val = qcdb.energy('nwc-pbe0')
     check_dft(val, is_df=True)
 
 
 @using_nwchem
-def test_2_dft(): #options okay here, pulling scf hf energy
+def test_2_hf():
     qcdb.set_options({
         'basis': 'sto-3g',
         'memory': '3000 mb',
         'e_convergence': 1.0e-7,
-        'scf__d_convergence': 1.0e-7,
-        'nwchem_charge': 0,
-        #'nwchem_dft__direct': True,
-        #'nwchem_dft__convergence__energy': 1.0e-7,
-        #'nwchem_dft__convergence__density': 1.0e-7
+        #'nwchem_charge': 0,
     })
     print('Testing HF energy...')
-    val2 = qcdb.energy('nwc-hf')
-    check_dft(val2, is_df=False)
+    value = qcdb.energy('nwc-hf')
+    check_dft(value, is_df=False)
