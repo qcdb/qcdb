@@ -233,6 +233,9 @@ class QcdbPsi4Harness(Psi4Harness):
     def qcdb_post_parse_output(self, input_model: 'ResultInput', output_model: 'Result') -> 'Result':
 
         dqcvars = PreservingDict(copy.deepcopy(output_model.extras['qcvars']))
+        for k in list(dqcvars.keys()):
+            if k in ['DETCI AVG DVEC NORM', 'MCSCF TOTAL ENERGY']:
+                dqcvars.pop(k)
         qcvars.build_out(dqcvars)
         calcinfo = qcvars.certify(dqcvars, plump=True, nat=len(output_model.molecule.symbols))
         output_model.extras['qcdb:qcvars'] = calcinfo
