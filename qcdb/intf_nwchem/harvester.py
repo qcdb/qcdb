@@ -539,6 +539,12 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
     elif lowername == 'nwc-pbe0':
         ropts.require('NWCHEM', 'xc', 'pbe0', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-pbeop':
+        ropts.require('NWCHEM', 'xc', 'pbeop', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-bhlyp':
+        ropts.require('NWCHEM', 'xc', 'bhlyp', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-b3lyp':
         ropts.require('NWCHEM', 'xc', 'b3lyp', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
@@ -551,6 +557,9 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
     elif lowername == 'nwc-b97-2':
         ropts.require('NWCHEM', 'xc', 'becke97-2', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-b97-d':
+        ropts.require('NWCHEM', 'xc', 'becke97-d', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-b97gga1':
         ropts.require('NWCHEM', 'xc', 'becke97gga1', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
@@ -560,8 +569,10 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
     elif lowername == 'nwc-bop':
         ropts.require('NWCHEM', 'xc', 'bop', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-d1df':
-        ropts.require('NWCHEM', 'xc', 'd1df', **kwgs)
+    elif lowername == 'nwc-cft97':
+        ropts.require('NWCHEM', 'xc', 'cft97', **kwgs)
+    elif lowername == 'nwc-dldf':
+        ropts.require('NWCHEM', 'xc', 'dldf', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-ft97':
         ropts.require('NWCHEM', 'xc', 'ft97', **kwgs)
@@ -570,7 +581,13 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         ropts.require('NWCHEM', 'xc', 'hcth', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-hcth120':
-        ropts.require('NWCHEM', 'xc', 'htch120', **kwgs)
+        ropts.require('NWCHEM', 'xc', 'hcth120', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-hcth147':
+        ropts.require('NWCHEM', 'xc', 'hcth147', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-hcth407':
+        ropts.require('NWCHEM', 'xc', 'hcth407', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-hcth407p':
         ropts.require('NWCHEM', 'xc', 'hcth407p', **kwgs)
@@ -589,9 +606,6 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-m06-2x':
         ropts.require('NWCHEM', 'xc', 'm06-2x', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-m06-hf':
-        ropts.require('NWCHEM', 'xc', 'm06-hf', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-m06-hf':
         ropts.require('NWCHEM', 'xc', 'm06-hf', **kwgs)
@@ -617,7 +631,7 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
     elif lowername == 'nwc-mpwb1k':
         ropts.require('NWCHEM', 'xc', 'mpwb1k', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'pw6b95':
+    elif lowername == 'nwc-pw6b95':
         ropts.require('NWCHEM', 'xc', 'pw6b95', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-pwb6k':
@@ -625,6 +639,9 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-tpssh':
         ropts.require('NWCHEM', 'xc', 'xctpssh', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-xft97':
+        ropts.require('NWCHEM', 'xc', 'xft97', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
     #DFT functionals potential issues - multiple options or req conditions, need to be on one line or format as:
     #dft [block start]
@@ -688,9 +705,9 @@ def nwchem_list():
     val.append('nwc-lccd')
     val.append('nwc-lccsd')
     val.append('nwc-ccd')
-    val.append('nwc-eom-ccsd')
-    val.append('nwc-eom-ccsdt')
-    val.append('nwc-eom-ccsdtq')
+    val.append('nwc-eom-ccsd')#untested
+    val.append('nwc-eom-ccsdt') #untested
+    val.append('nwc-eom-ccsdtq') #untested
     val.extend(dft_functionals_list())
     val.append('nwc-tddft')
 
