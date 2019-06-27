@@ -437,7 +437,7 @@ def test_32_b97d():
     check_b97d(val)
 
 def check_cft97(return_value):
-    cft97   =   -67.64800200510
+    cft97   =   -67.648400200510
     assert compare_values(cft97, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft cft97')
 
 @using_nwchem
@@ -450,7 +450,7 @@ def test_33_cft97():
     check_cft97(val)
 
 def check_acm(return_value):
-    acm = -76.387274033902
+    acm = -76.397101204907
     assert compare_values(acm, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft acm')
 
 @using_nwchem
