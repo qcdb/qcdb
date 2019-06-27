@@ -1048,6 +1048,12 @@ qcvardefs['MP3 CORRELATION ENERGY'] = {
    The correlation energy component for 3-order Perturbation theory.
 """}
 
+qcvardefs['MP3 CORRECTION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The correlation energy difference between 2nd and 3-order Perturbation theory.
+"""}
+
 qcvardefs['MP4 TOTAL ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
@@ -1058,6 +1064,12 @@ qcvardefs['MP4 CORRELATION ENERGY'] =  {
     'units': 'Eh',
     'glossary': r"""
    The correlation energy component for 4-order Perturbation theory.
+"""}
+
+qcvardefs['MP4 CORRECTION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The correlation energy difference between 3rd and 4th-order Perturbation theory.
 """}
 
 qcvardefs['MP5 TOTAL ENERGY'] = {
