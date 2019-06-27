@@ -14,19 +14,38 @@ h2o = qcdb.set_molecule('''
 print(h2o)
 
 
+
 def check_ccsd_t_(return_value):
-    ref = -76.026744421192
+
+    #ref = -76.026744421192
+    #nre = 9.187334240165
+    #ccsdcorl = -0.213350416141872
+    #ccsdtot = -76.240094837333771
+    #ccsd_t_corr = -0.003062727448805
+    #ccsd_t_corl = -0.216413143590677
+    #ccsd_t_tot = -76.243157564782578
+
+    # copied from test_sp_rhf_ccsd_t-2.py
+    ref = -76.026760737428
     nre = 9.187334240165
-    ccsdcorl = -0.213350416141872
-    ccsdtot = -76.240094837333771
-    ccsd_t_corr = -0.003062727448805
-    ccsd_t_corl = -0.216413143590677
-    ccsd_t_tot = -76.243157564782578
+    ccsd_corl = -0.213341272556805
+    ccsd_tot = -76.240102009984767
+    scscorl = -0.264498694126312
+    scstot = -76.291259431554266
+    mp2corl = -0.204016996303923
+    mp2tot = -76.230777733731884
+    ss = -0.046033728720216 * 1.130000000000000
+    os = -0.167307543836588 * 1.270000000000000
+    ccsd_t_tot = -76.243161551636248
+    t_corr = -0.003059541972533
+    ccsd_t_corl= ccsd_corl + t_corr
+    a5050corl = 0.5 * (ss + os)
+    a5050tot = a5050corl + scstot
 
     assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(ccsdcorl, qcdb.get_variable('CCSD CORRELATION ENERGY'), 5, 'ccsd corl')
-    assert compare_values(ccsdtot, qcdb.get_variable('CCSD TOTAL ENERGY'), 5, 'ccsd total')
-    assert compare_values(ccsd_t_corr, qcdb.get_variable('(T) CORRECTION ENERGY'), 5, 'ccsd(t) corr')
+    assert compare_values(ccsd_corl, qcdb.get_variable('CCSD CORRELATION ENERGY'), 5, 'ccsd corl')
+    assert compare_values(ccsd_tot, qcdb.get_variable('CCSD TOTAL ENERGY'), 5, 'ccsd total')
+    assert compare_values(t_corr, qcdb.get_variable('(T) CORRECTION ENERGY'), 5, 'ccsd(t) corr')
     assert compare_values(ccsd_t_corl, qcdb.get_variable('CCSD(T) CORRELATION ENERGY'), 5, 'ccsd(t) corl')
     assert compare_values(ccsd_t_tot, qcdb.get_variable('CCSD(T) TOTAL ENERGY'), 5, 'ccsd(t) tot')
     assert compare_values(nre, qcdb.get_variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
@@ -41,7 +60,7 @@ def test_1_ccsd_t_():
         'nwchem_scf__thresh': 1.0e-12,
         'nwchem_tce__dft': False,
         #'nwchem_tce__ccsd': True,
-        'nwchem_tce__ccsd(t)': True, 
+        'nwchem_tce__ccsd(t)': True,
         'qc_module'  : 'tce',
         'nwchem_tce__thresh': 1.0e-12,
         #'nwchem_task_tce': 'energy'
