@@ -542,6 +542,9 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
     elif lowername == 'nwc-pbeop':
         ropts.require('NWCHEM', 'xc', 'pbeop', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-acm':
+        ropts.require('NWCHEM', 'xc', 'acm', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-bhlyp':
         ropts.require('NWCHEM', 'xc', 'bhlyp', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
@@ -560,8 +563,14 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
     elif lowername == 'nwc-b97-d':
         ropts.require('NWCHEM', 'xc', 'becke97-d', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-b97gga1':
+    elif lowername == 'nwc-b97-gga1':
         ropts.require('NWCHEM', 'xc', 'becke97gga1', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-b98':
+        ropts.require('NWCHEM', 'xc', 'becke98', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-bb1k':
+        ropts.require('NWCHEM', 'xc', 'bb1k', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-bhandh':
         ropts.require('NWCHEM', 'xc', 'beckehandh', **kwgs)
@@ -571,6 +580,7 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-cft97':
         ropts.require('NWCHEM', 'xc', 'cft97', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-dldf':
         ropts.require('NWCHEM', 'xc', 'dldf', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
@@ -610,6 +620,9 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
     elif lowername == 'nwc-m06-hf':
         ropts.require('NWCHEM', 'xc', 'm06-hf', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-m06-l':
+        ropts.require('NWCHEM', 'xc', 'm06-l', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-m08-hx':
         ropts.require('NWCHEM', 'xc', 'm08-hx', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
@@ -637,11 +650,23 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
     elif lowername == 'nwc-pwb6k':
         ropts.require('NWCHEM', 'xc', 'pwb6k', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-op':
+        ropts.require('NWCHEM', 'xc', 'op', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-optx':
+        ropts.require('NWCHEM', 'xc', 'optx', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-tpssh':
         ropts.require('NWCHEM', 'xc', 'xctpssh', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-vs98':
+        ropts.require('NWCHEM', 'xc', 'vs98', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-xft97':
         ropts.require('NWCHEM', 'xc', 'xft97', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-xtpss03':
+        ropts.require('NWCHEM', 'xc', 'xtpss03', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
     #DFT functionals potential issues - multiple options or req conditions, need to be on one line or format as:
     #dft [block start]
@@ -806,5 +831,19 @@ def dft_functionals_list():
     val.append('nwc-tpsslyp1w')
     val.append('nwc-xlyp')
     val.append('nwc-wpbe')
+    val.append('nwc-bhlyp')
+    val.append('nwc-hcth407')
+    val.append('nwc-pbeop')
+    val.append('nwc-b97-d')
+    val.append('nwc-cft97')
+    val.append('nwc-op')
+    val.append('nwc-optx')
+    val.append('nwc-b98')
+    val.append('nwc-acm')
+    val.append('nwc-xtpss03')
+    val.append('nwc-bb1k')
+    val.append('nwc-vs98')
+    val.append('nwc-m06-l')
+    val.append('nwc-hcth147')
 
     return val

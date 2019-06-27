@@ -19,7 +19,7 @@ def check_pbe0(return_value):
 
 
 @using_nwchem
-def test_1_pbe0():
+def test_01_pbe0():
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'nwchem_dft__xc': 'pbe0',
@@ -32,7 +32,7 @@ def check_b3lyp(return_value):
     assert compare_values(b3lyp, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft b3lyp')
 
 @using_nwchem
-def test_2_b3lyp():
+def test_02_b3lyp():
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'nwchem_dft__xc': 'b3lyp'
@@ -46,7 +46,7 @@ def check_b1b95(return_value):
     assert compare_values(b1b95, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft b1b95')
 
 @using_nwchem
-def test_3_b1b95():
+def test_03_b1b95():
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'nwchem_dft__xc': 'b1b95',
@@ -60,7 +60,7 @@ def check_b971(return_value):
     assert compare_values(b971, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft b971')
 
 @using_nwchem
-def test_4_b971():
+def test_04_b971():
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'nwchem_dft__xc': 'becke97-1',
@@ -74,7 +74,7 @@ def check_b972(return_value):
     assert compare_values(b972, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft b972')
 
 @using_nwchem
-def test_5_b972():
+def test_05_b972():
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'nwchem_dft__xc': 'becke97-2',
@@ -88,13 +88,13 @@ def check_b97gga1(return_value):
     assert compare_values(b97gga1, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft b97gga1')
 
 @using_nwchem
-def test_6_b97gga1():
+def test_06_b97gga1():
     qcdb.set_options({
         'basis': 'cc-pvdz',
-        'nwchem_dft__xc': 'becke97-gga1',
+        'nwchem_dft__xc': 'becke97gga1',
     })
-    print('Testing dft (becke97-gga1) energy ...')
-    val = qcdb.energy('nwc-b97gga1')
+    print('Testing dft (becke97gga1) energy ...')
+    val = qcdb.energy('nwc-b97-gga1')
     check_b97gga1(val)
 
 def check_bhandh(return_value):
@@ -102,7 +102,7 @@ def check_bhandh(return_value):
     assert compare_values(bhandh, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft bhandh')
 
 @using_nwchem
-def test_7_bhandh():
+def test_07_bhandh():
     qcdb.set_options({
         'basis' : 'cc-pvdz',
         'nwchem_dft__xc': 'beckehandh'
@@ -116,7 +116,7 @@ def check_bop(return_value):
     assert compare_values(bop, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft bop')
 
 @using_nwchem
-def test_8_bop():
+def test_08_bop():
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'nwchem_dft__xc': 'bop'
@@ -130,7 +130,7 @@ def check_dldf(return_value):
     assert compare_values(dldf, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft dldf')
 
 @using_nwchem
-def test_9_dldf():
+def test_09_dldf():
     qcdb.set_options({
         'basis':  'cc-pvdz',
         'nwchem_dft__xc' : 'dldf',
@@ -346,7 +346,7 @@ def test_25_mpw1k():
     check_mpw1k(val)
 
 def check_pw6b95(return_value):
-    pw6b95  =   -75.284250800399
+    pw6b95  =   -76.500335097526
     assert compare_values(pw6b95, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft pw6b95')
 
 @using_nwchem
@@ -398,7 +398,7 @@ def test_29_bhlyp():
     check_bhlyp(val)
 
 def check_hcth407(return_value):
-    hcth407 =   -76.11625217878
+    hcth407 =   -76.411625217878
     assert compare_values(hcth407, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft hcth407')
 
 @using_nwchem
@@ -421,7 +421,7 @@ def test_31_pbeop():
         'nwchem_dft__xc': 'pbeop'
     })
     val = qcdb.energy('nwc-pbeop')
-    check_hcth407(val)
+    check_pbeop(val)
 
 def check_b97d(return_value):
     b97d   =   -76.380347936365
@@ -434,4 +434,122 @@ def test_32_b97d():
         'nwchem_dft__xc': 'becke97-d'
     })
     val = qcdb.energy('nwc-b97-d')
-    
+    check_b97d(val)
+
+def check_cft97(return_value):
+    cft97   =   -67.64800200510
+    assert compare_values(cft97, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft cft97')
+
+@using_nwchem
+def test_33_cft97():
+    qcdb.set_options({
+        'basis' : 'cc-pvdz',
+        'nwchem_dft__xc': 'cft97'
+    })
+    val = qcdb.energy('nwc-cft97')
+    check_cft97(val)
+
+def check_acm(return_value):
+    acm = -76.387274033902
+    assert compare_values(acm, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft acm')
+
+@using_nwchem
+def test_34_acm():
+    qcdb.set_options({
+        'basis' : 'cc-pvdz',
+        'nwchem_dft__xc': 'acm'
+    })
+    val = qcdb.energy('nwc-acm')
+    check_acm(val)
+
+def check_optx(return_value):
+    optx = -76.055691019559
+    assert compare_values(optx, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft optx')
+
+@using_nwchem
+def test_35_optx():
+    qcdb.set_options({
+        'basis' : 'cc-pvdz',
+        'nwchem_dft__xc': 'optx'
+    })
+    val = qcdb.energy('nwc-optx')
+    check_optx(val)
+
+def check_b98(return_value):
+    b98 = -76.394526199939
+    assert compare_values(b98, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft b98')
+
+@using_nwchem
+def test_36_b98():
+    qcdb.set_options({
+        'basis' : 'cc-pvdz',
+        'nwchem_dft__xc': 'becke98'
+    })
+    val = qcdb.energy('nwc-b98')
+    check_b98(val)
+
+def check_xtpss03(return_value):
+    xtpss03 = -76.090088650605
+    assert compare_values(xtpss03, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft xtpss03')
+
+@using_nwchem
+def test_37_xtpss03():
+    qcdb.set_options({
+        'basis' : 'cc-pvdz',
+        'nwchem_dft__xc': 'xtpss03'
+    })
+    val = qcdb.energy('nwc-xtpss03')
+    check_xtpss03(val)
+
+def check_bb1k(return_value):
+    bb1k = -76.387274033902
+    assert compare_values(bb1k, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft bb1k')
+
+@using_nwchem
+def test_38_bb1k():
+    qcdb.set_options({
+        'basis' : 'cc-pvdz',
+        'nwchem_dft__xc': 'bb1k'
+    })
+    val = qcdb.energy('nwc-bb1k')
+    check_bb1k(val)
+
+def check_vs98(return_value):
+    vs98 = -76.441813521942
+    assert compare_values(vs98, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft vs98')
+
+@using_nwchem
+def test_39_vs98():
+    qcdb.set_options({
+        'basis' : 'cc-pvdz',
+        'nwchem_dft__xc': 'vs98'
+    })
+    val = qcdb.energy('nwc-vs98')
+    check_vs98(val)
+
+def check_m06_l(return_value):
+    m06_l = -76.413915672071
+    assert compare_values(m06_l, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft m06-l')
+
+@using_nwchem
+def test_40_m06_l():
+    qcdb.set_options({
+        'basis' : 'cc-pvdz',
+        'nwchem_dft__xc': 'm06-l'
+    })
+    val = qcdb.energy('nwc-m06-l')
+    check_m06_l(val)
+
+def check_hcth147(return_value):
+    hcth147 = -76.406989374352
+    assert compare_values(hcth147, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft hcth147')
+
+@using_nwchem
+def test_41_hcth147():
+    qcdb.set_options({
+        'basis' : 'cc-pvdz',
+        'nwchem_dft__xc': 'hcth147'
+    })
+    val = qcdb.energy('nwc-hcth147')
+    check_hcth147(val)
+
