@@ -1173,7 +1173,13 @@ def load_nwchem_defaults(options):
         validator=parsers.positive_integer,
         glossary='''Number of iterations for a DIIS extrapolation to be performed. Will accelerate excitation
             amplitude convergence. Default is 5.'''))
-    
+
+    options.add('nwchem', RottenOption(
+        keyword='tce__dipole',
+        default= False,
+        validator= parsers.boolean
+        glossary='When set, will undergo another interative step for delta equation to find dipole moments and one-particle density matrix. Can do for both ground and excited states.'))
+ 
         #options.add('nwchem', RottenOption(
         #   keyword='tce_freeze',
         #Array TODO
@@ -1210,29 +1216,35 @@ def load_nwchem_defaults(options):
         glossary='Default is 1.'))
     
     options.add('nwchem', RottenOption(
-        keyword='tce__active__oa',
+        keyword='tce__active_oa',
         default=1,  # ?
         validator=parsers.positive_integer,
         glossary='Specify the number of occupied alpha spin-orbitals.'))
     
     options.add('nwchem',RottenOption(
-        keyword='tce__active__ob',
+        keyword='tce__active_ob',
         default=1,
         validator=parsers.positive_integer,
         glossary='Specify the number of occupied beta spin-orbitals.'))
     
     options.add('nwchem',RottenOption(
-        keyword='tce__active__va',
+        keyword='tce__active_va',
         default=1,
         validator=parsers.positive_integer,
         glossary='Specify the number of unoccupied alpha spin-orbitals.'))
     
     options.add('nwchem', RottenOption(
-        keyword='tce__active__vb',
+        keyword='tce__active_vb',
         default=1,
         validator=parsers.positive_integer,
         glossary='Specify the number of unoccupied beta spin-orbitals.'))
     
+    options.add('nwchem', RottenOption(
+        keyword='tce__t3a_lvl',
+        default= 1,
+        validator= parsers.positive_integer,
+        glossary='Set level in TCE CCSDTA. 1 uses largest set of triply excited amplitudes defined by at least one occupied and one unoccupied active spinorbitals labels. Level 2 uses triply excited amplitudes that carry at least two occupied and unoccupied active spinorbital labeles. Level 3 uses triply excited amplitudes that are defined by active indices only. will need ACTIVE_OA, ACTIVE_OB, ACTIVE_VA, ACTIVE_VB options as well.'))    
+
     options.add('nwchem', RottenOption(
         keyword='tce__tilesize', 
         default=1, 
