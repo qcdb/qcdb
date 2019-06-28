@@ -1009,7 +1009,7 @@ def load_nwchem_defaults(options):
         glossary= 'TCE module option of coupled cluster singles, doubles, and triples. Also activates EOM-CCSDT if needed.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__ccsd_br_t',
+        keyword= 'tce__ccsd[t]',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of coupled cluster singles, doubles, and perturbative connected triples.'))
@@ -1033,19 +1033,19 @@ def load_nwchem_defaults(options):
         glossary= 'TCE module option of coupled cluster singles, doubles, triples, and quadruples. Also, option for EOM-CCSDTQ')) 
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__ccsd_pr_2_t', #ccsd(2)_t
+        keyword= 'tce__ccsd(2)_t', #ccsd(2)_t
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of CCSD and perturbative (T)_t correction.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__ccsd_pr_2_tq', #ccsd(2)_tq
+        keyword= 'tce__ccsd(2)_tq', #ccsd(2)_tq
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of CCSD and perturbative CCSD(2) correction.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__ccsdt_pr_2_q', #ccsdt(2)_q
+        keyword= 'tce__ccsdt(2)_q', #ccsdt(2)_q
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of CCSDT and perturbative (CCSDT_Q) quadruples correction.')) #format from site weird
@@ -1069,7 +1069,7 @@ def load_nwchem_defaults(options):
         glossary= 'TCE module option of locally renormalized EOMCCSD.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__lrccsd_pr_t',
+        keyword= 'tce__lrccsd(t)',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of CCSD with perturbative locally renomalized CCSD(T) correction.'))
@@ -1081,7 +1081,7 @@ def load_nwchem_defaults(options):
         glossary= 'TCE module option of CCSD with perturbative locally renomalized CCSD(TQ)(LR-CCSD(TQ)-1) correction.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__creomsd_pr_t',
+        keyword= 'tce__creomsd(t)',
         default= False,
         validator= parsers.boolean,
         glossary= '''TCE module option of EOM CCSD energies and completely renormalized EOMCCSD(T)(IA) correction. NWChem will print out two components:
@@ -1090,7 +1090,7 @@ def load_nwchem_defaults(options):
         2- the delta-corrected EOMCCSD excitation energy'''))
 
     options.add('nwchem',RottenOption(
-        keyword= 'tce__creom_pr_t_ac',
+        keyword= 'tce__creom(t)_ac',
         default= False,
         validator= parsers.boolean,
         glossary='TCE module option of active space CR-EOMCCSD(T) approach.'))
@@ -1177,8 +1177,9 @@ def load_nwchem_defaults(options):
     options.add('nwchem', RottenOption(
         keyword='tce__dipole',
         default= False,
-        validator= parsers.boolean
-        glossary='When set, will undergo another interative step for delta equation to find dipole moments and one-particle density matrix. Can do for both ground and excited states.'))
+        validator= parsers.boolean,
+        glossary='''When set, will undergo another interative step for delta equation to find dipole moments 
+                    and one-particle density matrix. Can do for both ground and excited states.'''))
  
         #options.add('nwchem', RottenOption(
         #   keyword='tce_freeze',

@@ -492,6 +492,11 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
    # elif lowername == 'nwc-ccsd_act':
     
     #TCE only opts
+    elif lowername == 'nwc-ccsd[t]':
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            mdccmd = f'task tce {runtyp} \n\n'
+            ropts.require('NWCHEM', 'tce__ccsd[t]', True, **kwgs)
+
     elif lowername == 'nwc-cisd':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp} \n\n'
@@ -525,10 +530,12 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp} \n\n'
             ropts.require('NWCHEM', 'tce__lr-ccsd', True, **kwgs)
+    #add more opts that are necessary for ccsdta
     elif lowername == 'nwc-ccsdta':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp} \n\n'
             ropts.require('NWCHEM', 'tce__ccsdta', True, **kwgs)
+    
     elif lowername == 'nwc-eaccsd':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp} \n\n'
@@ -724,6 +731,7 @@ def nwchem_list():
     val.append('nwc-eom-ccsd')
     val.append('nwc-eom-ccsdt')
     val.append('nwc-eom-ccsdtq')
+    val.append('nwc-qcisd')
     val.append('nwc-cisd')
     val.append('nwc-cisdt')
     val.append('nwc-cisdtq')
