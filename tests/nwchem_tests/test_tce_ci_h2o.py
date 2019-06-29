@@ -5,13 +5,6 @@ from ..addons import *
 from ..utils import *
 import qcdb
 
-h2o = qcdb.set_molecule('''
-        O      0.000000000000     0.000000000000    -0.123909374404
-        H      0.000000000000     1.429936611037     0.983265845431
-        H      0.000000000000    -1.429936611037     0.983265845431
-        ''')
-
-print(h2o)
 
 def check_cisd(return_value):
     hf           =   -74.506112017320
@@ -24,6 +17,12 @@ def check_cisd(return_value):
 
 @using_nwchem
 def test_1_cisd():
+    h2o = qcdb.set_molecule('''
+        O      0.000000000000     0.000000000000    -0.123909374404
+        H      0.000000000000     1.429936611037     0.983265845431
+        H      0.000000000000    -1.429936611037     0.983265845431
+        ''')
+
     qcdb.set_options({
         'basis' : 'sto-3g',
         'qc_module': 'TCE',
@@ -44,6 +43,12 @@ def check_cisdt(return_value):
 
 @using_nwchem
 def test_2_cisdt():
+    h2o = qcdb.set_molecule('''
+        O      0.000000000000     0.000000000000    -0.123909374404
+        H      0.000000000000     1.429936611037     0.983265845431
+        H      0.000000000000    -1.429936611037     0.983265845431
+        ''')
+
     qcdb.set_options({
         'basis' : 'sto-3g',
         'qc_module': 'TCE',
@@ -65,6 +70,12 @@ def check_cisdtq(return_value):
 
 @using_nwchem
 def test_3_cisdtq():
+    h2o = qcdb.set_molecule('''
+        O      0.000000000000     0.000000000000    -0.123909374404
+        H      0.000000000000     1.429936611037     0.983265845431
+        H      0.000000000000    -1.429936611037     0.983265845431
+        ''')
+
     qcdb.set_options({
         'basis' : 'sto-3g',
         'qc_module': 'TCE',

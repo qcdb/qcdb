@@ -334,8 +334,7 @@ class RottenOption(object):
                 hist = user
             else:
                 raise OptionReconciliationError(
-                    'Conflicting option requirements btwn user ({}) and driver ({})'.
-                    format(user[0], driver[0]))
+                    f'Conflicting option requirements btwn user ({user[0]}) and driver ({driver[0]}) for {self.keyword}')
         
         #self.score = max_score
         return hist[0], max_score, hist

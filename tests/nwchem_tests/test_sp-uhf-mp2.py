@@ -6,13 +6,6 @@ from ..utils import *
 from ..addons import *
 import qcdb
 
-nh2 = qcdb.set_molecule('''
-         N        0.08546       -0.00020       -0.05091
-         H       -0.25454       -0.62639        0.67895
-         H       -0.25454       -0.31918       -0.95813
-        ''')
-print(nh2)
-
 
 def check_uhf_mp2(return_value, is_5050):
     ref = -55.566057523877
@@ -38,6 +31,12 @@ def check_uhf_mp2(return_value, is_5050):
 
 @using_nwchem
 def test_1_mp2_5050no():
+    nh2 = qcdb.set_molecule('''
+         N        0.08546       -0.00020       -0.05091
+         H       -0.25454       -0.62639        0.67895
+         H       -0.25454       -0.31918       -0.95813
+        ''')
+
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'memory': '3000 mb',

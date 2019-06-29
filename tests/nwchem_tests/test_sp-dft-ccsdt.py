@@ -6,14 +6,6 @@ from ..utils import *
 from ..addons import *
 import qcdb
 
-h2o = qcdb.set_molecule('''
-        O     0.000000000000    0.000000000000   -0.065638538099
-        H     0.000000000000   -0.757480611647    0.520865616174
-        H     0.000000000000    0.757480611647    0.520865616174
-        ''')
-
-print(h2o)
-
 
 def check_dft(return_value, is_dft):
     if is_dft:
@@ -33,6 +25,12 @@ def check_dft(return_value, is_dft):
 
 @using_nwchem
 def test_1_dft():
+    h2o = qcdb.set_molecule('''
+        O     0.000000000000    0.000000000000   -0.065638538099
+        H     0.000000000000   -0.757480611647    0.520865616174
+        H     0.000000000000    0.757480611647    0.520865616174
+        ''')
+
     qcdb.set_options({
         'memory': '6000 mb',
         'basis': 'sto-3g',
@@ -51,6 +49,12 @@ def test_1_dft():
 
 @using_nwchem
 def test_2_scf():
+    h2o = qcdb.set_molecule('''
+        O     0.000000000000    0.000000000000   -0.065638538099
+        H     0.000000000000   -0.757480611647    0.520865616174
+        H     0.000000000000    0.757480611647    0.520865616174
+        ''')
+
     qcdb.set_options({
         'basis': 'sto-3g',
         'memory': '6000 mb',

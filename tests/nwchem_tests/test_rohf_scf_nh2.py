@@ -11,12 +11,6 @@ import qcdb
    #     H    0.79970017     0.00000000     0.47726896
     #    ''')
 
-nh2= qcdb.set_molecule('''
-        N
-        H 1 1.008
-        H 1 1.008 2 105.0''')
-print(nh2)
-
 
 def check_hf(return_value):
     ref = -55.562683879400
@@ -28,6 +22,11 @@ def check_hf(return_value):
 
 @using_nwchem
 def test_1_rohf():
+    nh2= qcdb.set_molecule('''
+        N
+        H 1 1.008
+        H 1 1.008 2 105.0''')
+
     qcdb.set_options({
         'basis': 'cc-pVDZ',
         'memory': '270 mb',

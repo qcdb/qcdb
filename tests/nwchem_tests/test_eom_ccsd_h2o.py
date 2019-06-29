@@ -5,13 +5,6 @@ from ..addons import *
 from ..utils import *
 import qcdb
 
-h2o = qcdb.set_molecule('''
-        O      0.000000000000     0.000000000000    -0.123909374404
-        H      0.000000000000     1.429936611037     0.983265845431
-        H      0.000000000000    -1.429936611037     0.983265845431
-        ''')
-
-print(h2o)
 
 def check_eomccsd(return_value):
     ref     =       -75.633713836043
@@ -73,6 +66,12 @@ def check_eomccsd(return_value):
 
 @using_nwchem
 def test_1_eomccsd():
+    h2o = qcdb.set_molecule('''
+        O      0.000000000000     0.000000000000    -0.123909374404
+        H      0.000000000000     1.429936611037     0.983265845431
+        H      0.000000000000    -1.429936611037     0.983265845431
+        ''')
+
     qcdb.set_options({
         'basis'     :       '6-31g*',
         'memory'    :       '15000 mb',
