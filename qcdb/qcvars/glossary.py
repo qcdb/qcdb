@@ -474,6 +474,18 @@ qcvardefs['CISDTQ CORRELATION ENERGY'] = {
         The correlation energy for a configuration interaction with singles, doubles, triples, and quadruples calculation.
         """}
 
+qcvardefs['QCISD TOTAL ENERGY'] = {
+        'units': 'Eh',
+        'glossary': """
+        The total energy for a quadratic configuration interaction with singles and doubles calculation.
+        """}
+
+qcvardefs['QCISD CORRELATION ENERGY'] = {
+        'units': 'Eh',
+        'glossary': """
+        The correlation energy for a quadratic configuration interaction with singles and doubles calculation.
+        """}
+
 qcvardefs['CURRENT CORRELATION ENERGY'] = {
     'units': 'Eh',
     'glossary': """
