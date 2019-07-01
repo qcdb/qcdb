@@ -5,13 +5,6 @@ from ..addons import *
 from ..utils import *
 import qcdb
 
-nh2 = qcdb.set_molecule('''
-           N        0.08546       -0.00020       -0.05091
-           H       -0.25454       -0.62639        0.67895
-           H       -0.25454       -0.31918       -0.95813
-           ''')
-print(nh2)
-
 
 def check_uhf_hf(return_value):
     ref = -55.566057523877
@@ -23,6 +16,12 @@ def check_uhf_hf(return_value):
 
 @using_nwchem
 def test_1_hf():
+    nh2 = qcdb.set_molecule('''
+           N        0.08546       -0.00020       -0.05091
+           H       -0.25454       -0.62639        0.67895
+           H       -0.25454       -0.31918       -0.95813
+           ''')
+
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'memory': '400 mb',

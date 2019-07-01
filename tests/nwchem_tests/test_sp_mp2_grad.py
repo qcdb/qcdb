@@ -6,13 +6,6 @@ from ..addons import *
 import qcdb
 import numpy as np
 
-h2o = qcdb.set_molecule('''
-        O     0.000000000000    0.000000000000   -0.065638538099
-        H     0.000000000000   -0.757480611647    0.520865616174
-        H     0.000000000000    0.757480611647    0.520865616174
-        ''')
-print(h2o)
-
 
 def check_mp2(val, is_df, is5050):
     if is_df:
@@ -54,6 +47,12 @@ def check_mp2(val, is_df, is5050):
 
 @using_nwchem
 def test_1_mp2():
+    h2o = qcdb.set_molecule('''
+        O     0.000000000000    0.000000000000   -0.065638538099
+        H     0.000000000000   -0.757480611647    0.520865616174
+        H     0.000000000000    0.757480611647    0.520865616174
+        ''')
+
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'memory': '400 mb',
@@ -71,6 +70,12 @@ def test_1_mp2():
 
 @using_nwchem
 def test_2_hf():
+    h2o = qcdb.set_molecule('''
+        O     0.000000000000    0.000000000000   -0.065638538099
+        H     0.000000000000   -0.757480611647    0.520865616174
+        H     0.000000000000    0.757480611647    0.520865616174
+        ''')
+
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'memory': '400 mb',
@@ -103,6 +108,12 @@ def test_2_hf():
 
 @using_nwchem
 def test_4_mp2_array():
+    h2o = qcdb.set_molecule('''
+        O     0.000000000000    0.000000000000   -0.065638538099
+        H     0.000000000000   -0.757480611647    0.520865616174
+        H     0.000000000000    0.757480611647    0.520865616174
+        ''')
+
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'memory': '400 mb',

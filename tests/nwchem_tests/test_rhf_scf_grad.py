@@ -8,13 +8,6 @@ import qcdb
 import numpy as np
 import pprint
 
-h2o = qcdb.set_molecule('''
-        O     0.000000000000    0.000000000000   -0.065638538099
-        H     0.000000000000   -0.757480611647    0.520865616174
-        H     0.000000000000    0.757480611647    0.520865616174
-        ''')
-print(h2o)
-
 
 def check_hf(return_value):
     ref = -76.026760737428
@@ -29,6 +22,12 @@ def check_hf(return_value):
     assert compare_arrays(grads, qcdb.get_variable('CURRENT GRADIENT'), 5, 'hf grad')
 @using_nwchem
 def test_1_hf():
+    h2o = qcdb.set_molecule('''
+        O     0.000000000000    0.000000000000   -0.065638538099
+        H     0.000000000000   -0.757480611647    0.520865616174
+        H     0.000000000000    0.757480611647    0.520865616174
+        ''')
+
     qcdb.set_options({
         'basis': 'cc-pvdz',
         'memory': '400 mb',

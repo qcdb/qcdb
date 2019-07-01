@@ -6,13 +6,6 @@ import qcdb
 from ..addons import *
 from ..utils import *
 
-h2o = qcdb.set_molecule('''
-        O                     0.000000000000     0.000000000000    -0.234154782060
-        H                    -0.000000000000     2.702188571625     1.858103156322
-        H                     0.000000000000    -2.702188571625     1.858103156322
-        ''')
-
-print(h2o)
 
 def tce_ccd(return_value):
 
@@ -25,7 +18,13 @@ def tce_ccd(return_value):
     assert compare_values(ccd_corl, qcdb.get_variable('CCD CORRELATION'), 5, 'ccsd corl')
 
 @using_nwchem
-def test_1_uccsd():
+def test_1_rccd():
+    h2o = qcdb.set_molecule('''
+        O                     0.000000000000     0.000000000000    -0.234154782060
+        H                    -0.000000000000     2.702188571625     1.858103156322
+        H                     0.000000000000    -2.702188571625     1.858103156322
+        ''')
+
     qcdb.set_options({
         'basis'     :   'sto-3g',
         'scf__e_convergence'   :   1e-10,

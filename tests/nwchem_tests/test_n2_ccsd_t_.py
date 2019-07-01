@@ -5,11 +5,6 @@ from ..addons import *
 from ..utils import *
 import qcdb
 
-n2 = qcdb.set_molecule('''
-        n 0 0 -0.5
-        n 0 0  0.5 ''')
-
-print(n2)
 
 def check_ccsd_t_(return_value, is5050):
     hf          =   -108.929838333552
@@ -54,6 +49,10 @@ def check_ccsd_t_(return_value, is5050):
 
 @using_nwchem
 def test_2_a5050_no():
+    n2 = qcdb.set_molecule('''
+        n 0 0 -0.5
+        n 0 0  0.5 ''')
+
     qcdb.set_options({
         'basis' : 'cc-pvdz',
         'nwchem_ccsd__thresh'    : 1.0e-8,

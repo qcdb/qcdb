@@ -6,11 +6,6 @@ from ..addons import *
 from ..utils import *
 import qcdb
 
-n2_plus = qcdb.set_molecule('''
-        N 0.0 0.0 -0.54885
-        N 0.0 0.0  0.54885
-        ''')
-print(n2_plus)
 
 def check_tddft(return_value):
     if is_df:
@@ -64,6 +59,11 @@ def check_tddft(return_value):
 
 @using_nwchem
 def test_1_dft():
+    n2_plus = qcdb.set_molecule('''
+        N 0.0 0.0 -0.54885
+        N 0.0 0.0  0.54885
+        ''')
+
     qcdb.set_options({
         'basis': '6-31g**',
         'memory' : '3000 mb',

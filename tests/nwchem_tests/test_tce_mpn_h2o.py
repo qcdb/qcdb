@@ -5,13 +5,6 @@ from ..addons import *
 from ..utils import *
 import qcdb
 
-h2o = qcdb.set_molecule('''
-        O      0.000000000000     0.000000000000    -0.123909374404
-        H      0.000000000000     1.429936611037     0.983265845431
-        H      0.000000000000    -1.429936611037     0.983265845431
-        ''')
-
-print(h2o)
 
 def check_tce_mp2(return_value):
     hf          =   -75.645085110552
@@ -24,6 +17,12 @@ def check_tce_mp2(return_value):
 
 @using_nwchem
 def test_1_mp2():
+    h2o = qcdb.set_molecule('''
+        O      0.000000000000     0.000000000000    -0.123909374404
+        H      0.000000000000     1.429936611037     0.983265845431
+        H      0.000000000000    -1.429936611037     0.983265845431
+        ''')
+
     qcdb.set_options({
         'basis' : 'cc-pvdz',
         'qc_module': 'TCE',
@@ -48,6 +47,12 @@ def check_tce_mp3(return_value):
 #Check all corls to corr similar to qcng
 @using_nwchem
 def test_2_mp3():
+    h2o = qcdb.set_molecule('''
+        O      0.000000000000     0.000000000000    -0.123909374404
+        H      0.000000000000     1.429936611037     0.983265845431
+        H      0.000000000000    -1.429936611037     0.983265845431
+        ''')
+
     qcdb.set_options({
         'basis' : 'cc-pvdz',
         'qc_module': 'TCE',
@@ -76,6 +81,12 @@ def check_tce_mp4(return_value):
 
 @using_nwchem
 def test_3_mp4():
+    h2o = qcdb.set_molecule('''
+        O      0.000000000000     0.000000000000    -0.123909374404
+        H      0.000000000000     1.429936611037     0.983265845431
+        H      0.000000000000    -1.429936611037     0.983265845431
+        ''')
+
     qcdb.set_options({
         'basis' : 'cc-pvdz',
         'qc_module': 'TCE',
