@@ -6,14 +6,6 @@ import qcdb
 from ..addons import *
 from ..utils import *
 
-h2o = qcdb.set_molecule('''
-    H    0.000000000000000   1.079252144093028   1.474611055780858
-    O    0.000000000000000   0.000000000000000   0.000000000000000
-    H    0.000000000000000   1.079252144093028  -1.47461105578085
-       units au ''')
-
-print(h2o)
-
 def check_qcisd(return_value):
     hf      =   -74.962663062066
     qcisd_tot=   -75.012808319270690
@@ -25,6 +17,12 @@ def check_qcisd(return_value):
 
 @using_nwchem
 def test_1_qcisd():
+    h2o = qcdb.set_molecule('''
+        H    0.000000000000000   1.079252144093028   1.474611055780858
+        O    0.000000000000000   0.000000000000000   0.000000000000000
+        H    0.000000000000000   1.079252144093028  -1.47461105578085
+        units au ''')
+    
     qcdb.set_options({
         'basis' : 'sto-3g',
         'memory': '1500 mb',
