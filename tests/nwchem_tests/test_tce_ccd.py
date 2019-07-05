@@ -28,13 +28,12 @@ def test_1_rccd():
     qcdb.set_options({
         'basis'     :   'sto-3g',
         'scf__e_convergence'   :   1e-10,
-        'nwchem_charge'    : 1,
         'nwchem_scf__rhf'  :   True,
         'nwchem_scf__singlet': True,
         'nwchem_scf__tol2e':   1e-10,
         'nwchem_scf__thresh':  1e-10,
         'qc_module' :   'TCE',
-        'nwchem_tce__ccsd' :   True,
+        'nwchem_tce__ccd' :   True,
         'nwchem_tce__dipole':  True,
         })
 
