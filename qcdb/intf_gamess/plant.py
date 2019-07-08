@@ -1,6 +1,6 @@
 
 def gamess_list():
-        """Return an array of Cfour methods with energies. Appended
+        """Return an array of GAMESS methods with energies. Appended
     to procedures['energy'].
         """
         val = []
@@ -19,10 +19,11 @@ def gamess_list():
 
 
 def gamess_gradient_list():
-        """Return an array of Cfour methods with energies. Appended
+        """Return an array of GAMESS methods with gradients. Appended
     to procedures['gradient'].
         """
         val = []
         val.append('gms-hf')
         val.append('gms-scf')
+        val.append('gms-mp2')
         return val
