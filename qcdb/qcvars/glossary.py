@@ -1527,6 +1527,18 @@ qcvardefs['GROUND-STATE SYMMETRY'] = {
         Ground state symmetry value of an excited state calculation.
         """}
 
+qcvardefs['THE POINT GROUP OF THE MOLECULE'] = {
+        'units': None,
+        'glossary': r"""
+        The point group of the molecule.
+        """}
+
+#qcvardefs['THE ORDER OF THE PRINCIPAL AXIS'] = {
+#        'units': None,
+#        'glossary': r"""
+#        The order of the principal axis.
+#        """}
+
 #.. psivar:: UNCP-CORRECTED 2-BODY INTERACTION ENERGY
 #
 #   The interaction energy [H] considering only two-body interactions,

@@ -30,7 +30,7 @@ def muster_and_format_molecule_and_basis_for_gamess(molrec, ropts, qbs, verbose=
     if pg == 'ATOM':
         pgn, naxis = 'Dnh', 2
     elif pg == 'C_inf_v':
-        pgn, naxis = 'Cnv', 2
+        pgn, naxis = 'Cnv', 4 
     elif pg == 'D_inf_h':
         pgn, naxis = 'Dnh', 4
     elif pg == 'Sn':
@@ -39,8 +39,18 @@ def muster_and_format_molecule_and_basis_for_gamess(molrec, ropts, qbs, verbose=
         pgn, naxis = pg, qmol.full_pg_n()
 
     uniq_atombas_lines = gamess_data_record_cart.splitlines()[:2]  # $data and card -1-
-    uniq_atombas_lines.append(f""" {pgn} {naxis}""")  # card -2-
-    uniq_atombas_lines.append('')  # empty cards -3- and -4-
+    if pg == 'C1':
+        uniq_atombas_lines.append(f""" {pgn}""")  # card -2-
+        # no empty lines for cards -3- and -4- when C1 symmetry
+    elif pg == 'Cs':
+        uniq_atombas_lines.append(f""" {pgn}""")  # card -2-
+        uniq_atombas_lines.append('')  # empty cards -3- and -4-
+    elif pg == 'Ci':
+        uniq_atombas_lines.append(f""" {pgn}""")  # card -2-
+        uniq_atombas_lines.append('')  # empty cards -3- and -4-
+    else:
+        uniq_atombas_lines.append(f""" {pgn} {naxis}""")  # card -2-
+        uniq_atombas_lines.append('')  # empty cards -3- and -4-
 
     for iat in range(qmol.natom()):
         if iat == qmol.unique(qmol.atom_to_unique(iat)):
@@ -51,6 +61,55 @@ def muster_and_format_molecule_and_basis_for_gamess(molrec, ropts, qbs, verbose=
     uniq_atombas_lines.append(""" $end""")
 
     ropts.require('GAMESS', 'contrl__coord', 'unique', **kwgs)
+    ropts.require('GAMESS', 'contrl__units', {'Bohr': 'bohr', 'Angstrom': 'angs'}[units], **kwgs)
+    ropts.require('GAMESS', 'contrl__icharg', int(molrec['molecular_charge']), **kwgs)
+    ropts.require('GAMESS', 'contrl__mult', molrec['molecular_multiplicity'], **kwgs)
+    ropts.require('GAMESS', 'contrl__ispher', {True: 1, False: -1}[native_puream], **kwgs)
+
+    return '\n'.join(uniq_atombas_lines)
+
+
+def muster_and_format_molecule_and_basis_for_gamess_efp(molrec, ropts, qbs, efpnat=0, verbose=1):
+    kwgs = {'accession': uuid.uuid4(), 'verbose': verbose}
+    units = 'Bohr'
+
+    print('uster_and_format_mol_gamess_efp', efpnat)
+    native_puream = qbs.has_puream()
+    atom_basisset = qbs.print_detail_gamess(return_list=True)
+
+    gamess_data_record_cart = qcel.molparse.to_string(molrec, dtype='gamess', units=units, atom_format=None, ghost_format=None, width=17, prec=12)
+    all_atom_lines = gamess_data_record_cart.splitlines()[3:]
+
+    qmol = Molecule(molrec)
+    qmol.update_geometry()
+
+    #gamess_method = input_model.model.dict()['method']
+    #if gamess_method == 'gms-makefp':
+    #   print('haaaah')
+
+    uniq_atombas_lines = gamess_data_record_cart.splitlines()[:2]  # $data and card -1-
+    #print('gamess_data_record_cart =','\n', gamess_data_record_cart)  
+    #print('gamess_data_record_cart2 =','\n', gamess_data_record_cart.splitlines()[:2])
+    #print('gamess_data_record_cart3 =','\n')
+    #print('uniq_atombas_lines =', uniq_atombas_lines)
+   
+    uniq_atombas_lines.pop()
+    uniq_atombas_lines.pop()
+    uniq_atombas_lines.append(""" $efrag""")
+    uniq_atombas_lines.append(""" """)
+
+#    mysteryvalue=3
+    mysteryvalue=efpnat
+
+    for iat in range(0,qmol.natom(),mysteryvalue):
+        uniq_atombas_lines.append("""FRAGNAME=FRAGNAME""")
+        for fragat in range(iat,iat+mysteryvalue):
+            current_line=all_atom_lines[fragat].split()
+            uniq_atombas_lines.append("A{0:0>2}{1} {2:>20} {3:>20} {4:>20}".format(fragat%mysteryvalue+1,current_line[0],current_line[2],current_line[3],current_line[4]))
+
+    uniq_atombas_lines.append(""" $end""")
+
+    ropts.require('GAMESS', 'contrl__coord', 'fragonly', **kwgs)
     ropts.require('GAMESS', 'contrl__units', {'Bohr': 'bohr', 'Angstrom': 'angs'}[units], **kwgs)
     ropts.require('GAMESS', 'contrl__icharg', int(molrec['molecular_charge']), **kwgs)
     ropts.require('GAMESS', 'contrl__mult', molrec['molecular_multiplicity'], **kwgs)

@@ -66,13 +66,27 @@ def muster_modelchem(name, dertype, ropts, sysinfo, verbose=1):
     runtyp = {0: 'energy',
               1: 'gradient',
               2: 'hessian',
+              3: 'makefp',
               #'properties': 'prop',
              }[dertype]
 
     ropts.require('GAMESS', 'contrl__runtyp', runtyp, accession=accession, verbose=verbose)
 
+
     if lowername == 'gms-gamess':
         pass
+
+    elif lowername in ['gms-makefp']:
+        ropts.require('GAMESS', 'contrl__runtyp', 'makefp', accession=accession, verbose=verbose)
+        ropts.require('GAMESS', 'contrl__mplevl', 0, accession=accession, verbose=verbose)
+        ropts.require('GAMESS', 'contrl__cityp', 'none', accession=accession, verbose=verbose)
+        ropts.require('GAMESS', 'contrl__cctyp', 'none', accession=accession, verbose=verbose)
+
+    elif lowername in ['gms-efp']:
+        ropts.require('GAMESS', 'contrl__coord', 'fragonly', accession=accession, verbose=verbose)
+        ropts.require('GAMESS', 'contrl__mplevl', 0, accession=accession, verbose=verbose)
+        ropts.require('GAMESS', 'contrl__cityp', 'none', accession=accession, verbose=verbose)
+        ropts.require('GAMESS', 'contrl__cctyp', 'none', accession=accession, verbose=verbose)
 
     elif lowername in ['gms-scf', 'gms-hf']:
         ropts.require('GAMESS', 'contrl__mplevl', 0, accession=accession, verbose=verbose)
@@ -83,6 +97,12 @@ def muster_modelchem(name, dertype, ropts, sysinfo, verbose=1):
         ropts.require('GAMESS', 'contrl__mplevl', 2, accession=accession, verbose=verbose)
         ropts.require('GAMESS', 'contrl__cityp', 'none', accession=accession, verbose=verbose)
         ropts.require('GAMESS', 'contrl__cctyp', 'none', accession=accession, verbose=verbose)
+
+    elif lowername == 'gms-b3lyp':
+        ropts.require('GAMESS', 'contrl__dfttyp', 'b3lyp', accession=accession, verbose=verbose)
+
+    elif lowername == 'gms-pbe0':
+        ropts.require('GAMESS', 'contrl__dfttyp', 'pbe0', accession=accession, verbose=verbose)
 
     elif lowername == 'gms-ccsd':
         ropts.require('GAMESS', 'contrl__mplevl', 0, accession=accession, verbose=verbose)
