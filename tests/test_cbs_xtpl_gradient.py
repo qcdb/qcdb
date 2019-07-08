@@ -110,9 +110,7 @@ def test_1a():
     assert compare_arrays(ref_scf_dz, jrec['qcvars']['CURRENT GRADIENT'].data, 6, "[1a] SCF/cc-pVDZ Gradient")
     assert compare_arrays(ref_scf_dz, qcdb.get_variable('CURRENT GRADIENT'), 6, "[1a] SCF/cc-pVDZ Gradient")
     #assert compare_arrays(ref_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1a] SCF/cc-pVDZ Gradient")
-    # TODO provenance kill list
-    #assert ['QCDB', 'Psi4'] == [d['creator'] for d in jrec['provenance']], "[1a] prov"
-    assert 'Psi4' ==  jrec['provenance']['creator'], "[1a] prov"
+    assert 'Psi4' == jrec['provenance']['creator'], "[1a] prov"
 
 
 @using_cfour
@@ -149,9 +147,7 @@ def test_1d():
     assert compare_arrays(ref_scf_dz_y, qcdb.get_variable('CURRENT GRADIENT'), 6, "[1d] SCF/cc-pVDZ Gradient")
     #assert compare_arrays(ref_scf_dz_y, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1d] SCF/cc-pVDZ Gradient")
     # TODO provenance kill list
-    #assert ['QCDB', 'Psi4'] == [d['creator'] for d in jrec['provenance']], "[1d] prov"
     assert 'Psi4' ==  jrec['provenance']['creator'], "[1d] prov"
-    print(jrec['provenance'])
 
 
 @using_cfour

@@ -5,13 +5,6 @@ from ..addons import *
 from ..utils import *
 import qcdb
 
-h2o = qcdb.set_molecule('''
-        O      0.000000000000     0.000000000000    -0.123909374404
-        H      0.000000000000     1.429936611037     0.983265845431
-        H      0.000000000000    -1.429936611037     0.983265845431
-        ''')
-
-print(h2o)
 
 def check_tce_mp2(return_value):
     hf          =   -75.645085110552
@@ -19,11 +12,17 @@ def check_tce_mp2(return_value):
     mp2_corl    =    -0.289910710222209
 
     assert compare_values(hf, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(mp2_tot, qcdb.get_variable('MBPT(2) TOTAL ENERGY'), 5, 'mbpt(2) tot')
-    assert compare_values(mp2_corl, qcdb.get_variable('MBPT(2) CORRELATION ENERGY'), 5, 'mbpt(2) corl')
+    assert compare_values(mp2_tot, qcdb.get_variable('MP2 TOTAL ENERGY'), 5, 'mbpt(2) tot')
+    assert compare_values(mp2_corl, qcdb.get_variable('MP2 CORRELATION ENERGY'), 5, 'mbpt(2) corl')
 
 @using_nwchem
 def test_1_mp2():
+    h2o = qcdb.set_molecule('''
+        O      0.000000000000     0.000000000000    -0.123909374404
+        H      0.000000000000     1.429936611037     0.983265845431
+        H      0.000000000000    -1.429936611037     0.983265845431
+        ''')
+
     qcdb.set_options({
         'basis' : 'cc-pvdz',
         'qc_module': 'TCE',
@@ -38,16 +37,22 @@ def check_tce_mp3(return_value):
     mp2_tot     =   -75.934995820774219
     mp2_corl    =    -0.289910710222209
     mp3_tot     =   -75.924895885924158
-    mp3_corl    =     0.010099934850061
+    mp3_corr    =     0.010099934850061
 
     assert compare_values(hf, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(mp2_tot, qcdb.get_variable('MBPT(2) TOTAL ENERGY'), 5, 'mbpt(2) tot')
-    assert compare_values(mp2_corl, qcdb.get_variable('MBPT(2) CORRELATION ENERGY'), 5, 'mbpt(2) corl')
-    assert compare_values(mp3_tot, qcdb.get_variable('MBPT(3) TOTAL ENERGY'), 5, 'mp3 tot')
-    assert compare_values(mp3_corl, qcdb.get_variable('MBPT(3) CORRELATION ENERGY'), 5, 'mp3 corl')
-
+    assert compare_values(mp2_tot, qcdb.get_variable('MP2 TOTAL ENERGY'), 5, 'mbpt(2) tot')
+    assert compare_values(mp2_corl, qcdb.get_variable('MP2 CORRELATION ENERGY'), 5, 'mbpt(2) corl')
+    assert compare_values(mp3_tot, qcdb.get_variable('MP3 TOTAL ENERGY'), 5, 'mp3 tot')
+    assert compare_values(mp3_corr, qcdb.get_variable('MP3 CORRECTION ENERGY'), 5, 'mp3 corr')
+#Check all corls to corr similar to qcng
 @using_nwchem
 def test_2_mp3():
+    h2o = qcdb.set_molecule('''
+        O      0.000000000000     0.000000000000    -0.123909374404
+        H      0.000000000000     1.429936611037     0.983265845431
+        H      0.000000000000    -1.429936611037     0.983265845431
+        ''')
+
     qcdb.set_options({
         'basis' : 'cc-pvdz',
         'qc_module': 'TCE',
@@ -62,20 +67,26 @@ def check_tce_mp4(return_value):
     mp2_tot     =   -75.934995820774219
     mp2_corl    =    -0.289910710222209
     mp3_tot     =   -75.924895885924158
-    mp3_corl    =     0.010099934850061
+    mp3_corr    =     0.010099934850061
     mp4_tot     =   -75.964976635484248
-    mp4_corl    =    -0.040080749560086 
+    mp4_corr    =    -0.040080749560086 
 
     assert compare_values(hf, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(mp2_tot, qcdb.get_variable('MBPT(2) TOTAL ENERGY'), 5, 'mbpt(2) tot')
-    assert compare_values(mp2_corl, qcdb.get_variable('MBPT(2) CORRELATION ENERGY'), 5, 'mbpt(2) corl')
-    assert compare_values(mp3_tot, qcdb.get_variable('MBPT(3) TOTAL ENERGY'), 5, 'mp3 tot')
-    assert compare_values(mp3_corl, qcdb.get_variable('MBPT(3) CORRELATION ENERGY'), 5, 'mp3 corl')
-    assert compare_values(mp4_tot, qcdb.get_variable('MBPT(4) TOTAL ENERGY'), 5, 'mp4 tot')
-    assert compare_values(mp4_corl, qcdb.get_variable('MBPT(4) CORRELATION ENERGY'), 5, 'mp4 corl')
+    assert compare_values(mp2_tot, qcdb.get_variable('MP2 TOTAL ENERGY'), 5, 'mbpt(2) tot')
+    assert compare_values(mp2_corl, qcdb.get_variable('MP2 CORRELATION ENERGY'), 5, 'mbpt(2) corl')
+    assert compare_values(mp3_tot, qcdb.get_variable('MP3 TOTAL ENERGY'), 5, 'mp3 tot')
+    assert compare_values(mp3_corr, qcdb.get_variable('MP3 CORRECTION ENERGY'), 5, 'mp3 corr')
+    assert compare_values(mp4_tot, qcdb.get_variable('MP4 TOTAL ENERGY'), 5, 'mp4 tot')
+    assert compare_values(mp4_corr, qcdb.get_variable('MP4 CORRECTION ENERGY'), 5, 'mp4 corr')
 
 @using_nwchem
 def test_3_mp4():
+    h2o = qcdb.set_molecule('''
+        O      0.000000000000     0.000000000000    -0.123909374404
+        H      0.000000000000     1.429936611037     0.983265845431
+        H      0.000000000000    -1.429936611037     0.983265845431
+        ''')
+
     qcdb.set_options({
         'basis' : 'cc-pvdz',
         'qc_module': 'TCE',

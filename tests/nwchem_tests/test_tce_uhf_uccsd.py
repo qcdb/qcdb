@@ -6,14 +6,6 @@ import qcdb
 from ..addons import *
 from ..utils import *
 
-h2o = qcdb.set_molecule('''
-        H
-        O H 0.96
-        H O 0.96 H 104.0
-        ''')
-
-print(h2o)
-
 def tce_uccsd(return_value):
 
     hf  =   -74.656470840577
@@ -26,6 +18,13 @@ def tce_uccsd(return_value):
 
 @using_nwchem
 def test_1_uccsd():
+    h2o = qcdb.set_molecule('''
+    1 2
+        H
+        O H 0.96
+        H O 0.96 H 104.0
+        ''')
+
     qcdb.set_options({
         'basis'     :   'sto-3g',
         'scf__e_convergence'   :   1e-10,
@@ -39,3 +38,20 @@ def test_1_uccsd():
 
     val = qcdb.energy('nwc-ccsd')
     tce_uccsd(val)
+
+
+@using_nwchem
+def test_mol_chg_error():
+    h2o = qcdb.set_molecule('''
+        H
+        O H 0.96
+        H O 0.96 H 104.0
+        ''')
+
+    qcdb.set_options({
+        'basis'     :   'sto-3g',
+        'nwchem_charge'    : 1,
+        })
+
+    with pytest.raises(qcdb.OptionReconciliationError):
+        qcdb.energy('nwc-ccsd')

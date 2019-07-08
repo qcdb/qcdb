@@ -205,7 +205,7 @@ def set_options(options_dict):
     """
     Sets Psi4 global options from an input dictionary.
     """
-    optionre = re.compile(r'\A((?P<silo>(cfour|psi4|nwchem|gamess|dftd3|resp))_)?(?P<module>\w+__)?(?P<option>\w+)\Z', re.IGNORECASE)
+    optionre = re.compile(r'\A((?P<silo>(cfour|psi4|nwchem|gamess|dftd3|resp))_)?(?P<module>\w+__)?(?P<option>[\w\(\)]+)\Z', re.IGNORECASE)
 
     if len(pe.nu_options.scroll) == 0:
         #print('EMPTY OPT')

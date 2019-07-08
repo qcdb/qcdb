@@ -243,12 +243,9 @@ def format_options_for_nwchem(options):
             group, key = 'aaaglobal', nesting[0]
         elif len(nesting) == 2:
             group, key = nesting
-        #elif len(nesting) == 3: #be explicit about each value, but need three terms
-        #    nesting[0] =
-        #    nesting[1] = 
-        #    nesting[2] = 
         else:
-            raise ValueError('Nesting!' + nesting)
+            print(nesting)
+            raise ValueError('Nesting!')
 #        group, key = group_key.split('__')
         grouped_options[group][key] = val
 

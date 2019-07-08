@@ -925,158 +925,7 @@ def load_nwchem_defaults(options):
         default = '',
         validator = lambda x: x.lower(),
         glossary = 'DFT functional'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_acm',
-    #    default= False,
-    #    validator = parsers.boolean,
-    #    glossary= 'DFT functional acm'))
-    #
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_beckehandh',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary= 'DFT functional beckehandh'))
-    #
-    #options.add('nwchem', RottenOption(
-    #    keyword = 'dft__xc__pbe0',
-    #    default = False,
-    #    validator = parsers.boolean,
-    #    glossary = 'DFT functional PBE'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_becke97',
-    #    default = False,
-    #    validator = parsers.boolean,
-    #    glossary = 'DFT functional  Becke97'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_b3lyp',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary = 'DFT functional B3LYP'))
-    #
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_becke97-1',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary= 'DFT functional becke97-1'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_becke_97-2',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary= 'DFT functional becke97-2'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_becke97-3',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary= 'DFT functional becke97-3'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_hcth',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary= 'DFT functional hcth'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_hcth120',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary= 'DFT functional hcth120'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_hcth147',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary= 'DFT functional hcth147'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_hcth407',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary= 'DFT functional hcth407'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_becke97ggal',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary= 'DFT functional becke97ggal'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_hcth407p',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary= 'DFT functional hcth407p'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_optx',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary= 'DFT functional optx'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_hcthp14',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary= 'DFT functional hcthp14'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_mpw91',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary= 'DFT functional mpw91'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_mpw1k',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary= 'DFT functional mpw1k'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_xft97',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary= 'DFT functional xft97'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_cft97',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary= 'DFT functional cft97'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_ft97',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary= 'DFT functional ft97'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_op',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary= 'DFT functional op'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_bop',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary= 'DFT functional bop'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_pbeop',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary= 'DFT functional pbeop'))
-
-    #options.add('nwchem', RottenOption(
-    #    keyword= 'dft__xc_HFexch',
-    #    default= False,
-    #    validator= parsers.boolean,
-    #    glossary= 'DFT functional Hartree-Fock exchange-correlation'))
-
-    #Need to add rest of XC with Exchange-Correlation and value differences in local/nonlocal
+    #Need to resolve conflicts with nesting for multiple dft functionals in input #TODO
 
     #CCSD block
     options.add(
@@ -1160,7 +1009,7 @@ def load_nwchem_defaults(options):
         glossary= 'TCE module option of coupled cluster singles, doubles, and triples. Also activates EOM-CCSDT if needed.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__ccsd_br_t',
+        keyword= 'tce__ccsd[t]',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of coupled cluster singles, doubles, and perturbative connected triples.'))
@@ -1184,19 +1033,19 @@ def load_nwchem_defaults(options):
         glossary= 'TCE module option of coupled cluster singles, doubles, triples, and quadruples. Also, option for EOM-CCSDTQ')) 
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__ccsd_pr_2_t', #ccsd(2)_t
+        keyword= 'tce__ccsd(2)_t', #ccsd(2)_t
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of CCSD and perturbative (T)_t correction.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__ccsd_pr_2_tq', #ccsd(2)_tq
+        keyword= 'tce__ccsd(2)_tq', #ccsd(2)_tq
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of CCSD and perturbative CCSD(2) correction.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__ccsdt_pr_2_q', #ccsdt(2)_q
+        keyword= 'tce__ccsdt(2)_q', #ccsdt(2)_q
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of CCSDT and perturbative (CCSDT_Q) quadruples correction.')) #format from site weird
@@ -1220,7 +1069,7 @@ def load_nwchem_defaults(options):
         glossary= 'TCE module option of locally renormalized EOMCCSD.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__lrccsd_pr_t',
+        keyword= 'tce__lrccsd(t)',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of CCSD with perturbative locally renomalized CCSD(T) correction.'))
@@ -1232,7 +1081,7 @@ def load_nwchem_defaults(options):
         glossary= 'TCE module option of CCSD with perturbative locally renomalized CCSD(TQ)(LR-CCSD(TQ)-1) correction.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'tce__creomsd_pr_t',
+        keyword= 'tce__creomsd(t)',
         default= False,
         validator= parsers.boolean,
         glossary= '''TCE module option of EOM CCSD energies and completely renormalized EOMCCSD(T)(IA) correction. NWChem will print out two components:
@@ -1241,7 +1090,7 @@ def load_nwchem_defaults(options):
         2- the delta-corrected EOMCCSD excitation energy'''))
 
     options.add('nwchem',RottenOption(
-        keyword= 'tce__creom_pr_t_ac',
+        keyword= 'tce__creom(t)_ac',
         default= False,
         validator= parsers.boolean,
         glossary='TCE module option of active space CR-EOMCCSD(T) approach.'))
@@ -1324,7 +1173,14 @@ def load_nwchem_defaults(options):
         validator=parsers.positive_integer,
         glossary='''Number of iterations for a DIIS extrapolation to be performed. Will accelerate excitation
             amplitude convergence. Default is 5.'''))
-    
+
+    options.add('nwchem', RottenOption(
+        keyword='tce__dipole',
+        default= False,
+        validator= parsers.boolean,
+        glossary='''When set, will undergo another interative step for delta equation to find dipole moments 
+                    and one-particle density matrix. Can do for both ground and excited states.'''))
+ 
         #options.add('nwchem', RottenOption(
         #   keyword='tce_freeze',
         #Array TODO
@@ -1361,29 +1217,35 @@ def load_nwchem_defaults(options):
         glossary='Default is 1.'))
     
     options.add('nwchem', RottenOption(
-        keyword='tce__active__oa',
+        keyword='tce__active_oa',
         default=1,  # ?
         validator=parsers.positive_integer,
         glossary='Specify the number of occupied alpha spin-orbitals.'))
     
     options.add('nwchem',RottenOption(
-        keyword='tce__active__ob',
+        keyword='tce__active_ob',
         default=1,
         validator=parsers.positive_integer,
         glossary='Specify the number of occupied beta spin-orbitals.'))
     
     options.add('nwchem',RottenOption(
-        keyword='tce__active__va',
+        keyword='tce__active_va',
         default=1,
         validator=parsers.positive_integer,
         glossary='Specify the number of unoccupied alpha spin-orbitals.'))
     
     options.add('nwchem', RottenOption(
-        keyword='tce__active__vb',
+        keyword='tce__active_vb',
         default=1,
         validator=parsers.positive_integer,
         glossary='Specify the number of unoccupied beta spin-orbitals.'))
     
+    options.add('nwchem', RottenOption(
+        keyword='tce__t3a_lvl',
+        default= 1,
+        validator= parsers.positive_integer,
+        glossary='Set level in TCE CCSDTA. 1 uses largest set of triply excited amplitudes defined by at least one occupied and one unoccupied active spinorbitals labels. Level 2 uses triply excited amplitudes that carry at least two occupied and unoccupied active spinorbital labeles. Level 3 uses triply excited amplitudes that are defined by active indices only. will need ACTIVE_OA, ACTIVE_OB, ACTIVE_VA, ACTIVE_VB options as well.'))    
+
     options.add('nwchem', RottenOption(
         keyword='tce__tilesize', 
         default=1, 

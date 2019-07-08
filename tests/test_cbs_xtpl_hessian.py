@@ -164,7 +164,7 @@ def test_1a():
     #assert compare_arrays(ref_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, lbl)
     #assert compare_values(ref_e_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL ENERGY'].data, 6, lbl)
     # TODO provenance kill list
-    assert ['QCDB', 'Psi4'] == [d['creator'] for d in jrec['provenance']], "[1a] prov"
+    assert 'Psi4' == jrec['provenance']['creator'], "[1a] prov"
     print(jrec['provenance'])
 
 
@@ -204,7 +204,7 @@ def test_1c():
     #assert compare_arrays(ref_hess_scf_dz_y, jrec['qcvars']['HF/CC-PVDZ TOTAL HESSIAN'].data, 6, lbl)
     #assert compare_arrays(ref_scf_dz_y, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, lbl)
     # TODO provenance kill list
-    assert ['QCDB', 'Psi4'] == [d['creator'] for d in jrec['provenance']], "[1c] prov"
+    assert 'Psi4' == jrec['provenance']['creator'], "[1c] prov"
     print(jrec['provenance'])
 
 
@@ -248,7 +248,7 @@ def test_2a():
     #assert compare_arrays(ref_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, lbl)
     #assert compare_values(ref_e_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL ENERGY'].data, 6, lbl)
     # TODO provenance kill list
-    assert ['QCDB', 'Psi4'] == [d['creator'] for d in jrec['provenance']], "[1a] prov"
+    assert 'Psi4' == jrec['provenance']['creator'], "[1a] prov"
     print(jrec['provenance'])
 
 
@@ -289,7 +289,7 @@ def test_2c():
     #assert compare_arrays(ref_hess_scf_dz_y, jrec['qcvars']['HF/CC-PVDZ TOTAL HESSIAN'].data, 6, lbl)
     #assert compare_arrays(ref_scf_dz_y, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, lbl)
     # TODO provenance kill list
-    assert ['QCDB', 'Psi4'] == [d['creator'] for d in jrec['provenance']], "[1c] prov"
+    assert 'Psi4' == jrec['provenance']['creator'], "[1c] prov"
     print(jrec['provenance'])
 
 
