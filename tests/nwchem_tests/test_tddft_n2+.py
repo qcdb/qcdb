@@ -8,29 +8,28 @@ import qcdb
 
 
 def check_tddft(return_value):
-    if is_df:
-        ref = -108.945393441525 #ground state
-        nre = 23.621832195486
-        root1_ex = 0.039837937 #a.u.
-        root2_ex = 0.039837937
-        root3_ex = 0.116062978
-        root4_ex = 0.254048147
-        root5_ex = 0.288942035
-        root6_ex = 0.288942041
-        root7_ex = 0.340791279
-        root8_ex = 0.351283436
-        root9_ex = 0.363212907
-        root10_ex = 0.363212907
-        root1_energy = 1.0840 #eV
-        root2_energy = 1.0840
-        root3_energy = 3.1582
-        root4_energy = 6.9130
-        root5_energy = 7.8625
-        root6_energy = 7.8625
-        root7_energy = 9.2734
-        root8_energy = 9.5589
-        root9_energy = 9.8835
-        root10_energy= 9.8835
+    ref = -108.945393441525 #ground state
+    nre = 23.621832195486
+    root1_ex = 0.039837937 #a.u.
+    root2_ex = 0.039837937
+    root3_ex = 0.116062978
+    root4_ex = 0.254048147
+    root5_ex = 0.288942035
+    root6_ex = 0.288942041
+    root7_ex = 0.340791279
+    root8_ex = 0.351283436
+    root9_ex = 0.363212907
+    root10_ex = 0.363212907
+    root1_energy = 1.0840 #eV
+    root2_energy = 1.0840
+    root3_energy = 3.1582
+    root4_energy = 6.9130
+    root5_energy = 7.8625
+    root6_energy = 7.8625
+    root7_energy = 9.2734
+    root8_energy = 9.5589
+    root9_energy = 9.8835
+    root10_energy= 9.8835
         #excitation = 0.039837937441
         #excited_energy = -108.905555504084
 
