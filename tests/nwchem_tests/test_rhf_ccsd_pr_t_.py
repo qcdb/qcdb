@@ -8,15 +8,6 @@ import qcdb
 
 def check_ccsd_t_(return_value):
 
-    #ref = -76.026744421192
-    #nre = 9.187334240165
-    #ccsdcorl = -0.213350416141872
-    #ccsdtot = -76.240094837333771
-    #ccsd_t_corr = -0.003062727448805
-    #ccsd_t_corl = -0.216413143590677
-    #ccsd_t_tot = -76.243157564782578
-
-    # copied from test_sp_rhf_ccsd_t-2.py
     ref = -76.026760737428
     nre = 9.187334240165
     ccsd_corl = -0.213341272556805
