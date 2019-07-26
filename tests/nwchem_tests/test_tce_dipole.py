@@ -31,10 +31,10 @@ def test_1_ccsd_dipole():
     qcdb.set_options({
         'basis' :   'sto-3g',
         'qc_module' :   'TCE',
-        'nwchem_scf__tol2e' :   0e-10,
+        'nwchem_scf__tol2e' :   1e-10,
         'nwchem_scf__thresh':   1e-14,
         'nwchem_scf__singlet':  True,
-        'nwchem_scf_rhf'    :   True,
+        'nwchem_scf__rhf'    :   True,
         'nwchem_tce__dipole':   True
         })
 

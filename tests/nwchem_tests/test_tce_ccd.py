@@ -18,7 +18,7 @@ def tce_ccd(return_value):
     assert compare_values(ccd_corl, qcdb.get_variable('CCD CORRELATION ENERGY'), 5, 'ccsd corl')
 
 @using_nwchem
-def test_1_rccd():
+def test_1_ccd():
     h2o = qcdb.set_molecule('''
         O                     0.000000000000     0.000000000000    -0.234154782060
         H                    -0.000000000000     2.702188571625     1.858103156322
