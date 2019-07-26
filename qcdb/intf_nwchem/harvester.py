@@ -415,15 +415,12 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
     #          'properties': 'prop',
     #         }[driver]
 
-    runtyp = {0: 'energy',
+    runtyp = {0: 'energy' | 'property',
               1: 'gradient',
               2: 'hessian',
               #'properties': 'prop',
              }[dertype]
 
-    #theory = {0: 'scf',
-    #          1: 'dft',
-    #          }[dertype] #temp, may need to change only two options
 
     if lowername == 'nwc-nwchem':
         pass
