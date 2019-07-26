@@ -15,7 +15,7 @@ def tce_ccd(return_value):
 
     assert compare_values(hf, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
     assert compare_values(ccd_tot, qcdb.get_variable('CCD TOTAL ENERGY'), 5, 'ccsd tot')
-    assert compare_values(ccd_corl, qcdb.get_variable('CCD CORRELATION'), 5, 'ccsd corl')
+    assert compare_values(ccd_corl, qcdb.get_variable('CCD CORRELATION ENERGY'), 5, 'ccsd corl')
 
 @using_nwchem
 def test_1_ccd():
