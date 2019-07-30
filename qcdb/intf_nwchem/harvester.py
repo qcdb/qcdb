@@ -415,7 +415,7 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
     #          'properties': 'prop',
     #         }[driver]
 
-    runtyp = {0: 'energy' | 'property',
+    runtyp = {0: 'energy' or 'property',
               1: 'gradient',
               2: 'hessian',
               #'properties': 'prop',

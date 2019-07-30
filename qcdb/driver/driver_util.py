@@ -99,6 +99,8 @@ def find_derivative_type(ptype, method_name, user_dertype, user_package):
             #        dertype = 0
         elif method_name in procedures['energy'][package]:
             dertype = 0
+        elif method_name in procedures['property'][package]:
+            dertype = 0
     else:
         # Quick sanity check. Only *should* be able to be None or int, but hey, kids today...
         if not isinstance(user_dertype, int):
@@ -113,6 +115,8 @@ def find_derivative_type(ptype, method_name, user_dertype, user_package):
     elif (dertype == 1) and (method_name in procedures['gradient'][package]):
         pass
     elif (dertype == 0) and (method_name in procedures['energy'][package]):
+        pass
+    elif (dertype == 0) and (method_name in procedure['property'][package]):
         pass
     else:
         alternatives = ''
