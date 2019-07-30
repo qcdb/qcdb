@@ -66,7 +66,6 @@ def test_1_dft():
     qcdb.set_options({
         'basis': '6-31g**',
         'memory' : '3000 mb',
-        'nwchem_charge': 1,
         'nwchem_dft__xc': 'b3lyp',
         'nwchem_dft__mult': 2,
         'nwchem_tddft__nroots': 10
