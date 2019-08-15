@@ -11,7 +11,7 @@ dependencies:
   #- qcengine
   - pint
   - pip
-  - pydantic>=0.20
+  - pydantic>=0.32
 
     # Optional depends
   - networkx

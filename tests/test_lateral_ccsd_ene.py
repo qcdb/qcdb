@@ -201,7 +201,7 @@ def test_sp_ccsd_rohf_full_error(mtd, opts, nh2, errmsg):
     pytest.param('c4-ccsd', {'BASIS': 'cfour-qz2p', 'cfour_reference': 'rohf'}, marks=using_cfour),
     pytest.param('nwc-ccsd', {'basis': 'cfour-qz2p', 'qc_module': 'tce', 'nwchem_scf__rohf': True}, marks=using_nwchem),
     pytest.param('p4-ccsd', {'basis': 'cfour-qz2p', 'reference': 'rohf'}, marks=using_psi4),
-    pytest.param('gms-ccsd', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'rohf', 'gamess_ccinp__ncore': 0}),
+    pytest.param('gms-ccsd', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'rohf', 'gamess_ccinp__ncore': 0}, marks=using_gamess),
 ])
 def test_sp_ccsd_rohf_full(mtd, opts, nh2):
     nh2 = qcdb.set_molecule(nh2)
@@ -254,7 +254,7 @@ def test_sp_ccsd_rohf_fc_error(mtd, opts, nh2, errmsg):
     pytest.param('c4-ccsd', {'BASIS': 'cfour-qz2p', 'cfour_dropmo': 1, 'cfour_reference': 'rohf'}, marks=using_cfour),
     pytest.param('nwc-ccsd', {'basis': 'cfour-qz2p', 'nwchem_tce__freeze': 1, 'qc_module': 'tce', 'nwchem_scf__rohf': True}, marks=using_nwchem),
     pytest.param('p4-ccsd', {'basis': 'cfour-qz2p', 'psi4_e_convergence': 8, 'psi4_r_convergence': 7, 'psi4_freeze_core': True, 'reference': 'rohf'}, marks=using_psi4),
-    pytest.param('gms-ccsd', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'rohf', 'gamess_ccinp__iconv': 9, 'gamess_scf__conv': 9}),
+    pytest.param('gms-ccsd', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'rohf', 'gamess_ccinp__iconv': 9, 'gamess_scf__conv': 9}, marks=using_gamess),
 ])
 def test_sp_ccsd_rohf_fc(mtd, opts, nh2):
     nh2 = qcdb.set_molecule(nh2)

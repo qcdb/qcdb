@@ -148,7 +148,7 @@ class QcdbGAMESSHarness(GAMESSHarness):
     def compute(self, input_model: 'ResultInput', config: 'JobConfig') -> 'Result':
         self.found(raise_error=True)
 
-        verbose = 2
+        verbose = 1
 
         _print_helper(f'[1] {self.name} RESULTINPUT PRE-PLANT', input_model.dict(), verbose >= 3)
 
