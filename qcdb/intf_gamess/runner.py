@@ -11,6 +11,7 @@ from qcelemental.models import ResultInput
 from qcelemental.util import which
 
 import qcengine as qcng
+from qcengine.exceptions import InputError
 from qcengine.programs.util import PreservingDict
 from qcengine.programs.gamess import GAMESSHarness
 
@@ -158,6 +159,9 @@ class QcdbGAMESSHarness(GAMESSHarness):
         success, dexe = self.execute(job_inputs)
 
         _print_helper(f'[3] {self.name}REC POST-ENGINE', dexe, verbose >= 4)
+
+        if 'INPUT HAS AT LEAST ONE SPELLING OR LOGIC MISTAKE' in dexe["stdout"]:
+            raise InputError(dexe["stdout"])
 
         if not success:
             output_model = input_model
