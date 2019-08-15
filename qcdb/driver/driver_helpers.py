@@ -1,5 +1,6 @@
 import os
 import re
+import warnings
 
 import numpy as np
 
@@ -256,7 +257,7 @@ def old_set_options(options_dict):
             raise ValidationError('Option not in {space}?_{module}?__{option} format: {}'.format(k))
             
 
-def get_variable(key):
+def variable(key):
     ukey = key.upper()
     if ukey in pe.active_qcvars:
         return pe.active_qcvars[ukey].data
@@ -264,6 +265,13 @@ def get_variable(key):
         # TODO this matches psi, as None confuses compare_values, but is it right soln?
         #return 0.
         raise ValidationError('No such var as {}'.format(key))
+
+def get_variable(key):
+    warnings.warn(
+        "Using `qcdb.get_variable` instead of `qcdb.variable` is deprecated, and at any time it will stop working\n",
+        category=FutureWarning,
+        stacklevel=2)
+    return variable(key)
 
 
 def get_active_molecule():

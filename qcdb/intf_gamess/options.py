@@ -36,7 +36,7 @@ def load_gamess_defaults(options):
     options.add('gamess', RottenOption(
             keyword='contrl__cctyp',
             default='none',
-            validator=parsers.enum("NONE LCCD CCD CCSD(T) R-CC CR-CC CR-CCL CCSD(TQ) CR-CC(Q) EOM-CCSD CR-EOM CR-EOML IP-EOM2 IP-EOM3A EA-EOM2 EA-EOM3A"),
+            validator=parsers.enum("NONE LCCD CCD CCSD CCSD(T) R-CC CR-CC CR-CCL CCSD(TQ) CR-CC(Q) EOM-CCSD CR-EOM CR-EOML IP-EOM2 IP-EOM3A EA-EOM2 EA-EOM3A"),
             glossary=""""""))
 
     options.add('gamess', RottenOption(
@@ -144,6 +144,12 @@ def load_gamess_defaults(options):
             default=7,
             validator=parsers.positive_integer,
             glossary="""Convergence criterion for the cluster amplitudes."""))
+
+    options.add('gamess', RottenOption(
+            keyword='ccinp__kmicro',
+            default=6,
+            validator=parsers.nonnegative_integer,
+            glossary="""Perfor DIIS extrapolation of the open shell CCSD every n iterations. Enter 0 to avoid using the DIIS converger."""))
 
 
     # $DFT

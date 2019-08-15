@@ -951,6 +951,10 @@ def load_nwchem_defaults(options):
                 default=0,
                 validator=parsers.nonnegative_integer,
                 glossary= 'Number of orbitals to freeze'))  # expand to core/atomic/virtual
+                # freeze 10 == freeze core 10
+                # freeze virtual 5
+                # freeze atomic
+                # freeze atomic O 1 Si 3
 
     #TCE block
     options.add('nwchem', RottenOption(
@@ -1181,9 +1185,13 @@ def load_nwchem_defaults(options):
         glossary='''When set, will undergo another interative step for delta equation to find dipole moments 
                     and one-particle density matrix. Can do for both ground and excited states.'''))
  
-        #options.add('nwchem', RottenOption(
-        #   keyword='tce_freeze',
-        #Array TODO
+    options.add(
+            'nwchem',
+            RottenOption(
+                keyword='tce__freeze',
+                default=0,
+                validator=parsers.nonnegative_integer,
+                glossary= 'Number of core orbitals to freeze'))
     
     options.add('nwchem',RottenOption(
         keyword='tce__nroots',

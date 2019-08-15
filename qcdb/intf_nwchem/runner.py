@@ -7,9 +7,10 @@ from typing import Any, Dict, Optional
 from decimal import Decimal
 
 import qcelemental as qcel
-from qcelemental.models import ResultInput
+from qcelemental.models import FailedOperation, ResultInput
 
 import qcengine as qcng
+from qcengine.exceptions import InputError
 from qcengine.programs.util import PreservingDict
 from qcengine.programs.nwchem import NWChemHarness
 
@@ -69,21 +70,30 @@ class QcdbNWChemHarness(NWChemHarness):
 
         success, dexe = self.execute(job_inputs)
 
-        print_jobrec(f'[3] {self.name}REC POST-ENGINE', dexe, verbose >= 4)
-
-        if not success:
-            output_model = input_model
-            output_model["error"] = {"error_type": "execution_error", "error_message": dexe["stderr"]}
-
         dexe["outfiles"]["stdout"] = dexe["stdout"]
         dexe["outfiles"]["stderr"] = dexe["stderr"]
-        output_model = self.parse_output(dexe["outfiles"], input_model)
 
-        print_jobrec(f'[4a] {self.name} RESULT POST-HARVEST', output_model.dict(), verbose >= 5)
+        print_jobrec(f'[3] {self.name}REC POST-ENGINE', dexe, verbose >= 4)
 
-        output_model = self.qcdb_post_parse_output(input_model, output_model)
+        if 'There is an error in the input file' in dexe["stdout"]:
+            raise InputError(dexe["stdout"])  # for nwc, stderr also works
 
-        print_jobrec(f'[4] {self.name} RESULT POST-POST-HARVEST', output_model.dict(), verbose >= 2)
+        if success:
+            output_model = self.parse_output(dexe["outfiles"], input_model)
+
+            print_jobrec(f'[4a] {self.name} RESULT POST-HARVEST', output_model.dict(), verbose >= 5)
+
+            output_model = self.qcdb_post_parse_output(input_model, output_model)
+
+            print_jobrec(f'[4] {self.name} RESULT POST-POST-HARVEST', output_model.dict(), verbose >= 2)
+
+        else:
+            output_model = FailedOperation(success=False,
+                                           error={
+                                               "error_type": "execution_error",
+                                               "error_message": dexe["stderr"],
+                                           },
+                                           input_data=input_model.dict())
 
         return output_model
 
