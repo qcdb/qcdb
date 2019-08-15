@@ -68,17 +68,6 @@ def load_nwchem_defaults(options):
             'Enables or disables the translation of the center of nuclear charge to the origin. Default is move the center of nuclear charge to the origin (center or True).'
         ))
 
-# superseded by molecule spec
-#    options.add(
-#        'nwchem',
-#        RottenOption(
-#            keyword='geometry__units',
-#            default='Angstroms',
-#            validator=parsers.enum('ANGSTROMS AN AU ATOMIC BOHR NM NANOMETERS PM PICOMETERS'),
-#            glossary='''keyword specifying the <units> string variable. Default for geometry input is Angstroms. 
-#        Other options include atomic units (au, atomic or bohr are acceptable keywords), nanometers (nm), or picometers (pm)
-#        '''))
-
     options.add(
         'nwchem',
         RottenOption(
@@ -182,6 +171,35 @@ def load_nwchem_defaults(options):
         validator= parsers.boolean,
         glossary= 'NMR hyperfine coupling (Fermi-Contact and Spin-Dipole expectation values'))
     #Property adds: shielding, spinspin both use two integer inputs
+    
+    #Relativistic block- electronic approximations
+    #Need to ensure only one relativistic option is set ATL
+    options.add('nwchem', RottenOption(
+        keyword= 'relativistic__douglas-kroll',
+        default= True,
+        validator= parsers.boolean,
+        glossary= 'Spin-free and spin-orbit one-electronic Douglas-Kroll approximation. Default is True (ON). Can also specific the type of approximation using `relativistic__douglas-kroll-str` for additional options.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'relativistic__douglas-kroll-str', #need to think about how this spits out in input
+        default= 'on',
+        validator= lambda x: x.lower()
+        glossary= '''Douglas-Kroll approximation based on certain operators. FPP regers to free-particle projection operators; DKH
+        and DKFULL are based on external-field projection operators. DKFULL is considerably better approimxations than the former since it includes certain cross-product integral terms ignored in the DKH approach. 
+        DK3 refers to third-order Douglas-Kroll approximation without cross-product integral terms; DK3FULL with cross-product integral terms.''')) 
+
+    options.add('nwchem', RottenOption(
+        keyword= 'relativistic__zora',
+        default= True,
+        validator= parsers.boolean,
+        glossary= 'Zeroth Order regular approximation (ZORA) is the spin-free and spin-orbit one-eectron zeroth-order regular approximation. Default is ON.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'relativistic__dyall-mod-dirac',
+        default= True,
+        validator= parsers.boolean,
+        glossary='''Dyall's modified Dirac Hamiltonian. Default is ON and will default to one-electron approximation.'''))
+    #additional options under dyall-mod-dirac too nested
 
     #Raman block (used for polarizability calculations; req. property block)
     options.add('nwchem', RottenOption(
@@ -618,7 +636,6 @@ def load_nwchem_defaults(options):
             # freeze virtual 5
             # freeze atomic
             # freeze atomic O 1 Si 3
-
     options.add(
         'nwchem',
         RottenOption(
@@ -1191,13 +1208,13 @@ def load_nwchem_defaults(options):
         glossary='''When set, will undergo another interative step for delta equation to find dipole moments 
                     and one-particle density matrix. Can do for both ground and excited states.'''))
  
-    options.add(
-            'nwchem',
-            RottenOption(
-                keyword='tce__freeze',
-                default=0,
-                validator=parsers.nonnegative_integer,
-                glossary= 'Number of core orbitals to freeze'))
+    options.add('nwchem', RottenOption(
+       keyword='tce_freeze',
+       default= 0,
+       validator= parsers.nonnegative_integers,
+       glossary= ' Freezing orbitals. None are frozen by default. Only capable of freezing core orbitals at moment.'))
+        #need to incorporate virtual/core distinction
+        #Array TODO
     
     options.add('nwchem',RottenOption(
         keyword='tce__nroots',
