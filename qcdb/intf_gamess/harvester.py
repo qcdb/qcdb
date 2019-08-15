@@ -160,60 +160,28 @@ def muster_modelchem(name, dertype, ropts, sysinfo, verbose=1):
     return ''
 
 
-#def cfour_psivar_list():
-#    """Return a dict with keys of most Cfour methods and values of dicts
-#    with the PSI Variables returned by those methods. Used by cbs()
-#    wrapper to avoid unnecessary computations in compound methods.
-#    Result is appended to ``VARH``.
-#
-#    """
-#    VARH = {}
-#    VARH['c4-scf'] = {
-#                         'c4-scf': 'SCF TOTAL ENERGY'}
-#    VARH['c4-hf'] = {
-#                          'c4-hf': 'HF TOTAL ENERGY'}
-#    VARH['c4-mp2'] = {
-#                          'c4-hf': 'HF TOTAL ENERGY',
-#                         'c4-mp2': 'MP2 TOTAL ENERGY'}
-#    VARH['c4-mp3'] = {
-#                          'c4-hf': 'HF TOTAL ENERGY',
-#                         'c4-mp2': 'MP2 TOTAL ENERGY',
-#                       'c4-mp2.5': 'MP2.5 TOTAL ENERGY',
-#                         'c4-mp3': 'MP3 TOTAL ENERGY'}
-#    VARH['c4-mp4(sdq)'] = {
-#                          'c4-hf': 'HF TOTAL ENERGY',
-#                         'c4-mp2': 'MP2 TOTAL ENERGY',
-#                       'c4-mp2.5': 'MP2.5 TOTAL ENERGY',
-#                         'c4-mp3': 'MP3 TOTAL ENERGY',
-#                    'c4-mp4(sdq)': 'MP4(SDQ) TOTAL ENERGY'}
-#    VARH['c4-mp4'] = {
-#                          'c4-hf': 'HF TOTAL ENERGY',
-#                         'c4-mp2': 'MP2 TOTAL ENERGY',
-#                       'c4-mp2.5': 'MP2.5 TOTAL ENERGY',
-#                         'c4-mp3': 'MP3 TOTAL ENERGY',
-#                    'c4-mp4(sdq)': 'MP4(SDQ) TOTAL ENERGY',
-#                         'c4-mp4': 'MP4(SDTQ) TOTAL ENERGY'}
-#    VARH['c4-cc2'] = {
-#                          'c4-hf': 'HF TOTAL ENERGY',
-#                         'c4-mp2': 'MP2 TOTAL ENERGY',
-#                         'c4-cc2': 'CC2 TOTAL ENERGY'}
-#    VARH['c4-ccsd'] = {
-#                          'c4-hf': 'HF TOTAL ENERGY',
-#                         'c4-mp2': 'MP2 TOTAL ENERGY',
-#                        'c4-ccsd': 'CCSD TOTAL ENERGY'}
-#    VARH['c4-cc3'] = {
-#                          'c4-hf': 'HF TOTAL ENERGY',
-#                         'c4-mp2': 'MP2 TOTAL ENERGY',
-#                         'c4-cc3': 'CC3 TOTAL ENERGY'}
-#    VARH['c4-ccsd(t)'] = {
-#                          'c4-hf': 'HF TOTAL ENERGY',
-#                         'c4-mp2': 'MP2 TOTAL ENERGY',
-#                        'c4-ccsd': 'CCSD TOTAL ENERGY',
-#                     'c4-ccsd(t)': 'CCSD(T) TOTAL ENERGY'}
-#    VARH['c4-ccsdt'] = {
-#                          'c4-hf': 'HF TOTAL ENERGY',
-#                         'c4-mp2': 'MP2 TOTAL ENERGY',
-#                        'c4-ccsd': 'CCSD TOTAL ENERGY',
-#                       'c4-ccsdt': 'CCSDT TOTAL ENERGY'}
-#
-#    return VARH
+def gamess_psivar_list():
+    """Return a dict with keys of most GAMESS methods and values of dicts
+    with the PSI Variables returned by those methods. Used by cbs()
+    wrapper to avoid unnecessary computations in compound methods.
+    Result is appended to ``VARH``.
+
+    """
+    VARH = {}
+    VARH['gms-scf'] = {
+                         'gms-scf': 'SCF TOTAL ENERGY'}
+    VARH['gms-hf'] = {
+                          'gms-hf': 'HF TOTAL ENERGY'}
+    VARH['gms-mp2'] = {
+                          'gms-hf': 'HF TOTAL ENERGY',
+                         'gms-mp2': 'MP2 TOTAL ENERGY'}
+    VARH['gms-ccsd'] = {
+                          'gms-hf': 'HF TOTAL ENERGY',
+                         'gms-mp2': 'MP2 TOTAL ENERGY',
+                        'gms-ccsd': 'CCSD TOTAL ENERGY'}
+    VARH['gms-ccsd(t)'] = {
+                          'gms-hf': 'HF TOTAL ENERGY',
+                         'gms-mp2': 'MP2 TOTAL ENERGY',
+                        'gms-ccsd': 'CCSD TOTAL ENERGY',
+                     'gms-ccsd(t)': 'CCSD(T) TOTAL ENERGY'}
+    return VARH
