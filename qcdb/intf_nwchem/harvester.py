@@ -539,6 +539,15 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
             ropts.require('NWCHEM', 'tce__eaccsd', True, **kwgs)
             ropts.suggest('NWCHEM', 'tce__nroots', 4, **kwgs)
 
+    elif lowername == 'nwc-sodft':
+        ropts.suggest('NWCHEM', 'xc', 'b3lyp', **kwgs)
+        mdccmd = f'task sodft {runtyp} \n\n'
+
+    #DFT- relativistic-- only case so far double check #TODO
+    elif lowername == 'nwc-dft':
+        ropts.suggest('NWCHEM', 'relativistic__zora', True, **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+
     #DFT xc functionals
     elif lowername == 'nwc-pbe0':
         ropts.require('NWCHEM', 'xc', 'pbe0', **kwgs)
