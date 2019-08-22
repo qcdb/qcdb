@@ -13,6 +13,7 @@ import qcengine as qcng
 from qcengine.exceptions import InputError
 from qcengine.programs.util import PreservingDict
 from qcengine.programs.nwchem import NWChemHarness
+from qcengine.programs.nwchem.keywords import format_keywords
 
 from .. import __version__
 from .. import moptions
@@ -26,7 +27,7 @@ from ..util import print_jobrec, provenance_stamp
 from . import harvester
 from .worker import nwchem_subprocess
 #from .molbas import * #format_molecule_for_nwchem, format_basis_for_nwchem, format_basis_for_nwchem_puream, local_prepare_options_for_modules
-from .molbasopt import muster_and_format_molecule_for_nwchem, muster_and_format_basis_for_nwchem, format_options_for_nwchem
+from .molbasopt import format_molecule, muster_and_format_basis_for_nwchem
 from .harvester import muster_inherited_options, format_modelchem_for_nwchem
 from ..moptions.options import reconcile_options
 
@@ -110,7 +111,7 @@ class QcdbNWChemHarness(NWChemHarness):
         molrecc1['fix_symmetry'] = 'c1'  # write _all_ atoms to input
         ropts = input_model.extras['qcdb:options']
 
-        molcmd = muster_and_format_molecule_for_nwchem(molrec, ropts, verbose=1)
+        molcmd = format_molecule(molrec, ropts, verbose=1)
 
     # Handle memory
     # I don't think memory belongs in jobrec. it goes in pkgrec (for pbs) and possibly duplicated in options (for prog)
@@ -154,7 +155,7 @@ class QcdbNWChemHarness(NWChemHarness):
 #OLD    optcmd = moptions.prepare_options_for_nwchem(jobrec['options'])
 #    resolved_options = {k: v.value for k, v in jobrec['options'].scroll['NWCHEM'].items() if v.disputed()}
         skma_options = {key: ropt.value for key, ropt in sorted(ropts.scroll['NWCHEM'].items()) if ropt.disputed()}
-        optcmd = format_options_for_nwchem(skma_options)
+        optcmd = format_keywords(skma_options)
 
     # Handle text to be passed untouched to cfour
 #    litcmd = core.get_global_option('LITERAL_CFOUR')

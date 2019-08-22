@@ -14,6 +14,7 @@ import qcengine as qcng
 from qcengine.exceptions import InputError
 from qcengine.programs.util import PreservingDict
 from qcengine.programs.gamess import GAMESSHarness
+from qcengine.programs.gamess.keywords import format_keywords
 
 from .. import __version__
 #from .. import moptions
@@ -25,7 +26,7 @@ from ..libmintsbasisset import BasisSet
 from ..util import provenance_stamp
 from ..molecule import Molecule
 from ..pdict import PreservingDict
-from .molbasopt import muster_and_format_molecule_and_basis_for_gamess, format_options_for_gamess
+from .molbasopt import muster_and_format_molecule_and_basis_for_gamess
 from .harvester import muster_modelchem, muster_inherited_options
 
 
@@ -223,11 +224,10 @@ class QcdbGAMESSHarness(GAMESSHarness):
         # Handle conversion of psi4 keyword structure into cfour format
         skma_options = {key: ropt.value for key, ropt in sorted(ropts.scroll['GAMESS'].items()) if ropt.disputed()}
 
-        #optcmd = format_keywords(skma_options)
-        optcmd = format_options_for_gamess(skma_options)
+        optcmd = format_keywords(skma_options)
 
         gamessrec['infiles']['gamess.inp'] = optcmd + molbascmd
-        gamessrec['commands'] = [which("rungms"), "gamess"]
+        gamessrec['command'] = [which("rungms"), "gamess"]
 
         return gamessrec
 
