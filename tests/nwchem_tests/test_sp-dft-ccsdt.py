@@ -12,15 +12,15 @@ def check_dft(return_value, is_dft):
         ref = -75.312572965120
         ccsdt_tot = -75.362578004794031
         ccsdt_corl = -0.050005039673792
-        assert compare_values(ref, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft ref')
+        assert compare_values(ref, qcdb.variable('DFT TOTAL ENERGY'), 5, 'dft ref')
     else: #change values for non-dft
         ref = -74.963048525888
         ccsdt_tot = -75.012605624645104
         ccsdt_corl = -0.049557089026546
         nre = 9.187333574703
-        assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'dft ref')
-    assert compare_values(ccsdt_tot, qcdb.get_variable('CCSDT TOTAL ENERGY'), 5, 'ccsdt total')
-    assert compare_values(ccsdt_corl, qcdb.get_variable('CCSDT CORRELATION ENERGY'), 5, 'ccsdt corl')
+        assert compare_values(ref, qcdb.variable('HF TOTAL ENERGY'), 5, 'dft ref')
+    assert compare_values(ccsdt_tot, qcdb.variable('CCSDT TOTAL ENERGY'), 5, 'ccsdt total')
+    assert compare_values(ccsdt_corl, qcdb.variable('CCSDT CORRELATION ENERGY'), 5, 'ccsdt corl')
 
 
 @using_nwchem

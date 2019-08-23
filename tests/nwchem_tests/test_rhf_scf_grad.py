@@ -14,12 +14,12 @@ def check_hf(return_value):
     nre = 9.187334240165
     grads = np.array([[0.000000, -0.000000, -0.015191], [-0.000000, -0.010677, 0.007595],
         [0.000000, 0.010677, 0.007595]])
-    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(nre, qcdb.get_variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
+    assert compare_values(ref, qcdb.variable('HF TOTAL ENERGY'), 5, 'hf ref')
+    assert compare_values(nre, qcdb.variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
     pprint.pprint(grads)
-    pprint.pprint(qcdb.get_variable('CURRENT GRADIENT'))
+    pprint.pprint(qcdb.variable('CURRENT GRADIENT'))
     
-    assert compare_arrays(grads, qcdb.get_variable('CURRENT GRADIENT'), 5, 'hf grad')
+    assert compare_arrays(grads, qcdb.variable('CURRENT GRADIENT'), 5, 'hf grad')
 @using_nwchem
 def test_1_hf():
     h2o = qcdb.set_molecule('''

@@ -24,13 +24,13 @@ def check_ccsd_t_(return_value):
     a5050corl = 0.5 * (ss + os)
     a5050tot = a5050corl + scstot
 
-    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(ccsd_corl, qcdb.get_variable('CCSD CORRELATION ENERGY'), 5, 'ccsd corl')
-    assert compare_values(ccsd_tot, qcdb.get_variable('CCSD TOTAL ENERGY'), 5, 'ccsd total')
-    assert compare_values(t_corr, qcdb.get_variable('(T) CORRECTION ENERGY'), 5, 'ccsd(t) corr')
-    assert compare_values(ccsd_t_corl, qcdb.get_variable('CCSD(T) CORRELATION ENERGY'), 5, 'ccsd(t) corl')
-    assert compare_values(ccsd_t_tot, qcdb.get_variable('CCSD(T) TOTAL ENERGY'), 5, 'ccsd(t) tot')
-    assert compare_values(nre, qcdb.get_variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
+    assert compare_values(ref, qcdb.variable('HF TOTAL ENERGY'), 5, 'hf ref')
+    assert compare_values(ccsd_corl, qcdb.variable('CCSD CORRELATION ENERGY'), 5, 'ccsd corl')
+    assert compare_values(ccsd_tot, qcdb.variable('CCSD TOTAL ENERGY'), 5, 'ccsd total')
+    assert compare_values(t_corr, qcdb.variable('(T) CORRECTION ENERGY'), 5, 'ccsd(t) corr')
+    assert compare_values(ccsd_t_corl, qcdb.variable('CCSD(T) CORRELATION ENERGY'), 5, 'ccsd(t) corl')
+    assert compare_values(ccsd_t_tot, qcdb.variable('CCSD(T) TOTAL ENERGY'), 5, 'ccsd(t) tot')
+    assert compare_values(nre, qcdb.variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
 
 
 @using_nwchem

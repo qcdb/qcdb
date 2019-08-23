@@ -9,8 +9,8 @@ import qcdb
 def check_rhf(return_value):
     ref = -76.010496306999
     nre = 9.187334240165
-    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(nre, qcdb.get_variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
+    assert compare_values(ref, qcdb.variable('HF TOTAL ENERGY'), 5, 'hf ref')
+    assert compare_values(nre, qcdb.variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
 
 
 @using_nwchem

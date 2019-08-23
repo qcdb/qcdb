@@ -11,9 +11,9 @@ def check_cisd(return_value):
     cisd_tot     =   -74.746025986067849
     cisd_corl    =    -0.239913968748276   
 
-    assert compare_values(hf, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(cisd_tot, qcdb.get_variable('CISD TOTAL ENERGY'), 5, 'cisd tot')
-    assert compare_values(cisd_corl, qcdb.get_variable('CISD CORRELATION ENERGY'), 5, 'cisd corl')
+    assert compare_values(hf, qcdb.variable('HF TOTAL ENERGY'), 5, 'hf ref')
+    assert compare_values(cisd_tot, qcdb.variable('CISD TOTAL ENERGY'), 5, 'cisd tot')
+    assert compare_values(cisd_corl, qcdb.variable('CISD CORRELATION ENERGY'), 5, 'cisd corl')
 
 @using_nwchem
 def test_1_cisd():
@@ -37,9 +37,9 @@ def check_cisdt(return_value):
     cisdt_tot    =   -74.746791001337797
     cisdt_corl   =    -0.240678984018215
 
-    assert compare_values(hf, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(cisdt_tot, qcdb.get_variable('CISDT TOTAL ENERGY'), 5, 'cisdt tot')
-    assert compare_values(cisdt_corl, qcdb.get_variable('CISDT CORRELATION ENERGY'), 5, 'cisdt corl')
+    assert compare_values(hf, qcdb.variable('HF TOTAL ENERGY'), 5, 'hf ref')
+    assert compare_values(cisdt_tot, qcdb.variable('CISDT TOTAL ENERGY'), 5, 'cisdt tot')
+    assert compare_values(cisdt_corl, qcdb.variable('CISDT CORRELATION ENERGY'), 5, 'cisdt corl')
 
 @using_nwchem
 def test_2_cisdt():
@@ -64,9 +64,9 @@ def check_cisdtq(return_value):
     cisdtq_tot   =   -74.788955327897597
     cisdtq_corl  =    -0.282843310578009
 
-    assert compare_values(hf, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(cisdtq_tot, qcdb.get_variable('CISDTQ TOTAL ENERGY'), 5, 'cisdtq tot')
-    assert compare_values(cisdtq_corl, qcdb.get_variable('CISDTQ CORRELATION ENERGY'), 5, 'cisdtq corl')
+    assert compare_values(hf, qcdb.variable('HF TOTAL ENERGY'), 5, 'hf ref')
+    assert compare_values(cisdtq_tot, qcdb.variable('CISDTQ TOTAL ENERGY'), 5, 'cisdtq tot')
+    assert compare_values(cisdtq_corl, qcdb.variable('CISDTQ CORRELATION ENERGY'), 5, 'cisdtq corl')
 
 @using_nwchem
 def test_3_cisdtq():

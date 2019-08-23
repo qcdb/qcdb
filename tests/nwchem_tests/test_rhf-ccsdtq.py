@@ -12,10 +12,10 @@ def check_ccsdtq(return_value):
     ccsdtq      =       -76.210368641377713
     ccsdtq_corl =        -0.199872334299139
         
-    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 6, 'hf ref')  #TEST
-    assert compare_values(nre, qcdb.get_variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
-    assert compare_values(ccsdtq, qcdb.get_variable('CCSDTQ TOTAL ENERGY'), 6, 'CCSDTQ')  #TEST
-    assert compare_values(ccsdtq_corl, qcdb.get_variable('CCSDTQ CORRELATION ENERGY'), 6, 'CCSDTQ corl')  #TEST
+    assert compare_values(ref, qcdb.variable('HF TOTAL ENERGY'), 6, 'hf ref')  #TEST
+    assert compare_values(nre, qcdb.variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
+    assert compare_values(ccsdtq, qcdb.variable('CCSDTQ TOTAL ENERGY'), 6, 'CCSDTQ')  #TEST
+    assert compare_values(ccsdtq_corl, qcdb.variable('CCSDTQ CORRELATION ENERGY'), 6, 'CCSDTQ corl')  #TEST
 
 @using_nwchem
 def test_1_ccsdtq():
