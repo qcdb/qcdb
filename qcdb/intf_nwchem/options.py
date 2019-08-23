@@ -174,32 +174,26 @@ def load_nwchem_defaults(options):
     
     #Relativistic block- electronic approximations
     #Need to ensure only one relativistic option is set ATL
-    options.add('nwchem', RottenOption(
-        keyword= 'relativistic__douglas-kroll',
-        default= True,
-        validator= parsers.boolean,
-        glossary= 'Spin-free and spin-orbit one-electronic Douglas-Kroll approximation. Default is True (ON). Can also specific the type of approximation using `relativistic__douglas-kroll-str` for additional options.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'relativistic__douglas-kroll-str', #need to think about how this spits out in input
-        default= 'on',
-        validator= lambda x: x.lower()
+        keyword = 'relativistic__zora',
+        default = 'on',
+        validator = parsers.enum_bool('on off true false'),
+        glossary= 'Zeroth Order regular approximation (ZORA) is the spin-free and spin-orbit one-eectron zeroth-order regular approximation. Default is ON.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'relativistic__douglas-kroll', #need to think about how this spits out in input
+        default= 'dkh',
+        validator= parsers.enum_bool('on off true false fpp dkh dkfull dk4 k4full'),
         glossary= '''Douglas-Kroll approximation based on certain operators. FPP regers to free-particle projection operators; DKH
         and DKFULL are based on external-field projection operators. DKFULL is considerably better approimxations than the former since it includes certain cross-product integral terms ignored in the DKH approach. 
         DK3 refers to third-order Douglas-Kroll approximation without cross-product integral terms; DK3FULL with cross-product integral terms.''')) 
 
     options.add('nwchem', RottenOption(
-        keyword= 'relativistic__zora',
-        default= True,
-        validator= parsers.boolean,
-        glossary= 'Zeroth Order regular approximation (ZORA) is the spin-free and spin-orbit one-eectron zeroth-order regular approximation. Default is ON.'))
-
-    options.add('nwchem', RottenOption(
         keyword= 'relativistic__dyall-mod-dirac',
-        default= True,
-        validator= parsers.boolean,
+        default= 'on',
+        validator= parsers.enum_bool('on off true false nesc1e nesc2e'), #NESC2E options too nested
         glossary='''Dyall's modified Dirac Hamiltonian. Default is ON and will default to one-electron approximation.'''))
-    #additional options under dyall-mod-dirac too nested
 
     #Raman block (used for polarizability calculations; req. property block)
     options.add('nwchem', RottenOption(
@@ -628,8 +622,8 @@ def load_nwchem_defaults(options):
     options.add('nwchem', RottenOption(
         keyword='mp2_freeze',
         default=0,
-        validator= parsers.nonnegative_integers,
-        glossary='Freezing orbitals options for MP2 block.'
+        validator= parsers.nonnegative_integer,
+        glossary='Freezing orbitals options for MP2 block.'))
 
     options.add(
         'nwchem',
@@ -1202,7 +1196,7 @@ def load_nwchem_defaults(options):
     options.add('nwchem', RottenOption(
        keyword='tce_freeze',
        default= 0,
-       validator= parsers.nonnegative_integers,
+       validator= parsers.nonnegative_integer,
        glossary= ' Freezing orbitals. None are frozen by default. Only capable of freezing core orbitals at moment.'))
         #need to incorporate virtual/core distinction
         #Array TODO
