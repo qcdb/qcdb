@@ -545,7 +545,7 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
 
     #DFT- relativistic-- only case so far double check #TODO
     elif lowername == 'nwc-dft':
-        ropts.suggest('NWCHEM', 'relativistic__zora', True, **kwgs)
+        ropts.suggest('NWCHEM', 'relativistic__zora', 'on', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
 
     #DFT xc functionals
