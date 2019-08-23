@@ -15,6 +15,22 @@ def enum(inputval):
                 """Not allowed value: {} not in {}""".format(inputval, allowed))
     return closedenum
 
+def enum_bool(inputval):
+    allowed = inputval.upper().split()
+
+    def closedenum(x, allowed=allowed):
+        if x.upper() in allowed:
+            if x.upper() == 'TRUE':
+                return 'ON'
+            elif x.upper() == 'FALSE':
+                return 'OFF'
+            else:
+                return x.upper()
+        else:
+            raise OptionValidationError(
+                """Not allowed value: {} not in {}""".format(inputval, allowed))
+    return closedenum
+
 
 def intenum(inputval):
     allowed = [int(x) for x in inputval.split()]
