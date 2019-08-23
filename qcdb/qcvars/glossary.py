@@ -1240,6 +1240,22 @@ qcvardefs['CCSD OPPOSITE-SPIN CORRELATION ENERGY'] = {
 #   :math:`E_{\text{OS}}` in Eq. :eq:`CCSDcorl`.
 """}
 
+qcvardefs['CCSD SINGLES ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The singles portion of the CCSD correlation energy.
+   Zero except in ROHF.
+   :math:`E_{\text{S}}` in Eq. :eq:`CCSDcorl`.
+"""}
+
+qcvardefs['CCSD DOUBLES ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The doubles portion of the CCSD correlation energy
+   including same-spin and opposite-spin correlations.
+   :math:`E_{\text{D}}` in Eq. :eq:`CCSDcorl`.
+"""}
+
 qcvardefs['CCSD(T) TOTAL ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""

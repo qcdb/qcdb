@@ -149,9 +149,9 @@ def run_psi4(name, molecule, options, **kwargs):
     jobrec = qcng.compute(resi, "qcdb-psi4", raise_error=True).dict()
     hold_qcvars = jobrec['extras'].pop('qcdb:qcvars')
     jobrec['qcvars'] = {key: qcel.Datum(**dval) for key, dval in hold_qcvars.items()}
-    pp.pprint(jobrec)
-    print(jobrec.keys())
-    print(jobrec['success'])
+    #pp.pprint(jobrec)
+    #print(jobrec.keys())
+    #print(jobrec['success'])
     return jobrec
 
 def _print_helper(label, dicary, do_print):

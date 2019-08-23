@@ -181,6 +181,8 @@ def return_energy_components():
     from ..intf_cfour.harvester import cfour_psivar_list
     VARH.update(cfour_psivar_list())
     VARH.update(nwchem_psivar_list())
+    from ..intf_gamess.harvester import gamess_psivar_list
+    VARH.update(gamess_psivar_list())
     return VARH
 
 VARH = return_energy_components()

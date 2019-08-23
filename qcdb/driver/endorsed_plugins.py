@@ -79,3 +79,8 @@ if which('rungms'):
     procedures['energy']['gamess'] = {}
     for mtd in intf_gamess.gamess_list():
         procedures['energy']['gamess'][mtd.lower()] = intf_gamess.run_gamess
+
+    # integrate GAMESS with driver routines
+    procedures['gradient']['gamess'] = {}
+    for mtd in intf_gamess.gamess_gradient_list():
+        procedures['gradient']['gamess'][mtd.lower()] = intf_gamess.run_gamess
