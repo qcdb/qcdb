@@ -12,9 +12,9 @@ def check_lccd(return_value):
     lccd_tot=   -75.013238394202133
     lccd_corl=   -0.050575332136568
 
-    assert compare_values(hf, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(lccd_tot, qcdb.get_variable('LCCD TOTAL ENERGY'), 5, 'lccd tot')
-    assert compare_values(lccd_corl, qcdb.get_variable('LCCD CORRELATION ENERGY'), 5, 'lccd corl')
+    assert compare_values(hf, qcdb.variable('HF TOTAL ENERGY'), 5, 'hf ref')
+    assert compare_values(lccd_tot, qcdb.variable('LCCD TOTAL ENERGY'), 5, 'lccd tot')
+    assert compare_values(lccd_corl, qcdb.variable('LCCD CORRELATION ENERGY'), 5, 'lccd corl')
 
 @using_nwchem
 def test_1_lccd():
@@ -43,9 +43,9 @@ def check_lccsd(return_value):
     lccsd_tot   = -75.01355462478978
     lccsd_corl  =   -0.050891562718417
 
-    assert compare_values(hf, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(lccsd_tot, qcdb.get_variable('LCCSD TOTAL ENERGY'), 5, 'lccd tot')
-    assert compare_values(lccsd_corl, qcdb.get_variable('LCCSD CORRELATION ENERGY'), 5, 'lccd corl')
+    assert compare_values(hf, qcdb.variable('HF TOTAL ENERGY'), 5, 'hf ref')
+    assert compare_values(lccsd_tot, qcdb.variable('LCCSD TOTAL ENERGY'), 5, 'lccd tot')
+    assert compare_values(lccsd_corl, qcdb.variable('LCCSD CORRELATION ENERGY'), 5, 'lccd corl')
 
 @using_nwchem
 def test_2_lccsd():

@@ -11,7 +11,7 @@ import qcdb
 def check_hf(return_value):
     ref = -76.026760737428
 
-    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'total scf')
+    assert compare_values(ref, qcdb.variable('HF TOTAL ENERGY'), 5, 'total scf')
 
 
 @using_nwchem

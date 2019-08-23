@@ -12,9 +12,9 @@ def tce_uccsd(return_value):
     ccsd_tot    =   -74.695659393231864
     ccsd_corl   =    -0.039188552654924
 
-    assert compare_values(hf, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(ccsd_tot, qcdb.get_variable('CCSD TOTAL ENERGY'), 5, 'ccsd tot')
-    assert compare_values(ccsd_corl, qcdb.get_variable('CCSD CORRELATION'), 5, 'ccsd corl')
+    assert compare_values(hf, qcdb.variable('HF TOTAL ENERGY'), 5, 'hf ref')
+    assert compare_values(ccsd_tot, qcdb.variable('CCSD TOTAL ENERGY'), 5, 'ccsd tot')
+    assert compare_values(ccsd_corl, qcdb.variable('CCSD CORRELATION'), 5, 'ccsd corl')
 
 @using_nwchem
 def test_1_uccsd():

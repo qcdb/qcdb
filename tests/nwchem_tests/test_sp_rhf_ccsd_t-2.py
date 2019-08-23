@@ -25,19 +25,19 @@ def check_ccsd_t_2(return_value):
         a5050corl = 0.5 * (ss + os)
         a5050tot = a5050corl + scstot
         
-        assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
-        assert compare_values(nre, qcdb.get_variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
-        assert compare_values(mp2corl, qcdb.get_variable('MP2 CORRELATION ENERGY'), 5, 'mp2 corl')
-        assert compare_values(mp2tot, qcdb.get_variable('MP2 TOTAL ENERGY'), 5, 'mp2 tot')
-        #assert compare_values(scscorl, qcdb.get_variable('SCS-CCSD CORRELATION ENERGY'), 5, 'scs ccsd corl')
-        #assert compare_values(scstot, qcdb.get_variable('SCS-CCSD TOTAL ENERGY'), 5, 'scs ccsd tot')
-        assert compare_values(ccsd_t_corl, qcdb.get_variable('CCSD(T) CORRELATION ENERGY'), 5, 'ccsd(t) corl')
-        assert compare_values(ccsd_t_tot, qcdb.get_variable('CCSD(T) TOTAL ENERGY'), 5, 'ccsd(t) tot')
+        assert compare_values(ref, qcdb.variable('HF TOTAL ENERGY'), 5, 'hf ref')
+        assert compare_values(nre, qcdb.variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
+        assert compare_values(mp2corl, qcdb.variable('MP2 CORRELATION ENERGY'), 5, 'mp2 corl')
+        assert compare_values(mp2tot, qcdb.variable('MP2 TOTAL ENERGY'), 5, 'mp2 tot')
+        #assert compare_values(scscorl, qcdb.variable('SCS-CCSD CORRELATION ENERGY'), 5, 'scs ccsd corl')
+        #assert compare_values(scstot, qcdb.variable('SCS-CCSD TOTAL ENERGY'), 5, 'scs ccsd tot')
+        assert compare_values(ccsd_t_corl, qcdb.variable('CCSD(T) CORRELATION ENERGY'), 5, 'ccsd(t) corl')
+        assert compare_values(ccsd_t_tot, qcdb.variable('CCSD(T) TOTAL ENERGY'), 5, 'ccsd(t) tot')
 #        if is_5050:
-#            assert compare_values(a5050corl, qcdb.get_variable('CUSTOM SCS-CCSD CORRELATION ENERGY'), 5, 'mp2 scscorl')
-#            assert compare_values(a5050tot, qcdb.get_variable('CUSTOM SCS-CCSD TOTAL ENERGY'), 5, 'mp2 scstot')
+#            assert compare_values(a5050corl, qcdb.variable('CUSTOM SCS-CCSD CORRELATION ENERGY'), 5, 'mp2 scscorl')
+#            assert compare_values(a5050tot, qcdb.variable('CUSTOM SCS-CCSD TOTAL ENERGY'), 5, 'mp2 scstot')
        # assert compare_values(mp2tot, return_value, 5, 'mp2 return')
-        assert compare_values(t_corr, qcdb.get_variable('(T) CORRECTION ENERGY'), 5, 'ccsd(t) correction')
+        assert compare_values(t_corr, qcdb.variable('(T) CORRECTION ENERGY'), 5, 'ccsd(t) correction')
 
 
 @using_nwchem
