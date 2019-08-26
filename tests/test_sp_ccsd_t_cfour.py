@@ -49,13 +49,13 @@ def check_rhf(tnm, fc=False):
         ccsdtcorr = -0.007263597996
         ccsdttot = -76.345717549886
 
-    assert compare_values(scftot, qcdb.get_variable('scf total energy'), 6, tnm + ' SCF')
-    assert compare_values(mp2corl, qcdb.get_variable('mp2 correlation energy'), 6, tnm + ' MP2 corl')
-    assert compare_values(mp2tot, qcdb.get_variable('mp2 total energy'), 6, tnm + ' MP2')
-    assert compare_values(ccsdcorl, qcdb.get_variable('ccsd correlation energy'), 6, tnm + ' CCSD corl')
-    assert compare_values(ccsdtot, qcdb.get_variable('ccsd total energy'), 6, tnm + ' CCSD')
-    assert compare_values(ccsdtcorr, qcdb.get_variable('(t) correction energy'), 6, tnm + ' (T)')
-    assert compare_values(ccsdttot, qcdb.get_variable('ccsd(t) total energy'), 6, tnm + ' CCSD(T)')
+    assert compare_values(scftot, qcdb.variable('scf total energy'), 6, tnm + ' SCF')
+    assert compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), 6, tnm + ' MP2 corl')
+    assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), 6, tnm + ' MP2')
+    assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), 6, tnm + ' CCSD corl')
+    assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, tnm + ' CCSD')
+    assert compare_values(ccsdtcorr, qcdb.variable('(t) correction energy'), 6, tnm + ' (T)')
+    assert compare_values(ccsdttot, qcdb.variable('ccsd(t) total energy'), 6, tnm + ' CCSD(T)')
 
 
 def check_uhf(tnm, fc):
@@ -68,13 +68,13 @@ def check_uhf(tnm, fc):
         ccsdtcorr = -0.005166587884
         ccsdttot = -55.807811611842
 
-    assert compare_values(scftot, qcdb.get_variable('scf total energy'), 6, tnm + ' SCF')
-    assert compare_values(mp2corl, qcdb.get_variable('mp2 correlation energy'), 6, tnm + ' MP2 corl')
-    assert compare_values(mp2tot, qcdb.get_variable('mp2 total energy'), 6, tnm + ' MP2')
-    assert compare_values(ccsdcorl, qcdb.get_variable('ccsd correlation energy'), 6, tnm + ' CCSD corl')
-    assert compare_values(ccsdtot, qcdb.get_variable('ccsd total energy'), 6, tnm + ' CCSD')
-    assert compare_values(ccsdtcorr, qcdb.get_variable('(t) correction energy'), 6, tnm + ' (T)')
-    assert compare_values(ccsdttot, qcdb.get_variable('ccsd(t) total energy'), 6, tnm + ' CCSD(T)')
+    assert compare_values(scftot, qcdb.variable('scf total energy'), 6, tnm + ' SCF')
+    assert compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), 6, tnm + ' MP2 corl')
+    assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), 6, tnm + ' MP2')
+    assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), 6, tnm + ' CCSD corl')
+    assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, tnm + ' CCSD')
+    assert compare_values(ccsdtcorr, qcdb.variable('(t) correction energy'), 6, tnm + ' (T)')
+    assert compare_values(ccsdttot, qcdb.variable('ccsd(t) total energy'), 6, tnm + ' CCSD(T)')
 
 
 def check_rohf(tnm, fc, prog):
@@ -114,18 +114,18 @@ def check_rohf(tnm, fc, prog):
         ccsdcorl = -0.217849506326
         ccsdtcorr = -0.005233940436
 
-    assert compare_values(scftot, qcdb.get_variable('scf total energy'), 6, tnm + ' SCF')
-    # not printed assert compare_values(mp2corl, qcdb.get_variable('mp2 correlation energy'), 6, tnm + ' MP2 corl')
-    # not printed assert compare_values(mp2tot, qcdb.get_variable('mp2 total energy'), 6, tnm + 'MP2')
-    assert compare_values(ccsdcorl, qcdb.get_variable('ccsd correlation energy'), 6, tnm + ' CCSD corl')
-    assert compare_values(ccsdtot, qcdb.get_variable('ccsd total energy'), 6, tnm + ' CCSD')
-    assert compare_values(ccsdtcorr, qcdb.get_variable('(t) correction energy'), 6, tnm + ' (T)')
-    assert compare_values(ccsdttot, qcdb.get_variable('ccsd(t) total energy'), 6, tnm + ' CCSD(T)')
+    assert compare_values(scftot, qcdb.variable('scf total energy'), 6, tnm + ' SCF')
+    # not printed assert compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), 6, tnm + ' MP2 corl')
+    # not printed assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), 6, tnm + 'MP2')
+    assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), 6, tnm + ' CCSD corl')
+    assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, tnm + ' CCSD')
+    assert compare_values(ccsdtcorr, qcdb.variable('(t) correction energy'), 6, tnm + ' (T)')
+    assert compare_values(ccsdttot, qcdb.variable('ccsd(t) total energy'), 6, tnm + ' CCSD(T)')
 
-    #assert compare_values(osmp2corl, qcdb.get_variable('mp2 opposite-spin correlation energy'), 6, tnm + ' MP2 OS corl')
-    #assert compare_values(ssmp2corl, qcdb.get_variable('mp2 same-spin correlation energy'), 6, tnm + ' MP2 SS corl')
-    assert compare_values(osccsdcorl, qcdb.get_variable('ccsd opposite-spin correlation energy'), 6, tnm + ' CCSD OS corl')
-    assert compare_values(ssccsdcorl, qcdb.get_variable('ccsd same-spin correlation energy'), 6, tnm + ' CCSD SS corl')
+    #assert compare_values(osmp2corl, qcdb.variable('mp2 opposite-spin correlation energy'), 6, tnm + ' MP2 OS corl')
+    #assert compare_values(ssmp2corl, qcdb.variable('mp2 same-spin correlation energy'), 6, tnm + ' MP2 SS corl')
+    assert compare_values(osccsdcorl, qcdb.variable('ccsd opposite-spin correlation energy'), 6, tnm + ' CCSD OS corl')
+    assert compare_values(ssccsdcorl, qcdb.variable('ccsd same-spin correlation energy'), 6, tnm + ' CCSD SS corl')
 
 
 @using_cfour

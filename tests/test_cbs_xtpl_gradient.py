@@ -108,7 +108,7 @@ def test_1a():
     scf_dz, jrec = qcdb.gradient('SCF/cc-pVDZ', return_wfn=True)
     assert compare_arrays(ref_scf_dz, scf_dz, 6, "[1a] SCF/cc-pVDZ Gradient")
     assert compare_arrays(ref_scf_dz, jrec['qcvars']['CURRENT GRADIENT'].data, 6, "[1a] SCF/cc-pVDZ Gradient")
-    assert compare_arrays(ref_scf_dz, qcdb.get_variable('CURRENT GRADIENT'), 6, "[1a] SCF/cc-pVDZ Gradient")
+    assert compare_arrays(ref_scf_dz, qcdb.variable('CURRENT GRADIENT'), 6, "[1a] SCF/cc-pVDZ Gradient")
     #assert compare_arrays(ref_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1a] SCF/cc-pVDZ Gradient")
     assert 'Psi4' == jrec['provenance']['creator'], "[1a] prov"
 
@@ -120,7 +120,7 @@ def test_1b():
     scf_dz, jrec = qcdb.gradient('c4-SCF/cc-pVDZ', return_wfn=True)
     assert compare_arrays(ref_scf_dz, scf_dz, 6, "[1b] SCF/cc-pVDZ Gradient")
     assert compare_arrays(ref_scf_dz, jrec['qcvars']['CURRENT GRADIENT'].data, 6, "[1b] SCF/cc-pVDZ Gradient")
-    assert compare_arrays(ref_scf_dz, qcdb.get_variable('CURRENT GRADIENT'), 6, "[1b] SCF/cc-pVDZ Gradient")
+    assert compare_arrays(ref_scf_dz, qcdb.variable('CURRENT GRADIENT'), 6, "[1b] SCF/cc-pVDZ Gradient")
     #assert compare_arrays(ref_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1b] SCF/cc-pVDZ Gradient")
     assert 'CFOUR' == jrec['provenance']['creator'], "[1b] prov"
 
@@ -132,7 +132,7 @@ def test_1c():
     scf_dz, jrec = qcdb.gradient('gms-SCF/cc-pVDZ', return_wfn=True)
     assert compare_arrays(ref_scf_dz, scf_dz, 6, "[1c] SCF/cc-pVDZ Gradient")
     assert compare_arrays(ref_scf_dz, jrec['qcvars']['CURRENT GRADIENT'].data, 6, "[1c] SCF/cc-pVDZ Gradient")
-    assert compare_arrays(ref_scf_dz, qcdb.get_variable('CURRENT GRADIENT'), 6, "[1c] SCF/cc-pVDZ Gradient")
+    assert compare_arrays(ref_scf_dz, qcdb.variable('CURRENT GRADIENT'), 6, "[1c] SCF/cc-pVDZ Gradient")
     #assert compare_arrays(ref_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1c] SCF/cc-pVDZ Gradient")
     assert 'QCDB' == jrec['provenance']['creator'], "[1c] prov" # GAMESS and/or QCDB??
 
@@ -144,7 +144,7 @@ def test_1d():
     scf_dz, jrec = qcdb.gradient('SCF/cc-pVDZ', return_wfn=True)
     assert compare_arrays(ref_scf_dz_y, scf_dz, 6, "[1d] SCF/cc-pVDZ Gradient")
     assert compare_arrays(ref_scf_dz_y, jrec['qcvars']['CURRENT GRADIENT'].data, 6, "[1d] SCF/cc-pVDZ Gradient")
-    assert compare_arrays(ref_scf_dz_y, qcdb.get_variable('CURRENT GRADIENT'), 6, "[1d] SCF/cc-pVDZ Gradient")
+    assert compare_arrays(ref_scf_dz_y, qcdb.variable('CURRENT GRADIENT'), 6, "[1d] SCF/cc-pVDZ Gradient")
     #assert compare_arrays(ref_scf_dz_y, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1d] SCF/cc-pVDZ Gradient")
     # TODO provenance kill list
     assert 'Psi4' ==  jrec['provenance']['creator'], "[1d] prov"
@@ -157,7 +157,7 @@ def test_1e():
     scf_dz, jrec = qcdb.gradient('c4-SCF/cc-pVDZ', return_wfn=True)
     assert compare_arrays(ref_scf_dz_y, scf_dz, 6, "[1e] SCF/cc-pVDZ Gradient")
     assert compare_arrays(ref_scf_dz_y, jrec['qcvars']['CURRENT GRADIENT'].data, 6, "[1e] SCF/cc-pVDZ Gradient")
-    assert compare_arrays(ref_scf_dz_y, qcdb.get_variable('CURRENT GRADIENT'), 6, "[1e] SCF/cc-pVDZ Gradient")
+    assert compare_arrays(ref_scf_dz_y, qcdb.variable('CURRENT GRADIENT'), 6, "[1e] SCF/cc-pVDZ Gradient")
     #assert compare_arrays(ref_scf_dz_y, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1e] SCF/cc-pVDZ Gradient")
     assert 'CFOUR' == jrec['provenance']['creator'], "[1e] prov"
 
@@ -171,7 +171,7 @@ def test_1e():
 #    pp.pprint(jrec)
 #    assert compare_arrays(ref_scf_dz_y, scf_dz, 6, "[1f] SCF/cc-pVDZ Gradient")
 #    assert compare_arrays(ref_scf_dz_y, jrec['qcvars']['CURRENT GRADIENT'].data, 6, "[1f] SCF/cc-pVDZ Gradient")
-#    assert compare_arrays(ref_scf_dz_y, qcdb.get_variable('CURRENT GRADIENT'), 6, "[1f] SCF/cc-pVDZ Gradient")
+#    assert compare_arrays(ref_scf_dz_y, qcdb.variable('CURRENT GRADIENT'), 6, "[1f] SCF/cc-pVDZ Gradient")
 #    #assert compare_arrays(ref_scf_dz_y, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1f] SCF/cc-pVDZ Gradient")
 #    assert 'GAMESS' == jrec['provenance']['creator'], "[1f] prov"
 
@@ -183,7 +183,7 @@ def test_1g():
     scf_dz, jrec = qcdb.gradient('SCF/cc-pVDZ', return_wfn=True)
     assert compare_arrays(ref2_scf_dz, scf_dz, 6, "[1g] SCF/cc-pVDZ Gradient")
     assert compare_arrays(ref2_scf_dz, jrec['qcvars']['CURRENT GRADIENT'].data, 6, "[1g] SCF/cc-pVDZ Gradient")
-    assert compare_arrays(ref2_scf_dz, qcdb.get_variable('CURRENT GRADIENT'), 6, "[1g] SCF/cc-pVDZ Gradient")
+    assert compare_arrays(ref2_scf_dz, qcdb.variable('CURRENT GRADIENT'), 6, "[1g] SCF/cc-pVDZ Gradient")
     #assert compare_arrays(ref_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1g] SCF/cc-pVDZ Gradient")
     #assert ['QCDB', 'Psi4'] == [d['creator'] for d in jrec['provenance']], "[1g] prov"
     assert 'Psi4' ==  jrec['provenance']['creator'], "[1g] prov"
@@ -196,7 +196,7 @@ def test_1h():
     scf_dz, jrec = qcdb.gradient('c4-SCF/cc-pVDZ', return_wfn=True)
     assert compare_arrays(ref2_scf_dz, scf_dz, 6, "[1h] SCF/cc-pVDZ Gradient")
     assert compare_arrays(ref2_scf_dz, jrec['qcvars']['CURRENT GRADIENT'].data, 6, "[1h] SCF/cc-pVDZ Gradient")
-    assert compare_arrays(ref2_scf_dz, qcdb.get_variable('CURRENT GRADIENT'), 6, "[1h] SCF/cc-pVDZ Gradient")
+    assert compare_arrays(ref2_scf_dz, qcdb.variable('CURRENT GRADIENT'), 6, "[1h] SCF/cc-pVDZ Gradient")
     #assert compare_arrays(ref_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1h] SCF/cc-pVDZ Gradient")
     assert 'CFOUR' == jrec['provenance']['creator'], "[1h] prov"
 
@@ -207,7 +207,7 @@ def test_1i():
     scf_dz, jrec = qcdb.gradient('gms-SCF/cc-pVDZ', return_wfn=True)
     assert compare_arrays(ref2_scf_dz, scf_dz, 6, "[1i] SCF/cc-pVDZ Gradient")
     assert compare_arrays(ref2_scf_dz, jrec['qcvars']['CURRENT GRADIENT'].data, 6, "[1i] SCF/cc-pVDZ Gradient")
-    assert compare_arrays(ref2_scf_dz, qcdb.get_variable('CURRENT GRADIENT'), 6, "[1i] SCF/cc-pVDZ Gradient")
+    assert compare_arrays(ref2_scf_dz, qcdb.variable('CURRENT GRADIENT'), 6, "[1i] SCF/cc-pVDZ Gradient")
     ##assert compare_arrays(ref_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1i] SCF/cc-pVDZ Gradient")
     assert 'QCDB' == jrec['provenance']['creator'], "[1i] prov"
 

@@ -37,12 +37,12 @@ def test_fci_rhf_psi4():
     E = qcdb.energy('p4-fci', molecule=h2o)
 
     assert compare_values(_refnuc, h2o.nuclear_repulsion_energy(), 9, "nre")
-    assert compare_values(_refscf, qcdb.get_variable("HF total energy"), 8, "hf total energy")
+    assert compare_values(_refscf, qcdb.variable("HF total energy"), 8, "hf total energy")
     assert compare_values(_refci, E, 7, "return E")
-    assert compare_values(_refci, qcdb.get_variable("FCI TOTAL ENERGY"), 7, "fci total energy")
-    assert compare_values(_refcorr, qcdb.get_variable("FCI CORRELATION ENERGY"), 7, "fci correlation energy")
-    assert compare_values(_refci, qcdb.get_variable("CI TOTAL ENERGY"), 7, "ci total energy")
-    assert compare_values(_refcorr, qcdb.get_variable("CI CORRELATION ENERGY"), 7, "ci correlation energy")
+    assert compare_values(_refci, qcdb.variable("FCI TOTAL ENERGY"), 7, "fci total energy")
+    assert compare_values(_refcorr, qcdb.variable("FCI CORRELATION ENERGY"), 7, "fci correlation energy")
+    assert compare_values(_refci, qcdb.variable("CI TOTAL ENERGY"), 7, "ci total energy")
+    assert compare_values(_refcorr, qcdb.variable("CI CORRELATION ENERGY"), 7, "ci correlation energy")
 
 
 @using_gamess
@@ -58,9 +58,9 @@ def test_fci_rhf_gamess():
     E = qcdb.energy('gms-fci', molecule=h2o)
 
     assert compare_values(_refnuc, h2o.nuclear_repulsion_energy(), 9, "nre")
-    assert compare_values(_refscf, qcdb.get_variable("HF total energy"), 8, "hf total energy")
+    assert compare_values(_refscf, qcdb.variable("HF total energy"), 8, "hf total energy")
     assert compare_values(_refci, E, 7, "return E")
-    assert compare_values(_refci, qcdb.get_variable("FCI TOTAL ENERGY"), 7, "fci total energy")
-    assert compare_values(_refcorr, qcdb.get_variable("FCI CORRELATION ENERGY"), 7, "fci correlation energy")
-    assert compare_values(_refci, qcdb.get_variable("CI TOTAL ENERGY"), 7, "ci total energy")
-    assert compare_values(_refcorr, qcdb.get_variable("CI CORRELATION ENERGY"), 7, "ci correlation energy")
+    assert compare_values(_refci, qcdb.variable("FCI TOTAL ENERGY"), 7, "fci total energy")
+    assert compare_values(_refcorr, qcdb.variable("FCI CORRELATION ENERGY"), 7, "fci correlation energy")
+    assert compare_values(_refci, qcdb.variable("CI TOTAL ENERGY"), 7, "ci total energy")
+    assert compare_values(_refcorr, qcdb.variable("CI CORRELATION ENERGY"), 7, "ci correlation energy")
