@@ -47,7 +47,7 @@ def _spin_component_scaling(args):
 
 def _spin_component_scaling_wsing(args):
     os_scale, ss_scale, tot_corl, ss_corl, s_corl = args
-    return os_scale * (tot_corl - ss_corl) + ss_scale * ss_corl + s_corl
+    return os_scale * (tot_corl - ss_corl - s_corl) + ss_scale * ss_corl + s_corl
 
 
 def _dispersion_weighting_wsing(args):
