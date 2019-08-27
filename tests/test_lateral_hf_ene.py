@@ -39,7 +39,7 @@ A=105.0
     pytest.param('gms-hf', {'basis': 'cfour-qz2p'}, marks=using_gamess),
     pytest.param('nwc-hf', {'basis': 'cfour-qz2p', 'qc_module': 'tce'}, marks=using_nwchem), # tce doesn't matter here
     pytest.param('nwc-hf', {'basis': 'cfour-qz2p'}, marks=using_nwchem),
-    pytest.param('p4-hf', {'basis': 'cfour-qz2p'}, marks=using_psi4),
+    pytest.param('p4-hf', {'basis': 'cfour-qz2p', 'psi4_scf_type' : 'direct'}, marks=using_psi4),
 ])
 def test_sp_hf_rhf(mtd, opts, h2o):
     """cfour/???/input.dat
@@ -53,7 +53,7 @@ def test_sp_hf_rhf(mtd, opts, h2o):
 
     # from cfour
     scftot = -76.0627484601
-    atol = 1.e-5
+    atol = 1.e-6
 
     assert compare_values(scftot, e, tnm() + ' SCF', atol=atol)
     assert compare_values(scftot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
@@ -67,11 +67,11 @@ def test_sp_hf_rhf(mtd, opts, h2o):
     pytest.param('gms-hf', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'uhf'}, marks=using_gamess),
     pytest.param('nwc-hf', {'basis': 'cfour-qz2p', 'qc_module': 'tce', 'nwchem_scf__uhf': True}, marks=using_nwchem),
     pytest.param('nwc-hf', {'basis': 'cfour-qz2p', 'nwchem_scf__uhf': True}, marks=using_nwchem),
-    pytest.param('p4-hf', {'basis': 'cfour-qz2p', 'reference': 'uhf'}, marks=using_psi4),
+    pytest.param('p4-hf', {'basis': 'cfour-qz2p', 'reference': 'uhf', 'psi4_scf_type' : 'direct'}, marks=using_psi4),
 ])
 def test_sp_hf_uhf(mtd, opts, nh2):
-    """cfour/sp-uhf-hf/input.dat
-    #! single-point CCSD/qz2p on NH2
+    """cfour/???/input.dat
+    #! single-point HF/qz2p on NH2
 
     """
     nh2 = qcdb.set_molecule(nh2)
@@ -81,7 +81,7 @@ def test_sp_hf_uhf(mtd, opts, nh2):
 
     # from cfour
     scftot = -55.5893469688
-    atol = 1.e-5
+    atol = 1.e-6
 
     assert compare_values(scftot, e, tnm() + ' SCF', atol=atol)
     assert compare_values(scftot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
@@ -95,9 +95,13 @@ def test_sp_hf_uhf(mtd, opts, nh2):
     pytest.param('gms-hf', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'rohf'}, marks=using_gamess),
     pytest.param('nwc-hf', {'basis': 'cfour-qz2p', 'qc_module': 'tce', 'nwchem_scf__rohf': True}, marks=using_nwchem),
     pytest.param('nwc-hf', {'basis': 'cfour-qz2p', 'nwchem_scf__rohf': True}, marks=using_nwchem),
-    pytest.param('p4-hf', {'basis': 'cfour-qz2p', 'reference': 'rohf'}, marks=using_psi4),
+    pytest.param('p4-hf', {'basis': 'cfour-qz2p', 'reference': 'rohf', 'psi4_scf_type' : 'direct'}, marks=using_psi4),
 ])
 def test_sp_hf_rohf(mtd, opts, nh2):
+    """cfour/???/input.dat
+    #! single-point HF/qz2p on NH2
+
+    """
     nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options(opts)
 
@@ -105,7 +109,7 @@ def test_sp_hf_rohf(mtd, opts, nh2):
 
     # from cfour
     scftot = -55.5847372601
-    atol = 1.e-5
+    atol = 1.e-6
 
     assert compare_values(scftot, e, tnm() + ' SCF', atol=atol)
     assert compare_values(scftot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
