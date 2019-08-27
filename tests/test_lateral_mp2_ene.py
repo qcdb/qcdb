@@ -175,7 +175,6 @@ def test_sp_mp2_uhf_fc(mtd, opts, nh2):
 
 @pytest.mark.parametrize('mtd,opts,errmsg', [
     pytest.param('nwc-mp2', {'basis': 'cfour-qz2p', 'nwchem_scf__rohf': True}, 'unknown SCFTYPE', marks=using_nwchem), # no rohf reference for nwc mp2
-    pytest.param('p4-mp2', {'basis': 'cfour-qz2p', 'reference': 'rohf', 'psi4_mp2_type' : 'conv'}, 'quantity SCS-MP2 CORRELATION ENERGY', marks=using_psi4), # issue w/ parsing validation
 ])
 def test_sp_mp2_rohf_full_error(mtd, opts, errmsg, nh2):
     """cfour/???/input.dat
@@ -185,7 +184,7 @@ def test_sp_mp2_rohf_full_error(mtd, opts, errmsg, nh2):
     nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options(opts)
 
-    with pytest.raises((qcng.exceptions.InputError, qcdb.exceptions.ParsingValidationError)) as e:
+    with pytest.raises(qcng.exceptions.InputError) as e:
         qcdb.energy(mtd, molecule=nh2)
 
     assert errmsg in str(e.value)
@@ -196,6 +195,7 @@ def test_sp_mp2_rohf_full_error(mtd, opts, errmsg, nh2):
     pytest.param('c4-mp2', {'basis': 'cfour-qz2p', 'cfour_reference': 'rohf', 'cfour_occupation': [[3,1,1,0],[3,0,1,0]], 'cfour_scf_conv': 12}, marks=using_cfour),
     pytest.param('gms-mp2', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'rohf', 'gamess_mp2__nacore': 0, 'gamess_mp2__ospt': 'RMP'}, marks=using_gamess),
     pytest.param('nwc-mp2', {'basis': 'cfour-qz2p', 'qc_module': 'tce', 'nwchem_scf__rohf': True, 'nwchem_scf__thresh': 8, 'nwchem_tce__thresh': 8, 'nwchem_tce__freeze': 0, 'nwchem_scf__tol2e': 10}, marks=using_nwchem),
+    pytest.param('p4-mp2', {'basis': 'cfour-qz2p', 'reference': 'rohf', 'psi4_mp2_type' : 'conv'}, marks=using_psi4),
 ])
 def test_sp_mp2_rohf_full(mtd, opts, nh2):
     """cfour/???/input.dat
@@ -228,7 +228,6 @@ def test_sp_mp2_rohf_full(mtd, opts, nh2):
 
 @pytest.mark.parametrize('mtd,opts,errmsg', [
     pytest.param('nwc-mp2', {'basis': 'cfour-qz2p', 'nwchem_scf__rohf': True, 'nwchem_mp2__freeze': 1}, 'unknown SCFTYPE', marks=using_nwchem), # no rohf reference for nwc mp2
-    pytest.param('p4-mp2', {'basis': 'cfour-qz2p', 'reference': 'rohf', 'psi4_freeze_core': True, 'psi4_mp2_type' : 'conv'}, 'quantity SCS-MP2 CORRELATION ENERGY', marks=using_psi4), # issue w/ parsing validation
 ])
 def test_sp_mp2_rohf_fc_error(mtd, opts, errmsg, nh2):
     """cfour/???/input.dat
@@ -238,7 +237,7 @@ def test_sp_mp2_rohf_fc_error(mtd, opts, errmsg, nh2):
     nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options(opts)
 
-    with pytest.raises((qcng.exceptions.InputError, qcdb.exceptions.ParsingValidationError)) as e:
+    with pytest.raises(qcng.exceptions.InputError) as e:
         qcdb.energy(mtd, molecule=nh2)
 
     assert errmsg in str(e.value)
@@ -249,6 +248,7 @@ def test_sp_mp2_rohf_fc_error(mtd, opts, errmsg, nh2):
     pytest.param('c4-mp2', {'basis': 'cfour-qz2p', 'cfour_reference': 'rohf', 'cfour_dropmo': 1, 'cfour_scf_conv': 12}, marks=using_cfour),
     pytest.param('gms-mp2', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'rohf', 'gamess_mp2__ospt': 'RMP'}, marks=using_gamess),
     pytest.param('nwc-mp2', {'basis': 'cfour-qz2p', 'qc_module': 'tce', 'nwchem_tce__freeze': 1, 'nwchem_scf__rohf': True}, marks=using_nwchem),
+    pytest.param('p4-mp2', {'basis': 'cfour-qz2p', 'reference': 'rohf', 'psi4_freeze_core': True, 'psi4_mp2_type' : 'conv'}, marks=using_psi4),
 ])
 def test_sp_mp2_rohf_fc(mtd, opts, nh2):
     """cfour/???/input.dat
