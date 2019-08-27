@@ -130,6 +130,12 @@ def load_gamess_defaults(options):
             validator=parsers.nonnegative_integer,
             glossary="""same as |gamess__mp2__nacore| for beta orbitals of UHF. Generally equals nacore."""))
 
+    options.add('gamess', RottenOption(
+            keyword='mp2__ospt',
+            default="ZAPT",
+            validator=parsers.enum("ZAPT RMP"),
+            glossary="""Selects open shell spin-restricted perturbation. Only applies when gamess_mp2__scftype=ROHF."""))
+
 
     # $CCINP
 
