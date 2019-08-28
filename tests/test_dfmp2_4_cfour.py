@@ -34,20 +34,20 @@ def check_mp2(return_value, is_df, is_5050=False):
         a5050corl =     0.5 * (mp2ss + mp2os)
         a5050tot  =     a5050corl + ref
 
-    assert compare_values(ref, qcdb.get_variable('SCF TOTAL ENERGY'), 5, 'mp2 ref')
-    assert compare_values(mp2ss, qcdb.get_variable('MP2 SAME-SPIN CORRELATION ENERGY'), 5, 'mp2 ss')
-    assert compare_values(mp2os, qcdb.get_variable('MP2 OPPOSITE-SPIN CORRELATION ENERGY'), 5, 'mp2 os')
-    assert compare_values(mp2corl, qcdb.get_variable('MP2 CORRELATION ENERGY'), 5, 'mp2 corl')
-    assert compare_values(mp2tot, qcdb.get_variable('MP2 TOTAL ENERGY'), 5, 'mp2 tot')
-    assert compare_values(scscorl, qcdb.get_variable('SCS-MP2 CORRELATION ENERGY'), 5, 'mp2 scscorl')
-    assert compare_values(scstot, qcdb.get_variable('SCS-MP2 TOTAL ENERGY'), 5, 'mp2 scstot')
+    assert compare_values(ref, qcdb.variable('SCF TOTAL ENERGY'), 5, 'mp2 ref')
+    assert compare_values(mp2ss, qcdb.variable('MP2 SAME-SPIN CORRELATION ENERGY'), 5, 'mp2 ss')
+    assert compare_values(mp2os, qcdb.variable('MP2 OPPOSITE-SPIN CORRELATION ENERGY'), 5, 'mp2 os')
+    assert compare_values(mp2corl, qcdb.variable('MP2 CORRELATION ENERGY'), 5, 'mp2 corl')
+    assert compare_values(mp2tot, qcdb.variable('MP2 TOTAL ENERGY'), 5, 'mp2 tot')
+    assert compare_values(scscorl, qcdb.variable('SCS-MP2 CORRELATION ENERGY'), 5, 'mp2 scscorl')
+    assert compare_values(scstot, qcdb.variable('SCS-MP2 TOTAL ENERGY'), 5, 'mp2 scstot')
     if is_5050:
-        assert compare_values(a5050corl, qcdb.get_variable('custom SCS-MP2 CORRELATION ENERGY'), 5, 'mp2 scscorl')
-        assert compare_values(a5050tot, qcdb.get_variable('custom SCS-MP2 TOTAL ENERGY'), 5, 'mp2 scstot')
+        assert compare_values(a5050corl, qcdb.variable('custom SCS-MP2 CORRELATION ENERGY'), 5, 'mp2 scscorl')
+        assert compare_values(a5050tot, qcdb.variable('custom SCS-MP2 TOTAL ENERGY'), 5, 'mp2 scstot')
 
-    assert compare_values(ref, qcdb.get_variable('CURRENT REFERENCE ENERGY'), 5, 'mp2 ref')
-    assert compare_values(mp2corl, qcdb.get_variable('CURRENT CORRELATION ENERGY'), 5, 'mp2 corl')
-    assert compare_values(mp2tot, qcdb.get_variable('CURRENT ENERGY'), 5, 'mp2 tot')
+    assert compare_values(ref, qcdb.variable('CURRENT REFERENCE ENERGY'), 5, 'mp2 ref')
+    assert compare_values(mp2corl, qcdb.variable('CURRENT CORRELATION ENERGY'), 5, 'mp2 corl')
+    assert compare_values(mp2tot, qcdb.variable('CURRENT ENERGY'), 5, 'mp2 tot')
     assert compare_values(mp2tot, return_value, 5, 'mp2 return')
 
 def h2o():

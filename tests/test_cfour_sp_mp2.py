@@ -47,9 +47,9 @@ def test_sp_rhf_mp2(h2o):
     mp2corl = -0.270191667216
     mp2tot = -76.332940127333
     tnm = sys._getframe().f_code.co_name
-    assert compare_values(scftot, qcdb.get_variable('scf total energy'), 6, tnm + ' SCF')
-    assert compare_values(mp2corl, qcdb.get_variable('mp2 correlation energy'), 6, tnm + ' MP2 corl')
-    assert compare_values(mp2tot, qcdb.get_variable('mp2 total energy'), 6, tnm + ' MP2')
+    assert compare_values(scftot, qcdb.variable('scf total energy'), 6, tnm + ' SCF')
+    assert compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), 6, tnm + ' MP2 corl')
+    assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), 6, tnm + ' MP2')
     assert compare_values(scftot, jrec['qcvars']['HF TOTAL ENERGY'].data, 6, tnm)
     assert compare_values(mp2corl, jrec['qcvars']['MP2 CORRELATION ENERGY'].data, 6, tnm)
     assert compare_values(mp2tot, jrec['qcvars']['CURRENT ENERGY'].data, 6, tnm)
@@ -70,13 +70,13 @@ def test_sp_uhf_mp2(nh2):
     qcdb.energy('c4-mp2', molecule=nh2)
 
     tnm = sys._getframe().f_code.co_name
-    assert compare_values(-55.5893469688, qcdb.get_variable('scf total energy'), 6, tnm + ' SCF')
-    assert compare_values(-55.784877360093, qcdb.get_variable('mp2 total energy'), 6, tnm + ' MP2')
-    assert compare_values(-0.195530391306, qcdb.get_variable('mp2 correlation energy'), 6, tnm + ' MP2 corl')
-    assert compare_values(-0.195530391306, qcdb.get_variable('mp2 doubles energy'), 6, tnm + ' MP2 corl')
-    assert compare_values(0., qcdb.get_variable('mp2 singles energy'), 6, tnm + ' MP2 corl')
-    assert compare_values(-0.0416164, qcdb.get_variable('mp2 same-spin correlation energy'), 6, tnm + ' MP2 SS corl')
-    assert compare_values(-0.1539141, qcdb.get_variable('mp2 opposite-spin correlation energy'), 6, tnm + ' MP2 OS corl')
+    assert compare_values(-55.5893469688, qcdb.variable('scf total energy'), 6, tnm + ' SCF')
+    assert compare_values(-55.784877360093, qcdb.variable('mp2 total energy'), 6, tnm + ' MP2')
+    assert compare_values(-0.195530391306, qcdb.variable('mp2 correlation energy'), 6, tnm + ' MP2 corl')
+    assert compare_values(-0.195530391306, qcdb.variable('mp2 doubles energy'), 6, tnm + ' MP2 corl')
+    assert compare_values(0., qcdb.variable('mp2 singles energy'), 6, tnm + ' MP2 corl')
+    assert compare_values(-0.0416164, qcdb.variable('mp2 same-spin correlation energy'), 6, tnm + ' MP2 SS corl')
+    assert compare_values(-0.1539141, qcdb.variable('mp2 opposite-spin correlation energy'), 6, tnm + ' MP2 OS corl')
 
 
 @using_cfour
@@ -101,13 +101,13 @@ def test_sp_rohf_mp2_sc(nh2):
     mp2corl = -0.200539527276
     mp2tot = -55.785276787341
     tnm = sys._getframe().f_code.co_name
-    assert compare_values(scftot, qcdb.get_variable('scf total energy'), 6, tnm + ' SCF')
-    assert compare_values(scorl, qcdb.get_variable('mp2 singles energy'), 6, tnm + ' MP2 singles')
-    # non printed assert compare_values(oscorl, qcdb.get_variable('mp2 opposite-spin correlation energy'), 6, tnm + ' MP2 OS corl')
-    # not printed assert compare_values(sscorl, qcdb.get_variable('mp2 same-spin correlation energy'), 6, tnm + ' MP2 SS corl')
-    assert compare_values(mp2corl, qcdb.get_variable('mp2 correlation energy'), 6, tnm + ' MP2 corl')
-    assert compare_values(mp2corl - scorl, qcdb.get_variable('mp2 doubles energy'), 6, tnm + ' MP2 corl')
-    assert compare_values(mp2tot, qcdb.get_variable('mp2 total energy'), 6, tnm + ' MP2')
+    assert compare_values(scftot, qcdb.variable('scf total energy'), 6, tnm + ' SCF')
+    assert compare_values(scorl, qcdb.variable('mp2 singles energy'), 6, tnm + ' MP2 singles')
+    # non printed assert compare_values(oscorl, qcdb.variable('mp2 opposite-spin correlation energy'), 6, tnm + ' MP2 OS corl')
+    # not printed assert compare_values(sscorl, qcdb.variable('mp2 same-spin correlation energy'), 6, tnm + ' MP2 SS corl')
+    assert compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), 6, tnm + ' MP2 corl')
+    assert compare_values(mp2corl - scorl, qcdb.variable('mp2 doubles energy'), 6, tnm + ' MP2 corl')
+    assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), 6, tnm + ' MP2')
 
 
 

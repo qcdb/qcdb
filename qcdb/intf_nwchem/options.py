@@ -607,11 +607,17 @@ def load_nwchem_defaults(options):
             glossary='''Increase precision of MP2 energy and gradients. Will also change SCF and CPHF precision.
         Tightens thresholds for AO and MO integrals within MP2 code. Default is off'''))
 
-    #   options.add('nwchem', RottenOption(
-    #        keyword='mp2_freeze',
-    #       default='',
-    #      validator='',
-    #     glossary=''#TODO #Another array
+    options.add(
+        'nwchem',
+        RottenOption(
+            keyword='mp2__freeze',
+            default=0,
+            validator=parsers.nonnegative_integer,
+            glossary= 'Number of orbitals to freeze'))  # expand to core/atomic/virtual
+            # freeze 10 == freeze core 10
+            # freeze virtual 5
+            # freeze atomic
+            # freeze atomic O 1 Si 3
 
     options.add(
         'nwchem',

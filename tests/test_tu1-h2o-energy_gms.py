@@ -31,7 +31,7 @@ def test_tu1_rhf_a():
     qcdb.energy('gms-hf')
     print(qcdb.print_variables())
 
-    assert compare_values(_ref_h2o_pk_rhf, qcdb.get_variable('HF TOTAL ENERGY'), 6, sys._getframe().f_code.co_name)
+    assert compare_values(_ref_h2o_pk_rhf, qcdb.variable('HF TOTAL ENERGY'), 6, sys._getframe().f_code.co_name)
 
 
 @using_gamess
@@ -84,7 +84,7 @@ units au
     E, jrec = qcdb.energy ('gms-hf', return_wfn=True)
     print(qcdb.print_variables())
 
-    assert compare_values(_ref_ch2_pk_uhf, qcdb.get_variable('hf total energy'), 6, sys._getframe().f_code.co_name)
+    assert compare_values(_ref_ch2_pk_uhf, qcdb.variable('hf total energy'), 6, sys._getframe().f_code.co_name)
 
 
 @using_gamess
@@ -114,8 +114,8 @@ units au
     E, jrec = qcdb.energy ('gms-hf', return_wfn=True)
     print(qcdb.print_variables())
 
-    assert compare_values(_ref_ch2_pk_rohf, qcdb.get_variable('hf total energy'), 6, sys._getframe().f_code.co_name)
-    assert compare_values(_ref_ch2_pk_rohf, qcdb.get_variable('current energy'), 6, sys._getframe().f_code.co_name)
+    assert compare_values(_ref_ch2_pk_rohf, qcdb.variable('hf total energy'), 6, sys._getframe().f_code.co_name)
+    assert compare_values(_ref_ch2_pk_rohf, qcdb.variable('current energy'), 6, sys._getframe().f_code.co_name)
     assert compare_values(_ref_ch2_pk_rohf, E, 6, sys._getframe().f_code.co_name)
 
 
@@ -147,7 +147,7 @@ units au
 #    E, jrec = qcdb.energy ('gms-scf', return_wfn=True, probe=True)
 #    print(qcdb.print_variables())
 #
-#    assert compare_values(ans2, qcdb.get_variable('scf total energy'), 6, sys._getframe().f_code.co_name)
+#    assert compare_values(ans2, qcdb.variable('scf total energy'), 6, sys._getframe().f_code.co_name)
 
 @using_gamess
 def test_tu2_uhf_yaml():

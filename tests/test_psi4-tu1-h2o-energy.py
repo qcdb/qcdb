@@ -31,7 +31,7 @@ def test_tu1a():
     print(qcdb.print_variables())
 
     #assert compare_values(-76.0266327341067125, get_variable('SCF TOTAL ENERGY'), 6, sys._getframe().f_code.co_name)
-    assert compare_values(-76.0266327341067125, qcdb.get_variable('SCF TOTAL ENERGY'), 6, sys._getframe().f_code.co_name)
+    assert compare_values(-76.0266327341067125, qcdb.variable('SCF TOTAL ENERGY'), 6, sys._getframe().f_code.co_name)
 #    assert False
 
 
@@ -56,7 +56,7 @@ def test_tu1b():
     ans1 = -76.0266327341067125
     assert compare_values(ans1, jrec['qcvars']['SCF TOTAL ENERGY'].data, 6, sys._getframe().f_code.co_name)
     # ok in direct mode
-    #assert compare_values(ans1, jrec['wfn'].get_variable('SCF TOTAL ENERGY'), 6, sys._getframe().f_code.co_name)
+    #assert compare_values(ans1, jrec['wfn']qcdb.variable('SCF TOTAL ENERGY'), 6, sys._getframe().f_code.co_name)
 
 
 @using_psi4
@@ -87,7 +87,7 @@ def test_tu2():
     E, jrec = qcdb.energy ('scf', return_wfn=True)
     print(qcdb.print_variables())
 
-    assert compare_values(ans2, qcdb.get_variable('scf total energy'), 6, sys._getframe().f_code.co_name)
+    assert compare_values(ans2, qcdb.variable('scf total energy'), 6, sys._getframe().f_code.co_name)
 
 
 #@using_psi4
@@ -118,7 +118,7 @@ def test_tu2():
 #    E, jrec = qcdb.energy ('scf', return_wfn=True, probe=True)
 #    print(qcdb.print_variables())
 #
-#    assert compare_values(ans2, qcdb.get_variable('scf total energy'), 6, sys._getframe().f_code.co_name)
+#    assert compare_values(ans2, qcdb.variable('scf total energy'), 6, sys._getframe().f_code.co_name)
 
 @using_psi4
 def test_tu2_yaml():
