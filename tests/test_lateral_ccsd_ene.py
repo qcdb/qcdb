@@ -41,7 +41,7 @@ A=105.0
     pytest.param('nwc-ccsd', {'basis': 'cfour-qz2p', 'qc_module': 'tce'}, marks=using_nwchem),
     pytest.param('p4-ccsd', {'basis': 'cfour-qz2p'}, marks=using_psi4),
 ])
-def test_sp_ccsd_rhf_full(mtd, opts, h2o):
+def test_sp_ccsd_rhf_ae(mtd, opts, h2o):
     """cfour/sp-rhf-ccsd/input.dat
     #! single point CCSD/qz2p on water
 
@@ -125,7 +125,7 @@ def test_sp_ccsd_rhf_fc(mtd, opts, h2o):
     pytest.param('nwc-ccsd', {'basis': 'cfour-qz2p', 'nwchem_scf__uhf': True}, 'ccsd: nopen is not zero', marks=using_nwchem),
     pytest.param('gms-ccsd', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'uhf', 'gamess_ccinp__ncore': 0}, 'CCTYP IS PROGRAMMED ONLY FOR SCFTYP=RHF OR ROHF', marks=using_gamess),
 ])
-def test_sp_ccsd_uhf_full_error(mtd, opts, nh2, errmsg):
+def test_sp_ccsd_uhf_ae_error(mtd, opts, nh2, errmsg):
     nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options(opts)
 
@@ -141,7 +141,7 @@ def test_sp_ccsd_uhf_full_error(mtd, opts, nh2, errmsg):
     pytest.param('nwc-ccsd', {'basis': 'cfour-qz2p', 'qc_module': 'tce', 'nwchem_scf__uhf': True}, marks=using_nwchem),
     pytest.param('p4-ccsd', {'basis': 'cfour-qz2p', 'reference': 'uhf'}, marks=using_psi4),
 ])
-def test_sp_ccsd_uhf_full(mtd, opts, nh2):
+def test_sp_ccsd_uhf_ae(mtd, opts, nh2):
     """cfour/sp-uhf-ccsd/input.dat
     #! single-point CCSD/qz2p on NH2
 
@@ -236,7 +236,7 @@ def test_sp_ccsd_uhf_fc(mtd, opts, nh2):
 @pytest.mark.parametrize('mtd,opts,errmsg', [
     pytest.param('nwc-ccsd', {'basis': 'cfour-qz2p', 'nwchem_scf__rohf': True}, 'ccsd: nopen is not zero', marks=using_nwchem),
 ])
-def test_sp_ccsd_rohf_full_error(mtd, opts, nh2, errmsg):
+def test_sp_ccsd_rohf_ae_error(mtd, opts, nh2, errmsg):
     nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options(opts)
 
@@ -253,7 +253,7 @@ def test_sp_ccsd_rohf_full_error(mtd, opts, nh2, errmsg):
     pytest.param('nwc-ccsd', {'basis': 'cfour-qz2p', 'qc_module': 'tce', 'nwchem_scf__rohf': True}, marks=using_nwchem),
     pytest.param('p4-ccsd', {'basis': 'cfour-qz2p', 'reference': 'rohf'}, marks=using_psi4),
 ])
-def test_sp_ccsd_rohf_full(mtd, opts, nh2):
+def test_sp_ccsd_rohf_ae(mtd, opts, nh2):
     nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options(opts)
 

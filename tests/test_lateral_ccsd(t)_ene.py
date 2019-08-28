@@ -41,7 +41,7 @@ def nh2():
     pytest.param('nwc-ccsd(t)', {'basis': 'cfour-qz2p'}, marks=using_nwchem),
     pytest.param('p4-ccsd(t)', {'basis': 'cfour-qz2p'}, marks=using_psi4),
 ])
-def test_sp_ccsd_t_rhf_full(mtd, opts, h2o):
+def test_sp_ccsd_t_rhf_ae(mtd, opts, h2o):
     """cfour/???/input.dat
     #! single point CCSD(T)/qz2p on water
 
@@ -145,7 +145,7 @@ def test_sp_ccsd_t_rhf_fc(mtd, opts, h2o):
     pytest.param('gms-ccsd(t)', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'uhf', 'gamess_ccinp__ncore': 0}, 'CCTYP IS PROGRAMMED ONLY FOR SCFTYP=RHF OR ROHF', marks=using_gamess),
     pytest.param('nwc-ccsd(t)', {'basis': 'cfour-qz2p', 'nwchem_scf__uhf': True}, 'ccsd: nopen is not zero', marks=using_nwchem),
 ])
-def test_sp_ccsd_t_uhf_full_error(mtd, opts, nh2, errmsg):
+def test_sp_ccsd_t_uhf_ae_error(mtd, opts, nh2, errmsg):
     nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options(opts)
 
@@ -161,7 +161,7 @@ def test_sp_ccsd_t_uhf_full_error(mtd, opts, nh2, errmsg):
     pytest.param('nwc-ccsd(t)', {'basis': 'cfour-qz2p', 'qc_module': 'tce', 'nwchem_scf__uhf': True}, marks=using_nwchem),
     pytest.param('p4-ccsd(t)', {'basis': 'cfour-qz2p', 'reference': 'uhf'}, marks=using_psi4),
 ])
-def test_sp_ccsd_t_uhf_full(mtd, opts, nh2):
+def test_sp_ccsd_t_uhf_ae(mtd, opts, nh2):
     """cfour/???/input.dat
     #! single point CCSD(T)/qz2p on water
 
@@ -278,7 +278,7 @@ def test_sp_ccsd_t_uhf_fc(mtd, opts, nh2):
     pytest.param('gms-ccsd(t)', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'rohf', 'gamess_ccinp__ncore': 0}, 'ROHF\'S CCTYP MUST BE CCSD OR CR-CCL', marks=using_gamess), # No (T) w/ rohf in gms
     pytest.param('nwc-ccsd(t)', {'basis': 'cfour-qz2p', 'nwchem_scf__rohf': True}, 'ccsd: nopen is not zero', marks=using_nwchem),
 ])
-def test_sp_ccsd_t_rohf_full_error(mtd, opts, errmsg, nh2):
+def test_sp_ccsd_t_rohf_ae_error(mtd, opts, errmsg, nh2):
     """cfour/???/input.dat
     #! single point CCSD(T)/qz2p on water
 
@@ -299,7 +299,7 @@ def test_sp_ccsd_t_rohf_full_error(mtd, opts, errmsg, nh2):
     pytest.param('p4-ccsd(t)', {'basis': 'cfour-qz2p', 'reference': 'rohf'}, marks=using_psi4),
 
 ])
-def test_sp_ccsd_t_rohf_full(mtd, opts, nh2):
+def test_sp_ccsd_t_rohf_ae(mtd, opts, nh2):
     """cfour/???/input.dat
     #! single point CCSD(T)/qz2p on water
 
@@ -308,12 +308,6 @@ def test_sp_ccsd_t_rohf_full(mtd, opts, nh2):
     qcdb.set_options(opts)
 
     e, jrec = qcdb.energy(mtd, return_wfn=True, molecule=nh2)
-
-    print(qcdb.variable('hf total energy'))
-    if not (mtd.startswith('nwc') and opts.get('qc_module', 'nein').lower() == 'tce'):
-        print(qcdb.variable('mp2 total energy'))
-    print(qcdb.variable('ccsd total energy'))
-    print(qcdb.variable('ccsd(t) total energy'))
 
     # from Cfour
     scf_tot = -55.5847372601
@@ -389,12 +383,6 @@ def test_sp_ccsd_t_rohf_fc(mtd, opts, nh2):
     qcdb.set_options(opts)
 
     e, jrec = qcdb.energy(mtd, return_wfn=True, molecule=nh2)
-
-    print(qcdb.variable('hf total energy'))
-    if not (mtd.startswith('nwc') and opts.get('qc_module', 'nein').lower() == 'tce'):
-        print(qcdb.variable('mp2 total energy'))
-    print(qcdb.variable('ccsd total energy'))
-    print(qcdb.variable('ccsd(t) total energy'))
 
     # from Cfour
     scf_tot = -55.58473726

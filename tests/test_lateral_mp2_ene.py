@@ -41,7 +41,7 @@ def nh2():
     pytest.param('nwc-mp2', {'basis': 'cfour-qz2p'}, marks=using_nwchem),
     pytest.param('p4-mp2', {'basis': 'cfour-qz2p', 'psi4_mp2_type' : 'conv'}, marks=using_psi4),
 ])
-def test_sp_mp2_rhf_full(mtd, opts, h2o):
+def test_sp_mp2_rhf_ae(mtd, opts, h2o):
     """cfour/???/input.dat
     #! single point MP2/qz2p on water
 
@@ -52,20 +52,20 @@ def test_sp_mp2_rhf_full(mtd, opts, h2o):
     e, jrec = qcdb.energy(mtd, return_wfn=True, molecule=h2o)
 
     # from cfour
-    scftot = -76.0627484601
-    mp2tot = -76.332940127333
-    mp2corl = mp2tot - scftot
+    scf_tot = -76.0627484601
+    mp2_tot = -76.332940127333
+    mp2_corl = mp2_tot - scf_tot
     atol = 1.e-6
 
-    assert compare_values(mp2tot, e, tnm() + ' Returned', atol=atol)
-    assert compare_values(mp2tot, qcdb.variable('current energy'), tnm() + ' Current', atol=atol)
-    assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
+    assert compare_values(mp2_tot, e, tnm() + ' Returned', atol=atol)
+    assert compare_values(mp2_tot, qcdb.variable('current energy'), tnm() + ' Current', atol=atol)
+    assert compare_values(mp2_tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
                                                                                                
-    assert compare_values(mp2corl, qcdb.variable('current correlation energy'), tnm() + ' MP2 Corl', atol=atol)
-    assert compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2 Corl', atol=atol)
+    assert compare_values(mp2_corl, qcdb.variable('current correlation energy'), tnm() + ' MP2 Corl', atol=atol)
+    assert compare_values(mp2_corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2 Corl', atol=atol)
 
-    assert compare_values(scftot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
-    assert compare_values(scftot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
 
 
 @pytest.mark.parametrize('mtd,opts', [
@@ -87,20 +87,20 @@ def test_sp_mp2_rhf_fc(mtd, opts, h2o):
     e, jrec = qcdb.energy(mtd, return_wfn=True, molecule=h2o)
 
     # from cfour
-    scftot = -76.062748460117
-    mp2tot = -76.307900312177
-    mp2corl = mp2tot - scftot
+    scf_tot = -76.062748460117
+    mp2_tot = -76.307900312177
+    mp2_corl = mp2_tot - scf_tot
     atol = 1.e-6
 
-    assert compare_values(mp2tot, e, tnm() + ' Returned', atol=atol)
-    assert compare_values(mp2tot, qcdb.variable('current energy'), tnm() + ' Current', atol=atol)
-    assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
+    assert compare_values(mp2_tot, e, tnm() + ' Returned', atol=atol)
+    assert compare_values(mp2_tot, qcdb.variable('current energy'), tnm() + ' Current', atol=atol)
+    assert compare_values(mp2_tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
                                                                                                
-    assert compare_values(mp2corl, qcdb.variable('current correlation energy'), tnm() + ' MP2 Corl', atol=atol)
-    assert compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2 Corl', atol=atol)
+    assert compare_values(mp2_corl, qcdb.variable('current correlation energy'), tnm() + ' MP2 Corl', atol=atol)
+    assert compare_values(mp2_corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2 Corl', atol=atol)
 
-    assert compare_values(scftot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
-    assert compare_values(scftot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
 
 
 @pytest.mark.parametrize('mtd,opts', [
@@ -111,7 +111,7 @@ def test_sp_mp2_rhf_fc(mtd, opts, h2o):
     pytest.param('nwc-mp2', {'basis': 'cfour-qz2p', 'nwchem_scf__uhf': True}, marks=using_nwchem),
     pytest.param('p4-mp2', {'basis': 'cfour-qz2p', 'reference': 'uhf', 'psi4_mp2_type' : 'conv'}, marks=using_psi4),
 ])
-def test_sp_mp2_uhf_full(mtd, opts, nh2):
+def test_sp_mp2_uhf_ae(mtd, opts, nh2):
     """cfour/???/input.dat
     #! single point MP2/qz2p on water
 
@@ -122,20 +122,20 @@ def test_sp_mp2_uhf_full(mtd, opts, nh2):
     e, jrec = qcdb.energy(mtd, return_wfn=True, molecule=nh2)
 
     # from cfour
-    scftot = -55.5893469688
-    mp2tot = -55.784877360093
-    mp2corl = mp2tot - scftot
+    scf_tot = -55.5893469688
+    mp2_tot = -55.784877360093
+    mp2_corl = mp2_tot - scf_tot
     atol = 1.e-6
 
-    assert compare_values(mp2tot, e, tnm() + ' Returned', atol=atol)
-    assert compare_values(mp2tot, qcdb.variable('current energy'), tnm() + ' Current', atol=atol)
-    assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
+    assert compare_values(mp2_tot, e, tnm() + ' Returned', atol=atol)
+    assert compare_values(mp2_tot, qcdb.variable('current energy'), tnm() + ' Current', atol=atol)
+    assert compare_values(mp2_tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
                                                                                                
-    assert compare_values(mp2corl, qcdb.variable('current correlation energy'), tnm() + ' MP2 Corl', atol=atol)
-    assert compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2 Corl', atol=atol)
+    assert compare_values(mp2_corl, qcdb.variable('current correlation energy'), tnm() + ' MP2 Corl', atol=atol)
+    assert compare_values(mp2_corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2 Corl', atol=atol)
 
-    assert compare_values(scftot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
-    assert compare_values(scftot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
 
 
 @pytest.mark.parametrize('mtd,opts', [
@@ -157,26 +157,26 @@ def test_sp_mp2_uhf_fc(mtd, opts, nh2):
     e, jrec = qcdb.energy(mtd, return_wfn=True, molecule=nh2)
 
     # from cfour
-    scftot = -55.5893469688
-    mp2tot = -55.760531091893
-    mp2corl = mp2tot - scftot
+    scf_tot = -55.5893469688
+    mp2_tot = -55.760531091893
+    mp2_corl = mp2_tot - scf_tot
     atol = 1.e-6
 
-    assert compare_values(mp2tot, e, tnm() + ' Returned', atol=atol)
-    assert compare_values(mp2tot, qcdb.variable('current energy'), tnm() + ' Current', atol=atol)
-    assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
+    assert compare_values(mp2_tot, e, tnm() + ' Returned', atol=atol)
+    assert compare_values(mp2_tot, qcdb.variable('current energy'), tnm() + ' Current', atol=atol)
+    assert compare_values(mp2_tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
                                                                                                
-    assert compare_values(mp2corl, qcdb.variable('current correlation energy'), tnm() + ' MP2 Corl', atol=atol)
-    assert compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2 Corl', atol=atol)
+    assert compare_values(mp2_corl, qcdb.variable('current correlation energy'), tnm() + ' MP2 Corl', atol=atol)
+    assert compare_values(mp2_corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2 Corl', atol=atol)
 
-    assert compare_values(scftot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
-    assert compare_values(scftot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
 
 
 @pytest.mark.parametrize('mtd,opts,errmsg', [
     pytest.param('nwc-mp2', {'basis': 'cfour-qz2p', 'nwchem_scf__rohf': True}, 'unknown SCFTYPE', marks=using_nwchem), # no rohf reference for nwc mp2
 ])
-def test_sp_mp2_rohf_full_error(mtd, opts, errmsg, nh2):
+def test_sp_mp2_rohf_ae_error(mtd, opts, errmsg, nh2):
     """cfour/???/input.dat
     #! single point MP2/qz2p on water
 
@@ -197,7 +197,7 @@ def test_sp_mp2_rohf_full_error(mtd, opts, errmsg, nh2):
     pytest.param('nwc-mp2', {'basis': 'cfour-qz2p', 'qc_module': 'tce', 'nwchem_scf__rohf': True, 'nwchem_scf__thresh': 8, 'nwchem_tce__thresh': 8, 'nwchem_tce__freeze': 0, 'nwchem_scf__tol2e': 10}, marks=using_nwchem),
     pytest.param('p4-mp2', {'basis': 'cfour-qz2p', 'reference': 'rohf', 'psi4_mp2_type' : 'conv'}, marks=using_psi4),
 ])
-def test_sp_mp2_rohf_full(mtd, opts, nh2):
+def test_sp_mp2_rohf_ae(mtd, opts, nh2):
     """cfour/???/input.dat
     #! single point MP2/qz2p on water
 
@@ -208,22 +208,22 @@ def test_sp_mp2_rohf_full(mtd, opts, nh2):
     e, jrec = qcdb.energy(mtd, return_wfn=True, molecule=nh2)
 
     # from cfour
-    scftot = -55.5847372601
-    mp2tot = -55.7852767873
-    mp2corl = mp2tot - scftot
+    scf_tot = -55.5847372601
+    mp2_tot = -55.7852767873
+    mp2_corl = mp2_tot - scf_tot
     atol = 1.e-6
     if mtd.startswith('nwc'): #TODO: Figure out why nwc disagrees
         atol = 5.e-3
 
-    assert compare_values(mp2tot, e, tnm() + ' Returned', atol=atol)
-    assert compare_values(mp2tot, qcdb.variable('current energy'), tnm() + ' Current', atol=atol)
-    assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
+    assert compare_values(mp2_tot, e, tnm() + ' Returned', atol=atol)
+    assert compare_values(mp2_tot, qcdb.variable('current energy'), tnm() + ' Current', atol=atol)
+    assert compare_values(mp2_tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
                                                                                                
-    assert compare_values(mp2corl, qcdb.variable('current correlation energy'), tnm() + ' MP2 Corl', atol=atol)
-    assert compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2 Corl', atol=atol)
+    assert compare_values(mp2_corl, qcdb.variable('current correlation energy'), tnm() + ' MP2 Corl', atol=atol)
+    assert compare_values(mp2_corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2 Corl', atol=atol)
 
-    assert compare_values(scftot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
-    assert compare_values(scftot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
 
 
 @pytest.mark.parametrize('mtd,opts,errmsg', [
@@ -261,19 +261,19 @@ def test_sp_mp2_rohf_fc(mtd, opts, nh2):
     e, jrec = qcdb.energy(mtd, return_wfn=True, molecule=nh2)
 
     # from cfour
-    scftot = -55.5847372601
-    mp2tot = -55.7608535667
-    mp2corl = mp2tot - scftot
+    scf_tot = -55.5847372601
+    mp2_tot = -55.7608535667
+    mp2_corl = mp2_tot - scf_tot
     atol = 1.e-6
     if mtd.startswith('nwc'): #TODO: Figure out why nwc disagrees
         atol = 5.e-3
 
-    assert compare_values(mp2tot, e, tnm() + ' Returned', atol=atol)
-    assert compare_values(mp2tot, qcdb.variable('current energy'), tnm() + ' Current', atol=atol)
-    assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
+    assert compare_values(mp2_tot, e, tnm() + ' Returned', atol=atol)
+    assert compare_values(mp2_tot, qcdb.variable('current energy'), tnm() + ' Current', atol=atol)
+    assert compare_values(mp2_tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
                                                                                                
-    assert compare_values(mp2corl, qcdb.variable('current correlation energy'), tnm() + ' MP2 Corl', atol=atol)
-    assert compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2 Corl', atol=atol)
+    assert compare_values(mp2_corl, qcdb.variable('current correlation energy'), tnm() + ' MP2 Corl', atol=atol)
+    assert compare_values(mp2_corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2 Corl', atol=atol)
 
-    assert compare_values(scftot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
-    assert compare_values(scftot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
