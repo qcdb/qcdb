@@ -141,7 +141,7 @@ def test_sp_mp2_uhf_full(mtd, opts, nh2):
 @pytest.mark.parametrize('mtd,opts', [
     pytest.param('c4-mp2', {'cfour_basis': 'qz2p', 'cfour_reference': 'uhf', 'cfour_dropmo': [1], 'cfour_scf_conv': 12}, marks=using_cfour),
     pytest.param('c4-mp2', {'basis': 'cfour-qz2p', 'cfour_reference': 'uhf', 'cfour_dropmo': 1, 'cfour_scf_conv': 12}, marks=using_cfour),
-    pytest.param('gms-mp2', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'uhf', 'nwchem_mp2__freeze': 1}, marks=using_gamess),
+    pytest.param('gms-mp2', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'uhf'}, marks=using_gamess),
     pytest.param('nwc-mp2', {'basis': 'cfour-qz2p', 'qc_module': 'tce', 'nwchem_tce__freeze': 1, 'nwchem_scf__uhf': True}, marks=using_nwchem),
     pytest.param('nwc-mp2', {'basis': 'cfour-qz2p', 'nwchem_scf__uhf': True, 'nwchem_mp2__freeze': 1}, marks=using_nwchem),
     pytest.param('p4-mp2', {'basis': 'cfour-qz2p', 'reference': 'uhf', 'psi4_freeze_core': True, 'psi4_mp2_type' : 'conv'}, marks=using_psi4),
