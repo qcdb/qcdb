@@ -630,6 +630,7 @@ def load_nwchem_defaults(options):
             # freeze virtual 5
             # freeze atomic
             # freeze atomic O 1 Si 3
+    
     options.add(
         'nwchem',
         RottenOption(
@@ -1243,7 +1244,7 @@ def load_nwchem_defaults(options):
     
     options.add('nwchem', RottenOption(
         keyword='tce__active_oa',
-        default=1,  # ?
+        default=1, 
         validator=parsers.positive_integer,
         glossary='Specify the number of occupied alpha spin-orbitals.'))
     
