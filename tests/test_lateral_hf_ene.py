@@ -52,13 +52,13 @@ def test_sp_hf_rhf(mtd, opts, h2o):
     e, jrec = qcdb.energy(mtd, return_wfn=True, molecule=h2o)
 
     # from cfour
-    scftot = -76.0627484601
+    scf_tot = -76.0627484601
     atol = 1.e-6
 
-    assert compare_values(scftot, e, tnm() + ' SCF', atol=atol)
-    assert compare_values(scftot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
-    assert compare_values(scftot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
-    assert compare_values(scftot, qcdb.variable('current energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, e, tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('current energy'), tnm() + ' SCF', atol=atol)
 
 
 @pytest.mark.parametrize('mtd,opts', [
@@ -80,13 +80,13 @@ def test_sp_hf_uhf(mtd, opts, nh2):
     e = qcdb.energy(mtd, molecule=nh2)
 
     # from cfour
-    scftot = -55.5893469688
+    scf_tot = -55.5893469688
     atol = 1.e-6
 
-    assert compare_values(scftot, e, tnm() + ' SCF', atol=atol)
-    assert compare_values(scftot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
-    assert compare_values(scftot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
-    assert compare_values(scftot, qcdb.variable('current energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, e, tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('current energy'), tnm() + ' SCF', atol=atol)
 
 
 @pytest.mark.parametrize('mtd,opts', [
@@ -108,10 +108,10 @@ def test_sp_hf_rohf(mtd, opts, nh2):
     e = qcdb.energy(mtd, molecule=nh2)
 
     # from cfour
-    scftot = -55.5847372601
+    scf_tot = -55.5847372601
     atol = 1.e-6
 
-    assert compare_values(scftot, e, tnm() + ' SCF', atol=atol)
-    assert compare_values(scftot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
-    assert compare_values(scftot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
-    assert compare_values(scftot, qcdb.variable('current energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, e, tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('current energy'), tnm() + ' SCF', atol=atol)

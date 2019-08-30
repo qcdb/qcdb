@@ -36,12 +36,12 @@ A=105.0
 @pytest.mark.parametrize('mtd,opts', [
     pytest.param('c4-ccsd', {'cfour_BASIS': 'qz2p', 'cfour_SCF_CONV': 12, 'cfour_CC_CONV': 12}, marks=using_cfour),
     pytest.param('c4-ccsd', {'BASIS': 'cfour-qz2p'}, marks=using_cfour),
+    pytest.param('gms-ccsd', {'basis': 'cfour-qz2p', 'gamess_ccinp__ncore': 0}, marks=using_gamess),
     pytest.param('nwc-ccsd', {'basis': 'cfour-qz2p'}, marks=using_nwchem),
     pytest.param('nwc-ccsd', {'basis': 'cfour-qz2p', 'qc_module': 'tce'}, marks=using_nwchem),
     pytest.param('p4-ccsd', {'basis': 'cfour-qz2p'}, marks=using_psi4),
-    pytest.param('gms-ccsd', {'basis': 'cfour-qz2p', 'gamess_ccinp__ncore': 0}, marks=using_gamess),
 ])
-def test_sp_ccsd_rhf_full(mtd, opts, h2o):
+def test_sp_ccsd_rhf_ae(mtd, opts, h2o):
     """cfour/sp-rhf-ccsd/input.dat
     #! single point CCSD/qz2p on water
 
@@ -51,26 +51,39 @@ def test_sp_ccsd_rhf_full(mtd, opts, h2o):
 
     e, jrec = qcdb.energy(mtd, return_wfn=True, molecule=h2o)
 
-    scftot = -76.062748460117
-    mp2tot = -76.332940127333
-    ccsdcorl = -0.275705491773
-    ccsdtot = -76.338453951890
+    scf_tot = -76.062748460117
+    mp2_tot = -76.332940127333
+    ccsd_tot = -76.338453951890
+
+    mp2_corl = mp2_tot - scf_tot
+    ccsd_corl = ccsd_tot - scf_tot
 
     atol = 1.e-6
-    assert compare_values(scftot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
-    if not (mtd == 'nwc-ccsd' and opts.get('qc_module', 'nein').lower() == 'tce'):
-        assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
-    assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), tnm() + ' CCSD corl', atol=atol)
-    assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), tnm() + ' CCSD', atol=atol)
+
+    # cc terms
+    assert compare_values(ccsd_tot, e, tnm() + ' Returned', atol=atol)
+    assert compare_values(ccsd_tot, qcdb.variable('current energy'), tnm() + ' Current', atol=atol)
+    assert compare_values(ccsd_tot, qcdb.variable('ccsd total energy'), tnm() + ' CCSD', atol=atol)
+    assert compare_values(ccsd_corl, qcdb.variable('current correlation energy'), tnm() + ' CCSD', atol=atol)
+    assert compare_values(ccsd_corl, qcdb.variable('ccsd correlation energy'), tnm() + ' CCSD', atol=atol)
+
+    # mp2 terms (not printed for nwc tce)
+    if not (mtd.startswith('nwc') and opts.get('qc_module', 'nein').lower() == 'tce'):
+        assert compare_values(mp2_tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
+        assert compare_values(mp2_corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2', atol=atol)
+
+    # hf terms
+    assert compare_values(scf_tot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
 
 
 @pytest.mark.parametrize('mtd,opts', [
     pytest.param('c4-ccsd', {'cfour_BASIS': 'qz2p', 'cfour_dropmo': [1], 'cfour_SCF_CONV': 12, 'cfour_CC_CONV': 12}, marks=using_cfour),
     pytest.param('c4-ccsd', {'BASIS': 'cfour-qz2p', 'cfour_dropmo': 1}, marks=using_cfour),
+    pytest.param('gms-ccsd', {'basis': 'cfour-qz2p'}, marks=using_gamess),
     pytest.param('nwc-ccsd', {'basis': 'cfour-qz2p', 'nwchem_ccsd__freeze': 1}, marks=using_nwchem),
     pytest.param('nwc-ccsd', {'basis': 'cfour-qz2p', 'qc_module': 'tce', 'nwchem_tce__freeze': 1}, marks=using_nwchem),
     pytest.param('p4-ccsd', {'basis': 'cfour-qz2p', 'psi4_freeze_core': True}, marks=using_psi4),
-    pytest.param('gms-ccsd', {'basis': 'cfour-qz2p'}, marks=using_gamess),
 ])
 def test_sp_ccsd_rhf_fc(mtd, opts, h2o):
     """cfour/sp-rhf-ccsd/input.dat
@@ -82,26 +95,37 @@ def test_sp_ccsd_rhf_fc(mtd, opts, h2o):
 
     e, jrec = qcdb.energy(mtd, return_wfn=True, molecule=h2o)
 
-    scftot = -76.062748460117
-    mp2corl = -0.245151837406
-    mp2tot = -76.307900312177
-    ccsdcorl = -0.250330548844
-    ccsdtot = -76.313079023615
+    scf_tot = -76.062748460117
+    mp2_tot = -76.307900312177
+    ccsd_tot = -76.313079023615
+
+    mp2_corl = mp2_tot - scf_tot
+    ccsd_corl = ccsd_tot - scf_tot
 
     atol = 1.e-6
-    assert compare_values(scftot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
-    if not (mtd == 'nwc-ccsd' and opts.get('qc_module', 'nein').lower() == 'tce'):
-        assert compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2 corl', atol=atol)
-        assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
-    assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), tnm() + ' CCSD corl', atol=atol)
-    assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), tnm() + ' CCSD', atol=atol)
+
+    # cc terms
+    assert compare_values(ccsd_tot, e, tnm() + ' Returned', atol=atol)
+    assert compare_values(ccsd_tot, qcdb.variable('current energy'), tnm() + ' Current', atol=atol)
+    assert compare_values(ccsd_tot, qcdb.variable('ccsd total energy'), tnm() + ' CCSD', atol=atol)
+    assert compare_values(ccsd_corl, qcdb.variable('current correlation energy'), tnm() + ' CCSD', atol=atol)
+    assert compare_values(ccsd_corl, qcdb.variable('ccsd correlation energy'), tnm() + ' CCSD', atol=atol)
+
+    # mp2 terms (not printed for nwc tce)
+    if not (mtd.startswith('nwc') and opts.get('qc_module', 'nein').lower() == 'tce'):
+        assert compare_values(mp2_tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
+        assert compare_values(mp2_corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2', atol=atol)
+
+    # hf terms
+    assert compare_values(scf_tot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
 
 
 @pytest.mark.parametrize('mtd,opts,errmsg', [
     pytest.param('nwc-ccsd', {'basis': 'cfour-qz2p', 'nwchem_scf__uhf': True}, 'ccsd: nopen is not zero', marks=using_nwchem),
     pytest.param('gms-ccsd', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'uhf', 'gamess_ccinp__ncore': 0}, 'CCTYP IS PROGRAMMED ONLY FOR SCFTYP=RHF OR ROHF', marks=using_gamess),
 ])
-def test_sp_ccsd_uhf_full_error(mtd, opts, nh2, errmsg):
+def test_sp_ccsd_uhf_ae_error(mtd, opts, nh2, errmsg):
     nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options(opts)
 
@@ -117,7 +141,7 @@ def test_sp_ccsd_uhf_full_error(mtd, opts, nh2, errmsg):
     pytest.param('nwc-ccsd', {'basis': 'cfour-qz2p', 'qc_module': 'tce', 'nwchem_scf__uhf': True}, marks=using_nwchem),
     pytest.param('p4-ccsd', {'basis': 'cfour-qz2p', 'reference': 'uhf'}, marks=using_psi4),
 ])
-def test_sp_ccsd_uhf_full(mtd, opts, nh2):
+def test_sp_ccsd_uhf_ae(mtd, opts, nh2):
     """cfour/sp-uhf-ccsd/input.dat
     #! single-point CCSD/qz2p on NH2
 
@@ -127,16 +151,30 @@ def test_sp_ccsd_uhf_full(mtd, opts, nh2):
 
     e = qcdb.energy(mtd, molecule=nh2)
 
-    scftot = -55.5893469688
-    mp2tot = -55.784877360093
-    ccsdcorl = -0.213298055172
+    scf_tot = -55.5893469688
+    mp2_tot = -55.784877360093
+    ccsd_tot = -55.802645023972
+
+    mp2_corl = mp2_tot - scf_tot
+    ccsd_corl = ccsd_tot - scf_tot
 
     atol = 1.e-6
-    assert compare_values(scftot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
-    if not (mtd == 'nwc-ccsd' and opts.get('qc_module', 'nein').lower() == 'tce'):
-        assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
-    assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), tnm() + ' CCSD', atol=atol)
-    assert compare_values(ccsdcorl+scftot, e, atol=atol)
+
+    # cc terms
+    assert compare_values(ccsd_tot, e, tnm() + ' Returned', atol=atol)
+    assert compare_values(ccsd_tot, qcdb.variable('current energy'), tnm() + ' Current', atol=atol)
+    assert compare_values(ccsd_tot, qcdb.variable('ccsd total energy'), tnm() + ' CCSD', atol=atol)
+    assert compare_values(ccsd_corl, qcdb.variable('current correlation energy'), tnm() + ' CCSD', atol=atol)
+    assert compare_values(ccsd_corl, qcdb.variable('ccsd correlation energy'), tnm() + ' CCSD', atol=atol)
+
+    # mp2 terms (not printed for nwc tce)
+    if not (mtd.startswith('nwc') and opts.get('qc_module', 'nein').lower() == 'tce'):
+        assert compare_values(mp2_tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
+        assert compare_values(mp2_corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2', atol=atol)
+
+    # hf terms
+    assert compare_values(scf_tot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
 
 
 @pytest.mark.parametrize('mtd,opts,errmsg', [
@@ -169,24 +207,36 @@ def test_sp_ccsd_uhf_fc(mtd, opts, nh2):
 
     e = qcdb.energy(mtd, molecule=nh2)
 
-    scftot = -55.5893469688
-    mp2corl = -0.171184123712
-    mp2tot = -55.760531091893
-    ccsdcorl = -0.188317223352
-    ccsdtot = -55.777664191533
+    scf_tot = -55.5893469688
+    mp2_tot = -55.760531091893
+    ccsd_tot = -55.777664191533
+
+    mp2_corl = mp2_tot - scf_tot
+    ccsd_corl = ccsd_tot - scf_tot
 
     atol = 1.e-6
-    assert compare_values(scftot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
-    if not (mtd == 'nwc-ccsd' and opts.get('qc_module', 'nein').lower() == 'tce'):
-        assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
-    assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), tnm() + ' CCSD', atol=atol)
-    assert compare_values(ccsdcorl+scftot, e, atol=atol)
+
+    # cc terms
+    assert compare_values(ccsd_tot, e, tnm() + ' Returned', atol=atol)
+    assert compare_values(ccsd_tot, qcdb.variable('current energy'), tnm() + ' Current', atol=atol)
+    assert compare_values(ccsd_tot, qcdb.variable('ccsd total energy'), tnm() + ' CCSD', atol=atol)
+    assert compare_values(ccsd_corl, qcdb.variable('current correlation energy'), tnm() + ' CCSD', atol=atol)
+    assert compare_values(ccsd_corl, qcdb.variable('ccsd correlation energy'), tnm() + ' CCSD', atol=atol)
+
+    # mp2 terms (not printed for nwc tce)
+    if not (mtd.startswith('nwc') and opts.get('qc_module', 'nein').lower() == 'tce'):
+        assert compare_values(mp2_tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
+        assert compare_values(mp2_corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2', atol=atol)
+
+    # hf terms
+    assert compare_values(scf_tot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
 
 
 @pytest.mark.parametrize('mtd,opts,errmsg', [
     pytest.param('nwc-ccsd', {'basis': 'cfour-qz2p', 'nwchem_scf__rohf': True}, 'ccsd: nopen is not zero', marks=using_nwchem),
 ])
-def test_sp_ccsd_rohf_full_error(mtd, opts, nh2, errmsg):
+def test_sp_ccsd_rohf_ae_error(mtd, opts, nh2, errmsg):
     nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options(opts)
 
@@ -199,40 +249,46 @@ def test_sp_ccsd_rohf_full_error(mtd, opts, nh2, errmsg):
 @pytest.mark.parametrize('mtd,opts', [
     pytest.param('c4-ccsd', {'cfour_BASIS': 'qz2p', 'cfour_REFerence': 'roHF', 'cfour_occupation': [[3,1,1,0],[3,0,1,0]], 'cfour_SCF_CONV': 12, 'cfour_CC_CONV': 12}, marks=using_cfour),
     pytest.param('c4-ccsd', {'BASIS': 'cfour-qz2p', 'cfour_reference': 'rohf'}, marks=using_cfour),
+    pytest.param('gms-ccsd', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'rohf', 'gamess_ccinp__ncore': 0}, marks=using_gamess),
     pytest.param('nwc-ccsd', {'basis': 'cfour-qz2p', 'qc_module': 'tce', 'nwchem_scf__rohf': True}, marks=using_nwchem),
     pytest.param('p4-ccsd', {'basis': 'cfour-qz2p', 'reference': 'rohf'}, marks=using_psi4),
-    pytest.param('gms-ccsd', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'rohf', 'gamess_ccinp__ncore': 0}, marks=using_gamess),
 ])
-def test_sp_ccsd_rohf_full(mtd, opts, nh2):
+def test_sp_ccsd_rohf_ae(mtd, opts, nh2):
     nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options(opts)
-#        'cfour_PRINT': 2
 
-    e = qcdb.energy(mtd, molecule=nh2)
-    scftot = -55.5847372601
-    ssccsdcorl = -0.0398915
-    osccsdcorl = -0.1779580
-    #osccsdcorl = -0.1745752
-    #ssccsdcorl = -0.0432743
-    ccsdcorl = -0.217849506326
-    ccsdtot = -55.802586766392
+    e, jrec = qcdb.energy(mtd, return_wfn = True, molecule=nh2)
+                         
+    scf_tot = -55.5847372601
+    mp2_tot = -55.7852767873
+    ccsd_tot = -55.802586766392
+
+    mp2_corl = mp2_tot - scf_tot
+    ccsd_corl = ccsd_tot - scf_tot
 
     atol = 1.e-6
-    assert compare_values(scftot, qcdb.variable('scf total energy'), tnm() + 'SCF', atol=atol)
-    # not printed assert compare_values(smp2corl, qcdb.variable('mp2 singles energy'), tnm() + ' MP2 singles', atol=atol)
-    # not printed assert compare_values(osmp2corl, qcdb.variable('mp2 opposite-spin correlation energy'), tnm() + ' MP2 OS corl', atol=atol)
-    # not printed assert compare_values(ssmp2corl, qcdb.variable('mp2 same-spin correlation energy'), tnm() + ' MP2 SS corl', atol=atol)
-    # not printed assert compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2 corl', atol=atol)
-    # not printed assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
-    if not (mtd in ['gms-ccsd', 'nwc-ccsd']):
-# cfour isn't splitting out the singles from OS. and psi4 isn't incl the singles in either so SS + OS != corl
-# and maybe singles moved from SS to OS in Cfour btwn 2010 and 2014 versions (change in ref)
+
+    # cc terms
+    assert compare_values(ccsd_tot, e, tnm() + ' Returned', atol=atol)
+    assert compare_values(ccsd_tot, qcdb.variable('current energy'), tnm() + ' Current', atol=atol)
+    assert compare_values(ccsd_tot, qcdb.variable('ccsd total energy'), tnm() + ' CCSD', atol=atol)
+    assert compare_values(ccsd_corl, qcdb.variable('current correlation energy'), tnm() + ' CCSD', atol=atol)
+    assert compare_values(ccsd_corl, qcdb.variable('ccsd correlation energy'), tnm() + ' CCSD', atol=atol)
+
+    # mp2 terms (only printed for c4)
+    #if not (mtd.startswith('nwc') and opts.get('qc_module', 'nein').lower() == 'tce'):
+    #    assert compare_values(mp2_tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
+    #    assert compare_values(mp2_corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2', atol=atol)
+
+    # hf terms
+    assert compare_values(scf_tot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
+
+#    cfour isn't splitting out the singles from OS. and psi4 isn't incl the singles in either so SS + OS != corl
+#    and maybe singles moved from SS to OS in Cfour btwn 2010 and 2014 versions (change in ref)
+#    if not (mtd in ['gms-ccsd', 'nwc-ccsd']):
 #        assert compare_values(osccsdcorl, qcdb.variable('ccsd opposite-spin correlation energy'), tnm() + ' CCSD OS corl', atol=atol)
-        assert compare_values(ssccsdcorl, qcdb.variable('ccsd same-spin correlation energy'), tnm() + ' CCSD SS corl', atol=atol)
-    assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), tnm() + ' CCSD corl', atol=atol)
-    assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), tnm() + ' CCSD', atol=atol)
-    assert compare_values(ccsdcorl, qcdb.variable('current correlation energy'), tnm() + ' Current corl', atol=atol)
-    assert compare_values(ccsdtot, qcdb.variable('current energy'), tnm() + ' Current', atol=atol)
+#        assert compare_values(ssccsdcorl, qcdb.variable('ccsd same-spin correlation energy'), tnm() + ' CCSD SS corl', atol=atol)
 
 
 @pytest.mark.parametrize('mtd,opts,errmsg', [
@@ -250,44 +306,44 @@ def test_sp_ccsd_rohf_fc_error(mtd, opts, nh2, errmsg):
 
 
 @pytest.mark.parametrize('mtd,opts', [
-    pytest.param('c4-ccsd', {'cfour_BASIS': 'qz2p', 'cfour_dropmo': [1], 'cfour_print': 2, 'cfour_REFerence': 'roHF', 'cfour_occupation': [[3,1,1,0],[3,0,1,0]], 'cfour_SCF_CONV': 12, 'cfour_CC_CONV': 12}, marks=using_cfour),
-    pytest.param('c4-ccsd', {'BASIS': 'cfour-qz2p', 'cfour_dropmo': 1, 'cfour_reference': 'rohf'}, marks=using_cfour),
+    pytest.param('c4-ccsd', {'cfour_BASIS': 'qz2p', 'cfour_dropmo': [1], 'cfour_print': 2, 'cfour_REFerence': 'roHF', 'cfour_occupation': [[3,1,1,0],[3,0,1,0]], 'cfour_SCF_CONV': 12, 'cfour_CC_CONV': 12, 'cfour_orbitals': 0}, marks=using_cfour),
+    pytest.param('c4-ccsd', {'BASIS': 'cfour-qz2p', 'cfour_dropmo': 1, 'cfour_reference': 'rohf', 'cfour_orbitals': 0}, marks=using_cfour),
+    pytest.param('gms-ccsd', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'rohf', 'gamess_ccinp__iconv': 9, 'gamess_scf__conv': 9}, marks=using_gamess),
     pytest.param('nwc-ccsd', {'basis': 'cfour-qz2p', 'nwchem_tce__freeze': 1, 'qc_module': 'tce', 'nwchem_scf__rohf': True}, marks=using_nwchem),
     pytest.param('p4-ccsd', {'basis': 'cfour-qz2p', 'psi4_e_convergence': 8, 'psi4_r_convergence': 7, 'psi4_freeze_core': True, 'reference': 'rohf'}, marks=using_psi4),
-    pytest.param('gms-ccsd', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'rohf', 'gamess_ccinp__iconv': 9, 'gamess_scf__conv': 9}, marks=using_gamess),
 ])
 def test_sp_ccsd_rohf_fc(mtd, opts, nh2):
     nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options(opts)
 
-    e = qcdb.energy(mtd, molecule=nh2)
+    e, jrec = qcdb.energy(mtd, return_wfn = True, molecule=nh2)
 
     # from Cfour
-    scftot = -55.5847372601
-    osccsdcorl = -0.1563275
-    ssccsdcorl = -0.0365048
-#   ssccsdcorl = -0.036502859383024
-    ccsdcorl = -0.192832282505
-    ccsdtot = -55.777569542558
+    scf_tot = -55.5847372600528120
+    mp2_tot = -55.760613403041812
+    ccsd_tot = -55.7775634749542241
 
-    # from Psi4. psi & nwchem agree to 6
-    osccsdcorl = -0.152968752464362
-    ssccsdcorl = -0.036502859383024
-    ccsdcorl = -0.192826214666648
-    ccsdtot = -55.777563474720807
+    mp2_corl = mp2_tot - scf_tot
+    ccsd_corl = ccsd_tot - scf_tot
 
-    # from gamess.
-    ccsdcorl = -0.1928447371
-    ccsdtot = -55.7775819971
+    atol = 1.e-6
+    # gms CCSD correlation disagrees with Cfour, Psi4, and NWChem by ~2.e-4
+    # hf is in agreement across all programs
+    if mtd.startswith('gms'):
+        atol = 2.e-5
 
-    # this VERY BAD!
-    weakatol = 2.e-5
+    # cc terms
+    assert compare_values(ccsd_tot, e, tnm() + ' Returned', atol=atol)
+    assert compare_values(ccsd_tot, qcdb.variable('current energy'), tnm() + ' Current', atol=atol)
+    assert compare_values(ccsd_tot, qcdb.variable('ccsd total energy'), tnm() + ' CCSD', atol=atol)
+    assert compare_values(ccsd_corl, qcdb.variable('current correlation energy'), tnm() + ' CCSD', atol=atol)
+    assert compare_values(ccsd_corl, qcdb.variable('ccsd correlation energy'), tnm() + ' CCSD', atol=atol)
 
-    assert compare_values(scftot, qcdb.variable('scf total energy'), tnm() + 'SCF', atol=1.e-6)
-    if not (mtd in ['gms-ccsd', 'nwc-ccsd']):
-#        assert compare_values(osccsdcorl, qcdb.variable('ccsd opposite-spin correlation energy'), tnm() + ' CCSD OS corl', atol=1.e-6)
-        assert compare_values(ssccsdcorl, qcdb.variable('ccsd same-spin correlation energy'), tnm() + ' CCSD SS corl', atol=weakatol)
-    assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), tnm() + ' CCSD corl', atol=weakatol)
-    assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), tnm() + ' CCSD', atol=weakatol)
-    assert compare_values(ccsdcorl, qcdb.variable('current correlation energy'), tnm() + ' Current corl', atol=weakatol)
-    assert compare_values(ccsdtot, qcdb.variable('current energy'), tnm() + ' Current', atol=weakatol)
+    # mp2 terms (only printed for c4)
+    #if not (mtd.startswith('nwc') and opts.get('qc_module', 'nein').lower() == 'tce'):
+    #    assert compare_values(mp2_tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
+    #    assert compare_values(mp2_corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2', atol=atol)
+
+    # hf terms
+    assert compare_values(scf_tot, qcdb.variable('hf total energy'), tnm() + ' SCF', atol=atol)
+    assert compare_values(scf_tot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
