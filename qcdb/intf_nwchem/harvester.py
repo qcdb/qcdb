@@ -742,9 +742,6 @@ def nwchem_list():
     val.append('nwc-ccsd[t]')
     val.append('nwc-ccsd(t)')
     val.append('nwc-eaccsd')
-    val.append('nwc-eom-ccsd')
-    val.append('nwc-eom-ccsdt')
-    val.append('nwc-eom-ccsdtq')
     val.append('nwc-qcisd')
     val.append('nwc-cisd')
     val.append('nwc-cisdt')
@@ -752,6 +749,10 @@ def nwchem_list():
     val.append('nwc-lccd')
     val.append('nwc-lccsd')
     val.append('nwc-ccd')
+    val.append('nwc-lr-ccsd')
+    val.append('nwc-zora')
+    val.append('nwc-douglas-kroll')
+    val.append('nwc-dyall-mod-dirac')
     val.append('nwc-eom-ccsd')#untested
     val.append('nwc-eom-ccsdt') #untested
     val.append('nwc-eom-ccsdtq') #untested

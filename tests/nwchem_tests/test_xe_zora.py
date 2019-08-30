@@ -11,6 +11,7 @@ def check_zora(return_value):
 
     assert compare_values(dft, qcdb.variable('DFT TOTAL ENERGY'), 5, 'dft total')
 
+@using_nwchem
 def test_1_xe():
     xe = qcdb.set_molecule('Xe 0 0 0')
 
@@ -18,6 +19,6 @@ def test_1_xe():
         'basis' :   'nwchem-dzvp',
         'nwchem_relativistic__zora' : 'on',
         })
-    val = qcdb.energy('nwc-dft')
+    val = qcdb.energy('nwc-zora')
     check_zora(val)
     
