@@ -543,19 +543,6 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         ropts.suggest('NWCHEM', 'xc', 'b3lyp', **kwgs)
         mdccmd = f'task sodft {runtyp} \n\n'
 
-    #DFT- relativistic
-    elif lowername == 'nwc-zora':
-        ropts.suggest('NWCHEM', 'relativistic__zora', 'on', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-
-    elif lowername == 'nwc-douglas-kroll':
-        ropts.suggest('NWCHEM', 'relativistic__douglas-kroll', 'on', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-
-    elif lowername == 'nwc-dyall-mod-dirac':
-        ropts.suggest('NWCHEM', 'relativistic__dyall-mod-dirac', 'on', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-
     #DFT xc functionals
     elif lowername == 'nwc-pbe0':
         ropts.require('NWCHEM', 'xc', 'pbe0', **kwgs)
@@ -750,9 +737,6 @@ def nwchem_list():
     val.append('nwc-lccsd')
     val.append('nwc-ccd')
     val.append('nwc-lr-ccsd')
-    val.append('nwc-zora')
-    val.append('nwc-douglas-kroll')
-    val.append('nwc-dyall-mod-dirac')
     val.append('nwc-eom-ccsd')#untested
     val.append('nwc-eom-ccsdt') #untested
     val.append('nwc-eom-ccsdtq') #untested

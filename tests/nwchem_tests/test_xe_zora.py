@@ -17,7 +17,7 @@ def test_1_xe():
 
     qcdb.set_options({
         'basis' :   'nwchem-dzvp',
-        'nwchem_relativistic__zora' : 'on',
+        'nwchem_relativistic__zora' : 'true',
         })
     val = qcdb.energy('nwc-zora')
     check_zora(val)

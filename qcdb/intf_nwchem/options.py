@@ -173,7 +173,6 @@ def load_nwchem_defaults(options):
     #Property adds: shielding, spinspin both use two integer inputs
     
     #Relativistic block- electronic approximations
-    #Need to ensure only one relativistic option is set ATL
 
     options.add('nwchem', RottenOption(
         keyword = 'relativistic__zora',
@@ -182,15 +181,15 @@ def load_nwchem_defaults(options):
         glossary= 'Zeroth Order regular approximation (ZORA) is the spin-free and spin-orbit one-eectron zeroth-order regular approximation. Default is ON.'))
 
     options.add('nwchem', RottenOption(
-        keyword= 'relativistic__douglas-kroll', #need to think about how this spits out in input
+        keyword= 'relativistic__douglas_kroll', 
         default= 'dkh',
         validator= parsers.enum_bool('on off true false fpp dkh dkfull dk4 k4full'),
-        glossary= '''Douglas-Kroll approximation based on certain operators. FPP regers to free-particle projection operators; DKH
+        glossary= '''Douglas-Kroll approximation based on certain operators. FPP refers to free-particle projection operators; DKH
         and DKFULL are based on external-field projection operators. DKFULL is considerably better approimxations than the former since it includes certain cross-product integral terms ignored in the DKH approach. 
         DK3 refers to third-order Douglas-Kroll approximation without cross-product integral terms; DK3FULL with cross-product integral terms.''')) 
 
     options.add('nwchem', RottenOption(
-        keyword= 'relativistic__dyall-mod-dirac',
+        keyword= 'relativistic__dyall_mod_dirac',
         default= 'on',
         validator= parsers.enum_bool('on off true false nesc1e nesc2e'), #NESC2E options too nested
         glossary='''Dyall's modified Dirac Hamiltonian. Default is ON and will default to one-electron approximation.'''))
@@ -1204,7 +1203,7 @@ def load_nwchem_defaults(options):
                     and one-particle density matrix. Can do for both ground and excited states.'''))
  
     options.add('nwchem', RottenOption(
-       keyword='tce_freeze',
+       keyword='tce__freeze',
        default= 0,
        validator= parsers.nonnegative_integer,
        glossary= ' Freezing orbitals. None are frozen by default. Only capable of freezing core orbitals at moment.'))
