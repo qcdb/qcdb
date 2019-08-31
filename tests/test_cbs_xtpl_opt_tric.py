@@ -1,6 +1,5 @@
 import os
-import sys
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
 from .utils import *
 from .addons import *
 
@@ -90,7 +89,7 @@ test7_R = 0.740686885481
 def test_1a():
     h2 = system1()
     refene = test1_ene
-    tnm = sys._getframe().f_code.co_name + ' [1] SCF/cc-pVDZ Optimized R'
+    tnm = tnm() + ' [1] SCF/cc-pVDZ Optimized R'
 
     ene, jrec = qcdb.geometric('SCF/cc-pVDZ', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -107,7 +106,7 @@ def test_1a():
 def test_1b():
     h2 = system1()
     refene = test1_ene
-    tnm = sys._getframe().f_code.co_name + ' [1] SCF/cc-pVDZ Optimized R'
+    tnm = tnm() + ' [1] SCF/cc-pVDZ Optimized R'
 
     ene, jrec = qcdb.geometric('c4-SCF/cc-pVDZ', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -124,7 +123,7 @@ def test_1b():
 def test_2a():
     h2 = system1()
     refene = test2_ene
-    tnm = sys._getframe().f_code.co_name + ' [2] SCF/cc-pV[DT]Z Optimized R'
+    tnm = tnm() + ' [2] SCF/cc-pV[DT]Z Optimized R'
 
     ene, jrec = qcdb.geometric('SCF/cc-pV[DT]Z', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -141,7 +140,7 @@ def test_2a():
 def test_2b():
     h2 = system1()
     refene = test2_ene
-    tnm = sys._getframe().f_code.co_name + ' [2] SCF/cc-pV[DT]Z Optimized R'
+    tnm = tnm() + ' [2] SCF/cc-pV[DT]Z Optimized R'
 
     ene, jrec = qcdb.geometric('c4-SCF/cc-pV[DT]Z', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -158,7 +157,7 @@ def test_2b():
 def test_3a():
     h2 = system1()
     refene = test3_ene
-    tnm = sys._getframe().f_code.co_name + " [3] SCF/cc-pV[DTQ]Z Optimized R"
+    tnm = tnm() + " [3] SCF/cc-pV[DTQ]Z Optimized R"
 
     ene, jrec = qcdb.geometric('SCF/cc-pV[DTQ]Z', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -175,7 +174,7 @@ def test_3a():
 def test_3b():
     h2 = system1()
     refene = test3_ene
-    tnm = sys._getframe().f_code.co_name + " [3] SCF/cc-pV[DTQ]Z Optimized R"
+    tnm = tnm() + " [3] SCF/cc-pV[DTQ]Z Optimized R"
 
     ene, jrec = qcdb.geometric('c4-SCF/cc-pV[DTQ]Z', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -191,7 +190,7 @@ def test_3b():
 def test_4a():
     h2 = system1()
     refene = test4_ene
-    tnm = sys._getframe().f_code.co_name + " [4] MP2/cc-pVDZ Optimized R"
+    tnm = tnm() + " [4] MP2/cc-pVDZ Optimized R"
 
     ene, jrec = qcdb.geometric('MP2/cc-pVDZ', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -208,7 +207,7 @@ def test_4a():
 def test_4b():
     h2 = system1()
     refene = test4_ene
-    tnm = sys._getframe().f_code.co_name + " [4] MP2/cc-pVDZ Optimized R"
+    tnm = tnm() + " [4] MP2/cc-pVDZ Optimized R"
 
     ene, jrec = qcdb.geometric('c4-MP2/cc-pVDZ', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -224,7 +223,7 @@ def test_4b():
 def test_5a():
     h2 = system1()
     refene = test5_ene
-    tnm = sys._getframe().f_code.co_name + " [5] MP2/cc-pV[DT]Z Optimized R"
+    tnm = tnm() + " [5] MP2/cc-pV[DT]Z Optimized R"
 
     ene, jrec = qcdb.geometric('MP2/cc-pV[DT]Z', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -241,7 +240,7 @@ def test_5a():
 def test_5b():
     h2 = system1()
     refene = test5_ene
-    tnm = sys._getframe().f_code.co_name + " [5] MP2/cc-pV[DT]Z Optimized R"
+    tnm = tnm() + " [5] MP2/cc-pV[DT]Z Optimized R"
 
     ene, jrec = qcdb.geometric('c4-MP2/cc-pV[DT]Z', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -257,7 +256,7 @@ def test_5b():
 def test_6a():
     h2 = system1()
     refene = test6_ene
-    tnm = sys._getframe().f_code.co_name + " [6] MP2/cc-pV[TQ]Z Optimized R"
+    tnm = tnm() + " [6] MP2/cc-pV[TQ]Z Optimized R"
 
     ene, jrec = qcdb.geometric('MP2/cc-pV[TQ]Z', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -274,7 +273,7 @@ def test_6a():
 def test_6b():
     h2 = system1()
     refene = test6_ene
-    tnm = sys._getframe().f_code.co_name + " [6] MP2/cc-pV[TQ]Z Optimized R"
+    tnm = tnm() + " [6] MP2/cc-pV[TQ]Z Optimized R"
 
     ene, jrec = qcdb.geometric('c4-MP2/cc-pV[TQ]Z', return_wfn=True, molecule=h2)
     assert compare_values(refene, ene, 6, tnm)
@@ -286,6 +285,6 @@ def test_6b():
     #print(jrec['provenance'])
 
 
-    tnm = sys._getframe().f_code.co_name + " [7] CI2/cc-pV[DT]Z Optimized R"
+    tnm = tnm() + " [7] CI2/cc-pV[DT]Z Optimized R"
 ##optimize('ci2/cc-pv[dt]z')
 

@@ -1,8 +1,6 @@
-import pytest
-
 import os
-import sys
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
+import pytest
 from .utils import *
 from .addons import *
 

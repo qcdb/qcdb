@@ -1,8 +1,11 @@
 #! pbe/sto-3g H2O DFT energy
 import os
 import sys
+
+import pytest
 from ..utils import *
 from ..addons import *
+
 import qcdb
 
 @pytest.fixture

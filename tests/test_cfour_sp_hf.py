@@ -1,6 +1,6 @@
 import os
-import sys
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
+import pytest
 from .utils import *
 from .addons import *
 
@@ -49,10 +49,9 @@ def test_sp_uhf_scf(nh2):
     qcdb.energy('c4-hf')
 
     ans = -55.5893469688
-    tnm = sys._getframe().f_code.co_name
-    assert compare_values(ans, qcdb.variable('scf total energy'), 6, tnm + 'SCF')  #TEST
-    assert compare_values(ans, qcdb.variable('current energy'), 6, tnm + 'Current')  #TEST
-    assert compare_values(ans, qcdb.variable('current reference energy'), 6, tnm + 'Current ref')  #TEST
+    assert compare_values(ans, qcdb.variable('scf total energy'), 6, tnm() + 'SCF')  #TEST
+    assert compare_values(ans, qcdb.variable('current energy'), 6, tnm() + 'Current')  #TEST
+    assert compare_values(ans, qcdb.variable('current reference energy'), 6, tnm() + 'Current ref')  #TEST
 
 
 @using_cfour
@@ -71,11 +70,10 @@ def test_sp_rhf_scf_a(h2o):
     e, jrec = qcdb.energy('c4-scf', return_wfn=True)
 
     ans = -76.0627484601
-    tnm = sys._getframe().f_code.co_name
-    assert compare_values(ans, qcdb.variable('scf total energy'), 6, tnm + ' SCF')
-    assert compare_values(ans, qcdb.variable('current energy'), 6, tnm + ' SCF')
-    assert compare_values(ans, jrec['qcvars']['SCF TOTAL ENERGY'].data, 6, tnm)
-    assert compare_values(ans, jrec['qcvars']['CURRENT ENERGY'].data, 6, tnm)
+    assert compare_values(ans, qcdb.variable('scf total energy'), 6, tnm() + ' SCF')
+    assert compare_values(ans, qcdb.variable('current energy'), 6, tnm() + ' SCF')
+    assert compare_values(ans, jrec['qcvars']['SCF TOTAL ENERGY'].data, 6, tnm())
+    assert compare_values(ans, jrec['qcvars']['CURRENT ENERGY'].data, 6, tnm())
 
 
 @using_cfour
@@ -95,11 +93,10 @@ def test_sp_rhf_scf_b(h2o):
     e, jrec = qcdb.energy('c4-cfour', return_wfn=True)
 
     ans = -76.0627484601
-    tnm = sys._getframe().f_code.co_name
-    assert compare_values(ans, qcdb.variable('scf total energy'), 6, tnm + ' SCF')
-    assert compare_values(ans, qcdb.variable('current energy'), 6, tnm + ' SCF')
-    assert compare_values(ans, jrec['qcvars']['SCF TOTAL ENERGY'].data, 6, tnm)
-    assert compare_values(ans, jrec['qcvars']['CURRENT ENERGY'].data, 6, tnm)
+    assert compare_values(ans, qcdb.variable('scf total energy'), 6, tnm() + ' SCF')
+    assert compare_values(ans, qcdb.variable('current energy'), 6, tnm() + ' SCF')
+    assert compare_values(ans, jrec['qcvars']['SCF TOTAL ENERGY'].data, 6, tnm())
+    assert compare_values(ans, jrec['qcvars']['CURRENT ENERGY'].data, 6, tnm())
 
 
 if __name__ == '__main__':

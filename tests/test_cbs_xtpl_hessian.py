@@ -1,11 +1,10 @@
 import os
-import sys
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
+import pytest
 from .utils import *
 from .addons import *
 
 import numpy as np
-
 from qcengine.programs.util.hessparse import load_hessian
 
 import qcdb

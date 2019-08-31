@@ -1,14 +1,10 @@
-import sys
 import copy
 import pprint
 
-import pytest
 import numpy as np
-
 import qcelemental as qcel
 
 from .utils import *
-from .addons import *
 
 import qcdb
 
