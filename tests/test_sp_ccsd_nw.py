@@ -1,6 +1,6 @@
 import os
-import sys
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
+import pytest
 from .utils import *
 from .addons import *
 
@@ -50,18 +50,17 @@ def test_sp_rhf_ccsd(h2o):
     ccsdcorl = -0.280877944529  #qz2p -0.275705491773
     ccsdtot = -76.337990674725  #qz2p-76.338453951890
 
-    tnm = sys._getframe().f_code.co_name
-    assert compare_values(scftot, qcdb.variable('hf total energy'), 6, tnm + ' SCF')
-    assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), 6, tnm + ' MP2')
-    assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), 6, tnm + ' CCSD corl')
-    assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, tnm + ' CCSD')
+    assert compare_values(scftot, qcdb.variable('hf total energy'), 6, tnm() + ' SCF')
+    assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), 6, tnm() + ' MP2')
+    assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), 6, tnm() + ' CCSD corl')
+    assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, tnm() + ' CCSD')
 
     # gradient gives every appearence of working but array should be tested and reorientation to input tested
     e, jrec = qcdb.gradient('nwc-ccsd', return_wfn=True, molecule=h2o)
-    assert compare_values(scftot, qcdb.variable('hf total energy'), 6, tnm + ' SCF')
-    assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), 6, tnm + ' MP2')
-    assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), 6, tnm + ' CCSD corl')
-    assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, tnm + ' CCSD')
+    assert compare_values(scftot, qcdb.variable('hf total energy'), 6, tnm() + ' SCF')
+    assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), 6, tnm() + ' MP2')
+    assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), 6, tnm() + ' CCSD corl')
+    assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, tnm() + ' CCSD')
 
 
 #@using_nwchem
@@ -85,12 +84,11 @@ def test_sp_rhf_ccsd(h2o):
 #    mp2tot = -55.783567346863
 #    ccsdcorl = -0.214548265916
 #    ccsdtot = -55.800891392570
-#    tnm = sys._getframe().f_code.co_name
-#    assert compare_values(scftot, qcdb.variable('scf total energy'), 6, tnm + 'SCF')
-#    assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), 6, tnm + 'MP2')
-#    assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), 6, tnm + 'CCSD')
-#    assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, tnm + 'CCSD')
-#    assert compare_values(ccsdtot, qcdb.variable('current energy'), 6, tnm + 'CCSD')
+#    assert compare_values(scftot, qcdb.variable('scf total energy'), 6, tnm() + 'SCF')
+#    assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), 6, tnm() + 'MP2')
+#    assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), 6, tnm() + 'CCSD')
+#    assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, tnm() + 'CCSD')
+#    assert compare_values(ccsdtot, qcdb.variable('current energy'), 6, tnm() + 'CCSD')
 #
 #
 #@using_nwchem
@@ -117,17 +115,16 @@ def test_sp_rhf_ccsd(h2o):
 #    ssccsdcorl = -0.0432743
 #    ccsdcorl = -0.217849506326
 #    ccsdtot = -55.802586766392
-#    tnm = sys._getframe().f_code.co_name
-#    compare_values(scftot, qcdb.variable('scf total energy'), 6, tnm + 'SCF')
-#    # not printed compare_values(smp2corl, qcdb.variable('mp2 singles energy'), 6, tnm + 'MP2 singles')
-#    # not printed compare_values(osmp2corl, qcdb.variable('mp2 opposite-spin correlation energy'), 6, tnm + 'MP2 OS corl')
-#    # not printed compare_values(ssmp2corl, qcdb.variable('mp2 same-spin correlation energy'), 6, tnm + 'MP2 SS corl')
-#    # not printed compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), 6, tnm + 'MP2 corl')
-#    # not printed compare_values(mp2tot, qcdb.variable('mp2 total energy'), 6, tnm + 'MP2')
-#    compare_values(osccsdcorl, qcdb.variable('ccsd opposite-spin correlation energy'), 6, tnm + 'CCSD OS corl')
-#    compare_values(ssccsdcorl, qcdb.variable('ccsd same-spin correlation energy'), 6, tnm + 'CCSD SS corl')
-#    compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), 6, tnm + 'CCSD corl')
-#    compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, tnm + 'CCSD')
-#    compare_values(ccsdcorl, qcdb.variable('current correlation energy'), 6, tnm + 'Current corl')
-#    compare_values(ccsdtot, qcdb.variable('current energy'), 6, tnm + 'Current')
+#    compare_values(scftot, qcdb.variable('scf total energy'), 6, tnm() + 'SCF')
+#    # not printed compare_values(smp2corl, qcdb.variable('mp2 singles energy'), 6, tnm() + 'MP2 singles')
+#    # not printed compare_values(osmp2corl, qcdb.variable('mp2 opposite-spin correlation energy'), 6, tnm() + 'MP2 OS corl')
+#    # not printed compare_values(ssmp2corl, qcdb.variable('mp2 same-spin correlation energy'), 6, tnm() + 'MP2 SS corl')
+#    # not printed compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), 6, tnm() + 'MP2 corl')
+#    # not printed compare_values(mp2tot, qcdb.variable('mp2 total energy'), 6, tnm() + 'MP2')
+#    compare_values(osccsdcorl, qcdb.variable('ccsd opposite-spin correlation energy'), 6, tnm() + 'CCSD OS corl')
+#    compare_values(ssccsdcorl, qcdb.variable('ccsd same-spin correlation energy'), 6, tnm() + 'CCSD SS corl')
+#    compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), 6, tnm() + 'CCSD corl')
+#    compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, tnm() + 'CCSD')
+#    compare_values(ccsdcorl, qcdb.variable('current correlation energy'), 6, tnm() + 'Current corl')
+#    compare_values(ccsdtot, qcdb.variable('current energy'), 6, tnm() + 'Current')
 

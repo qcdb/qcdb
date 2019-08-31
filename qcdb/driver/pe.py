@@ -35,7 +35,8 @@ def load_options(options):
         load_gamess_defaults(options)
     if which('psi4') and which_import('psi4'):
         load_psi4_defaults(options)
-    if which_import('resp'):
+    if which_import('resp_qcdb'):
+        import resp_qcdb
         resp.load_defaults(nu_options)
 
 

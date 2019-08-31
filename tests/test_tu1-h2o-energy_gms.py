@@ -1,6 +1,5 @@
 import os
-import sys
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
 from .utils import *
 from .addons import *
 
@@ -31,7 +30,7 @@ def test_tu1_rhf_a():
     qcdb.energy('gms-hf')
     print(qcdb.print_variables())
 
-    assert compare_values(_ref_h2o_pk_rhf, qcdb.variable('HF TOTAL ENERGY'), 6, sys._getframe().f_code.co_name)
+    assert compare_values(_ref_h2o_pk_rhf, qcdb.variable('HF TOTAL ENERGY'), 6, tnm())
 
 
 @using_gamess
@@ -53,7 +52,7 @@ def test_tu1_rhf_b():
     E, jrec = qcdb.energy('gms-hf/cc-pVDZ', molecule=h2o, return_wfn=True)
     print(qcdb.print_variables(jrec['qcvars']))
 
-    assert compare_values(_ref_h2o_pk_rhf, jrec['qcvars']['HF TOTAL ENERGY'].data, 6, sys._getframe().f_code.co_name)
+    assert compare_values(_ref_h2o_pk_rhf, jrec['qcvars']['HF TOTAL ENERGY'].data, 6, tnm())
 
 
 @using_gamess
@@ -84,7 +83,7 @@ units au
     E, jrec = qcdb.energy ('gms-hf', return_wfn=True)
     print(qcdb.print_variables())
 
-    assert compare_values(_ref_ch2_pk_uhf, qcdb.variable('hf total energy'), 6, sys._getframe().f_code.co_name)
+    assert compare_values(_ref_ch2_pk_uhf, qcdb.variable('hf total energy'), 6, tnm())
 
 
 @using_gamess
@@ -114,9 +113,9 @@ units au
     E, jrec = qcdb.energy ('gms-hf', return_wfn=True)
     print(qcdb.print_variables())
 
-    assert compare_values(_ref_ch2_pk_rohf, qcdb.variable('hf total energy'), 6, sys._getframe().f_code.co_name)
-    assert compare_values(_ref_ch2_pk_rohf, qcdb.variable('current energy'), 6, sys._getframe().f_code.co_name)
-    assert compare_values(_ref_ch2_pk_rohf, E, 6, sys._getframe().f_code.co_name)
+    assert compare_values(_ref_ch2_pk_rohf, qcdb.variable('hf total energy'), 6, tnm())
+    assert compare_values(_ref_ch2_pk_rohf, qcdb.variable('current energy'), 6, tnm())
+    assert compare_values(_ref_ch2_pk_rohf, E, 6, tnm())
 
 
 #@using_gamess
@@ -147,7 +146,7 @@ units au
 #    E, jrec = qcdb.energy ('gms-scf', return_wfn=True, probe=True)
 #    print(qcdb.print_variables())
 #
-#    assert compare_values(ans2, qcdb.variable('scf total energy'), 6, sys._getframe().f_code.co_name)
+#    assert compare_values(ans2, qcdb.variable('scf total energy'), 6, tnm())
 
 @using_gamess
 def test_tu2_uhf_yaml():

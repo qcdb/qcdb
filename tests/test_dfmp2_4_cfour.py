@@ -1,10 +1,10 @@
 import os
-import sys
 
 import numpy as np
 
 import qcdb
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
+import pytest
 from .utils import *
 from .addons import *
 
@@ -131,9 +131,8 @@ def test_scale(h2o_z):
     val, jrec = qcdb.energy('c4-cfour', return_wfn=True, molecule=h2o_z)
     dip = np.array([float(jrec['qcvars']['CURRENT DIPOLE {}'.format(i)].data) for i in 'XYZ'])
 
-    tnm = sys._getframe().f_code.co_name
-    assert compare_arrays(grad_z, jrec['qcvars']['CURRENT GRADIENT'].data, 5, tnm + ' grad')
-    assert compare_arrays(dip_z, dip, 5, tnm + ' dipole')
+    assert compare_arrays(grad_z, jrec['qcvars']['CURRENT GRADIENT'].data, 5, tnm() + ' grad')
+    assert compare_arrays(dip_z, dip, 5, tnm() + ' dipole')
 
 @using_cfour
 def test_scale_2(h2o_y):
@@ -150,9 +149,8 @@ def test_scale_2(h2o_y):
     val, jrec = qcdb.energy('c4-cfour', return_wfn=True, molecule=h2o_y)
     dip = np.array([float(jrec['qcvars']['CURRENT DIPOLE {}'.format(i)].data) for i in 'XYZ'])
 
-    tnm = sys._getframe().f_code.co_name
-    assert compare_arrays(grad_y, jrec['qcvars']['CURRENT GRADIENT'].data, 5, tnm + ' grad')
-    assert compare_arrays(dip_y, dip, 5, tnm + ' dipole')
+    assert compare_arrays(grad_y, jrec['qcvars']['CURRENT GRADIENT'].data, 5, tnm() + ' grad')
+    assert compare_arrays(dip_y, dip, 5, tnm() + ' dipole')
 
 
 

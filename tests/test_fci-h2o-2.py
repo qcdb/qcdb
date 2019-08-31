@@ -1,4 +1,4 @@
-from .addons import using_psi4, using_gamess
+from .addons import *
 from .utils import *
 
 import qcdb
