@@ -415,7 +415,7 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
     #          'properties': 'prop',
     #         }[driver]
 
-    runtyp = {0: 'energy' or 'property',
+    runtyp = {0: 'energy',
               1: 'gradient',
               2: 'hessian',
               #'properties': 'prop',
@@ -429,11 +429,6 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         #ropts.require('NWCHEM', 'task__scf', runtyp, **kwgs)
         mdccmd = f'task scf {runtyp}\n\n'
     
-    #property
-    #elif lowername == 'nwc-property':
-    #    mdccmd = f'task {theory} property \n\n'
-        #ropts.suggest('NWCHEM', task__scf', theory, **kwgs)
-
     #MPn options
     elif lowername == 'nwc-mp2':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
@@ -542,6 +537,9 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
     elif lowername == 'nwc-sodft':
         ropts.suggest('NWCHEM', 'xc', 'b3lyp', **kwgs)
         mdccmd = f'task sodft {runtyp} \n\n'
+
+    elif lowername == 'nwc-dft':
+        mdccmd = f'task dft {runtyp} \n\n'
 
     #DFT xc functionals
     elif lowername == 'nwc-pbe0':

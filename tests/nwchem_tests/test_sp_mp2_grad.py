@@ -20,6 +20,8 @@ def check_mp2(val, is_df, is5050):
         a5050tot = a5050corl + ref
         ref_grad = np.array([[0.000000, 0.000000, 0.012114], [-0.001793, 0.000000, -0.006057],
                              [0.001793, 0.000000, -0.006057]])
+
+        #caution: ref_grad passes but may not be the case for all grads
     else:
         ref = -76.026760737428
         mp2_tot = -76.226922314540

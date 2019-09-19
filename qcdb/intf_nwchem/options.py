@@ -112,6 +112,12 @@ def load_nwchem_defaults(options):
         glossary= 'All keyword under property generates information about all currently available properties in NWCHEM.'))
     
     options.add('nwchem', RottenOption(
+        keyword= 'property__center',
+        default= 'coc',
+        validator= parsers.enum('com coc origin arb'), #arb need cartesian coordinates
+        glossary= 'Center of expansion options for dipole, quadrople, and octupole calculations. com = center of mass; coc = center of charge; origin; arb is any arbitrary point that must be accompanied by cartesian coordinates.'))
+
+    options.add('nwchem', RottenOption(
         keyword= 'property__nbofile',
         default= False,
         validator= parsers.boolean,
@@ -160,6 +166,18 @@ def load_nwchem_defaults(options):
         glossary= 'Electric field gradient at nuclei'))
 
     options.add('nwchem', RottenOption(
+        keyword= 'property__efieldgradz4', #nwc 6.8 option
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Electric field gradients with relativistic effects.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'property__gshift',
+        default= False,
+        validator= parsers.boolean,
+        glossary='Gshift')) #nwc 6.8 option
+    
+    options.add('nwchem', RottenOption(
         keyword= 'property__electrondensity',
         default= False,
         validator= parsers.boolean,
@@ -169,9 +187,79 @@ def load_nwchem_defaults(options):
         keyword= 'property__hyperfine',
         default= False,
         validator= parsers.boolean,
-        glossary= 'NMR hyperfine coupling (Fermi-Contact and Spin-Dipole expectation values'))
-    #Property adds: shielding, spinspin both use two integer inputs
+        glossary= 'NMR hyperfine coupling (Fermi-Contact and Spin-Dipole expectation values')) 
+    #discrepancy in site & nwc 6.8 gh wiki but hyperfine also takes multiple integer input needed
+
+    options.add('nwchem', RottenOption(
+        keyword= 'property__aimfile',
+        default= False,
+        validator= parsers.boolean,
+        glossary='Generates AIM Wavefunction files (.wfn | .wfx) which can be used with various codes.')) #nwc 6.8 option
+
+    options.add('nwchem', RottenOption(
+        keyword= 'property__moldenfile',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Generates files using Molden format (.molden), additional compatible files can be created')) #nwc 6.8 option
+
+    options.add('nwchem', RottenOption(
+        keyword= 'property__molden_norm',
+        default= 'none',
+        validator= parsers.enum('janpa nwchem none'),
+        glossary= 'Generates files using molden format. Has option to normalize to JANPA convention. Highly recommend using spherical basis set'))
+    #Property adds: shielding, spinspin both use multiple integer input
+    #Example: spinspin 1 1 2 reads for 1 coupling pair between atoms 1 and 2
     
+    #Property__reponse: not as nested as other opts. Additional opts on same tier
+    #Following property opts need response which req two numeric- one integer for response order; other frequency (float)
+    options.add('nwchem', RottenOption(
+        keyword= 'property__velocity',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Use modified velocity gauge for electric dipole'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'property__orbeta',
+        default= False,
+        validator= parsers.boolean,
+        glossary= ' calculation optical rotation \'beta\' directly. See J. Autschbah, Comp. Lett. 3, (2007), 131.'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'property__giao',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Gauge-including atomic orbital optical rotation, will force orbeta'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'property__bdtensor',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Fully origin-invariant optical rotation tensor is calculated [the B-tilde]. See J. Autschbach, ChemPhysChem 12 (2011), 3224 and B. Moore II, M. Srebro, J. Autschbach, J. Chem Theory Comput. 8 (2012), 4336'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'property__analysis',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Analysis of response tensors in terms of molecular orbitals. if \'pmlocalization\' then the analysis performed in terms of Pipek-Mezey localized MOs'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'property__damping',
+        default= 0.007,
+        validator= lambda x: float(x), 
+        glossary= 'Complex response functions. See M. Krykunov, M. D. Kundrat, J. Autschbach, J Chem Phy 125 (2006) 194110'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'property__pmlocalization',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Pipek-Mezey localized MOs'))
+
+    options.add('nwchem', RottenOption(
+        keyword= 'property__convergence',
+        default= 1.0e-4,
+        validator= parsers.parse_convergence,
+        glossary= 'set CPKS convergence criterion.'))
+
     #Relativistic block- electronic approximations
 
     options.add('nwchem', RottenOption(
@@ -583,6 +671,7 @@ def load_nwchem_defaults(options):
             default=100,
             validator=lambda x: float(x),
             glossary='Max iterations. Default is 100.'))
+
     options.add('nwchem', RottenOption(
         keyword= 'tddft__target',
         default= 1,

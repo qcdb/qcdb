@@ -29,6 +29,4 @@ def test_1_dipole():
         })
 
     val = qcdb.energy('nwc-b3lyp')
-    val2 = qcdb.property('nwc-b3lyp')
     check_dft(val)
-    check_dft(val2)
