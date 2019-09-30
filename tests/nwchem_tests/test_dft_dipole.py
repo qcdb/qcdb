@@ -10,10 +10,10 @@ def check_dft(return_value):
     y   =   0.0000000000
     z   =   -1.9104758249
 
-    assert compare_values(dft, qcdb.get_variable('DFT TOTAL ENERGY'), 5, 'dft ref')
-    assert compare_values(x, qcdb.get_variable('CURRENT DIPOLE X'), 5, 'dipole x')
-    assert compare_values(y, qcdb.get_variable('CURRENT DIPOLE Y'), 5, 'dipole y')
-    assert compare_values(z, qcdb.get_variable('CURRENT DIPOLE Z'), 5, 'dipole z')
+    assert compare_values(dft, qcdb.variable('DFT TOTAL ENERGY'), 5, 'dft ref')
+    assert compare_values(x, qcdb.variable('CURRENT DIPOLE X'), 5, 'dipole x')
+    assert compare_values(y, qcdb.variable('CURRENT DIPOLE Y'), 5, 'dipole y')
+    assert compare_values(z, qcdb.variable('CURRENT DIPOLE Z'), 5, 'dipole z')
 
 @pytest.mark.xfail(True, reason='Property not implement | harvester error', run=True)
 def test_1_dipole():

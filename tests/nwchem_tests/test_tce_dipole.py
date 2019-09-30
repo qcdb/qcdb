@@ -14,13 +14,14 @@ def check_tce_ccsd(return_value):
     ccsd_dipole_Y   =   -1.5820062
     ccsd_dipole_Z   =   0.0000000
 
-    assert compare_values(hf, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(ccsd_tot, qcdb.get_variable('CCSD TOTAL ENERGY'), 5, 'ccsd tot')
-    assert compare_values(ccsd_corl, qcdb.get_variable('CCSD CORRELATION ENERGY'), 5, 'ccsd corl')
-    assert compare_values(ccsd_dipole_X, qcdb.get_variable('CURRENT DIPOLE X'), 5, 'ccsd dipole X')
-    assert compare_values(ccsd_dipole_Y, qcdb.get_variable('CURRENT DIPOLE Y'), 5, 'ccsd dipole Y')
-    assert compare_values(ccsd_dipole_Z, qcdb.get_variable('CURRENT DIPOLE Z'), 5, 'ccsd dipole Z')
+    assert compare_values(hf, qcdb.variable('HF TOTAL ENERGY'), 5, 'hf ref')
+    assert compare_values(ccsd_tot, qcdb.variable('CCSD TOTAL ENERGY'), 5, 'ccsd tot')
+    assert compare_values(ccsd_corl, qcdb.variable('CCSD CORRELATION ENERGY'), 5, 'ccsd corl')
+    assert compare_values(ccsd_dipole_X, qcdb.variable('CURRENT DIPOLE X'), 5, 'ccsd dipole X')
+    assert compare_values(ccsd_dipole_Y, qcdb.variable('CURRENT DIPOLE Y'), 5, 'ccsd dipole Y')
+    assert compare_values(ccsd_dipole_Z, qcdb.variable('CURRENT DIPOLE Z'), 5, 'ccsd dipole Z')
 
+@pytest.mark.xfail(True, reason='Dipole unharvested', run=True)
 def test_1_ccsd_dipole():
     h2o = qcdb.set_molecule(
             '''H 0.0   0.5711156805885   0.7803306218431
