@@ -1256,7 +1256,20 @@ qcvardefs['CCSD DOUBLES ENERGY'] = {
    :math:`E_{\text{D}}` in Eq. :eq:`CCSDcorl`.
 """}
 
-qcvardefs['CCSD(T) TOTAL ENERGY'] = {
+qcvardefs['CCD TOTAL ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The total electronic energy
+   for the coupled cluster doubles level of theory.
+"""}
+
+qcvardefs['CCD CORRELATION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+   The correlation energy component for the coupled cluster doubles level of theory.
+"""}
+
+qcvardefs['CCD TOTAL ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    The total electronic energy
