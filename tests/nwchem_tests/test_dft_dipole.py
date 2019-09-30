@@ -15,6 +15,7 @@ def check_dft(return_value):
     assert compare_values(y, qcdb.get_variable('CURRENT DIPOLE Y'), 5, 'dipole y')
     assert compare_values(z, qcdb.get_variable('CURRENT DIPOLE Z'), 5, 'dipole z')
 
+@pytest.mark.xfail(True, reason='Property not implement | harvester error', run=True)
 def test_1_dipole():
     h2o =   qcdb.set_molecule('''
                 O      0.00000000     0.00000000     0.11726921
