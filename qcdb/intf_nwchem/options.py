@@ -606,6 +606,21 @@ def load_nwchem_defaults(options):
                 validator=parsers.nonnegative_float,
                 glossary= 'The Hessian used in the MCSCF optimization by default level shifted by 0.1 until the orbital gradient normal falls below 0.01 at which point the level shift is reduced to zero. The initial value of 0.1 can be changed as increasing the level shift may make convergence more stable in some instances.'))
 
+    #Hessians | Vibrational Frequencies
+    #Freq block
+    options.add('nwchem', RottenOption(
+        keyword= 'freq__reuse',
+        default= '',
+        validator= lambda x: x.lower(), #potentially make parsers to identify a proper string with *.hess
+        glossary= 'Allows resuse of previously computed hessian'))
+    options.add('nwchem', RottenOption(
+        keyword= 'freq__animate',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Generates mode animation input files in standard xyz file format for graphics packages like XMol.'))
+        #Could also control step size in full nwc
+        #other opts: mass redefinition, temp set
+
     #TDDFT block
     options.add('nwchem', RottenOption(
         keyword= 'tddft__cis',
