@@ -621,6 +621,110 @@ def load_nwchem_defaults(options):
         #Could also control step size in full nwc
         #other opts: mass redefinition, temp set
 
+    #Driver block
+    options.add('nwchem', RottenOption(
+        keyword= 'driver__loose',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Convergence directive to specify standard sets of values. Can also toggle individual options gmax, grms, xmax, xrms.'))
+    options.add('nwchem', RottenOption(
+        keyword= 'driver__tight',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Convergence directive to specify standard sets of values. Can also toggle individual options gmax, grms, xmax, xrms.'))
+    options.add('nwchem', RottenOption(
+        keyword= 'driver__gmax',
+        default= 0,
+        validator= lambda x: float(x),
+        glossary= 'Toggling the maximum gradient in the coordinates being used.'))
+    options.add('nwchem', RottenOption(
+        keyword= 'driver__grms',
+        default= 0,
+        validator= lambda x: float(x),
+        glossary= 'Toggling the root mean square gradient in the coordinates being used.'))
+    options.add('nwchem', RottenOption(
+        keyword= 'driver__xmax',
+        default= 0,
+        validator= lambda x: float(x),
+        glossary= 'Toggling the maximum of the Cartesian step.'))
+    options.add('nwchem', RottenOption(
+        keyword= 'driver__gmax',
+        default= 0,
+        validator= lambda x: float(x),
+        glossary= 'Toggling the root mean square of the Cartesian step.'))
+    options.add('nwchem', RottenOption(
+        keyword= 'driver__trust',
+        default= 0.3,
+        validator= lambda x: float(x),
+        glossary= 'Fixed trust radius to control the step. Default is 0.3.'))
+    options.add('nwchem', RottenOption(
+        keyword= 'driver__sadstp',
+        default= 0.1,
+        validator= lambda x: float(x),
+        glossary= 'Trust radius used for the mode being maximized during a saddle-point search. Default is 0.1'))
+    options.add('nwchem', RottenOption(
+        keyword= 'driver__maxiter',
+        default= 20,
+        validator= parsers.nonnegative_integer,
+        glossary= 'Geometry optimization iterations'))
+    options.add('nwchem', RottenOption(
+        keyword= 'driver__redoautoz',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Deletes hessian data and regenerates interal coordinates at current geometry. Useful if large change in geometry.'))
+    options.add('nwchem', RottenOption(
+        keyword= 'driver__xyz',
+        default= '',
+        validator= lambda x, #string for prefix of *.xyz
+        glossary= 'Print geometry at each step.'))
+    options.add('nwchem', RottenOption(
+        keyword= 'driver__noxyz',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'No printing of xyz geometries.'))
+    
+    #Stepper block
+    options.add('nwchem', RottenOption(
+        keyword= 'stepper__min',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Specifies minimum energy search.'))
+    options.add('nwchem', RottenOption(
+        keyword= 'stepper__ts',
+        default= False,
+        validator= parsers.boolean,
+        glossary= 'Specifies transition state search.'))
+    options.add('nwchem', RottenOption(
+        keyword= 'stepper__track',
+        default= 1,
+        validator= parsers.nonnegative_integer,
+        glossary= 'Tracks a specific mode during an optimization for transition state search.'))
+    options.add('nwchem', RottenOption(
+        keyword= 'stepper__maxiter',
+        default= 20,
+        validator= parsers.nonnegative_integer,
+        glossary= 'Stepper iterations maximum'))
+    options.add('nwchem', RottenOption(
+        keyword= 'stepper__trust',
+        default= 0.1,
+        validator= lambda x: float(x),
+        glossary= 'Size of steps stepper takes are controlled via trust radius (the max step allowed).'))
+    options.add('nwchem', RottenOption(
+        keyword= 'stepper__convggm',
+        default= 8.0e-04,
+        validator= parsers.parse_convergence,
+        glossary= 'Convergence tolerance for the largest component of the gradient.'))
+    optioins.add('nwchem', RottenOption(
+        keyword= 'stepper__convgg',
+        default= 1.0e-02,
+        validator= parsers.parse_convergence,
+        glossary= 'Covergence tolerance for the gradient norm for all degrees of freedom.'))
+    options.add('nwchem', RottenOption(
+        keyword= 'stepper__convge',
+        default= 1.0e-04,
+        validator= parsers.parse_convergence,
+        glossary= 'Convergence tolerance for the energy differen in the stepper.'))
+
     #TDDFT block
     options.add('nwchem', RottenOption(
         keyword= 'tddft__cis',
