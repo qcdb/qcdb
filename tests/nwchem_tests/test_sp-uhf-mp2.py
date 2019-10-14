@@ -18,16 +18,16 @@ def check_uhf_mp2(return_value, is_5050):
     a5050corl = 0.5 * (mp2os + mp2ss)
     a5050tot = a5050corl + ref
 
-    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'scf')
-    assert compare_values(mp2_tot, qcdb.get_variable('MP2 TOTAL ENERGY'), 5, 'mp2 tot')
-    assert compare_values(mp2_corl, qcdb.get_variable('MP2 CORRELATION ENERGY'), 5, 'mp2 corl')
-    assert compare_values(scs_tot, qcdb.get_variable('SCS-MP2 TOTAL ENERGY'), 5, 'scs mp2 tot')
-    assert compare_values(scs_corl, qcdb.get_variable('SCS-MP2 CORRELATION ENERGY'), 5, 'scs mp2 corl')
-    assert compare_values(mp2ss, qcdb.get_variable('MP2 SAME-SPIN CORRELATION ENERGY'), 5, 'mp2 ss')
-    assert compare_values(mp2os, qcdb.get_variable('MP2 OPPOSITE-SPIN CORRELATION ENERGY'), 5, 'mp2 os')
+    assert compare_values(ref, qcdb.variable('HF TOTAL ENERGY'), 5, 'scf')
+    assert compare_values(mp2_tot, qcdb.variable('MP2 TOTAL ENERGY'), 5, 'mp2 tot')
+    assert compare_values(mp2_corl, qcdb.variable('MP2 CORRELATION ENERGY'), 5, 'mp2 corl')
+    assert compare_values(scs_tot, qcdb.variable('SCS-MP2 TOTAL ENERGY'), 5, 'scs mp2 tot')
+    assert compare_values(scs_corl, qcdb.variable('SCS-MP2 CORRELATION ENERGY'), 5, 'scs mp2 corl')
+    assert compare_values(mp2ss, qcdb.variable('MP2 SAME-SPIN CORRELATION ENERGY'), 5, 'mp2 ss')
+    assert compare_values(mp2os, qcdb.variable('MP2 OPPOSITE-SPIN CORRELATION ENERGY'), 5, 'mp2 os')
     #if is_5050:
-    #    assert compare_values(a5050corl, qcdb.get_variable('CUSTOM SCS-MP2 CORRELATION ENERGY'), 5, 'mp2 scscorl')
-    #    assert compare_values(a5050tot, qcdb.get_variable('CUSTOM SCS-MP2 TOTAL ENERGY'), 5, 'mp2 scstot')
+    #    assert compare_values(a5050corl, qcdb.variable('CUSTOM SCS-MP2 CORRELATION ENERGY'), 5, 'mp2 scscorl')
+    #    assert compare_values(a5050tot, qcdb.variable('CUSTOM SCS-MP2 TOTAL ENERGY'), 5, 'mp2 scstot')
 
 @using_nwchem
 def test_1_mp2_5050no():

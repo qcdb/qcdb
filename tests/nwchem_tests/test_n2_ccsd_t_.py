@@ -23,17 +23,17 @@ def check_ccsd_t_(return_value, is5050):
     ccsd_t_corl =   ccsd_corr + t_corr
     ccsd_t_tot  =   -109.231137736836359
 
-    assert compare_values(hf, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(nre, qcdb.get_variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
-    assert compare_values(mp2_tot, qcdb.get_variable('MP2 TOTAL ENERGY'), 5, 'mp2 tot')
-    assert compare_values(mp2_corl, qcdb.get_variable('MP2 CORRELATION ENERGY'), 5, 'mp2 corl')
-    assert compare_values(ccsd_tot, qcdb.get_variable('CCSD TOTAL ENERGY'), 5, 'ccsd tot')
-    assert compare_values(t_corr, qcdb.get_variable('(T) CORRECTION ENERGY'), 5, 't corr')
-    assert compare_values(ccsd_t_tot, qcdb.get_variable('CCSD(T) TOTAL ENERGY'), 5, 'ccsd(t) tot')
-    assert compare_values(ccsd_t_corl, qcdb.get_variable('CCSD(T) CORRELATION ENERGY'), 5, 'ccsd(t) corl')
+    assert compare_values(hf, qcdb.variable('HF TOTAL ENERGY'), 5, 'hf ref')
+    assert compare_values(nre, qcdb.variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
+    assert compare_values(mp2_tot, qcdb.variable('MP2 TOTAL ENERGY'), 5, 'mp2 tot')
+    assert compare_values(mp2_corl, qcdb.variable('MP2 CORRELATION ENERGY'), 5, 'mp2 corl')
+    assert compare_values(ccsd_tot, qcdb.variable('CCSD TOTAL ENERGY'), 5, 'ccsd tot')
+    assert compare_values(t_corr, qcdb.variable('(T) CORRECTION ENERGY'), 5, 't corr')
+    assert compare_values(ccsd_t_tot, qcdb.variable('CCSD(T) TOTAL ENERGY'), 5, 'ccsd(t) tot')
+    assert compare_values(ccsd_t_corl, qcdb.variable('CCSD(T) CORRELATION ENERGY'), 5, 'ccsd(t) corl')
 #    if is5050:
-#        assert compare_values(a5050_corl, qcdb.get_variable('CUSTOM SCS-CCSD CORRELATION ENERGY'), 5, 'custom scs corl')
-#        assert compare_values(a5050_tot, qcdb.get_variable('CUSTOM SCS-CCSD TOTAL ENERGY'), 5, 'custom scs tot')
+#        assert compare_values(a5050_corl, qcdb.variable('CUSTOM SCS-CCSD CORRELATION ENERGY'), 5, 'custom scs corl')
+#        assert compare_values(a5050_tot, qcdb.variable('CUSTOM SCS-CCSD TOTAL ENERGY'), 5, 'custom scs tot')
 
 
 #@using_nwchem

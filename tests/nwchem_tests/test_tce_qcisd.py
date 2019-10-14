@@ -11,9 +11,9 @@ def check_qcisd(return_value):
     qcisd_tot=   -75.012808319270690
     qcisd_corl=   -0.050145257149164
 
-    assert compare_values(hf, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(qcisd_tot, qcdb.get_variable('QCISD TOTAL ENERGY'), 5, 'qcisd tot')
-    assert compare_values(qcisd_corl, qcdb.get_variable('QCISD CORRELATION ENERGY'), 5, 'qcisd corl')
+    assert compare_values(hf, qcdb.variable('HF TOTAL ENERGY'), 5, 'hf ref')
+    assert compare_values(qcisd_tot, qcdb.variable('QCISD TOTAL ENERGY'), 5, 'qcisd tot')
+    assert compare_values(qcisd_corl, qcdb.variable('QCISD CORRELATION ENERGY'), 5, 'qcisd corl')
 
 @using_nwchem
 def test_1_qcisd():

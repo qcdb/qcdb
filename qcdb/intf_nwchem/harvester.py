@@ -421,9 +421,6 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
               #'properties': 'prop',
              }[dertype]
 
-    #theory = {0: 'scf',
-    #          1: 'dft',
-    #          }[dertype] #temp, may need to change only two options
 
     if lowername == 'nwc-nwchem':
         pass
@@ -432,11 +429,6 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
         #ropts.require('NWCHEM', 'task__scf', runtyp, **kwgs)
         mdccmd = f'task scf {runtyp}\n\n'
     
-    #property
-    #elif lowername == 'nwc-property':
-    #    mdccmd = f'task {theory} property \n\n'
-        #ropts.suggest('NWCHEM', task__scf', theory, **kwgs)
-
     #MPn options
     elif lowername == 'nwc-mp2':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
@@ -541,6 +533,13 @@ def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
             mdccmd = f'task tce {runtyp} \n\n'
             ropts.require('NWCHEM', 'tce__eaccsd', True, **kwgs)
             ropts.suggest('NWCHEM', 'tce__nroots', 4, **kwgs)
+
+    elif lowername == 'nwc-sodft':
+        ropts.suggest('NWCHEM', 'xc', 'b3lyp', **kwgs)
+        mdccmd = f'task sodft {runtyp} \n\n'
+
+    elif lowername == 'nwc-dft':
+        mdccmd = f'task dft {runtyp} \n\n'
 
     #DFT xc functionals
     elif lowername == 'nwc-pbe0':
@@ -728,9 +727,6 @@ def nwchem_list():
     val.append('nwc-ccsd[t]')
     val.append('nwc-ccsd(t)')
     val.append('nwc-eaccsd')
-    val.append('nwc-eom-ccsd')
-    val.append('nwc-eom-ccsdt')
-    val.append('nwc-eom-ccsdtq')
     val.append('nwc-qcisd')
     val.append('nwc-cisd')
     val.append('nwc-cisdt')
@@ -738,6 +734,7 @@ def nwchem_list():
     val.append('nwc-lccd')
     val.append('nwc-lccsd')
     val.append('nwc-ccd')
+    val.append('nwc-lr-ccsd')
     val.append('nwc-eom-ccsd')#untested
     val.append('nwc-eom-ccsdt') #untested
     val.append('nwc-eom-ccsdtq') #untested
