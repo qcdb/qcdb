@@ -73,6 +73,10 @@ if which('nwchem'):
     for mtd in intf_nwchem.nwchem_gradient_list():
        procedures['gradient']['nwchem'][mtd.lower()] = intf_nwchem.run_nwchem
 
+    procedures['hessian']['nwchem'] = {}
+    for mtd in intf_nwchem.nwchem_hessian_list():
+        procedures['hessian']['nwchem'][mtd.lower()] = intf_nwchem.run_nwchem
+
 if which('rungms'):
 
     # integrate GAMESS with driver routines

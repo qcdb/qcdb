@@ -775,6 +775,7 @@ def nwchem_hessian_list():
 
     val = []
     val.append('nwc-scf')
+    val.append('nwc-hf')
     val.append('nwc-dft')
     
     return []

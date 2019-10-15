@@ -672,11 +672,11 @@ def load_nwchem_defaults(options):
         default= False,
         validator= parsers.boolean,
         glossary= 'Deletes hessian data and regenerates interal coordinates at current geometry. Useful if large change in geometry.'))
-    options.add('nwchem', RottenOption(
-        keyword= 'driver__xyz',
-        default= '',
-        validator= lambda x, #string for prefix of *.xyz
-        glossary= 'Print geometry at each step.'))
+   # options.add('nwchem', RottenOption(
+   #     keyword= 'driver__xyz',
+   #     default= '',
+   #     validator= lambda x, #string for prefix of *.xyz
+   #     glossary= 'Print geometry at each step.'))
     options.add('nwchem', RottenOption(
         keyword= 'driver__noxyz',
         default= False,
@@ -714,7 +714,7 @@ def load_nwchem_defaults(options):
         default= 8.0e-04,
         validator= parsers.parse_convergence,
         glossary= 'Convergence tolerance for the largest component of the gradient.'))
-    optioins.add('nwchem', RottenOption(
+    options.add('nwchem', RottenOption(
         keyword= 'stepper__convgg',
         default= 1.0e-02,
         validator= parsers.parse_convergence,
