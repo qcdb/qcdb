@@ -94,7 +94,7 @@ def query_options_defaults_from_psi(changedOnly=False):
         # PSI4 Modules
         "ADC", "CCENERGY", "CCEOM", "CCDENSITY", "CCLAMBDA", "CCHBAR",
         "CCRESPONSE", "CCSORT", "CCTRIPLES", "CLAG", "CPHF", "CIS",
-        "DCFT", "DETCI", "DFMP2", "DFTSAPT", "FINDIF", "FNOCC", "LMP2",
+        "DCT", "DETCI", "DFMP2", "DFTSAPT", "FINDIF", "FNOCC", "LMP2",
         "MCSCF", "MINTS", "MRCC", "OCC", "OPTKING", "PSIMRCC", "RESPONSE",
         "SAPT", "SCF", "STABILITY", "THERMO", "TRANSQT", "TRANSQT2",
         # External Modules

@@ -1,6 +1,8 @@
 import os
 import subprocess
 
+from qcengine.testing import using_cfour, using_dftd3, using_gamess, using_nwchem, using_psi4
+
 import pytest
 
 
@@ -58,8 +60,8 @@ def is_psi4_new_enough(version_feature_introduced):
 #                                reason='Not detecting module scipy. Install package if necessary and add to envvar PYTHONPATH')
 
 #using_psi4 = pytest.mark.skipif(_plugin_import('psi4') is False,
-using_psi4 = pytest.mark.skipif(is_psi4_new_enough("1.4a1.dev60") is False,
-                                 reason='Not detecting module psi4. Install package and add to envvar PYTHONPATH')
+#using_psi4 = pytest.mark.skipif(is_psi4_new_enough("1.4a1.dev60") is False,
+#                                 reason='Not detecting module psi4. Install package and add to envvar PYTHONPATH')
 
 #using_psi4_libxc = pytest.mark.skipif(is_psi4_new_enough("1.2a1.dev100") is False,
 #                                reason="Psi4 does not include DFT rewrite to use Libxc. Update to development head")

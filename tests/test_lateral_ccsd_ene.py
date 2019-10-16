@@ -81,7 +81,7 @@ def test_sp_ccsd_rhf_ae(method, basis, keywords, h2o):
     assert compare_values(ccsd_corl, qcdb.variable('ccsd correlation energy'), tnm() + ' CCSD', atol=atol)
 
     # mp2 terms (not printed for nwc tce)
-    if not (mtd.startswith('nwc') and opts.get('qc_module', 'nein').lower() == 'tce'):
+    if not (method.startswith('nwc') and keywords.get('qc_module', 'nein').lower() == 'tce'):
         assert compare_values(mp2_tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
         assert compare_values(mp2_corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2', atol=atol)
 
@@ -139,7 +139,7 @@ def test_sp_ccsd_rhf_fc(method, keywords, basis, h2o):
     assert compare_values(ccsd_corl, qcdb.variable('ccsd correlation energy'), tnm() + ' CCSD', atol=atol)
 
     # mp2 terms (not printed for nwc tce)
-    if not (mtd.startswith('nwc') and opts.get('qc_module', 'nein').lower() == 'tce'):
+    if not (method.startswith('nwc') and keywords.get('qc_module', 'nein').lower() == 'tce'):
         assert compare_values(mp2_tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
         assert compare_values(mp2_corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2', atol=atol)
 
@@ -195,7 +195,7 @@ def test_sp_ccsd_uhf_ae(method, keywords, nh2):
     assert compare_values(ccsd_corl, qcdb.variable('ccsd correlation energy'), tnm() + ' CCSD', atol=atol)
 
     # mp2 terms (not printed for nwc tce)
-    if not (mtd.startswith('nwc') and opts.get('qc_module', 'nein').lower() == 'tce'):
+    if not (method.startswith('nwc') and keywords.get('qc_module', 'nein').lower() == 'tce'):
         assert compare_values(mp2_tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
         assert compare_values(mp2_corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2', atol=atol)
 
@@ -251,7 +251,7 @@ def test_sp_ccsd_uhf_fc(method, keywords, nh2):
     assert compare_values(ccsd_corl, qcdb.variable('ccsd correlation energy'), tnm() + ' CCSD', atol=atol)
 
     # mp2 terms (not printed for nwc tce)
-    if not (mtd.startswith('nwc') and opts.get('qc_module', 'nein').lower() == 'tce'):
+    if not (method.startswith('nwc') and keywords.get('qc_module', 'nein').lower() == 'tce'):
         assert compare_values(mp2_tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
         assert compare_values(mp2_corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2', atol=atol)
 
@@ -289,7 +289,7 @@ def test_sp_ccsd_rohf_ae(method, basis, keywords, nh2):
     keywords['basis'] = basis
     qcdb.set_options(keywords)
 
-    e = qcdb.energy(method, return_wfn=True, molecule=nh2)
+    e, jrec = qcdb.energy(method, return_wfn=True, molecule=nh2)
 
     if basis == 'cfour-qz2p':
         scf_tot = -55.5847372601
@@ -321,7 +321,7 @@ def test_sp_ccsd_rohf_ae(method, basis, keywords, nh2):
     assert compare_values(ccsd_corl, qcdb.variable('ccsd correlation energy'), tnm() + ' CCSD', atol=atol)
 
     # mp2 terms (only printed for c4)
-    #if not (mtd.startswith('nwc') and opts.get('qc_module', 'nein').lower() == 'tce'):
+    #if not (method.startswith('nwc') and keywords.get('qc_module', 'nein').lower() == 'tce'):
     #    assert compare_values(mp2_tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
     #    assert compare_values(mp2_corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2', atol=atol)
 
@@ -331,10 +331,10 @@ def test_sp_ccsd_rohf_ae(method, basis, keywords, nh2):
 
 #    cfour isn't splitting out the singles from OS. and psi4 isn't incl the singles in either so SS + OS != corl
 #    and maybe singles moved from SS to OS in Cfour btwn 2010 and 2014 versions (change in ref)
-#    if not (mtd in ['gms-ccsd', 'nwc-ccsd']):
+#    if not (method in ['gms-ccsd', 'nwc-ccsd']):
 #        'cfour_PRINT': 2
-#        assert compare_values(osccsdcorl, qcdb.variable('ccsd opposite-spin correlation energy'), tnm() + ' CCSD OS corl', atol=atol)
-#        assert compare_values(ssccsdcorl, qcdb.variable('ccsd same-spin correlation energy'), tnm() + ' CCSD SS corl', atol=atol)
+#        assert compare_values(osccsd_corl, qcdb.variable('ccsd opposite-spin correlation energy'), tnm() + ' CCSD OS corl', atol=atol)
+#        assert compare_values(ssccsd_corl, qcdb.variable('ccsd same-spin correlation energy'), tnm() + ' CCSD SS corl', atol=atol)
 
 
 @pytest.mark.parametrize('method,keywords,errmsg', [
@@ -371,8 +371,8 @@ def test_sp_ccsd_rohf_fc(method, keywords, nh2):
     ##ssccsdcorl = -0.036502859383024
 
     ## from Psi4. psi & nwchem agree to 6
-    #osccsdcorl = -0.152968752464362
-    #ssccsdcorl = -0.036502859383024
+    osccsd_corl = -0.152968752464362
+    ssccsd_corl = -0.036502859383024
 
     ## from gamess.
     #ccsdcorl = -0.1928447371
@@ -389,7 +389,7 @@ def test_sp_ccsd_rohf_fc(method, keywords, nh2):
     atol = 1.e-6
     # gms CCSD correlation disagrees with Cfour, Psi4, and NWChem by ~2.e-4
     # hf is in agreement across all programs
-    if mtd.startswith('gms'):
+    if method.startswith('gms'):
         atol = 2.e-5
 
     # cc terms
@@ -400,7 +400,7 @@ def test_sp_ccsd_rohf_fc(method, keywords, nh2):
     assert compare_values(ccsd_corl, qcdb.variable('ccsd correlation energy'), tnm() + ' CCSD', atol=atol)
 
     # mp2 terms (only printed for c4)
-    #if not (mtd.startswith('nwc') and opts.get('qc_module', 'nein').lower() == 'tce'):
+    #if not (method.startswith('nwc') and keywords.get('qc_module', 'nein').lower() == 'tce'):
     #    assert compare_values(mp2_tot, qcdb.variable('mp2 total energy'), tnm() + ' MP2', atol=atol)
     #    assert compare_values(mp2_corl, qcdb.variable('mp2 correlation energy'), tnm() + ' MP2', atol=atol)
 
@@ -409,5 +409,5 @@ def test_sp_ccsd_rohf_fc(method, keywords, nh2):
     assert compare_values(scf_tot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
 
     if not (method in ['gms-ccsd', 'nwc-ccsd']):
-#        assert compare_values(osccsdcorl, qcdb.variable('ccsd opposite-spin correlation energy'), tnm() + ' CCSD OS corl', atol=1.e-6)
-        assert compare_values(ssccsdcorl, qcdb.variable('ccsd same-spin correlation energy'), tnm() + ' CCSD SS corl', atol=weakatol)
+#        assert compare_values(osccsd_corl, qcdb.variable('ccsd opposite-spin correlation energy'), tnm() + ' CCSD OS corl', atol=atol)
+        assert compare_values(ssccsd_corl, qcdb.variable('ccsd same-spin correlation energy'), tnm() + ' CCSD SS corl', atol=atol)
