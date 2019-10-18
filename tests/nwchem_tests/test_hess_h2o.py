@@ -5,7 +5,7 @@ from ..utils import *
 import qcdb
 import numpy as np
 
-from qcengine.progrmas.util.hessparse import load_hessian
+from qcengine.programs.util.hessparse import load_hessian
 
 def check_hess(return_value):
     scf =   -74.888142460799
