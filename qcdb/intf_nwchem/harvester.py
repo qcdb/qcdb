@@ -770,6 +770,14 @@ def nwchem_gradient_list():
 
 
 def nwchem_hessian_list():
+    """Return an array of NWChem methods with energies. Appended to procedures
+    ['hessian']"""
+
+    val = []
+    val.append('nwc-scf')
+    val.append('nwc-hf')
+    val.append('nwc-dft')
+    
     return []
 
 

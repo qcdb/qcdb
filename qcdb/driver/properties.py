@@ -47,12 +47,12 @@ from . import cbs_driver
 from . proc_table import procedures
 
    
-#def property(name, molecule, **kwargs):
-#    r"""Function to compute the single-point electronic property."""
+#def properties(name, molecule, **kwargs):
+#    r"""Function to compute the single-point electronic properties."""
 
-#       :returns: *float* |w--w| Total electronic property in Hartrees. SAPT & EFP return interaction energy.
+#       :returns: *float* |w--w| Total electronic properties in Hartrees. SAPT & EFP return interaction energy.
 #   
-#       :returns: (*float*, :py:class:`~psi4.core.Wavefunction`) |w--w| property and wavefunction when **return_wfn** specified.
+#       :returns: (*float*, :py:class:`~psi4.core.Wavefunction`) |w--w| properties and wavefunction when **return_wfn** specified.
 #   
 #       :PSI variables:
 #   
@@ -78,14 +78,14 @@ from . proc_table import procedures
 #       :param return_wfn: ``'on'`` || |dl| ``'off'`` |dr|
 #   
 #           Indicate to additionally return the :py:class:`~psi4.core.Wavefunction`
-#           calculation result as the second element (after *float* property) of a tuple.
+#           calculation result as the second element (after *float* properties) of a tuple.
 #   
 #       :type restart_file: string
 #       :param restart_file: ``['file.1, file.32]`` || ``./file`` || etc.
 #   
 #           Binary data files to be renamed for calculation restart.
 #   
-#       .. _`table:property_gen`:
+#       .. _`table:properties_gen`:
 #   
 #       +-------------------------+---------------------------------------------------------------------------------------------------------------+
 #       | name                    | calls method                                                                                                  |
@@ -202,7 +202,7 @@ from . proc_table import procedures
 #       +-------------------------+---------------------------------------------------------------------------------------------------------------+
 #       | cc3                     | approximate CC singles, doubles, and triples (CC3) :ref:`[manual] <sec:cc>`                                   |
 #       +-------------------------+---------------------------------------------------------------------------------------------------------------+
-#       | ccproperty                | **expert** full control over ccenergy module                                                                  |
+#       | ccproperties                | **expert** full control over ccenergy module                                                                  |
 #       +-------------------------+---------------------------------------------------------------------------------------------------------------+
 #       | dfocc                   | **expert** full control over dfocc module                                                                     |
 #       +-------------------------+---------------------------------------------------------------------------------------------------------------+
@@ -296,55 +296,55 @@ from . proc_table import procedures
 #       .. comment mrcc --- this is handled in its own table
 #       .. comment psimrcc_scf --- convenience fn
 #   
-#       .. include:: ../autodoc_dft_property.rst
+#       .. include:: ../autodoc_dft_properties.rst
 #   
-#       .. include:: ../mrcc_table_property.rst
+#       .. include:: ../mrcc_table_properties.rst
 #   
-#       .. include:: ../cfour_table_property.rst
+#       .. include:: ../cfour_table_properties.rst
 #   
 #       :examples:
 #   
 #       >>> # [1] Coupled-cluster singles and doubles calculation with psi code
-#       >>> property('ccsd')
+#       >>> properties('ccsd')
 #   
 #       >>> # [2] Charge-transfer SAPT calculation with scf projection from small into
 #       >>> #     requested basis, with specified projection fitting basis
 #       >>> set basis_guess true
 #       >>> set df_basis_guess jun-cc-pVDZ-JKFIT
-#       >>> property('sapt0-ct')
+#       >>> properties('sapt0-ct')
 #   
 #       >>> # [3] Arbitrary-order MPn calculation
-#       >>> property('mp7')
+#       >>> properties('mp7')
 #   
 #       >>> # [4] Converge scf as singlet, then run detci as triplet upon singlet reference
 #       >>> # Note that the integral transformation is not done automatically when detci is run in a separate step.
 #       >>> molecule H2 {\n0 1\nH\nH 1 0.74\n}
 #       >>> set basis cc-pVDZ
 #       >>> set reference rohf
-#       >>> scf_e, scf_wfn = property('scf', return_wfn=True)
+#       >>> scf_e, scf_wfn = properties('scf', return_wfn=True)
 #       >>> H2.set_multiplicity(3)
 #       >>> core.MintsHelper(scf_wfn.basisset()).integrals()
-#       >>> property('detci', ref_wfn=scf_wfn)
+#       >>> properties('detci', ref_wfn=scf_wfn)
 #   
 #       >>> # [5] Run two CI calculations, keeping the integrals generated in the first one.
 #       >>> molecule ne {\nNe\n}
 #       >>> set basis cc-pVDZ
-#       >>> cisd_e, cisd_wfn = property('cisd', return_wfn=True)
-#       >>> property('fci', ref_wfn=cisd_wfn)
+#       >>> cisd_e, cisd_wfn = properties('cisd', return_wfn=True)
+#       >>> properties('fci', ref_wfn=cisd_wfn)
 #   
 #       >>> # [6] Can automatically perform complete basis set extrapolations
-#       >>> property("CCSD/cc-pV[DT]Z")
+#       >>> properties("CCSD/cc-pV[DT]Z")
 #   
 #       >>> # [7] Can automatically perform delta corrections that include extrapolations
 #       >>> # even with a user-defined extrapolation formula. See sample inputs named
 #       >>> # cbs-xtpl* for more examples of this input style
-#       >>> property("MP2/aug-cc-pv([d,t]+d)z + d:ccsd(t)/cc-pvdz", corl_scheme=myxtplfn_2)
+#       >>> properties("MP2/aug-cc-pv([d,t]+d)z + d:ccsd(t)/cc-pvdz", corl_scheme=myxtplfn_2)
 #   
 #       """
 
 @moptions.register_opts(pe.nu_options)
-def property(name, **kwargs):
-    r"""Function to compute the single-point electronic property."""
+def properties(name, **kwargs):
+    r"""Function to compute the single-point electronic properties."""
 
     from . import endorsed_plugins
     kwargs = driver_util.kwargs_lower(kwargs)
@@ -354,7 +354,7 @@ def property(name, **kwargs):
 
     # Bounce if name is function
     if hasattr(name, '__call__'):
-        return name(property, kwargs.pop('label', 'custom function'), ptype='energy', **kwargs)
+        return name(properties, kwargs.pop('label', 'custom function'), ptype='energy', **kwargs)
 
     # Allow specification of methods to arbitrary order
     lowername = name.lower()
@@ -373,20 +373,20 @@ def property(name, **kwargs):
 
 #    # Bounce to CP if bsse kwarg
 #    if kwargs.get('bsse_type', None) is not None:
-#        return driver_nbody.nbody_gufunc(property, name, ptype='energy', **kwargs)
+#        return driver_nbody.nbody_gufunc(properties, name, ptype='energy', **kwargs)
 
     # Bounce to CBS if "method/basis" name
     if '/' in lowername:
-        return cbs_driver._cbs_gufunc(property, name, ptype='energy', molecule=molecule, **kwargs)
+        return cbs_driver._cbs_gufunc(properties, name, ptype='properties', molecule=molecule, **kwargs)
 
-    # Commit to procedures['property'] call hereafter
+    # Commit to procedures['properties'] call hereafter
     return_wfn = kwargs.pop('return_wfn', False)
     pe.active_qcvars = {}
 
-#    #for precallback in hooks['property']['pre']:
+#    #for precallback in hooks['properties']['pre']:
 #    #    precallback(lowername, **kwargs)
 #
-#    optstash = driver_util._set_convergence_criterion('property', lowername, 6, 8, 6, 8, 6)
+#    optstash = driver_util._set_convergence_criterion('properties', lowername, 6, 8, 6, 8, 6)
 #
 #    # Before invoking the procedure, we rename any file that should be read.
 #    # This is a workaround to do restarts with the current PSI4 capabilities
@@ -423,10 +423,10 @@ def property(name, **kwargs):
     #else:
     #    package = kwargs.get('package', 'psi4')
     #print('\nENE calling', 'procedures', package, lowername, 'with', lowername, molecule, pe.nu_options, kwargs)
-    #jobrec = procedures['property'][package][lowername](lowername, molecule=molecule, options=pe.active_options, **kwargs)
-    jobrec = procedures['property'][package][lowername](lowername, molecule=molecule, options=pe.nu_options, ptype='energy', **kwargs)
+    #jobrec = procedures['properties'][package][lowername](lowername, molecule=molecule, options=pe.active_options, **kwargs)
+    jobrec = procedures['properties'][package][lowername](lowername, molecule=molecule, options=pe.nu_options, ptype='properties', **kwargs)
 
-#    for postcallback in hooks['property']['post']:
+#    for postcallback in hooks['properties']['post']:
 #        postcallback(lowername, wfn=wfn, **kwargs)
 #
 #    optstash.restore()
@@ -434,7 +434,7 @@ def property(name, **kwargs):
 #PR    pp.pprint(jobrec)
     pe.active_qcvars = copy.deepcopy(jobrec['qcvars'])
 
-    if return_wfn:  # TODO current property safer than wfn.energy() for now, but should be revisited
+   # if return_wfn:  # TODO current properties safer than wfn.energy() for now, but should be revisited
 
 #        # TODO place this with the associated call, very awkward to call this in other areas at the moment
 #        if lowername in ['efp', 'mrcc', 'dmrg', 'psimrcc']:
@@ -444,9 +444,9 @@ def property(name, **kwargs):
 #            core.print_out("\n\nWarning! %s does not have an associated derived wavefunction." % name)
 #            core.print_out("The returned wavefunction is the dimer SCF wavefunction.\n\n")
 
-        return (float(jobrec['qcvars']['CURRENT ENERGY'].data), jobrec)
-    else:
-        return float(jobrec['qcvars']['CURRENT ENERGY'].data)
+    #    return (float(jobrec['qcvars']['CURRENT ENERGY'].data), jobrec)
+    #else:
+    #    return float(jobrec['qcvars']['CURRENT ENERGY'].data)
         # float() is for decimal.Decimal
 
 
@@ -460,7 +460,7 @@ def property(name, **kwargs):
 #       .. caution:: Some features are not yet implemented. Buy a developer a coffee.
 #   
 #          - This function at present has a limited functionality.
-#            Consult the keywords sections of other modules for further property capabilities.
+#            Consult the keywords sections of other modules for further properties capabilities.
 #   
 #       +--------------------+-----------------------------------------------+----------------+---------------------------------------------------------------+
 #       | Name               | Calls Method                                  | Reference      | Supported Properties                                          |
@@ -534,7 +534,7 @@ def properties(*args, **kwargs):
     return_wfn = kwargs.pop('return_wfn', False)
     pe.active_qcvars = {}
 
-    properties = kwargs.get('properties', ['dipole', 'quadrupole'])
+    properties = kwargs.get('properties', ['dipole', 'quadrupole', 'octupole']) #nwc offer octupole
     if len(args) > 1:
         properties += args[1:]
     kwargs['properties'] = list(set(properties))
@@ -548,10 +548,10 @@ def properties(*args, **kwargs):
     pp.pprint(jobrec)
     pe.active_qcvars = copy.deepcopy(jobrec['qcvars'])
 
-    if return_wfn:
-        return (float(jobrec['qcvars']['CURRENT ENERGY'].data), jobrec)
-    else:
-        return float(jobrec['qcvars']['CURRENT ENERGY'].data)
+#    if return_wfn:
+#        return (float(jobrec['qcvars']['CURRENT ENERGY'].data), jobrec)
+#    else:
+#        return float(jobrec['qcvars']['CURRENT ENERGY'].data)
 
 
 #def gdma(wfn, datafile=""):
@@ -636,7 +636,7 @@ def properties(*args, **kwargs):
 #    :examples:
 #
 #    >>> # [1] FCHK file for DFT calculation
-#    >>> E, wfn = property('b3lyp', return_wfn=True)
+#    >>> E, wfn = properties('b3lyp', return_wfn=True)
 #    >>> fchk(wfn, 'mycalc.fchk')
 #
 #    """
@@ -648,7 +648,7 @@ def properties(*args, **kwargs):
 #    """Function to write wavefunction information in *wfn* to *filename* in
 #    molden format. Will write natural orbitals from *density* (MO basis) if supplied.
 #    Warning! Most post-SCF Wavefunctions do not build the density as this is often
-#    much more costly than the property. In addition, the Wavefunction density attributes
+#    much more costly than the properties. In addition, the Wavefunction density attributes
 #    (Da and Db) return the SO density and must be transformed to the MO basis
 #    to use with this function.
 #
@@ -675,15 +675,15 @@ def properties(*args, **kwargs):
 #    :examples:
 #
 #    >>> # [1] Molden file for DFT calculation
-#    >>> E, wfn = property('b3lyp', return_wfn=True)
+#    >>> E, wfn = properties('b3lyp', return_wfn=True)
 #    >>> molden(wfn, 'mycalc.molden')
 #
 #    >>> # [2] Molden file for CI/MCSCF computation using NO roots
-#    >>> E, wfn = property('ci', return_wfn=True)
+#    >>> E, wfn = properties('ci', return_wfn=True)
 #    >>> molden(wfn, 'no_root1.molden', density_a=wfn.opdm(0, 0, "A", True))
 #
 #    >>> # [3] The following does NOT work, please see below
-#    >>> E, wfn = property('ccsd', return_wfn=True)
+#    >>> E, wfn = properties('ccsd', return_wfn=True)
 #    >>> molden(wfn, 'ccsd_no.molden', density_a=wfn.Da())
 #
 #    >>> # [4] This WILL work, note the transformation of Da (SO->MO)
