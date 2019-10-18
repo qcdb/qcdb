@@ -2,6 +2,8 @@
 
 import os
 import sys
+
+import pytest
 import qcdb
 from ..addons import *
 from ..utils import *

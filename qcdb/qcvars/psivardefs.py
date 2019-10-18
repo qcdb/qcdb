@@ -159,11 +159,14 @@ def wfn_psivars():
 
     # CCSD(T)
     pv0.extend(_solve_in_turn(
+        args=['CCSD(T) CORRELATION ENERGY', 'CCSD CORRELATION ENERGY', '(T) CORRECTION ENERGY'],
+        coeff=[-1, 1, 1]))
+    pv0.extend(_solve_in_turn(
         args=['CCSD(T) TOTAL ENERGY', 'HF TOTAL ENERGY', 'CCSD(T) CORRELATION ENERGY'],
         coeff=[-1, 1, 1]))
     pv0.extend(_solve_in_turn(
         args=['CCSD(T) CORRELATION ENERGY', 'CCSD CORRELATION ENERGY', '(T) CORRECTION ENERGY'],
-        coeff=[-1, 1, 1]))
+        coeff=[-1, 1, 1]))  # duplicate of first so that all minimal combinations covered
 
     # CCSD[T]
     pv0.extend(_solve_in_turn(
