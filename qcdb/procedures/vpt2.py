@@ -52,13 +52,13 @@ import qcelemental as qcel
 from qcelemental.models import ResultInput
 import qcengine as qcng
 
-from . import pe
+from ..driver import pe
 from .. import moptions
 from ..util import provenance_stamp
 from ..moptions.read_options2 import RottenOptions
-from .driver_util import kwargs_lower, get_package
-from .driver_helpers import get_active_molecule
-from . proc_table import procedures
+from ..driver.driver_util import kwargs_lower, get_package
+from ..driver.driver_helpers import get_active_molecule
+from ..driver.proc_table import procedures
 from ..programs.cfour.harvester import backtransform, format_fjobarc, harvest_zmat, jajo2mol
 from ..programs.cfour.jajo import getrec
 
@@ -137,7 +137,7 @@ def vpt2(name, **kwargs):
        - switch C --> S/R with recovery using shelf
 
     """
-    from . import endorsed_plugins
+    from ..driver import endorsed_plugins
     kwargs = kwargs_lower(kwargs)
 
 #    if 'options' in kwargs:

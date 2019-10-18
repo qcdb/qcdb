@@ -8,4 +8,4 @@ from .optimize import optking, geometric
 #from .yaml import yaml_run
 #from .driver_helpers import *
 
-from .vpt2 import vpt2
+from ..procedures.vpt2 import vpt2
