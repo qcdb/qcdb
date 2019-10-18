@@ -3,7 +3,7 @@
 #
 # Psi4: an open-source quantum chemistry software package
 #
-# Copyright (c) 2007-2017 The Psi4 Developers.
+# Copyright (c) 2007-2019 The Psi4 Developers.
 #
 # The copyrights for code used from other parties are included in
 # the corresponding files.
@@ -26,9 +26,6 @@
 # @END LICENSE
 #
 
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import division
 import os
 import re
 import sys
@@ -36,8 +33,6 @@ import sys
 from .exceptions import *
 from .libmintsgshell import *
 
-if sys.version_info >= (3,0):
-    basestring = str
 
 class Gaussian94BasisSetParser(object):
     """Class for parsing basis sets from a text file in Gaussian 94
@@ -76,6 +71,7 @@ class Gaussian94BasisSetParser(object):
         if os.stat(filename).st_size == 0:
             raise ValidationError("""BasisSetParser::parse: given filename '%s' is blank.""" % (filename))
         contents = infile.readlines()
+        infile.close()
 
         lines = []
         for text in contents:
@@ -106,7 +102,7 @@ class Gaussian94BasisSetParser(object):
         dataset can be list of lines or a single string which will be converted to list of lines
 
         """
-        if isinstance(dataset, basestring):
+        if isinstance(dataset, str):
             lines = dataset.split('\n')
         else:
             lines = dataset

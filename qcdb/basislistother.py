@@ -3,7 +3,7 @@
 #
 # Psi4: an open-source quantum chemistry software package
 #
-# Copyright (c) 2007-2017 The Psi4 Developers.
+# Copyright (c) 2007-2019 The Psi4 Developers.
 #
 # The copyrights for code used from other parties are included in
 # the corresponding files.
@@ -31,10 +31,8 @@ for Pople and other non-Dunning orbital basis sets. Some
 plausible fitting basis sets are supplied as defaults.
 
 """
-from __future__ import absolute_import
-from __future__ import print_function
 
-from .basislist import *
+from .basislist import BasisFamily
 
 
 def load_basfam_other():
@@ -188,6 +186,7 @@ def load_basfam_other():
 
     # Ahlrichs
     basis_def2sv_p_ = BasisFamily('def2-SV(P)', zeta=2)
+    basis_def2msvp = BasisFamily('def2-mSVP', zeta=2)
     basis_def2svp = BasisFamily('def2-SVP', zeta=2)
     basis_def2svpd = BasisFamily('def2-SVPD', zeta=2)
     basis_def2tzvp = BasisFamily('def2-TZVP', zeta=3)
@@ -200,6 +199,7 @@ def load_basfam_other():
     basis_def2qzvppd = BasisFamily('def2-QZVPPD', zeta=4)
 
     basis_def2sv_p_.add_jfit('def2-SV(P)-JFIT')
+    basis_def2msvp.add_jfit('def2-SVP-JFIT')
     basis_def2svp.add_jfit('def2-SVP-JFIT')
     basis_def2svpd.add_jfit('def2-SVP-JFIT')
     basis_def2tzvp.add_jfit('def2-TZVP-JFIT')
@@ -212,6 +212,7 @@ def load_basfam_other():
     basis_def2qzvppd.add_jfit('def2-QZVPP-JFIT')
 
     basis_def2sv_p_.add_jkfit('def2-SV(P)-JKFIT')
+    basis_def2msvp.add_jkfit('def2-SVP-JKFIT')
     basis_def2svp.add_jkfit('def2-SVP-JKFIT')
     basis_def2svpd.add_jkfit('def2-SVP-JKFIT')
     basis_def2tzvp.add_jkfit('def2-TZVP-JKFIT')
@@ -224,6 +225,7 @@ def load_basfam_other():
     basis_def2qzvppd.add_jkfit('def2-QZVPP-JKFIT')
 
     basis_def2sv_p_.add_rifit('def2-SV(P)-RI')
+    basis_def2msvp.add_rifit('def2-SVP-RI')
     basis_def2svp.add_rifit('def2-SVP-RI')
     basis_def2svpd.add_rifit('def2-SVPD-RI')
     basis_def2tzvp.add_rifit('def2-TZVP-RI')
@@ -235,6 +237,7 @@ def load_basfam_other():
     basis_def2qzvppd.add_rifit('def2-QZVPPD-RI')
 
     basisfamily_list.append(basis_def2sv_p_)
+    basisfamily_list.append(basis_def2msvp)
     basisfamily_list.append(basis_def2svp)
     basisfamily_list.append(basis_def2svpd)
     basisfamily_list.append(basis_def2tzvp)
@@ -333,6 +336,15 @@ def load_basfam_other():
     basisfamily_list.append(basis_pcsseg2)
     basisfamily_list.append(basis_pcsseg3)
     basisfamily_list.append(basis_pcsseg4)
+
+    # Minix
+    basis_minix = BasisFamily('minix', zeta=2)
+
+    basis_minix.add_jfit('def2-SVP-JFIT')
+    basis_minix.add_jkfit('def2-SVP-JKFIT')
+    basis_minix.add_rifit('def2-SVP-RI')
+
+    basisfamily_list.append(basis_minix)
 
     # Others
     basis_dz = BasisFamily('DZ')
@@ -505,3 +517,65 @@ def load_basfam_other():
     basis_6311ppg_3df_2p_.add_rifit('aug-cc-pvtz-ri')
     basis_6311ppg_3df_2pd_.add_rifit('aug-cc-pvtz-ri')
     basis_6311ppg_3df_3pd_.add_rifit('aug-cc-pvtz-ri')
+
+    # Petersson's nZaPa-NR basis sets
+    basis_2zapa_nr = BasisFamily('2zapa-nr',zeta=2)
+    basis_3zapa_nr = BasisFamily('3zapa-nr',zeta=3)
+    basis_4zapa_nr = BasisFamily('4zapa-nr',zeta=4)
+    basis_5zapa_nr = BasisFamily('5zapa-nr',zeta=5)
+    basis_6zapa_nr = BasisFamily('6zapa-nr',zeta=6)
+    basis_7zapa_nr = BasisFamily('7zapa-nr',zeta=7)
+
+    # fitting sets for nZaPa-NR
+    # Dunnings zeta+1 to be safe, tested on water dimer
+    # the full aug-JKFIT is possibly too much
+    #--------SCF-JKFIT error for nZaPa-NR
+    # results for GS energies of water dimer:
+    # delta_jk = E_conv - E_DFJK
+    # ZaPa zeta 2 : delta_jk = -0.000009
+    # ZaPa zeta 3 : delta_jk = -0.000002
+    # ZaPa zeta 4 : delta_jk = -0.000002
+    # ZaPa zeta 5 : delta_jk = -0.000002
+    # ZaPa zeta 6 : delta_jk =  0.000000
+    # ZaPa zeta 7 : delta_jk =  0.000000
+    basis_2zapa_nr.add_jkfit('aug-cc-pvtz-jkfit')
+    basis_3zapa_nr.add_jkfit('aug-cc-pvqz-jkfit')
+    basis_4zapa_nr.add_jkfit('aug-cc-pv5z-jkfit')
+    basis_5zapa_nr.add_jkfit('aug-cc-pv5z-jkfit')
+    basis_6zapa_nr.add_jkfit('aug-cc-pv6z-ri')
+    basis_7zapa_nr.add_jkfit('aug-cc-pv6z-ri')
+
+    basis_2zapa_nr.add_rifit('aug-cc-pvtz-ri')
+    basis_3zapa_nr.add_rifit('aug-cc-pvqz-ri')
+    basis_4zapa_nr.add_rifit('aug-cc-pv5z-ri')
+    basis_5zapa_nr.add_rifit('aug-cc-pv6z-ri')
+    basis_6zapa_nr.add_rifit('aug-cc-pv6z-ri')
+    basis_7zapa_nr.add_rifit('aug-cc-pv6z-ri')
+
+    basisfamily_list.append(basis_2zapa_nr)
+    basisfamily_list.append(basis_3zapa_nr)
+    basisfamily_list.append(basis_4zapa_nr)
+    basisfamily_list.append(basis_5zapa_nr)
+    basisfamily_list.append(basis_6zapa_nr)
+    basisfamily_list.append(basis_7zapa_nr)
+
+
+    # F12 basis sets
+    basis_cc_pvdz_f12 = BasisFamily('cc-pvdz-f12',zeta=2)
+    basis_cc_pvtz_f12 = BasisFamily('cc-pvtz-f12',zeta=3)
+    basis_cc_pvqz_f12 = BasisFamily('cc-pvqz-f12',zeta=4)
+    # basis_cc_pv5z_f12 = BasisFamily('cc-pV5Z-F12')
+
+    # ORCA manual suggests for F12 basis sets Dunning's zeta+1
+    basis_cc_pvdz_f12.add_jkfit('cc-pvtz-jkfit')
+    basis_cc_pvtz_f12.add_jkfit('cc-pvqz-jkfit')
+    basis_cc_pvqz_f12.add_jkfit('cc-pv5z-jkfit')
+
+    basis_cc_pvdz_f12.add_rifit('cc-pvtz-ri')
+    basis_cc_pvtz_f12.add_rifit('cc-pvqz-ri')
+    basis_cc_pvqz_f12.add_rifit('cc-pv5z-ri')
+
+    basisfamily_list.append(basis_cc_pvqz_f12)
+    basisfamily_list.append(basis_cc_pvtz_f12)
+    basisfamily_list.append(basis_cc_pvqz_f12)
+    # basisfamily_list.append(basis_cc_pv5z_f12)

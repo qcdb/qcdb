@@ -27,7 +27,6 @@
 #
 
 """Module with non-generic exceptions classes."""
-from __future__ import print_function
 
 
 class QcdbException(Exception):
@@ -167,7 +166,7 @@ class OptionValidationError(QcdbException):
         #QcdbException.__init__(self, msg)
         #self.msg = msg
         #print('\nFeature deprecated: {}\n\n'.format(msg))
-    
+
 
 class OptionReconciliationError(QcdbException):
     """Error called when conflicting values given with equal priority for an option."""

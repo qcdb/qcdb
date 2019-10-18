@@ -3,7 +3,7 @@
 #
 # Psi4: an open-source quantum chemistry software package
 #
-# Copyright (c) 2007-2017 The Psi4 Developers.
+# Copyright (c) 2007-2019 The Psi4 Developers.
 #
 # The copyrights for code used from other parties are included in
 # the corresponding files.
@@ -32,8 +32,6 @@ query appropriate fitting bases for any orbital basis distributed
 with Psi4.
 
 """
-from __future__ import absolute_import
-from __future__ import print_function
 import os
 
 

@@ -29,10 +29,6 @@
 databases. Contains Molecule class and physical constants from psi4 suite.
 
 """
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import division
-#__version__ = '0.4'
 __author__ = 'Lori A. Burns'
 
 
@@ -56,7 +52,6 @@ if not os.path.isdir(data_dir):
                    '      Current value of PSIDATADIR is {}'.format(data_dir))
 
 from .metadata import __version__, version_formatter
-#from .driver import *
 from .driver import energy, properties, hessian, gradient, frequency
 from .driver import optking, geometric
 from .driver import vpt2
@@ -67,38 +62,13 @@ from .qcvars import get_variable_details
 from .driver.driver_helpers import set_options, get_active_options
 from .driver.driver_helpers import set_molecule, activate
 from .driver.yaml import yaml_run
-#from .header import print_header
 
-## Load Python modules
-#import sys
-from .molecule import Molecule #, compute_atom_map
-#from .dbproc import *
-#from .options import *
-#from . import moptions
-#from .qcformat import *
-#from . import cfour
-#from . import jajo
-#from . import orca
-#from .orient import OrientMols
-#from .dbwrap import Database, DB4  #DatabaseWrapper, ReactionDatum, Reagent, Reaction
-#from .libmintspointgrp import SymmetryOperation, PointGroup
+from .molecule import Molecule
 from .libmintsbasisset import BasisSet, basishorde
-#from .libmintsmolecule import LibmintsMolecule
-#from .basislist import *
-#from . import align
 from . import vib
-#from . import molparse
-#
+
 ## Load items that are useful to access from an input file
-#from .psiutil import *
 from .vib import compare_vibinfos
 from .testing import *
 
-#from .physconst import *
-from .exceptions import *
-
-#from .util import *
-
-#from .driver.endorsed_plugins import *
-
-#from .datastructures import QCAspect
+#from .exceptions import *

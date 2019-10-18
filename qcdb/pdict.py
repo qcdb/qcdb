@@ -11,13 +11,11 @@
 # @ENDLICENSE
 #
 
-from __future__ import absolute_import
-from __future__ import print_function
 from decimal import Decimal, ROUND_FLOOR, ROUND_CEILING
 
 import numpy as np
 
-from .exceptions import *
+from .exceptions import ParsingValidationError
 
 # This file has considerable history in the quantum chemistry package Psi4
 

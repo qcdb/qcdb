@@ -8,7 +8,6 @@ import numpy as np
 import qcelemental as qcel
 from qcelemental import Datum
 
-#from .psiutil import *
 from .util import *
 from .molecule.libmintsmolecule import compute_atom_map
 
@@ -475,8 +474,8 @@ def harmonic_analysis(hess, geom, mass, basisset, irrep_labels, dipder=None, pro
                 if np.linalg.norm(vib) < 1.e-3:
                     active[-1] = '-'
 
-    vibinfo['TRV'] = Datum('translation/rotation/vibration', '', active)
-    vibinfo['gamma'] = Datum('irreducible representation', '', irrep_classification)
+    vibinfo['TRV'] = Datum('translation/rotation/vibration', '', active, numeric=False)
+    vibinfo['gamma'] = Datum('irreducible representation', '', irrep_classification, numeric=False)
 
     lowfreq = np.where(np.real(frequency_cm_1) < 100.0)[0]
     lowfreq = np.append(lowfreq, np.arange(nrt_expected))  # catch at least nrt modes
@@ -1033,7 +1032,7 @@ def filter_nonvib(vibinfo, remove=None):
             axis = 1
         else:
             axis = 0
-        work[asp] = Datum(oasp.label, oasp.units, np.delete(oasp.data, remove, axis=axis), comment=oasp.comment)
+        work[asp] = Datum(oasp.label, oasp.units, np.delete(oasp.data, remove, axis=axis), comment=oasp.comment, numeric=False)
 
     return work
 
