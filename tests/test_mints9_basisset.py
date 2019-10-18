@@ -1,4 +1,3 @@
-import pytest
 from .utils import *
 from .addons import *
 

@@ -1,9 +1,7 @@
-import sys
 import copy
 import pprint
 
 import pytest
-
 from .utils import *
 from .addons import *
 
@@ -149,25 +147,23 @@ def test_10_pmol():
 
 @using_dftd3
 def test_11_energy():
-    tnm = sys._getframe().f_code.co_name
     eneyne = qcdb.set_molecule(seneyne)
     eneyne.update_geometry()
 
     E, jrec = qcdb.energy('d3-b3lyp-d2', return_wfn=True)
     assert compare_values(ref_d2[0], E, 7, 'P: Ethene-Ethyne -D2')
-    assert compare_values(ref_d2[0], jrec['qcvars']['DISPERSION CORRECTION ENERGY'].data, 7, tnm)
-    assert compare_values(ref_d2[0], jrec['qcvars']['B3LYP-D2 DISPERSION CORRECTION ENERGY'].data, 7, tnm)
+    assert compare_values(ref_d2[0], jrec['qcvars']['DISPERSION CORRECTION ENERGY'].data, 7, tnm())
+    assert compare_values(ref_d2[0], jrec['qcvars']['B3LYP-D2 DISPERSION CORRECTION ENERGY'].data, 7, tnm())
 
 @using_dftd3
 def test_11_b():
-    tnm = sys._getframe().f_code.co_name
     eneyne = qcdb.set_molecule(seneyne)
     eneyne.update_geometry()
     mA = eneyne.extract_subsets(1)
     mB = eneyne.extract_subsets(2)
 
     E, jrec = qcdb.energy('d3-b3lyp-d3bj', return_wfn=True, molecule=mA)
-    assert compare_values(ref_d3bj[1], E, 7, tnm)
-    assert compare_values(ref_d3bj[1], jrec['qcvars']['DISPERSION CORRECTION ENERGY'].data, 7, tnm)
-    assert compare_values(ref_d3bj[1], jrec['qcvars']['B3LYP-D3(BJ) DISPERSION CORRECTION ENERGY'].data, 7, tnm)
+    assert compare_values(ref_d3bj[1], E, 7, tnm())
+    assert compare_values(ref_d3bj[1], jrec['qcvars']['DISPERSION CORRECTION ENERGY'].data, 7, tnm())
+    assert compare_values(ref_d3bj[1], jrec['qcvars']['B3LYP-D3(BJ) DISPERSION CORRECTION ENERGY'].data, 7, tnm())
 

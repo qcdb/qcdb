@@ -1,7 +1,7 @@
 import pytest
 
 import qcdb
-from qcdb.moptions.read_options2 import RottenOption, RottenOptions
+from qcdb.moptions.read_options2 import RottenOption, RottenOptions, AliasKeyword
 from qcdb.moptions import parsers
 from qcdb.moptions.optionsdec import register_opts
 
@@ -226,3 +226,49 @@ def test_24():
     energy()
     assert subjects.scroll['QCDB']['SCF_E_CONV'].value == 1.e-5
 
+
+@pytest.fixture
+def alias_setup():
+    subjects = RottenOptions()
+    subjects.add('qcdb', RottenOption(keyword='freeze__core', default=0, validator=parsers.nonnegative_integer))
+    subjects.add_alias('qcdb', AliasKeyword(alias='freeze', target='freeze__core'))
+
+    return subjects
+
+
+def test_alias_a(alias_setup):
+    alias_setup.require('qcdb', 'freeze__core', 4, RottenOptions.mark_of_the_user)
+
+    assert alias_setup.scroll['QCDB']['FREEZE__CORE'].value == 4
+    assert alias_setup.scroll['QCDB']['FREEZE__CORE'].is_default() is False
+
+
+def test_alias_b(alias_setup):
+    alias_setup.require('qcdb', 'freeze', 4, RottenOptions.mark_of_the_user)
+
+    assert alias_setup.scroll['QCDB']['FREEZE__CORE'].value == 4
+    assert alias_setup.scroll['QCDB']['FREEZE__CORE'].is_default() is False
+
+
+def test_alias_c(alias_setup):
+
+    with pytest.raises(qcdb.OptionValidationError) as e:
+        alias_setup.require('qcdb', 'freeze', -1, RottenOptions.mark_of_the_user)
+
+    assert 'Option (FREEZE__CORE) value (-1) does not pass' in str(e.value)
+
+
+def test_alias_d(alias_setup):
+
+    with pytest.raises(qcdb.ValidationError) as e:
+        alias_setup.add_alias('qcdb', AliasKeyword(alias='melt', target='melt__core'))
+
+    assert 'Keyword alias must point to existing keyword proper' in str(e.value)
+
+
+def test_alias_e(alias_setup):
+
+    with pytest.raises(qcdb.ValidationError) as e:
+        alias_setup.add_alias('qcdb', AliasKeyword(alias='freeze__core', target='melt__core'))
+
+    assert 'Keyword alias must not share a name with keyword proper' in str(e.value)

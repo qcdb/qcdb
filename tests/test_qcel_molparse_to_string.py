@@ -1,6 +1,6 @@
 import pytest
 from .utils import *
-from .addons import using_psi4
+from .addons import *
 
 import pint
 import qcelemental

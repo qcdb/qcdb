@@ -1269,7 +1269,7 @@ qcvardefs['CCD CORRELATION ENERGY'] = {
    The correlation energy component for the coupled cluster doubles level of theory.
 """}
 
-qcvardefs['CCD TOTAL ENERGY'] = {
+qcvardefs['CCSD(T) TOTAL ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    The total electronic energy
@@ -1429,6 +1429,12 @@ qcvardefs['PCM POLARIZATION ENERGY'] = {
     The Mutual polarization between the quantum chemical region and the classical polarizable continuum.
 """}
 
+qcvardefs['PE ENERGY'] = {
+    'units': 'Eh',
+    'glossary': r"""
+    The polarizable embedding energy.
+"""}
+
 #.. psivar:: QCISD TOTAL ENERGY
 #   QCISD CORRELATION ENERGY
 #
@@ -1501,6 +1507,12 @@ qcvardefs['SCF ITERATION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
     The total SCF energy for the last completed iteration.
+"""}
+
+qcvardefs['CCSD ITERATIONS'] = {
+    'units': '',
+    'glossary': r"""
+   The number of iterations in the CCSD set.
 """}
 
 #.. psivar:: SCF QUADRUPOLE XX

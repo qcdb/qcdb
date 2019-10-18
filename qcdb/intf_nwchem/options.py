@@ -1,6 +1,6 @@
 import collections
 
-from ..moptions.read_options2 import RottenOption
+from ..moptions.read_options2 import RottenOption, AliasKeyword
 from ..moptions import parsers
 
 #from ..exceptions import *
@@ -829,15 +829,46 @@ def load_nwchem_defaults(options):
     options.add(
         'nwchem',
         RottenOption(
-            keyword='mp2__freeze',
+            keyword='mp2__freeze__core',
             default=0,
             validator=parsers.nonnegative_integer,
-            glossary= 'Number of orbitals to freeze'))  # expand to core/atomic/virtual
-            # freeze 10 == freeze core 10
-            # freeze virtual 5
-            # freeze atomic
-            # freeze atomic O 1 Si 3
+            glossary= 'Number of core orbitals to freeze'))
+
+    options.add_alias(
+        'nwchem',
+        AliasKeyword(
+            alias='mp2__freeze',
+            target='mp2__freeze__core'))
+
+    options.add(
+        'nwchem',
+        RottenOption(
+            keyword='mp2__freeze__virtual',
+            default=0,
+            validator=parsers.nonnegative_integer,
+            glossary= 'Number of virtual orbitals to freeze'))
+
+    options.add(
+        'nwchem',
+        RottenOption(
+            keyword='mp2__freeze__atomic',
+            default=False,
+            validator=parsers.bool_or_elem_dict,
+            glossary="""Freeze orbitals by element standard lookup (``True``) or specify in dict ``{'O': 1, 'Si': 3}``"""))
+
+    options.add_alias(
+        'nwchem',
+        AliasKeyword(
+            alias='mp2__freeze__core__atomic',
+            target='mp2__freeze__atomic'))
     
+# freeze atomic                                         mp2__freeze__atomic = True
+# freeze atomic O 1 Si 3                                mp2__freeze__atomic = {'O': 1, 'Si': 3}
+# freeze core atomic             freeze atomic          mp2__freeze__core = "atomic"
+# freeze 10                      freeze core 10         mp2__freeze = 10
+# freeze core 10                                        mp2__freeze__core = 10
+# freeze virtual 5                                      mp2__freeze__virtual = 5
+
     options.add(
         'nwchem',
         RottenOption(
@@ -863,30 +894,6 @@ def load_nwchem_defaults(options):
             glossary='Scaling factor for opposite spin'))
 
     #DFT block
-    options.add(
-            'nwchem',
-            RottenOption(
-                keyword= 'dft__rdft',
-                default= True,
-                validator= parsers.boolean, 
-                glossary= 'Defining DFT wavefunction, using restricted DFT. Default is on.'))
-
-    options.add(
-            'nwchem',
-            RottenOption(
-                keyword= 'dft__rodft',
-                default= False,
-                validator= parsers.boolean,
-                glossary= 'Defining DFT wavefunction, using restricted open shell DFT. Default is off(False).'))
-    
-    options.add(
-            'nwchem',
-            RottenOption(
-                keyword= 'dft__udft',
-                default= False,
-                validator= parsers.boolean,
-                glossary= 'Defining DFT wavefunction, using unrestricted DFT. Default is off (False).'))
-    
     options.add(
             'nwchem',
             RottenOption(
@@ -1151,6 +1158,28 @@ def load_nwchem_defaults(options):
         validator = lambda x: x.lower(),
         glossary = 'DFT functional'))
     #Need to resolve conflicts with nesting for multiple dft functionals in input #TODO
+
+    options.add(
+        'nwchem',
+        RottenOption(
+            keyword='dft__grid__gausleg',
+            default=(50, 10),
+            validator=parsers.gridradang,
+            glossary="""Gauss-Legendre angular grid. Tuple of ``(radial, angular)`` points for
+            general setting or dictionary for per-atom with string keys (empty string for general
+            case) and tuple values.  Density-Functional-Theory-for-Molecules#gauss-legendre-angular-grid"""))
+
+    options.add(
+        'nwchem',
+        RottenOption(
+            keyword='dft__grid__lebedev',
+            default=(50, 8),  # totally made up to roughly match gausleg
+            validator=parsers.gridradang,
+            glossary="""Lebedev angular grid. Tuple of ``(radial, iangquad)`` points for
+            general setting or dictionary for per-atom with string keys (empty string for general
+            case) and tuple values. See table at link for decoding iangquad index into angular points.
+            Density-Functional-Theory-for-Molecules#lebedev-angular-grid"""))
+
 
     #CCSD block
     options.add(

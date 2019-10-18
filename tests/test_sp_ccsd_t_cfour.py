@@ -1,6 +1,6 @@
 import os
-import sys
-#sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
+import pytest
 from .utils import *
 from .addons import *
 
@@ -30,7 +30,7 @@ A=105.0
 """
 
 
-def check_rhf(tnm, fc=False):
+def check_rhf(lbl, fc=False):
 
     scftot = -76.062748460117
     if fc:
@@ -49,16 +49,16 @@ def check_rhf(tnm, fc=False):
         ccsdtcorr = -0.007263597996
         ccsdttot = -76.345717549886
 
-    assert compare_values(scftot, qcdb.variable('scf total energy'), 6, tnm + ' SCF')
-    assert compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), 6, tnm + ' MP2 corl')
-    assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), 6, tnm + ' MP2')
-    assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), 6, tnm + ' CCSD corl')
-    assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, tnm + ' CCSD')
-    assert compare_values(ccsdtcorr, qcdb.variable('(t) correction energy'), 6, tnm + ' (T)')
-    assert compare_values(ccsdttot, qcdb.variable('ccsd(t) total energy'), 6, tnm + ' CCSD(T)')
+    assert compare_values(scftot, qcdb.variable('scf total energy'), 6, lbl + ' SCF')
+    assert compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), 6, lbl + ' MP2 corl')
+    assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), 6, lbl + ' MP2')
+    assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), 6, lbl + ' CCSD corl')
+    assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, lbl + ' CCSD')
+    assert compare_values(ccsdtcorr, qcdb.variable('(t) correction energy'), 6, lbl + ' (T)')
+    assert compare_values(ccsdttot, qcdb.variable('ccsd(t) total energy'), 6, lbl + ' CCSD(T)')
 
 
-def check_uhf(tnm, fc):
+def check_uhf(lbl, fc):
     if not fc:
         scftot = -55.5893469688
         mp2corl = -0.195530391306
@@ -68,16 +68,16 @@ def check_uhf(tnm, fc):
         ccsdtcorr = -0.005166587884
         ccsdttot = -55.807811611842
 
-    assert compare_values(scftot, qcdb.variable('scf total energy'), 6, tnm + ' SCF')
-    assert compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), 6, tnm + ' MP2 corl')
-    assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), 6, tnm + ' MP2')
-    assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), 6, tnm + ' CCSD corl')
-    assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, tnm + ' CCSD')
-    assert compare_values(ccsdtcorr, qcdb.variable('(t) correction energy'), 6, tnm + ' (T)')
-    assert compare_values(ccsdttot, qcdb.variable('ccsd(t) total energy'), 6, tnm + ' CCSD(T)')
+    assert compare_values(scftot, qcdb.variable('scf total energy'), 6, lbl + ' SCF')
+    assert compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), 6, lbl + ' MP2 corl')
+    assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), 6, lbl + ' MP2')
+    assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), 6, lbl + ' CCSD corl')
+    assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, lbl + ' CCSD')
+    assert compare_values(ccsdtcorr, qcdb.variable('(t) correction energy'), 6, lbl + ' (T)')
+    assert compare_values(ccsdttot, qcdb.variable('ccsd(t) total energy'), 6, lbl + ' CCSD(T)')
 
 
-def check_rohf(tnm, fc, prog):
+def check_rohf(lbl, fc, prog):
 
     scftot = -55.5847372601
     if fc:
@@ -114,18 +114,18 @@ def check_rohf(tnm, fc, prog):
         ccsdcorl = -0.217849506326
         ccsdtcorr = -0.005233940436
 
-    assert compare_values(scftot, qcdb.variable('scf total energy'), 6, tnm + ' SCF')
-    # not printed assert compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), 6, tnm + ' MP2 corl')
-    # not printed assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), 6, tnm + 'MP2')
-    assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), 6, tnm + ' CCSD corl')
-    assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, tnm + ' CCSD')
-    assert compare_values(ccsdtcorr, qcdb.variable('(t) correction energy'), 6, tnm + ' (T)')
-    assert compare_values(ccsdttot, qcdb.variable('ccsd(t) total energy'), 6, tnm + ' CCSD(T)')
+    assert compare_values(scftot, qcdb.variable('scf total energy'), 6, lbl + ' SCF')
+    # not printed assert compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), 6, lbl + ' MP2 corl')
+    # not printed assert compare_values(mp2tot, qcdb.variable('mp2 total energy'), 6, lbl + 'MP2')
+    assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), 6, lbl + ' CCSD corl')
+    assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, lbl + ' CCSD')
+    assert compare_values(ccsdtcorr, qcdb.variable('(t) correction energy'), 6, lbl + ' (T)')
+    assert compare_values(ccsdttot, qcdb.variable('ccsd(t) total energy'), 6, lbl + ' CCSD(T)')
 
-    #assert compare_values(osmp2corl, qcdb.variable('mp2 opposite-spin correlation energy'), 6, tnm + ' MP2 OS corl')
-    #assert compare_values(ssmp2corl, qcdb.variable('mp2 same-spin correlation energy'), 6, tnm + ' MP2 SS corl')
-    assert compare_values(osccsdcorl, qcdb.variable('ccsd opposite-spin correlation energy'), 6, tnm + ' CCSD OS corl')
-    assert compare_values(ssccsdcorl, qcdb.variable('ccsd same-spin correlation energy'), 6, tnm + ' CCSD SS corl')
+    #assert compare_values(osmp2corl, qcdb.variable('mp2 opposite-spin correlation energy'), 6, lbl + ' MP2 OS corl')
+    #assert compare_values(ssmp2corl, qcdb.variable('mp2 same-spin correlation energy'), 6, lbl + ' MP2 SS corl')
+    assert compare_values(osccsdcorl, qcdb.variable('ccsd opposite-spin correlation energy'), 6, lbl + ' CCSD OS corl')
+    assert compare_values(ssccsdcorl, qcdb.variable('ccsd same-spin correlation energy'), 6, lbl + ' CCSD SS corl')
 
 
 @using_cfour
@@ -144,7 +144,7 @@ def test_sp_rhf_ccsd_t_ao_ecc(h2o):
 
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=h2o)
 
-    check_rhf(tnm=sys._getframe().f_code.co_name, fc=False)
+    check_rhf(lbl=tnm(), fc=False)
     assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['stdout']
     assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
@@ -164,7 +164,7 @@ def test_sp_rhf_ccsd_t_ao(h2o):
 
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=h2o)
 
-    check_rhf(tnm=sys._getframe().f_code.co_name, fc=False)
+    check_rhf(lbl=tnm(), fc=False)
     assert 'CC_PROGRAM           ICCPRO         VCC' in jrec['stdout']
     assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
@@ -182,7 +182,7 @@ def test_sp_rhf_ccsd_t_ecc(h2o):
 
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=h2o)
 
-    check_rhf(tnm=sys._getframe().f_code.co_name, fc=False)
+    check_rhf(lbl=tnm(), fc=False)
     assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['stdout']
     assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['stdout']
 
@@ -200,7 +200,7 @@ def test_sp_rhf_ccsd_t_(h2o):
 
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=h2o)
 
-    check_rhf(tnm=sys._getframe().f_code.co_name, fc=False)
+    check_rhf(lbl=tnm(), fc=False)
     assert 'CC_PROGRAM           ICCPRO         VCC' in jrec['stdout']
     assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['stdout']
 
@@ -220,7 +220,7 @@ def test_sp_rhf_ccsd_t_fc(h2o):
 
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=h2o)
 
-    check_rhf(tnm=sys._getframe().f_code.co_name, fc=True)
+    check_rhf(lbl=tnm(), fc=True)
     assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['stdout']
     assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
@@ -239,7 +239,7 @@ def test_sp_rhf_ccsd_t_ncc(h2o):
 
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=h2o)
 
-    check_rhf(tnm=sys._getframe().f_code.co_name, fc=False)
+    check_rhf(lbl=tnm(), fc=False)
     assert 'CC_PROGRAM           ICCPRO         NCC' in jrec['stdout']
     assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
@@ -260,7 +260,7 @@ def test_sp_uhf_ccsd_t_ao_ecc(nh2):
 
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=nh2)
 
-    check_uhf(tnm=sys._getframe().f_code.co_name, fc=False)
+    check_uhf(lbl=tnm(), fc=False)
     assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['stdout']
     assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
@@ -281,7 +281,7 @@ def test_sp_uhf_ccsd_t_ao(nh2):
 
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=nh2)
 
-    check_uhf(tnm=sys._getframe().f_code.co_name, fc=False)
+    check_uhf(lbl=tnm(), fc=False)
     assert 'CC_PROGRAM           ICCPRO         VCC' in jrec['stdout']
     assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
@@ -301,7 +301,7 @@ def test_sp_uhf_ccsd_t_ecc(nh2):
 
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=nh2)
 
-    check_uhf(tnm=sys._getframe().f_code.co_name, fc=False)
+    check_uhf(lbl=tnm(), fc=False)
     assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['stdout']
     assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['stdout']
 
@@ -321,7 +321,7 @@ def test_sp_uhf_ccsd_t_(nh2):
 
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=nh2)
 
-    check_uhf(tnm=sys._getframe().f_code.co_name, fc=False)
+    check_uhf(lbl=tnm(), fc=False)
     assert 'CC_PROGRAM           ICCPRO         VCC' in jrec['stdout']
     assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['stdout']
 
@@ -342,7 +342,7 @@ def test_sp_rohf_ccsd_t_(nh2):
 
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=nh2)
 
-    check_rohf(tnm=sys._getframe().f_code.co_name, fc=False, prog='vcc')
+    check_rohf(lbl=tnm(), fc=False, prog='vcc')
     assert 'CC_PROGRAM           ICCPRO         VCC' in jrec['stdout']
     assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['stdout']
 
@@ -364,7 +364,7 @@ def test_sp_rohf_ccsd_t_ao(nh2):
 
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=nh2, prog='vcc')
 
-    check_rohf(tnm=sys._getframe().f_code.co_name, fc=False, prog='vcc')
+    check_rohf(lbl=tnm(), fc=False, prog='vcc')
     assert 'CC_PROGRAM           ICCPRO         VCC' in jrec['stdout']
     assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
@@ -385,7 +385,7 @@ def test_sp_rohf_ccsd_t_ao_ecc(nh2):
 
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=nh2)
 
-    check_rohf(tnm=sys._getframe().f_code.co_name, fc=False, prog='ecc')
+    check_rohf(lbl=tnm(), fc=False, prog='ecc')
     assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['stdout']
     assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
@@ -407,7 +407,7 @@ def test_sp_rohf_ccsd_t_fc(nh2):
 
     e, jrec = qcdb.energy('c4-ccsd(t)', return_wfn=True, molecule=nh2)
 
-    check_rohf(tnm=sys._getframe().f_code.co_name, fc=True, prog='ecc')
+    check_rohf(lbl=tnm(), fc=True, prog='ecc')
     assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['stdout']
     assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['stdout']
 

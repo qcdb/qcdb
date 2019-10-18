@@ -1,8 +1,9 @@
 #! single-point UHF/cc-pVDZ  on NH2
 import os
-import sys
-from ..addons import *
+
 from ..utils import *
+from ..addons import *
+
 import qcdb
 
 

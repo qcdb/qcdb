@@ -210,6 +210,8 @@ class RottenOptions(object):
     mark_of_the_default = 'ffffffff'
 
     def __init__(self):
+        self.domains= ['QCDB', 'PSI4', 'CFOUR', 'DFTD3', 'NWCHEM', 'GAMESS', 'RESP']
+        self.aliases = collections.defaultdict(dict)
         self.scroll = collections.defaultdict(dict)
 
     def __str__(self):
@@ -237,11 +239,22 @@ class RottenOptions(object):
 
     def add(self, package, opt):
         up = package.upper()
-        if up in ['QCDB', 'PSI4', 'CFOUR', 'DFTD3', 'NWCHEM', 'GAMESS', 'RESP']:
+        if up in self.domains:
             self.scroll[up][opt.keyword] = opt
         else:
-            raise ValidationError('Domain not supported: {}'.format(package))
+            raise ValidationError(f'Domain not supported: {package}')
     
+    def add_alias(self, package, opt):
+        up = package.upper()
+        if up in self.domains:
+            if opt.alias in self.scroll[up]:
+                raise ValidationError(f'Keyword alias must not share a name with keyword proper: {opt.alias}')
+            if opt.target not in self.scroll[up]:
+                raise ValidationError(f'Keyword alias must point to existing keyword proper: {opt.alias} --/--> {opt.target}')
+            self.aliases[up][opt.alias] = opt
+        else:
+            raise ValidationError(f'Domain not supported: {package}')
+
     def require(self, package, option, value, accession, verbose=1):
         self._set(True, package, option, value, accession, verbose)
 
@@ -250,6 +263,7 @@ class RottenOptions(object):
 
     def _set(self, imperative, package, option, value, accession, verbose):
         count = 0
+        acount = 0
         for ropt, oropt in self.scroll[package.upper()].items():
             #if ropt.endswith(option.upper()):
             if ropt == option.upper() or ropt.endswith('__' + option.upper()):  # psi wants
@@ -260,6 +274,17 @@ class RottenOptions(object):
                     oropt.suggest(value, overlap=overlap, accession=accession, verbose=verbose)
                 count += 1
         if count == 0:
+            for aopt, oaopt in self.aliases[package.upper()].items():
+                if aopt == option.upper():
+                    oropt = self.scroll[package.upper()][oaopt.target]
+                    overlap = len(oropt.keyword)
+                    if imperative:
+                        oropt.require(value, overlap=overlap, accession=accession, verbose=verbose)
+                    else:
+                        oropt.suggest(value, overlap=overlap, accession=accession, verbose=verbose)
+                    acount += 1
+
+        if count == 0 and acount == 0:
             raise ValidationError('Option ({}) does not exist in domain ({}).'.format(option, package))
 
     def unwind_by_accession(self, accession):
@@ -267,6 +292,13 @@ class RottenOptions(object):
             for ropt, oropt in self.scroll[pkg].items():
                oropt.history = [entry for entry in oropt.history if entry[3] != accession]
             
+
+class AliasKeyword(object):
+
+    def __init__(self, alias, target):
+        self.alias = alias.upper()
+        self.target = target.upper()
+
 
 class RottenOption(object):
     mark_of_the_user = '00000000'

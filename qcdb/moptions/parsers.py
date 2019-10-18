@@ -82,6 +82,27 @@ def sphcart(inputval):
             """Can't interpret into boolean True (sph) or False (cart): {}""".format(inputval))
 
 
+def gridradang(inputval):
+
+    if isinstance(inputval, dict):
+        retdict = {}
+        for k, v in inputval.items():
+            rad, ang = v
+            retdict[k] = (positive_integer(rad), positive_integer(ang))
+        return dict(sorted(retdict.items()))  # to place '' key first
+    else:
+        rad, ang = inputval
+        return {'': (positive_integer(rad), positive_integer(ang))}
+
+
+def bool_or_elem_dict(inputval):
+    if isinstance(inputval, dict):
+        retdict = {k.capitalize(): positive_integer(v) for k, v in inputval.items()}
+        return dict(sorted(retdict.items()))
+    else:
+        return boolean(inputval)
+
+
 def percentage(inputval):
     if 0.0 <= inputval <= 100.0:
         return float(inputval)
@@ -103,7 +124,7 @@ def positive_integer(inputval):
         return int(inputval)
     else:
         raise OptionValidationError(
-            'Positive integer number of iterations, if you please: {}'.format(inputval))
+            'Positive integer, if you please: {}'.format(inputval))
 
 
 def nonnegative_integer(inputval):

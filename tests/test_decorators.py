@@ -1,7 +1,7 @@
+import numpy as np
+
 import qcdb
 from qcdb.moptions.optionsdec import def_mol
-
-import numpy as np
 
 mol1 = qcdb.Molecule("""
 He
