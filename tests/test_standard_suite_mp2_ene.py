@@ -72,6 +72,9 @@ def test_sp_mp2_rhf_ae(method, keywords, h2o):
     pytest.param('gms-mp2', {'basis': 'cfour-qz2p', 'nwchem_mp2__freeze': 1}, marks=using_gamess),
     pytest.param('nwc-mp2', {'basis': 'cfour-qz2p', 'qc_module': 'tce', 'nwchem_tce__freeze': 1}, marks=using_nwchem),
     pytest.param('nwc-mp2', {'basis': 'cfour-qz2p', 'nwchem_mp2__freeze': 1}, marks=using_nwchem),
+    pytest.param('nwc-mp2', {'basis': 'cfour-qz2p', 'nwchem_mp2__freeze__core': 1}, marks=using_nwchem),
+    pytest.param('nwc-mp2', {'basis': 'cfour-qz2p', 'nwchem_mp2__freeze__core__atomic': True}, marks=using_nwchem),
+    pytest.param('nwc-mp2', {'basis': 'cfour-qz2p', 'nwchem_mp2__freeze__atomic': {'O': 1}}, marks=using_nwchem),
     pytest.param('p4-mp2', {'basis': 'cfour-qz2p', 'psi4_freeze_core': True, 'psi4_mp2_type' : 'conv'}, marks=using_psi4),
 ])
 def test_sp_mp2_rhf_fc(method, keywords, h2o):
