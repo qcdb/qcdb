@@ -1,7 +1,7 @@
 import uuid
 
 #from ..exceptions import *
-from ..moptions.options import conv_float2negexp
+from ...moptions.options import conv_float2negexp
 
 
 def muster_inherited_options(ropts, verbose=1):

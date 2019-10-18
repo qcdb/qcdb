@@ -6,8 +6,6 @@ import collections
 
 import qcelemental as qcel
 
-from ..driver import pe
-
 
 def format_molecule(molrec, ropts, verbose: int=1):
     kwgs = {'accession': uuid.uuid4(), 'verbose': verbose}

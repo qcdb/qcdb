@@ -11,10 +11,10 @@ from qcengine.programs.util import PreservingDict
 from qcengine.programs.cfour import CFOURHarness
 from qcengine.programs.cfour.keywords import format_keywords, format_keyword
 
-from .. import qcvars
+from ... import qcvars
 #from ..driver.driver_helpers import print_variables
-from ..libmintsbasisset import BasisSet
-from ..util import print_jobrec, provenance_stamp
+from ...libmintsbasisset import BasisSet
+from ...util import print_jobrec, provenance_stamp
 from . import harvester
 from .bas import extract_basis_from_genbas, format_basis_for_cfour, format_molecule
 

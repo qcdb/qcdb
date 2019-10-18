@@ -1,6 +1,6 @@
 import collections
 
-from ..moptions.read_options2 import RottenOption
+from ...moptions.read_options2 import RottenOption
 
 
 def load_psi4_defaults(peoptions):

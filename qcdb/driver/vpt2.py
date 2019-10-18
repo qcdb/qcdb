@@ -59,8 +59,8 @@ from ..moptions.read_options2 import RottenOptions
 from .driver_util import kwargs_lower, get_package
 from .driver_helpers import get_active_molecule
 from . proc_table import procedures
-from ..intf_cfour.harvester import backtransform, format_fjobarc, harvest_zmat, jajo2mol
-from ..intf_cfour.jajo import getrec
+from ..programs.cfour.harvester import backtransform, format_fjobarc, harvest_zmat, jajo2mol
+from ..programs.cfour.jajo import getrec
 
 
 def run_cfour_module(xmod):

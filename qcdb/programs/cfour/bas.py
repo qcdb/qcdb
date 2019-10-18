@@ -6,7 +6,7 @@ from typing import List, Union
 
 import qcelemental as qcel
 
-from ..driver import pe
+from ...driver import pe
 
 
 def format_molecule(molrec, ropts, verbose: int=1):

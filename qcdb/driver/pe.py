@@ -5,9 +5,9 @@ from qcelemental.util import which, which_import
 from .. import data_dir
 from ..molecule import Molecule
 from ..moptions.read_options2 import RottenOptions, load_qcdb_defaults
-from ..intf_psi4.options import load_cfour_defaults_from_psi4, load_psi4_defaults
-from ..intf_nwchem.options import load_nwchem_defaults
-from ..intf_gamess.options import load_gamess_defaults
+from ..programs.psi4.options import load_cfour_defaults_from_psi4, load_psi4_defaults
+from ..programs.nwchem.options import load_nwchem_defaults
+from ..programs.gamess.options import load_gamess_defaults
 
 
 def clean_nu_options():

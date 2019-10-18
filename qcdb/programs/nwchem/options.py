@@ -1,7 +1,7 @@
 import collections
 
-from ..moptions.read_options2 import RottenOption, AliasKeyword
-from ..moptions import parsers
+from ...moptions.read_options2 import RottenOption, AliasKeyword
+from ...moptions import parsers
 
 #from ..exceptions import *
 #from . import parsers

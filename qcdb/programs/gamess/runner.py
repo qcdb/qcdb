@@ -16,16 +16,15 @@ from qcengine.programs.util import PreservingDict
 from qcengine.programs.gamess import GAMESSHarness
 from qcengine.programs.gamess.keywords import format_keywords
 
-from .. import __version__
 #from .. import moptions
-from .. import qcvars
+from ... import qcvars
 #from ..driver.driver_helpers import print_variables
 #from ..exceptions import *
 #from ..iface_psi4.options import query_options_defaults_from_psi
-from ..libmintsbasisset import BasisSet
-from ..util import provenance_stamp
-from ..molecule import Molecule
-from ..pdict import PreservingDict
+from ...libmintsbasisset import BasisSet
+from ...util import provenance_stamp
+from ...molecule import Molecule
+from ...pdict import PreservingDict
 from .molbasopt import muster_and_format_molecule_and_basis_for_gamess
 from .harvester import muster_modelchem, muster_inherited_options
 

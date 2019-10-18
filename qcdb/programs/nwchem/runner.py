@@ -15,21 +15,19 @@ from qcengine.programs.util import PreservingDict
 from qcengine.programs.nwchem import NWChemHarness
 from qcengine.programs.nwchem.keywords import format_keywords
 
-from .. import __version__
-from .. import moptions
-from .. import qcvars
-from ..driver.driver_helpers import print_variables
-from ..exceptions import *
+from ... import moptions
+from ... import qcvars
+#from ..exceptions import *
 #from ..iface_psi4.options import query_options_defaults_from_psi
-from ..libmintsbasisset import BasisSet
-from ..util import print_jobrec, provenance_stamp
+from ...libmintsbasisset import BasisSet
+from ...util import print_jobrec, provenance_stamp
 #from ..pdict import PreservingDict
 from . import harvester
 from .worker import nwchem_subprocess
 #from .molbas import * #format_molecule_for_nwchem, format_basis_for_nwchem, format_basis_for_nwchem_puream, local_prepare_options_for_modules
 from .molbasopt import format_molecule, muster_and_format_basis_for_nwchem
 from .harvester import muster_inherited_options, format_modelchem_for_nwchem
-from ..moptions.options import reconcile_options
+from ...moptions.options import reconcile_options
 
 
 def run_nwchem(name, molecule, options, **kwargs):

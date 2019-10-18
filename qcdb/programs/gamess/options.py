@@ -1,5 +1,5 @@
-from ..moptions.read_options2 import RottenOption
-from ..moptions import parsers
+from ...moptions.read_options2 import RottenOption
+from ...moptions import parsers
 
 
 def load_gamess_defaults(options):

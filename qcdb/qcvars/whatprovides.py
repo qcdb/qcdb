@@ -178,10 +178,10 @@ def return_energy_components():
 
     # Integrate CFOUR methods
     # TODO rearrange imports
-    from ..intf_cfour.harvester import cfour_psivar_list
+    from ..programs.cfour.harvester import cfour_psivar_list
     VARH.update(cfour_psivar_list())
     VARH.update(nwchem_psivar_list())
-    from ..intf_gamess.harvester import gamess_psivar_list
+    from ..programs.gamess.harvester import gamess_psivar_list
     VARH.update(gamess_psivar_list())
     return VARH
 

@@ -14,13 +14,12 @@ from qcengine.programs.util import PreservingDict
 from qcengine.programs.psi4 import Psi4Harness
 #from qcengine.programs.cfour.keywords import format_keywords, format_keyword
 
-from .. import __version__
-from .. import qcvars
+from ... import qcvars
 #from ..driver.driver_helpers import print_variables
-from ..exceptions import *
-from ..util import provenance_stamp
-from ..molecule import Molecule
-from ..pdict import PreservingDict
+#from ..exceptions import *
+from ...util import provenance_stamp
+from ...molecule import Molecule
+from ...pdict import PreservingDict
 #from .worker import psi4_subprocess
 from .botanist import muster_inherited_options
 

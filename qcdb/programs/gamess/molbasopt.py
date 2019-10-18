@@ -2,7 +2,7 @@ import uuid
 
 import qcelemental as qcel
 
-from ..molecule import Molecule
+from ...molecule import Molecule
 
 
 def muster_and_format_molecule_and_basis_for_gamess(molrec, ropts, qbs, verbose=1):

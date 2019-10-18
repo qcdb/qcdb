@@ -8,7 +8,7 @@ from .addons import *
 import qcelemental as qcel
 
 import qcdb
-from qcdb.intf_dftd3 import runner as dftd3
+from qcdb.programs.dftd3 import runner as dftd3
 
 
 eneyne = """
