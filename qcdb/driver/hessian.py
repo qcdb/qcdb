@@ -41,7 +41,7 @@ import numpy as np
    
 from ..exceptions import *
 from ..molecule import Molecule
-from .. import moptions
+from ..keyword import register_kwds
 from .. import util
 from .. import vib
 from . import pe
@@ -52,7 +52,7 @@ from .proc_table import procedures
 from .gradient import gradient
 
 
-@moptions.register_opts(pe.nu_options)
+@register_kwds(pe.nu_options)
 def hessian(name, **kwargs):
 #    r"""Function complementary to :py:func:`~frequency`. Computes force
 #    constants, deciding analytic, finite difference of gradients, or
@@ -467,7 +467,7 @@ def hessian(name, **kwargs):
 #            return wfn.hessian()
 
 
-@moptions.register_opts(pe.nu_options)
+@register_kwds(pe.nu_options)
 def frequency(name, **kwargs):
 #    r"""Function to compute harmonic vibrational frequencies.
 #

@@ -1,7 +1,7 @@
 from __future__ import division
 import re
 
-from ..exceptions import *
+from ..exceptions import KeywordValidationError
 
 
 def enum(inputval):
@@ -11,9 +11,10 @@ def enum(inputval):
         if x.upper() in allowed:
             return x.upper()
         else:
-            raise OptionValidationError(
-                """Not allowed value: {} not in {}""".format(inputval, allowed))
+            raise KeywordValidationError("""Not allowed value: {} not in {}""".format(inputval, allowed))
+
     return closedenum
+
 
 def enum_bool(inputval):
     allowed = inputval.upper().split()
@@ -27,8 +28,8 @@ def enum_bool(inputval):
             else:
                 return x.upper()
         else:
-            raise OptionValidationError(
-                """Not allowed value: {} not in {}""".format(inputval, allowed))
+            raise KeywordValidationError("""Not allowed value: {} not in {}""".format(inputval, allowed))
+
     return closedenum
 
 
@@ -39,8 +40,8 @@ def intenum(inputval):
         if x in allowed:
             return x
         else:
-            raise OptionValidationError(
-                """Not allowed integer value: {} not in {}""".format(inputval, allowed))
+            raise KeywordValidationError("""Not allowed integer value: {} not in {}""".format(inputval, allowed))
+
     return closedenum
 
 
@@ -51,8 +52,9 @@ def casesensitive_enum(inputval):
         if x in allowed:
             return x
         else:
-            raise OptionValidationError(
-                """Not allowed case-sensitive value: {} not in {}""".format(inputval, allowed))
+            raise KeywordValidationError("""Not allowed case-sensitive value: {} not in {}""".format(
+                inputval, allowed))
+
     return closedenum
 
 
@@ -65,8 +67,7 @@ def boolean(inputval):
     elif no.match(str(inputval)):
         return False
     else:
-        raise OptionValidationError(
-            """Can't interpret into boolean: {}""".format(inputval))
+        raise KeywordValidationError("""Can't interpret into boolean: {}""".format(inputval))
 
 
 def sphcart(inputval):
@@ -78,7 +79,7 @@ def sphcart(inputval):
     elif cart.match(str(inputval)):
         return False
     else:
-        raise OptionValidationError(
+        raise KeywordValidationError(
             """Can't interpret into boolean True (sph) or False (cart): {}""".format(inputval))
 
 
@@ -107,40 +108,35 @@ def percentage(inputval):
     if 0.0 <= inputval <= 100.0:
         return float(inputval)
     else:
-        raise OptionValidationError(
-            'Percentage should be between 0 and 100: {}'.format(inputval))
+        raise KeywordValidationError('Percentage should be between 0 and 100: {}'.format(inputval))
 
 
 def nonnegative_float(inputval):
     if 0.0 <= inputval:
         return float(inputval)
     else:
-        raise OptionValidationError(
-            'Float should be non-negative: {}'.format(inputval))
+        raise KeywordValidationError('Float should be non-negative: {}'.format(inputval))
 
 
 def positive_integer(inputval):
     if inputval > 0 and float(inputval).is_integer():
         return int(inputval)
     else:
-        raise OptionValidationError(
-            'Positive integer, if you please: {}'.format(inputval))
+        raise KeywordValidationError('Positive integer, if you please: {}'.format(inputval))
 
 
 def nonnegative_integer(inputval):
     if inputval > -1 and float(inputval).is_integer():
         return int(inputval)
     else:
-        raise OptionValidationError(
-            'Non-negative integer number, if you please: {}'.format(inputval))
+        raise KeywordValidationError('Non-negative integer number, if you please: {}'.format(inputval))
 
 
 def integer(inputval):
     if float(inputval).is_integer():
         return int(inputval)
     else:
-        raise OptionValidationError(
-            'Integer number, if you please: {}'.format(inputval))
+        raise KeywordValidationError('Integer number, if you please: {}'.format(inputval))
 
 
 def parse_convergence(inputval):
@@ -150,7 +146,7 @@ def parse_convergence(inputval):
     elif inputval > 0 and inputval < 5:
         return inputval
     else:
-        raise OptionValidationError('wth! you call this a convergence criterion? {}'.format(inputval))
+        raise KeywordValidationError('wth! you call this a convergence criterion? {}'.format(inputval))
 
 
 def parse_memory(inputval, min_mem_allowed=262144000):
@@ -207,9 +203,10 @@ def parse_memory(inputval, min_mem_allowed=262144000):
             val = float(matchobj.group(1))
             units = matchobj.group(2)
         else:
-            raise OptionValidationError("""Invalid memory specification: {}. Try 5e9 or '5 gb'.""".format(repr(inputval)))
+            raise KeywordValidationError("""Invalid memory specification: {}. Try 5e9 or '5 gb'.""".format(
+                repr(inputval)))
     else:
-        raise OptionValidationError("""Invalid type {} in memory specification: {}. Try 5e9 or '5 gb'.""".format(
+        raise KeywordValidationError("""Invalid type {} in memory specification: {}. Try 5e9 or '5 gb'.""".format(
             type(inputval), repr(inputval)))
 
     # Units decimal or binary?
@@ -230,8 +227,9 @@ def parse_memory(inputval, min_mem_allowed=262144000):
 
     # Check minimum memory requirement
     if memory_amount < min_mem_allowed:
-        raise OptionValidationError("""set_memory(): Requested {:.3} MiB ({:.3} MB); minimum 250 MiB (263 MB). Please, sir, I want some more.""".format(
-                memory_amount / 1024 ** 2, memory_amount / 1000 ** 2))
+        raise KeywordValidationError(
+            """set_memory(): Requested {:.3} MiB ({:.3} MB); minimum 250 MiB (263 MB). Please, sir, I want some more."""
+            .format(memory_amount / 1024**2, memory_amount / 1000**2))
 
     return memory_amount
 

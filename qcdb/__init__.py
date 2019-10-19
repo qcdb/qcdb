@@ -64,6 +64,7 @@ from .driver.yaml import yaml_run
 
 from .molecule import Molecule
 from .basisset import BasisSet, basishorde
+from .keyword import AliasKeyword, Keyword, Keywords
 from . import vib
 
 ## Load items that are useful to access from an input file

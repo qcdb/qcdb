@@ -1,6 +1,6 @@
 import collections
 
-from ...moptions.read_options2 import RottenOption
+from ...keyword import Keyword
 
 
 def load_psi4_defaults(peoptions):
@@ -22,7 +22,7 @@ def load_psi4_defaults(peoptions):
                 keyword = m + '__' + o
 
             peoptions.add('psi4',
-                          RottenOption(keyword=keyword,
+                          Keyword(keyword=keyword,
                                        default=v['value'],
                                        validator=p4_validator))
 
@@ -43,7 +43,7 @@ def load_cfour_defaults_from_psi4(peoptions):
     for o, v in opts.items():
         if o.startswith('CFOUR_'):
             peoptions.add('cfour',
-                          RottenOption(keyword=o[6:],
+                          Keyword(keyword=o[6:],
                                        default=v['value'],
                                        validator=_basic_validator))
 
@@ -56,7 +56,7 @@ def load_nwchem_defaults_from_psi4(peoptions):
     for o, v in opts.items():
         if o.startswith('NWCHEM_'):
             peoptions.add('nwchem',
-                          RottenOption(keyword=o[7:],
+                          Keyword(keyword=o[7:],
                                        default=v['value'],
                                        validator=_basic_validator))
 
@@ -69,7 +69,7 @@ def load_gamess_defaults_from_psi4(peoptions):
     for o, v in opts.items():
         if o.startswith('GAMESS_'):
             peoptions.add('gamess',
-                          RottenOption(keyword=o[7:],
+                          Keyword(keyword=o[7:],
                                        default=v['value'],
                                        validator=_basic_validator))
 

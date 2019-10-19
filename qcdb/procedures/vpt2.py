@@ -53,9 +53,8 @@ from qcelemental.models import ResultInput
 import qcengine as qcng
 
 from ..driver import pe
-from .. import moptions
 from ..util import provenance_stamp
-from ..moptions.read_options2 import RottenOptions
+from ..keyword import Keywords, register_kwds
 from ..driver.driver_util import kwargs_lower, get_package
 from ..driver.driver_helpers import get_active_molecule
 from ..driver.proc_table import procedures
@@ -100,7 +99,7 @@ def run_cfour_module(xmod):
     return c4out
 
 
-@moptions.register_opts(pe.nu_options)
+@register_kwds(pe.nu_options)
 def vpt2(name, **kwargs):
     """Perform vibrational second-order perturbation computation through
     Cfour to get anharmonic frequencies. This version uses c4 for the disp
@@ -198,7 +197,7 @@ def vpt2(name, **kwargs):
     shelf = shelve.open(current_directory + '/vpt2scratch.shelf', writeback=True)
 
     # Cfour keywords to request vpt2 analysis through findif gradients
-    c000_opts = RottenOptions()
+    c000_opts = Keywords()
     pe.load_options(c000_opts)
     c000_opts.require('CFOUR', 'VIBRATION', 'FINDIF', **kwgs)
     c000_opts.require('CFOUR', 'FREQ_ALGORITHM', 'PARALLEL', **kwgs)

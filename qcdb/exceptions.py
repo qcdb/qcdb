@@ -159,8 +159,8 @@ class FeatureDeprecated(QcdbException):
         print('\nFeature deprecated: {}\n\n'.format(msg))
 
 
-class OptionValidationError(QcdbException):
-    """Error called when try to set illegitimate value for an option."""
+class KeywordValidationError(QcdbException):
+    """Error called when try to set illegitimate value for a keyword."""
     def __init__(self, msg=''):
         pass
         #QcdbException.__init__(self, msg)
@@ -168,8 +168,8 @@ class OptionValidationError(QcdbException):
         #print('\nFeature deprecated: {}\n\n'.format(msg))
 
 
-class OptionReconciliationError(QcdbException):
-    """Error called when conflicting values given with equal priority for an option."""
+class KeywordReconciliationError(QcdbException):
+    """Error called when conflicting values given with equal priority for a keyword."""
     def __init__(self, msg=''):
         pass
 

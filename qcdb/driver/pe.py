@@ -4,7 +4,8 @@ from qcelemental.util import which, which_import
 
 from .. import data_dir
 from ..molecule import Molecule
-from ..moptions.read_options2 import RottenOptions, load_qcdb_defaults
+from ..keyword.read_options import load_qcdb_defaults
+from ..keyword import Keywords
 from ..programs.psi4.options import load_cfour_defaults_from_psi4, load_psi4_defaults
 from ..programs.nwchem.options import load_nwchem_defaults
 from ..programs.gamess.options import load_gamess_defaults
@@ -12,7 +13,7 @@ from ..programs.gamess.options import load_gamess_defaults
 
 def clean_nu_options():
     global nu_options
-    nu_options = RottenOptions()
+    nu_options = Keywords()
 
 
 def load_nu_options():

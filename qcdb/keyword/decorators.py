@@ -3,7 +3,7 @@ import uuid
 from functools import wraps
 
 
-def register_opts(ros):
+def register_kwds(ros):
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -16,11 +16,15 @@ def register_opts(ros):
             ros.unwind_by_accession(accession)
             #print(ros.print_changed())
             return ret
+
         return wrapper
+
     return decorator
 
 
 from ..driver import driver_helpers
+
+
 def def_mol():
     def decorator(func):
         @wraps(func)
@@ -30,5 +34,7 @@ def def_mol():
             kwargs['molecule'] = mol
             ret = func(*args, **kwargs)
             return ret
+
         return wrapper
+
     return decorator

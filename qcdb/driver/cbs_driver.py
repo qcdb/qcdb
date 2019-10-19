@@ -12,7 +12,7 @@ from ..exceptions import *
 from . import pe
 from . import driver_util
 from . import driver_helpers
-from .. import moptions
+from ..keyword import register_kwds
 #from . import pe
 #from .driver import options
 from .. import util
@@ -155,7 +155,7 @@ def _cbs_gufunc(func, total_method_name, molecule, **kwargs):
 ##  Start of Complete Basis Set  ##
 ###################################
 
-@moptions.register_opts(pe.nu_options)
+@register_kwds(pe.nu_options)
 def cbs(func, label, **kwargs):
     r"""Function to define a multistage energy method from combinations of
     basis set extrapolations and delta corrections and condense the

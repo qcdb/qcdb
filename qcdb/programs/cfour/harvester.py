@@ -37,7 +37,7 @@ from qcelemental.models import Molecule
 
 from ...exceptions import ValidationError
 #from ..molecule import Molecule
-from ...moptions.options import conv_float2negexp
+from ...util import conv_float2negexp
 
 
 #def nu_muster_memory(mem, ropts, verbose=1):

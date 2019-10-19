@@ -7,7 +7,6 @@ from ..exceptions import *
 #from . import pe
 #from . import driver_util
 #from . import driver_helpers
-#from .. import moptions
 ##from . import pe
 ##from .driver import options
 #from .. import util

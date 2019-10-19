@@ -1,7 +1,6 @@
 import collections
 
-from ...moptions.read_options2 import RottenOption, AliasKeyword
-from ...moptions import parsers
+from ...keyword import parsers, Keyword, AliasKeyword
 
 #from ..exceptions import *
 #from . import parsers
@@ -10,7 +9,7 @@ from ...moptions import parsers
 def load_nwchem_defaults(options):
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='translate_psi4',
             default=True,
             validator=parsers.boolean,
@@ -19,7 +18,7 @@ def load_nwchem_defaults(options):
     #Memory specifications
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='memory',
             default='400 mb',
             validator=parsers.parse_memory,
@@ -27,7 +26,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='total_memory',
             default='400 mb',
             validator=parsers.parse_memory,
@@ -35,7 +34,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='stack_memory',
             default='100 mb',
             validator=parsers.parse_memory_nomin,
@@ -43,7 +42,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='heap_memory',
             default='100 mb',
             validator=parsers.parse_memory_nomin,
@@ -51,7 +50,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='global_memory',
             default='200 mb',
             validator=parsers.parse_memory_nomin,
@@ -60,7 +59,7 @@ def load_nwchem_defaults(options):
     #Geometry options
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='geometry_center',
             default=True,
             validator=parsers.boolean,
@@ -70,7 +69,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='geometry_autosym',
             default=True,
             validator=parsers.boolean,
@@ -78,7 +77,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='geometry_autoz',
             default=True,
             validator=parsers.boolean,
@@ -88,7 +87,7 @@ def load_nwchem_defaults(options):
    #Top level options
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='charge',
             default=0,
             validator=lambda x: float(x),
@@ -96,7 +95,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='print',
             default='medium',
             validator=parsers.enum('debug high medium low none'),
@@ -105,104 +104,104 @@ def load_nwchem_defaults(options):
         ))
 
     #Property block
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__all',
         default= False,
         validator= parsers.boolean,
         glossary= 'All keyword under property generates information about all currently available properties in NWCHEM.'))
     
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__center',
         default= 'coc',
         validator= parsers.enum('com coc origin arb'), #arb need cartesian coordinates
         glossary= 'Center of expansion options for dipole, quadrople, and octupole calculations. com = center of mass; coc = center of charge; origin; arb is any arbitrary point that must be accompanied by cartesian coordinates.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__nbofile',
         default= False,
         validator= parsers.boolean,
         glossary= 'Creates an input file to be used as input to the stand-alone NBO code. All other properties are calculated upon request.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__dipole',
         default= False,
         validator= parsers.boolean,
         glossary= 'Determine dipole moment of molecule.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__quadrupole',
         default= False,
         validator= parsers.boolean,
         glossary= 'Determine quadrople moment'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__octupole',
         default= False,
         validator= parsers.boolean,
         glossary= 'Determine octupole moment'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__mulliken',
         default= False,
         validator= parsers.boolean,
         glossary= 'Mulliken population analysis and bond order analysis'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__esp',
         default= False,
         validator= parsers.boolean,
         glossary= 'Electrostatic potential (diamagnetic shielding) at nuclei'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__efield',
         default= False,
         validator= parsers.boolean,
         glossary= 'Electric field at nuclei'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__efieldgrad',
         default= False,
         validator= parsers.boolean,
         glossary= 'Electric field gradient at nuclei'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__efieldgradz4', #nwc 6.8 option
         default= False,
         validator= parsers.boolean,
         glossary= 'Electric field gradients with relativistic effects.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__gshift',
         default= False,
         validator= parsers.boolean,
         glossary='Gshift')) #nwc 6.8 option
     
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__electrondensity',
         default= False,
         validator= parsers.boolean,
         glossary= 'Electron and spin density at nuclei'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__hyperfine',
         default= False,
         validator= parsers.boolean,
         glossary= 'NMR hyperfine coupling (Fermi-Contact and Spin-Dipole expectation values')) 
     #discrepancy in site & nwc 6.8 gh wiki but hyperfine also takes multiple integer input needed
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__aimfile',
         default= False,
         validator= parsers.boolean,
         glossary='Generates AIM Wavefunction files (.wfn | .wfx) which can be used with various codes.')) #nwc 6.8 option
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__moldenfile',
         default= False,
         validator= parsers.boolean,
         glossary= 'Generates files using Molden format (.molden), additional compatible files can be created')) #nwc 6.8 option
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__molden_norm',
         default= 'none',
         validator= parsers.enum('janpa nwchem none'),
@@ -212,49 +211,49 @@ def load_nwchem_defaults(options):
     
     #Property__reponse: not as nested as other opts. Additional opts on same tier
     #Following property opts need response which req two numeric- one integer for response order; other frequency (float)
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__velocity',
         default= False,
         validator= parsers.boolean,
         glossary= 'Use modified velocity gauge for electric dipole'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__orbeta',
         default= False,
         validator= parsers.boolean,
         glossary= ' calculation optical rotation \'beta\' directly. See J. Autschbah, Comp. Lett. 3, (2007), 131.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__giao',
         default= False,
         validator= parsers.boolean,
         glossary= 'Gauge-including atomic orbital optical rotation, will force orbeta'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__bdtensor',
         default= False,
         validator= parsers.boolean,
         glossary= 'Fully origin-invariant optical rotation tensor is calculated [the B-tilde]. See J. Autschbach, ChemPhysChem 12 (2011), 3224 and B. Moore II, M. Srebro, J. Autschbach, J. Chem Theory Comput. 8 (2012), 4336'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__analysis',
         default= False,
         validator= parsers.boolean,
         glossary= 'Analysis of response tensors in terms of molecular orbitals. if \'pmlocalization\' then the analysis performed in terms of Pipek-Mezey localized MOs'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__damping',
         default= 0.007,
         validator= lambda x: float(x), 
         glossary= 'Complex response functions. See M. Krykunov, M. D. Kundrat, J. Autschbach, J Chem Phy 125 (2006) 194110'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__pmlocalization',
         default= False,
         validator= parsers.boolean,
         glossary= 'Pipek-Mezey localized MOs'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'property__convergence',
         default= 1.0e-4,
         validator= parsers.parse_convergence,
@@ -262,13 +261,13 @@ def load_nwchem_defaults(options):
 
     #Relativistic block- electronic approximations
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword = 'relativistic__zora',
         default = 'on',
         validator = parsers.enum_bool('on off true false'),
         glossary= 'Zeroth Order regular approximation (ZORA) is the spin-free and spin-orbit one-eectron zeroth-order regular approximation. Default is ON.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'relativistic__douglas_kroll', 
         default= 'dkh',
         validator= parsers.enum_bool('on off true false fpp dkh dkfull dk4 k4full'),
@@ -276,68 +275,68 @@ def load_nwchem_defaults(options):
         and DKFULL are based on external-field projection operators. DKFULL is considerably better approimxations than the former since it includes certain cross-product integral terms ignored in the DKH approach. 
         DK3 refers to third-order Douglas-Kroll approximation without cross-product integral terms; DK3FULL with cross-product integral terms.''')) 
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'relativistic__dyall_mod_dirac',
         default= 'on',
         validator= parsers.enum_bool('on off true false nesc1e nesc2e'), #NESC2E options too nested
         glossary='''Dyall's modified Dirac Hamiltonian. Default is ON and will default to one-electron approximation.'''))
 
     #Raman block (used for polarizability calculations; req. property block)
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'raman__normal',
         default= True,
         validator= parsers.boolean,
         glossary= 'Normal is default for Raman calculations in NWChem.'))
     
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'raman__resonance',
         default= False,
         validator= parsers.boolean,
         glossary= 'Raman calculations using resonance. Default is normal.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'raman__lorentzian',
         default= True,
         validator= parsers.boolean,
         glossary= 'Raman calculations using Lorentzian function. Is default.'))
     
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'raman__gaussian',
         default= False,
         validator= parsers.boolean,
         glossary= 'Raman calculations using the Gaussian function. Default is Lorentzian function.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'raman__low',
         default= 0.0,
         validator= lambda x: float(x),
         glossary= 'Range in that generates Raman spectrum plot in cm^-1. Option LOW and HIGH modify the frequency range'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'raman__high',
         default= 0.0,
         validator= lambda x: float(x),
         glossary= 'Range in that generates Raman spectrum plot in cm^-1. Option LOW and HIGH modify the frequency range'))
     
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'raman__first',
         default= 7,
         validator= parsers.nonnegative_integer,
         glossary= 'Range of indices of normal modes used in the plot. Default is 7. Option FIRST and LAST modify the range of indices.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'raman__last',
         default= 8, #see what would be appropriate range? Just placeholder
         validator= parsers.nonnegative_integer,
         glossary= 'Range of indices of normal modes used in the plot. Default is 7. Option FIRST and LAST modify the range of indices.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'raman__width',
         default= 20.0,
         validator= lambda x: float(x),
         glossary= 'Controls width of smoothed peaks in Raman plot. Default is 20.0'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'raman__dq',
         default= 0.01,
         validator= lambda x: float(x),
@@ -346,7 +345,7 @@ def load_nwchem_defaults(options):
     #SCF block
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='scf__rhf',
             default=True,
             validator=parsers.boolean, 
@@ -354,7 +353,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='scf__uhf',
             default=False,
             validator=parsers.boolean,  # rather have one kw as enum but that's not the nwc way ("RHF UHF ROHF"),
@@ -362,7 +361,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='scf__rohf',
             default=True,
             validator=parsers.boolean,  # rather have one kw as enum but that's not the nwc way ("RHF UHF ROHF"),
@@ -370,55 +369,55 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword= 'scf__singlet',
             default= True,
             validator= parsers.boolean,
             glossary= 'Keyword to specify number of singly occupied orbitals for calculation. Singlet refers to closed shell and is the default.'))
     options.add('nwchem', 
-        RottenOption(
+        Keyword(
             keyword= 'scf__doublet',
             default= False,
             validator= parsers.boolean,
             glossary= 'Specifies one singly occupied orbital.'))
     
     options.add('nwchem',
-        RottenOption(
+        Keyword(
             keyword= 'scf__triplet',
             default= False,
             validator= parsers.boolean,
             glossary= 'Specifies two singly occupied orbitals.'))
 
     options.add('nwchem',
-        RottenOption(
+        Keyword(
             keyword= 'scf__quartet',
             default= False,
             validator= parsers.boolean,
             glossary= 'Specifies three singly occupied orbitals.'))
 
     options.add('nwchem',
-        RottenOption(
+        Keyword(
             keyword= 'scf__quintet',
             default= False,
             validator= parsers.boolean,
             glossary= 'Specifies four singly occupied orbitals.'))
 
     options.add('nwchem',
-        RottenOption(
+        Keyword(
             keyword= 'scf__sextet',
             default= False,
             validator= parsers.boolean,
             glossary= 'Specifies five singly occupied orbitals.'))
 
     options.add('nwchem',
-        RottenOption(
+        Keyword(
             keyword= 'scf__septet',
             default= False,
             validator= parsers.boolean,
             glossary= 'Specifies six singly occupied orbitals.'))
 
     options.add('nwchem',
-        RottenOption(
+        Keyword(
             keyword= 'scf__octet',
             default= False,
             validator= parsers.boolean,
@@ -426,7 +425,7 @@ def load_nwchem_defaults(options):
     
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='scf__nopen',
             default=1,
             validator=parsers.nonnegative_integer,
@@ -434,7 +433,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='scf__thresh',
             default=1.e-4,
             validator=parsers.parse_convergence,
@@ -442,7 +441,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='scf__maxiter',
             default=20,
             validator=parsers.nonnegative_integer,
@@ -450,7 +449,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='scf__diis',
             default=False,
             validator=parsers.boolean,
@@ -458,7 +457,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='scf__direct', 
             default=False, 
             validator=parsers.boolean, 
@@ -467,7 +466,7 @@ def load_nwchem_defaults(options):
     #SCF semidirect options- Array okay? Check with LB
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__semidirect__filesize',
             default=0,
             validator=parsers.nonnegative_integer,
@@ -477,7 +476,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__semidirect__memsize',
             default=0,
             validator=parsers.nonnegative_integer,
@@ -488,7 +487,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='scfsd__filename',
             default='',
             validator=lambda x: x.lower(),  #need to specify file extensions?
@@ -498,7 +497,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='scf__sym',
             default=True,
             validator=parsers.boolean,
@@ -506,7 +505,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='scf__adapt',
             default=True,
             validator=parsers.boolean,
@@ -514,7 +513,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='scf__tol2e',
             default=1.e-7,
             validator=parsers.parse_convergence,
@@ -526,7 +525,7 @@ def load_nwchem_defaults(options):
     #          set nwchem_scf_vectors [input, try1.movecs, output, try2.movecs, ...] -*/
     #     options.add("NWCHEM_SCF_VECTORS", new ArrayType())
 
-    #    options.add('nwchem', RottenOption(
+    #    options.add('nwchem', Keyword(
     #       keyword='scf_vectors'
     #      default=''
     #     validator=''
@@ -534,7 +533,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='scf__profile',
             default=False,
             validator=parsers.boolean,
@@ -542,7 +541,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword= 'scf__nr', 
             default= 0.1, 
             validator= lambda x: float(x), 
@@ -550,7 +549,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='scf__print',
             default='medium',
             validator=parsers.enum('none low medium high debug'),
@@ -558,7 +557,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='scf__noprint',
             default='none',
             validator=parsers.enum('none low medium high debug'),
@@ -568,7 +567,7 @@ def load_nwchem_defaults(options):
     #required options
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='mcscf__active',
             default=0,
             validator=parsers.nonnegative_integer,
@@ -576,7 +575,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='mcscf__actelec',
             default=0,
             validator=parsers.nonnegative_integer,
@@ -584,7 +583,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='mcscf__multiplicity',
             default=1,
             validator=parsers.nonnegative_integer,
@@ -592,7 +591,7 @@ def load_nwchem_defaults(options):
     #alternative to mcscf_multiplicity & mcscf_symmetry can use mcscf_state
 #    options.add(
 #        'nwchem',
-#        RottenOption(
+#        Keyword(
 #            keyword='mcscf_state',
 #            default='',
 #            validator=parsers.enum(' 1a1 3b1'),
@@ -600,7 +599,7 @@ def load_nwchem_defaults(options):
 #            'Defines the spatial symmetry and multiplicity. Format is [multiplicity][state], e.g. 3b2 for triplet in B2.'))
     options.add(
             'nwchem',
-            RottenOption(
+            Keyword(
                 keyword='mcscf_level',
                 default=0.1,
                 validator=parsers.nonnegative_float,
@@ -608,12 +607,12 @@ def load_nwchem_defaults(options):
 
     #Hessians | Vibrational Frequencies
     #Freq block
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'freq__reuse',
         default= '',
         validator= lambda x: x.lower(), #potentially make parsers to identify a proper string with *.hess
         glossary= 'Allows resuse of previously computed hessian'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'freq__animate',
         default= False,
         validator= parsers.boolean,
@@ -622,128 +621,128 @@ def load_nwchem_defaults(options):
         #other opts: mass redefinition, temp set
 
     #Driver block
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'driver__loose',
         default= False,
         validator= parsers.boolean,
         glossary= 'Convergence directive to specify standard sets of values. Can also toggle individual options gmax, grms, xmax, xrms.'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'driver__tight',
         default= False,
         validator= parsers.boolean,
         glossary= 'Convergence directive to specify standard sets of values. Can also toggle individual options gmax, grms, xmax, xrms.'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'driver__gmax',
         default= 0,
         validator= lambda x: float(x),
         glossary= 'Toggling the maximum gradient in the coordinates being used.'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'driver__grms',
         default= 0,
         validator= lambda x: float(x),
         glossary= 'Toggling the root mean square gradient in the coordinates being used.'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'driver__xmax',
         default= 0,
         validator= lambda x: float(x),
         glossary= 'Toggling the maximum of the Cartesian step.'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'driver__gmax',
         default= 0,
         validator= lambda x: float(x),
         glossary= 'Toggling the root mean square of the Cartesian step.'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'driver__trust',
         default= 0.3,
         validator= lambda x: float(x),
         glossary= 'Fixed trust radius to control the step. Default is 0.3.'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'driver__sadstp',
         default= 0.1,
         validator= lambda x: float(x),
         glossary= 'Trust radius used for the mode being maximized during a saddle-point search. Default is 0.1'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'driver__maxiter',
         default= 20,
         validator= parsers.nonnegative_integer,
         glossary= 'Geometry optimization iterations'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'driver__redoautoz',
         default= False,
         validator= parsers.boolean,
         glossary= 'Deletes hessian data and regenerates interal coordinates at current geometry. Useful if large change in geometry.'))
-   # options.add('nwchem', RottenOption(
+   # options.add('nwchem', Keyword(
    #     keyword= 'driver__xyz',
    #     default= '',
    #     validator= lambda x, #string for prefix of *.xyz
    #     glossary= 'Print geometry at each step.'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'driver__noxyz',
         default= False,
         validator= parsers.boolean,
         glossary= 'No printing of xyz geometries.'))
     
     #Stepper block
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'stepper__min',
         default= False,
         validator= parsers.boolean,
         glossary= 'Specifies minimum energy search.'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'stepper__ts',
         default= False,
         validator= parsers.boolean,
         glossary= 'Specifies transition state search.'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'stepper__track',
         default= 1,
         validator= parsers.nonnegative_integer,
         glossary= 'Tracks a specific mode during an optimization for transition state search.'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'stepper__maxiter',
         default= 20,
         validator= parsers.nonnegative_integer,
         glossary= 'Stepper iterations maximum'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'stepper__trust',
         default= 0.1,
         validator= lambda x: float(x),
         glossary= 'Size of steps stepper takes are controlled via trust radius (the max step allowed).'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'stepper__convggm',
         default= 8.0e-04,
         validator= parsers.parse_convergence,
         glossary= 'Convergence tolerance for the largest component of the gradient.'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'stepper__convgg',
         default= 1.0e-02,
         validator= parsers.parse_convergence,
         glossary= 'Covergence tolerance for the gradient norm for all degrees of freedom.'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'stepper__convge',
         default= 1.0e-04,
         validator= parsers.parse_convergence,
         glossary= 'Convergence tolerance for the energy differen in the stepper.'))
 
     #TDDFT block
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tddft__cis',
         default= False,
         validator= parsers.boolean,
         glossary= 'Option toggles the Tamm-Dancoff approximation of configuration interaction singles for TDDFT calculation. Default is RPA.')) 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tddft__rpa',
         default= True,
         validator= parsers.boolean,
         glossary= 'Option defaults to RPA.'))
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='tddft__nroots',
             default=1,
             validator=lambda x: float(x),
             glossary='The number of excited state roots in a TDDFT caclulation.'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tddft__maxvecs',
         default= 1000,
         validator= parsers.nonnegative_integer,
@@ -751,32 +750,32 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='tddft__singlet',
             default=True,
             validator=parsers.boolean,
             glossary=
             'Default is on. Requests the TDDFT calculation of singlet excited states when reference wave function is closed.'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tddft__nosinglet',
         default= False,
         validator= parsers.boolean,
         glossary= 'Suppresses the calculation of singlet excited states when the reerence wave function is closed shell. Default is SINGLET.'))
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='tddft__triplet',
             default=True,
             validator=parsers.boolean,
             glossary='Default is on. Request the calculation of triplet excited states when reference wave function is closed.'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tddft__notriplet',
         default= False,
         validator= parsers.boolean,
         glossary= 'Option suppresses the calculation of triplet excited states when the reference wave function is closed shell. The default option is TRIPLET.'))
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='tddft__thresh',
             default=1.0e-4,
             validator=lambda x: float(x),
@@ -785,29 +784,29 @@ def load_nwchem_defaults(options):
         ))
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='tddft__maxiter',
             default=100,
             validator=lambda x: float(x),
             glossary='Max iterations. Default is 100.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tddft__target',
         default= 1,
         validator= parsers.positive_integer,
         glossary= 'Option specifies which excited state root is being used for the geometrical derivative calculation.' ))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tddft__targetsym',
         default= 'None', #Need parser for symmetry of interest?
         validator= parsers.enum('None'),
         glossary= 'Required option when examining excited state geometry optimization. It is common that the order of excited states changes due to the geometry changes over the course of optimization. For frequency calculations, TARGETSYM must be set to none.'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tddft__symmetry',
         default= False,
         validator= parsers.boolean,
         glossary= 'Module will generate initial guess vectors transforming as the same irreducible representation as TARGETSYM. This causes the final excited state roots to be exclusively dominated by those with the specificed irreducible representation. May be useful for those interested in just optically allowed transitions, or in the geometry optimization of an excited state root with a particular irreducible representation. By default, SYMMETRY not set. Requires TARGETSYM.'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tddft__ecut',
         default= 0.0,
 	validator= lambda x: float(x),
@@ -819,7 +818,7 @@ def load_nwchem_defaults(options):
     #MP2 block
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='mp2__tight',
             default=False,
             validator=parsers.boolean,
@@ -828,7 +827,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='mp2__freeze__core',
             default=0,
             validator=parsers.nonnegative_integer,
@@ -842,7 +841,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='mp2__freeze__virtual',
             default=0,
             validator=parsers.nonnegative_integer,
@@ -850,7 +849,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='mp2__freeze__atomic',
             default=False,
             validator=parsers.bool_or_elem_dict,
@@ -871,7 +870,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='mp2__scs',
             default=True,
             validator=parsers.boolean,
@@ -879,7 +878,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='mp2__fss', 
             default=1.2, 
             validator=lambda x: float(x), 
@@ -887,7 +886,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='mp2__fos', 
             default=0.3, 
             validator=lambda x: float(x), 
@@ -896,7 +895,7 @@ def load_nwchem_defaults(options):
     #DFT block
     options.add(
             'nwchem',
-            RottenOption(
+            Keyword(
                 keyword= 'dft__odft',
                 default= False,
                 validator= parsers.boolean,
@@ -906,7 +905,7 @@ def load_nwchem_defaults(options):
     #DFT Convergence
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__convergence__energy',
             default=1.e-6,
             #validator=lambda x: float(x),
@@ -915,7 +914,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__convergence__density',
             default=1.e-5,
             validator=lambda x: float(x),
@@ -923,7 +922,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__convergence__gradient',
             default=5.e-4,
             validator=lambda x: float(x),
@@ -933,7 +932,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__convergence__hltol',
             default=0.1,
             validator=lambda x: float(x),
@@ -941,7 +940,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__convergence__dampon',
             default=0.0,
             validator=lambda x: float(x),
@@ -949,7 +948,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__convergence__dampoff',
             default=0.0,
             validator=lambda x: float(x),
@@ -957,7 +956,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__convergence__damp',
             default=0,
             validator=parsers.percentage,
@@ -965,7 +964,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__convergence__ncydp',
             default=2,
             validator=parsers.positive_integer,
@@ -973,7 +972,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__convergence__diison',
             default=0.0,
             validator=lambda x: float(x),
@@ -981,7 +980,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__convergence__diisoff',
             default=0.0,
             validator=lambda x: float(x),
@@ -989,7 +988,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__convergence__diis',
             default=10,
             validator=lambda x: float(x),
@@ -997,7 +996,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__convergence__ncyds',
             default=30,
             validator=parsers.positive_integer,
@@ -1006,7 +1005,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__convergence__levlon',
             default=0.0,
             validator=lambda x: float(x),
@@ -1016,7 +1015,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__convergence__levloff',
             default=0.0,
             validator=lambda x: float(x),
@@ -1024,7 +1023,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__convergence__lshift',
             default=0.5,
             validator=lambda x: float(x),
@@ -1034,7 +1033,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__convergence__ncysh',
             default=0,
             validator=lambda x: float(x),
@@ -1042,7 +1041,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__convergence__rabuck',
             default=25,
             validator=parsers.positive_integer,
@@ -1056,7 +1055,7 @@ def load_nwchem_defaults(options):
     #    perdew86 perdew 91 cpbe96 pw91lda slater vwn_1 vwn_2 vwn_3 vwn_4 vwn_5 vwn_1_rpa'''),
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__iterations',
             default=30, 
             validator=parsers.positive_integer,
@@ -1064,7 +1063,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__mult',
             default=1,
             validator=parsers.positive_integer,
@@ -1072,7 +1071,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__max_ovl',
             default=False,
             validator=parsers.boolean,
@@ -1080,7 +1079,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__smear',
             default=0.001,
             validator=lambda x: float(x),
@@ -1088,7 +1087,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__mulliken',
             default=False,
             validator=parsers.boolean,
@@ -1096,7 +1095,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__direct',
             default=False,
             validator=parsers.boolean,
@@ -1104,7 +1103,7 @@ def load_nwchem_defaults(options):
 
 #    options.add(
 #        'nwchem',
-#        RottenOption(
+#        Keyword(
 #            keyword='dft__semidirect__filesize',
 #            default='',  #default is disksize
 #            validator=parsers.positive_integer,
@@ -1112,15 +1111,15 @@ def load_nwchem_defaults(options):
 
 #    options.add(
 #        'nwchem',
-#        RottenOption(keyword='dft__semidirect__memsize', default='', validator=parsers.parse_memory, glossary='memory size in the semidirect options.'))
+#        Keyword(keyword='dft__semidirect__memsize', default='', validator=parsers.parse_memory, glossary='memory size in the semidirect options.'))
 #
 #    options.add(
 #        'nwchem',
-#        RottenOption(keyword='dft__semidirect__filename', default='', validator=lambda x: x.lower(), glosary='name of file in semidirect options.'))
+#        Keyword(keyword='dft__semidirect__filename', default='', validator=lambda x: x.lower(), glosary='name of file in semidirect options.'))
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__cgmin',
             default=False,
             validator=parsers.boolean,
@@ -1128,7 +1127,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__fukui',
             default=False,
             validator=parsers.boolean,
@@ -1136,7 +1135,7 @@ def load_nwchem_defaults(options):
     
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__print',
             default='medium',
             validator=parsers.enum('none low medium high debug'),
@@ -1146,13 +1145,13 @@ def load_nwchem_defaults(options):
     
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__noprint',
             default='none',
             validator=parsers.enum('none low medium high debug'),
             glossary='No print options for the DFT block. Default is none.'))
     #DFT XC [Functionals]
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword = 'dft__xc',
         default = '',
         validator = lambda x: x.lower(),
@@ -1161,7 +1160,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__grid__gausleg',
             default=(50, 10),
             validator=parsers.gridradang,
@@ -1171,7 +1170,7 @@ def load_nwchem_defaults(options):
 
     options.add(
         'nwchem',
-        RottenOption(
+        Keyword(
             keyword='dft__grid__lebedev',
             default=(50, 8),  # totally made up to roughly match gausleg
             validator=parsers.gridradang,
@@ -1184,7 +1183,7 @@ def load_nwchem_defaults(options):
     #CCSD block
     options.add(
             'nwchem',
-            RottenOption(
+            Keyword(
                 keyword= 'ccsd__maxiter',
                 default= 20,
                 validator= parsers.positive_integer,
@@ -1192,7 +1191,7 @@ def load_nwchem_defaults(options):
 
     options.add(
             'nwchem',
-            RottenOption(
+            Keyword(
                 keyword='ccsd__thresh',
                 default= 1.0e-6,
                 validator=parsers.parse_convergence,
@@ -1200,7 +1199,7 @@ def load_nwchem_defaults(options):
     
     options.add(
             'nwchem',
-            RottenOption(
+            Keyword(
                 keyword='ccsd__freeze',
                 default=0,
                 validator=parsers.nonnegative_integer,
@@ -1211,68 +1210,68 @@ def load_nwchem_defaults(options):
                 # freeze atomic O 1 Si 3
 
     #TCE block
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword='tce__dft',
         default=False,
         validator=parsers.boolean,
         glossary='Use DFT as TCE reference wave function. If not specified, default is SCF(HF).'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword='tce__scf',
         default=True,
         validator=parsers.boolean,
         glossary='The default TCE reference wavefunction. Set to True. Use False and tce__dft: True to turn on dft reference function.'))
     
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword='tce',
         default=True,
         validator=parsers.boolean,
         glossary='The switch for turning on the Tensor Contraction Engine (TCE). Not necessarily needed for couple cluster methods of singles and doubles (CCSD), but necessary for couple cluster theory for singles, doubles, and triples (CCSDT) and couple cluster theory for singles, doubles, triples, and quadruples (CCSDTQ). Default is on.'
             ))
     
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword='tce__ccsd',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of coupled cluster singles and doubles (CCSD). Can also activate EOM-CCSD with the tce__nroots option set.'))
    
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tce__ccsd_act',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of coupled-cluster singles and active doubles. Can also signify active-space EOMCCSD'))
 
-    options.add('nwchem',RottenOption(
+    options.add('nwchem',Keyword(
         keyword= 'tce__eaccsd',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of electron affinity EOMCCSD'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tce__ipccsd',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of ionization potential EOMCCSD.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword='tce__ccsd(t)',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of coupled cluster singles, doubles with perturbative connected triples'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tce__ccsdt',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of coupled cluster singles, doubles, and triples. Also activates EOM-CCSDT if needed.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tce__ccsd[t]',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of coupled cluster singles, doubles, and perturbative connected triples.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tce__ccsdta',
         default= False,
         validator= parsers.boolean,
@@ -1284,61 +1283,61 @@ def load_nwchem_defaults(options):
         
         All require defining relevant set of occupied active alpha and beta spiorbitals (ACTIVE_OA and ACTIVE_OB) and active unoccupied alpha and beta spinorbitals (ACTIVE_VA and ACTIVE_VB).'''))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tce__ccsdtq',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of coupled cluster singles, doubles, triples, and quadruples. Also, option for EOM-CCSDTQ')) 
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tce__ccsd(2)_t', #ccsd(2)_t
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of CCSD and perturbative (T)_t correction.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tce__ccsd(2)_tq', #ccsd(2)_tq
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of CCSD and perturbative CCSD(2) correction.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tce__ccsdt(2)_q', #ccsdt(2)_q
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of CCSDT and perturbative (CCSDT_Q) quadruples correction.')) #format from site weird
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tce__lccd',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of linearized coupled-cluster doubles (LCCD).'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tce__lccsd',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of linearized coupled-cluster singles and doubles.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tce__lrccsd',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of locally renormalized EOMCCSD.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tce__lrccsd(t)',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of CCSD with perturbative locally renomalized CCSD(T) correction.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tce__lrccsd(tq1)', 
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of CCSD with perturbative locally renomalized CCSD(TQ)(LR-CCSD(TQ)-1) correction.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tce__creomsd(t)',
         default= False,
         validator= parsers.boolean,
@@ -1347,99 +1346,99 @@ def load_nwchem_defaults(options):
         1- total energy of the k-th state
         2- the delta-corrected EOMCCSD excitation energy'''))
 
-    options.add('nwchem',RottenOption(
+    options.add('nwchem',Keyword(
         keyword= 'tce__creom(t)_ac',
         default= False,
         validator= parsers.boolean,
         glossary='TCE module option of active space CR-EOMCCSD(T) approach.'))
 
-    options.add('nwchem',RottenOption(
+    options.add('nwchem',Keyword(
         keyword= 'tce__qcisd',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of quadratic configuration interaction of singles and doubles.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tce__cisd',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of configuration interaction singles and doubles.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword='tce__cisdt',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of configuration interaction singles, doubles, and triples.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tce__cisdtq',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of configuration interaction singles, doubles, triples, and quadruples.'))
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword='tce__ccd',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of couple cluster doubles.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tce__mp2',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of Moller-Plesset perturbation theory to the second order (MP2).'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tce__mp3',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of Moller-Plesset perturbation theory to the third order (MP3).'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tce__mp4',
         default= False,
         validator= parsers.boolean,
         glossary= 'TCE module option of Moller-Plesset perturbation theory to the fourth order (MP4).'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword= 'tce__dipole',
         default= False,
         validator= parsers.boolean,
         glossary= 'Dipole moment calculation  built into TCE for both ground- and excited-states.'))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword='tce__thresh',
         default=1.e-4,
         validator=parsers.parse_convergence,
         glossary='TCE convergence threshold'))
     
-    options.add('nwchem',RottenOption(
+    options.add('nwchem',Keyword(
         keyword='tce__maxiter', 
         default=100, 
         validator=parsers.positive_integer, 
         glossary='TCE max iterations'))
     
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword='tce__io',
         default='',
         validator=lambda x: x.upper(),
         glossary='''Parallel I/O scheme specification. Available:
             FORTRAN, EAF, GA, SF, REPLICATED, DRA, GAEAF'''))
     
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword='tce__diis',
         default=5,
         validator=parsers.positive_integer,
         glossary='''Number of iterations for a DIIS extrapolation to be performed. Will accelerate excitation
             amplitude convergence. Default is 5.'''))
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword='tce__dipole',
         default= False,
         validator= parsers.boolean,
         glossary='''When set, will undergo another interative step for delta equation to find dipole moments 
                     and one-particle density matrix. Can do for both ground and excited states.'''))
  
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
        keyword='tce__freeze',
        default= 0,
        validator= parsers.nonnegative_integer,
@@ -1447,68 +1446,68 @@ def load_nwchem_defaults(options):
         #need to incorporate virtual/core distinction
         #Array TODO
     
-    options.add('nwchem',RottenOption(
+    options.add('nwchem',Keyword(
         keyword='tce__nroots',
         default=0,
         validator=parsers.nonnegative_integer,
         glossary='Number of excited states. Default is 0.'))
     
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword='tce__target',
         default=1,
         validator=parsers.positive_integer,
         glossary='TCE target root. Default is 1.'))
     
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword='tce__targetsym',
         default='',
         validator=lambda x: x.upper(),
         glossary='TCE target symmetry. Default is None.'))
     
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword='tce__2eorb',
         default=False,
         validator=parsers.boolean,
         glossary='''Economical option of storing two-electron integrals used in coupled cluster calculations,
         taking the difference of the RHF and ROHF values: on/off. Default is off.'''))
     
-    options.add('nwchem',RottenOption(
+    options.add('nwchem',Keyword(
         keyword='tce__2emet', 
         default=1, 
         validator=parsers.positive_integer, 
         glossary='Default is 1.'))
     
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword='tce__active_oa',
         default=1, 
         validator=parsers.positive_integer,
         glossary='Specify the number of occupied alpha spin-orbitals.'))
     
-    options.add('nwchem',RottenOption(
+    options.add('nwchem',Keyword(
         keyword='tce__active_ob',
         default=1,
         validator=parsers.positive_integer,
         glossary='Specify the number of occupied beta spin-orbitals.'))
     
-    options.add('nwchem',RottenOption(
+    options.add('nwchem',Keyword(
         keyword='tce__active_va',
         default=1,
         validator=parsers.positive_integer,
         glossary='Specify the number of unoccupied alpha spin-orbitals.'))
     
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword='tce__active_vb',
         default=1,
         validator=parsers.positive_integer,
         glossary='Specify the number of unoccupied beta spin-orbitals.'))
     
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword='tce__t3a_lvl',
         default= 1,
         validator= parsers.positive_integer,
         glossary='Set level in TCE CCSDTA. 1 uses largest set of triply excited amplitudes defined by at least one occupied and one unoccupied active spinorbitals labels. Level 2 uses triply excited amplitudes that carry at least two occupied and unoccupied active spinorbital labeles. Level 3 uses triply excited amplitudes that are defined by active indices only. will need ACTIVE_OA, ACTIVE_OB, ACTIVE_VA, ACTIVE_VB options as well.'))    
 
-    options.add('nwchem', RottenOption(
+    options.add('nwchem', Keyword(
         keyword='tce__tilesize', 
         default=1, 
         validator=parsers.positive_integer, 

@@ -39,7 +39,7 @@ import pprint
 pp = pprint.PrettyPrinter(width=120)
 
 from . import pe  # keep this at top of imports
-from .. import moptions
+from ..keyword import register_kwds
 from . import driver_util
 from . import driver_helpers
 from . import cbs_driver
@@ -342,7 +342,7 @@ from . proc_table import procedures
 #   
 #       """
 
-@moptions.register_opts(pe.nu_options)
+@register_kwds(pe.nu_options)
 def properties(name, **kwargs):
     r"""Function to compute the single-point electronic properties."""
 
@@ -509,7 +509,7 @@ def properties(name, **kwargs):
 #       >>> properties('cc2', properties=['rotation'])
 #   
 #       """
-@moptions.register_opts(pe.nu_options)
+@register_kwds(pe.nu_options)
 def properties(*args, **kwargs):
     r"""Function to compute various properties."""
 

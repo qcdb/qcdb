@@ -1,9 +1,7 @@
 import pytest
 
 import qcdb
-from qcdb.moptions.read_options2 import RottenOption, RottenOptions, AliasKeyword
-from qcdb.moptions import parsers
-from qcdb.moptions.optionsdec import register_opts
+from qcdb.keyword import parsers, register_kwds, AliasKeyword, Keyword, Keywords
 
 
 def validator(v):

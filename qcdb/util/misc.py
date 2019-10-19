@@ -49,3 +49,8 @@ def process_units(molrec):
         raise ValidationError('Insufficient information: {} & {}'.format(units, input_units_to_au))
 
     return funits, fiutau
+
+
+def conv_float2negexp(val: float) -> int:
+    """Least restrictive negative exponent of base 10 that achieves the floating point convergence criterium `val`."""
+    return -1 * int(math.floor(math.log(val, 10)))

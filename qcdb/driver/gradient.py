@@ -43,7 +43,7 @@ import copy
 import pprint
 pp = pprint.PrettyPrinter(width=120)
 
-from .. import moptions
+from ..keyword import register_kwds
 from ..exceptions import FeatureNotImplemented
 from . import pe
 from . import driver_util
@@ -53,7 +53,7 @@ from . import cbs_driver
 from .proc_table import procedures
 
 
-@moptions.register_opts(pe.nu_options)
+@register_kwds(pe.nu_options)
 def gradient(name, **kwargs):
 #       r"""Function complementary to :py:func:~driver.optimize(). Carries out one gradient pass,
 #       deciding analytic or finite difference.
