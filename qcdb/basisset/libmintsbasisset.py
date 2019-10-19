@@ -34,13 +34,13 @@ import collections
 
 import qcelemental as qcel
 
-from .exceptions import *
-from .util import search_file
-from .molecule import Molecule
+from ..exceptions import ValidationError
+from ..util import search_file
+from ..molecule import Molecule
 from .libmintsgshell import ShellInfo
 from .libmintsbasissetparser import Gaussian94BasisSetParser
 from .basislist import corresponding_basis, corresponding_zeta
-from .driver import pe
+from ..driver import pe
 
 
 basishorde = {}

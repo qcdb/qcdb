@@ -21,7 +21,7 @@ from ... import qcvars
 #from ..driver.driver_helpers import print_variables
 #from ..exceptions import *
 #from ..iface_psi4.options import query_options_defaults_from_psi
-from ...libmintsbasisset import BasisSet
+from ...basisset import BasisSet
 from ...util import provenance_stamp
 from ...molecule import Molecule
 from ...pdict import PreservingDict

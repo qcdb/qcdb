@@ -30,8 +30,8 @@ import os
 import re
 import sys
 
-from .exceptions import *
-from .libmintsgshell import *
+from ..exceptions import ValidationError
+from .libmintsgshell import ShellInfo
 
 
 class Gaussian94BasisSetParser(object):

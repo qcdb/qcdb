@@ -8,7 +8,6 @@ import numpy as np
 import qcelemental as qcel
 from qcelemental import Datum
 
-from .util import *
 from .molecule.libmintsmolecule import compute_atom_map
 
 

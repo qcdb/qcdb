@@ -19,7 +19,7 @@ from ... import moptions
 from ... import qcvars
 #from ..exceptions import *
 #from ..iface_psi4.options import query_options_defaults_from_psi
-from ...libmintsbasisset import BasisSet
+from ...basisset import BasisSet
 from ...util import print_jobrec, provenance_stamp
 #from ..pdict import PreservingDict
 from . import harvester

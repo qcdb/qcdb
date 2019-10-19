@@ -40,6 +40,11 @@ from .exceptions import *
 
 ZERO = 1.0E-14
 
+__all__ = [
+    'add', 'cross', 'determinant', 'diagonalize3x3symmat', 'distance', 'dot', 'identity', 'naivemult', 'matadd',
+    'mscale', 'mult', 'norm', 'normalize', 'perp_unit', 'rotate', 'scale', 'show', 'sub', 'transpose', 'zero'
+]
+
 
 def norm(v):
     """Compute the magnitude of vector *v*."""
@@ -145,17 +150,14 @@ def perp_unit(u, v):
             # choose the plane to be that which contains the two largest components of d
             absd = [math.fabs(d[0]), math.fabs(d[1]), math.fabs(d[2])]
             if (absd[1] - absd[0]) > 1.0e-12:
-            #if absd[0] < absd[1]:
                 axis0 = 1
                 if (absd[2] - absd[0]) > 1.0e-12:
-                #if absd[0] < absd[2]:
                     axis1 = 2
                 else:
                     axis1 = 0
             else:
                 axis0 = 0
                 if (absd[2] - absd[1]) > 1.0e-12:
-                #if absd[1] < absd[2]:
                     axis1 = 2
                 else:
                     axis1 = 1

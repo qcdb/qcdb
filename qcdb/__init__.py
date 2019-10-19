@@ -64,11 +64,9 @@ from .driver.driver_helpers import set_molecule, activate
 from .driver.yaml import yaml_run
 
 from .molecule import Molecule
-from .libmintsbasisset import BasisSet, basishorde
+from .basisset import BasisSet, basishorde
 from . import vib
 
 ## Load items that are useful to access from an input file
 from .vib import compare_vibinfos
 from .testing import *
-
-#from .exceptions import *

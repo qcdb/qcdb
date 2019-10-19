@@ -37,7 +37,7 @@ import copy
 import collections
 
 from ..vecutil import *
-from ..exceptions import *
+from ..exceptions import IncompleteAtomError, ValidationError
 
 
 class CoordValue(object):

@@ -27,6 +27,8 @@
 #
 
 import os
+import copy
+import math
 import hashlib
 import collections
 
@@ -35,9 +37,10 @@ import numpy as np
 import qcelemental as qcel
 
 from ..util import parse_dertype
-from .libmintsmolecule import *
 from ..testing import compare_values, compare, compare_molrecs
 from ..bfs import BFS
+from ..vecutil import *
+from .libmintsmolecule import LibmintsMolecule, FULL_PG_TOL, ZERO
 
 
 class Molecule(LibmintsMolecule):

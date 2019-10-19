@@ -27,8 +27,9 @@
 #
 
 import sys
+import math
 
-from ..exceptions import *
+from ..exceptions import ValidationError
 from ..vecutil import *
 
 

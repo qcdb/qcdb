@@ -13,7 +13,7 @@ from qcengine.programs.cfour.keywords import format_keywords, format_keyword
 
 from ... import qcvars
 #from ..driver.driver_helpers import print_variables
-from ...libmintsbasisset import BasisSet
+from ...basisset import BasisSet
 from ...util import print_jobrec, provenance_stamp
 from . import harvester
 from .bas import extract_basis_from_genbas, format_basis_for_cfour, format_molecule
