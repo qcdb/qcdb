@@ -1,11 +1,11 @@
 import sys
 import uuid
-from functools import wraps
+import functools
 
 
 def register_kwds(ros):
     def decorator(func):
-        @wraps(func)
+        @functools.wraps(func)
         def wrapper(*args, **kwargs):
             accession = str(uuid.uuid4())
             #accession = sys._getframe().f_code.co_name + '_' + str(uuid.uuid4())
@@ -27,7 +27,7 @@ from ..driver import driver_helpers
 
 def def_mol():
     def decorator(func):
-        @wraps(func)
+        @functools.wraps(func)
         def wrapper(*args, **kwargs):
             mol = kwargs.pop('molecule', driver_helpers.get_active_molecule())
             mol.update_geometry()
