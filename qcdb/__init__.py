@@ -58,7 +58,6 @@ from .driver import vpt2
 from .driver.cbs_driver import cbs
 from .driver.cbs_helpers import *
 from .driver.driver_helpers import get_variable, print_variables, variable
-from .qcvars import get_variable_details
 from .driver.driver_helpers import set_options, get_active_options
 from .driver.driver_helpers import set_molecule, activate
 from .driver.yaml import yaml_run

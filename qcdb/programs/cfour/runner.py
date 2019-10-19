@@ -144,7 +144,7 @@ class QcdbCFOURHarness(CFOURHarness):
             dqcvars["CUSTOM SCS-MP2 CORRELATION ENERGY"] = custom_scsmp2_corl
 
         qcvars.build_out(dqcvars)
-        calcinfo = qcvars.certify(dqcvars, plump=True, nat=len(output_model.molecule.symbols))
+        calcinfo = qcvars.certify_and_datumize(dqcvars, plump=True, nat=len(output_model.molecule.symbols))
         output_model.extras['qcdb:qcvars'] = calcinfo
 
         return output_model

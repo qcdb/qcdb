@@ -120,7 +120,7 @@ from .botanist import muster_inherited_options
 #            progvars.pop(k)
 #
 #    qcvars.build_out(progvars)
-#    calcinfo = qcvars.certify(progvars, plump=True, nat=len(jobrec['molecule']['mass']))
+#    calcinfo = qcvars.certify_and_datumize(progvars, plump=True, nat=len(jobrec['molecule']['mass']))
 #
 #    jobrec['raw_output'] = psi4rec['raw_output']
 #    jobrec['qcvars'] = calcinfo
@@ -236,7 +236,7 @@ class QcdbPsi4Harness(Psi4Harness):
             if k in ['DETCI AVG DVEC NORM', 'MCSCF TOTAL ENERGY']:
                 dqcvars.pop(k)
         qcvars.build_out(dqcvars)
-        calcinfo = qcvars.certify(dqcvars, plump=True, nat=len(output_model.molecule.symbols))
+        calcinfo = qcvars.certify_and_datumize(dqcvars, plump=True, nat=len(output_model.molecule.symbols))
         output_model.extras['qcdb:qcvars'] = calcinfo
 
         return output_model

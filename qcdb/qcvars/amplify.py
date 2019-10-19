@@ -1,15 +1,19 @@
+from decimal import Decimal
+from typing import Dict, Union
+
 import numpy as np
 
 from qcelemental import Datum
 
-from ..exceptions import *
+from ..exceptions import ValidationError
 from ..pdict import PreservingDict
 from .glossary import qcvardefs
-from .psivardefs import wfn_psivars
+from .identities import wfn_psivars
 
 
-def certify(dicary, plump=False, nat=None):
-    """
+def certify_and_datumize(dicary: Dict[str, Union[float, Decimal, np.ndarray]], *, plump: bool = False,
+                         nat: int = None) -> Dict[str, Datum]:
+    """Convert a QCVariable: data dictionary to QCVariable: Datum dictionary, filling in details from the glossary.
 
     Parameters
     ----------
@@ -32,8 +36,13 @@ def certify(dicary, plump=False, nat=None):
     return {info.label: info for info in calcinfo}
 
 
-def build_out(rawvars, verbose=1):
-    """
+def build_out(rawvars: Dict[str, Datum], verbose: int = 1) -> None:
+    """Apply standard QC identities to QCVariables `rawvars` to build more (e.g., correlation from total and HF energies).
+
+    Dictionary `wfn_qcvars` had keys with names of QCVariables to be created and values with dictionary of two keys:
+    `args`, the QCVariables that contribute tot the key and `func`, a functional (or lambda) to combine them. This
+    function builds that key QCVariables if all the contributors are available in `rawvars`. Updates internally so
+    multiple passes not needed.
 
     Parameters
     ----------
@@ -69,49 +78,3 @@ def build_out(rawvars, verbose=1):
             rawvars.__setitem__(pvar, result, 6)
             if verbose >= 1:
                 print("""{}SUCCESS""".format(buildline))
-
-
-def expand_qcvars(qcvars, qvdefs, verbose=1):
-    """Dictionary *qvdefs* has keys with names of PsiVariables to be
-    created and values with dictionary of two keys: 'args', the
-    PsiVariables that contribute to the key and 'func', a function (or
-    lambda) to combine them. This function builds those PsiVariables if
-    all the contributors are available. Helpful printing is available when
-    PRINT > 2.
-
-    """
-    for pvar, action in qvdefs.items():
-        if verbose >= 2:
-            print("""building %s %s""" % (pvar, '.' * (50 - len(pvar))), end='')
-
-        data_rich_args = []
-
-        for pv in action['args']:
-            if isinstance(pv, str):
-                if pv in qcvars:
-                    data_rich_args.append(qcvars[pv])
-                else:
-                    if verbose >= 2:
-                        print("""EMPTY, missing {}""".format(pv))
-                    break
-            else:
-                data_rich_args.append(pv)
-        else:
-            result = action['func'](data_rich_args)
-            core.set_variable(pvar, result)
-            if verbose >= 2:
-                print("""SUCCESS""")
-
-
-# probably move to driver_helpers
-def get_variable_details(qcvar, qcvars=None):
-    from ..driver import pe
-
-    if qcvars is None:
-        qcvars = pe.active_qcvars
-
-    capslink = {k.lower(): k for k in qcvardefs.keys()}
-
-    print(qcvars[capslink[qcvar.lower()]])
-    print(qcvardefs[capslink[qcvar.lower()]])
-

@@ -107,7 +107,7 @@ from .harvester import muster_modelchem, muster_inherited_options
 #    jobrec.pop('qcschema_input')
 #    progvars = PreservingDict(ret['extras']['qcvars'])
 #    qcvars.build_out(progvars)
-#    calcinfo = qcvars.certify(progvars, plump=True, nat=len(jobrec['molecule']['mass']))
+#    calcinfo = qcvars.certify_and_datumize(progvars, plump=True, nat=len(jobrec['molecule']['mass']))
 #    jobrec['raw_output'] = ret['stdout']
 #    jobrec['qcvars'] = calcinfo
 #    jobrec['success'] = True
@@ -234,7 +234,7 @@ class QcdbGAMESSHarness(GAMESSHarness):
 
         dqcvars = PreservingDict(copy.deepcopy(output_model.extras['qcvars']))
         qcvars.build_out(dqcvars)
-        calcinfo = qcvars.certify(dqcvars, plump=True, nat=len(output_model.molecule.symbols))
+        calcinfo = qcvars.certify_and_datumize(dqcvars, plump=True, nat=len(output_model.molecule.symbols))
         output_model.extras['qcdb:qcvars'] = calcinfo
 
         return output_model
@@ -322,7 +322,7 @@ class QcdbGAMESSHarness(GAMESSHarness):
 #        progvars["CUSTOM SCS-MP2 CORRELATION ENERGY"] = custom_scsmp2_corl
 #
 #    qcvars.build_out(progvars)
-#    calcinfo = qcvars.certify(progvars)
+#    calcinfo = qcvars.certify_and_datumize(progvars)
 #    text += print_variables(calcinfo)
 #
 #    jobrec['raw_output'] = text

@@ -1,2 +1,2 @@
-from .validator import certify, build_out, get_variable_details
+from .amplify import certify_and_datumize, build_out
 from .whatprovides import VARH

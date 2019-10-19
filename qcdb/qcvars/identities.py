@@ -27,6 +27,7 @@
 #
 
 import collections
+from typing import Any, Dict, List
 from decimal import Decimal as Dm
 
 
@@ -65,7 +66,9 @@ def _linear(args):
     return sum(c * v for c, v in zip(args))
 
 
-def _solve_in_turn(args, coeff):
+def _solve_in_turn(args: List, coeff: List) -> List[Dict[str, Any]]:
+    """Expands a description of a linear equation of variables `args` and weights `coeff` into all rearrangements of the equation."""
+
     assert len(args) == len(coeff)
     pv0 = []
 
@@ -81,48 +84,52 @@ def _solve_in_turn(args, coeff):
         pv0.append({
             'form': args[itgt],
             'func': lambda vv, cc=non_target_coeff: sum(c * v for c, v in zip(vv, cc)),
-            'args': non_target_args})
+            'args': non_target_args
+        })
 
     return pv0
 
 
-def wfn_psivars():
+def wfn_psivars() -> List[Dict[str, Any]]:
+    """Define QCVariable identity equations (e.g., method total = method correlation + HF)."""
+
     pv0 = []
 
     # MP2
-    pv0.extend(_solve_in_turn(
-        args=['MP2 TOTAL ENERGY', 'HF TOTAL ENERGY', 'MP2 CORRELATION ENERGY'],
-        coeff=[-1, 1, 1]))
-    pv0.extend(_solve_in_turn(
-        args=['MP2 DOUBLES ENERGY', 'MP2 SAME-SPIN CORRELATION ENERGY', 'MP2 OPPOSITE-SPIN CORRELATION ENERGY'],
-        coeff=[-1, 1, 1]))
-    pv0.extend(_solve_in_turn(
-        args=['MP2 CORRELATION ENERGY', 'MP2 DOUBLES ENERGY', 'MP2 SINGLES ENERGY'],
-        coeff=[-1, 1, 1]))
+    pv0.extend(_solve_in_turn(args=['MP2 TOTAL ENERGY', 'HF TOTAL ENERGY', 'MP2 CORRELATION ENERGY'], coeff=[-1, 1,
+                                                                                                             1]))
+    pv0.extend(
+        _solve_in_turn(
+            args=['MP2 DOUBLES ENERGY', 'MP2 SAME-SPIN CORRELATION ENERGY', 'MP2 OPPOSITE-SPIN CORRELATION ENERGY'],
+            coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(args=['MP2 CORRELATION ENERGY', 'MP2 DOUBLES ENERGY', 'MP2 SINGLES ENERGY'], coeff=[-1, 1, 1]))
 
-    pv0.extend(_solve_in_turn(
-        args=['CUSTOM SCS-MP2 TOTAL ENERGY', 'CUSTOM SCS-MP2 CORRELATION ENERGY', 'HF TOTAL ENERGY'],
-        coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(args=['CUSTOM SCS-MP2 TOTAL ENERGY', 'CUSTOM SCS-MP2 CORRELATION ENERGY', 'HF TOTAL ENERGY'],
+                       coeff=[-1, 1, 1]))
 
     # SCS-MP2
     pv0.append({
         'form': 'SCS-MP2 CORRELATION ENERGY',
         'func': _spin_component_scaling_wsing,
-        'args': [Dm(6) / Dm(5), Dm(1) / Dm(3), 'MP2 CORRELATION ENERGY', 'MP2 SAME-SPIN CORRELATION ENERGY', 'MP2 SINGLES ENERGY']})
+        'args': [Dm(6) / Dm(5), Dm(1) / Dm(3), 'MP2 CORRELATION ENERGY', 'MP2 SAME-SPIN CORRELATION ENERGY', 'MP2 SINGLES ENERGY']})  # yapf: disable
     pv0.append({
         'form': 'SCS-MP2 TOTAL ENERGY',
         'func': sum,
-        'args': ['HF TOTAL ENERGY', 'SCS-MP2 CORRELATION ENERGY']})
+        'args': ['HF TOTAL ENERGY', 'SCS-MP2 CORRELATION ENERGY']
+    })
 
     # SCS(N)-MP2
     pv0.append({
         'form': 'SCS(N)-MP2 CORRELATION ENERGY',
         'func': _spin_component_scaling_wsing,
-        'args': [Dm(0), Dm(1.76), 'MP2 CORRELATION ENERGY', 'MP2 SAME-SPIN CORRELATION ENERGY', 'MP2 SINGLES ENERGY']})
+        'args': [Dm(0), Dm(1.76), 'MP2 CORRELATION ENERGY', 'MP2 SAME-SPIN CORRELATION ENERGY', 'MP2 SINGLES ENERGY']})  # yapf: disable
     pv0.append({
         'form': 'SCS(N)-MP2 TOTAL ENERGY',
         'func': sum,
-        'args': ['HF TOTAL ENERGY', 'SCS(N)-MP2 CORRELATION ENERGY']})
+        'args': ['HF TOTAL ENERGY', 'SCS(N)-MP2 CORRELATION ENERGY']
+    })
 
     # DW-MP2
     # only defined at the (IE) reaction level (like SAPT)
@@ -142,116 +149,116 @@ def wfn_psivars():
 
     # MPN
     for mpn in range(3, 20):
-        pv0.extend(_solve_in_turn(
-            args=['MP{} TOTAL ENERGY'.format(mpn), 'HF TOTAL ENERGY', 'MP{} CORRELATION ENERGY'.format(mpn)],
-            coeff=[-1, 1, 1]))
+        pv0.extend(
+            _solve_in_turn(
+                args=['MP{} TOTAL ENERGY'.format(mpn), 'HF TOTAL ENERGY', 'MP{} CORRELATION ENERGY'.format(mpn)],
+                coeff=[-1, 1, 1]))
 
     # CCSD
-    pv0.extend(_solve_in_turn(
-        args=['CCSD TOTAL ENERGY', 'HF TOTAL ENERGY', 'CCSD CORRELATION ENERGY'],
-        coeff=[-1, 1, 1]))
-    pv0.extend(_solve_in_turn(
-        args=['CCSD DOUBLES ENERGY', 'CCSD SAME-SPIN CORRELATION ENERGY', 'CCSD OPPOSITE-SPIN CORRELATION ENERGY'],
-        coeff=[-1, 1, 1]))
-    pv0.extend(_solve_in_turn(
-        args=['CCSD CORRELATION ENERGY', 'CCSD DOUBLES ENERGY', 'CCSD SINGLES ENERGY'],
-        coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(args=['CCSD TOTAL ENERGY', 'HF TOTAL ENERGY', 'CCSD CORRELATION ENERGY'], coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(
+            args=['CCSD DOUBLES ENERGY', 'CCSD SAME-SPIN CORRELATION ENERGY', 'CCSD OPPOSITE-SPIN CORRELATION ENERGY'],
+            coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(args=['CCSD CORRELATION ENERGY', 'CCSD DOUBLES ENERGY', 'CCSD SINGLES ENERGY'],
+                       coeff=[-1, 1, 1]))
 
     # CCSD(T)
-    pv0.extend(_solve_in_turn(
-        args=['CCSD(T) CORRELATION ENERGY', 'CCSD CORRELATION ENERGY', '(T) CORRECTION ENERGY'],
-        coeff=[-1, 1, 1]))
-    pv0.extend(_solve_in_turn(
-        args=['CCSD(T) TOTAL ENERGY', 'HF TOTAL ENERGY', 'CCSD(T) CORRELATION ENERGY'],
-        coeff=[-1, 1, 1]))
-    pv0.extend(_solve_in_turn(
-        args=['CCSD(T) CORRELATION ENERGY', 'CCSD CORRELATION ENERGY', '(T) CORRECTION ENERGY'],
-        coeff=[-1, 1, 1]))  # duplicate of first so that all minimal combinations covered
+    pv0.extend(
+        _solve_in_turn(args=['CCSD(T) CORRELATION ENERGY', 'CCSD CORRELATION ENERGY', '(T) CORRECTION ENERGY'],
+                       coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(args=['CCSD(T) TOTAL ENERGY', 'HF TOTAL ENERGY', 'CCSD(T) CORRELATION ENERGY'],
+                       coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(args=['CCSD(T) CORRELATION ENERGY', 'CCSD CORRELATION ENERGY', '(T) CORRECTION ENERGY'],
+                       coeff=[-1, 1, 1]))  # duplicate of first so that all minimal combinations covered
 
     # CCSD[T]
-    pv0.extend(_solve_in_turn(
-        args=['CCSD[T] TOTAL ENERGY', 'HF TOTAL ENERGY', 'CCSD[T] CORRELATION ENERGY'],
-        coeff=[-1, 1, 1]))
-    pv0.extend(_solve_in_turn(
-        args=['CCSD[T] CORRELATION ENERGY', 'CCSD CORRELATION ENERGY', '[T] CORRECTION ENERGY'],
-        coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(args=['CCSD[T] TOTAL ENERGY', 'HF TOTAL ENERGY', 'CCSD[T] CORRELATION ENERGY'],
+                       coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(args=['CCSD[T] CORRELATION ENERGY', 'CCSD CORRELATION ENERGY', '[T] CORRECTION ENERGY'],
+                       coeff=[-1, 1, 1]))
 
     # FCI
-    pv0.extend(_solve_in_turn(
-        args=['FCI TOTAL ENERGY', 'HF TOTAL ENERGY', 'FCI CORRELATION ENERGY'],
-        coeff=[-1, 1, 1]))
+    pv0.extend(_solve_in_turn(args=['FCI TOTAL ENERGY', 'HF TOTAL ENERGY', 'FCI CORRELATION ENERGY'], coeff=[-1, 1,
+                                                                                                             1]))
 
     # Generics
-    pv0.extend(_solve_in_turn(
-        args=['CC TOTAL ENERGY', 'HF TOTAL ENERGY', 'CC CORRELATION ENERGY'],
-        coeff=[-1, 1, 1]))
-    pv0.extend(_solve_in_turn(
-        args=['CI TOTAL ENERGY', 'HF TOTAL ENERGY', 'CI CORRELATION ENERGY'],
-        coeff=[-1, 1, 1]))
+    pv0.extend(_solve_in_turn(args=['CC TOTAL ENERGY', 'HF TOTAL ENERGY', 'CC CORRELATION ENERGY'], coeff=[-1, 1, 1]))
+    pv0.extend(_solve_in_turn(args=['CI TOTAL ENERGY', 'HF TOTAL ENERGY', 'CI CORRELATION ENERGY'], coeff=[-1, 1, 1]))
 
     # DFT
 
     #   fctl
     #       TODO want B97 here?
-    for fctl in ['B3LYP', 'B3LYP5', 'WPBE', 'PBE', 'CAM-B3LYP', 'B97', 'WB97X', 'SVWN', 'PW91', 'BLYP',
-                 'PW86PBE', 'FT97', 'BOP', 'MPWPW', 'SOGGA11', 'BP86', 'B86BPBE', 'PW6B95', 'PBE0',
-                 'SOGGA11-X', 'MN15']:
-        pv0.extend(_solve_in_turn(
-            args=['{} TOTAL ENERGY'.format(fctl), '{} FUNCTIONAL TOTAL ENERGY'.format(fctl)],
-            coeff=[-1, 1]))
+    for fctl in [
+            'B3LYP', 'B3LYP5', 'WPBE', 'PBE', 'CAM-B3LYP', 'B97', 'WB97X', 'SVWN', 'PW91', 'BLYP', 'PW86PBE', 'FT97',
+            'BOP', 'MPWPW', 'SOGGA11', 'BP86', 'B86BPBE', 'PW6B95', 'PBE0', 'SOGGA11-X', 'MN15'
+    ]:
+        pv0.extend(
+            _solve_in_turn(args=['{} TOTAL ENERGY'.format(fctl), '{} FUNCTIONAL TOTAL ENERGY'.format(fctl)],
+                           coeff=[-1, 1]))
 
     #   fctl + D
     for dash in ['-D2', '-D3', '-D3(BJ)', '-D3M', '-D3M(BJ)']:
         for fctl in ['B3LYP', 'B3LYP5', 'PBE', 'B97', 'BLYP', 'BP86', 'PBE0', 'WPBE']:
-            pv0.extend(_solve_in_turn(
-                args=['{}{} TOTAL ENERGY'.format(fctl, dash),
-                      '{} FUNCTIONAL TOTAL ENERGY'.format('B97-D' if fctl == 'B97' else fctl),
-                      '{}{} DISPERSION CORRECTION ENERGY'.format(fctl, dash)],
-                coeff=[-1, 1, 1]))
+            pv0.extend(
+                _solve_in_turn(args=[
+                    '{}{} TOTAL ENERGY'.format(fctl, dash),
+                    '{} FUNCTIONAL TOTAL ENERGY'.format('B97-D' if fctl == 'B97' else fctl),
+                    '{}{} DISPERSION CORRECTION ENERGY'.format(fctl, dash)
+                ],
+                               coeff=[-1, 1, 1]))
 
     #   fctl + DH
     for fctl in ['B2PLYP', 'DSD-PBEP86', 'PBE0-2', 'B2GPPLYP', 'PTPSS', 'PWPB95', 'DSD-BLYP', 'PBE0-DH']:
-        pv0.extend(_solve_in_turn(
-            args=['{} TOTAL ENERGY'.format(fctl),
-                  '{} FUNCTIONAL TOTAL ENERGY'.format(fctl),
-                  '{} DOUBLE-HYBRID CORRECTION ENERGY'.format(fctl)],
-            coeff=[-1, 1, 1]))
+        pv0.extend(
+            _solve_in_turn(args=[
+                '{} TOTAL ENERGY'.format(fctl), '{} FUNCTIONAL TOTAL ENERGY'.format(fctl),
+                '{} DOUBLE-HYBRID CORRECTION ENERGY'.format(fctl)
+            ],
+                           coeff=[-1, 1, 1]))
 
     #   fctl + D + DH
     #   no psivar for fctl + dh, which would be the more restrictive def
     for dash in ['-D2', '-D3', '-D3(BJ)', '-D3M', '-D3M(BJ)']:
         for fctl in ['B2PLYP']:
-            pv0.extend(_solve_in_turn(
-                args=['{}{} TOTAL ENERGY'.format(fctl, dash),
-                      '{} TOTAL ENERGY'.format(fctl),
-                      '{}{} DISPERSION CORRECTION ENERGY'.format(fctl, dash)],
-                coeff=[-1, 1, 1]))
+            pv0.extend(
+                _solve_in_turn(args=[
+                    '{}{} TOTAL ENERGY'.format(fctl, dash), '{} TOTAL ENERGY'.format(fctl),
+                    '{}{} DISPERSION CORRECTION ENERGY'.format(fctl, dash)
+                ],
+                               coeff=[-1, 1, 1]))
 
     #   misc.
-    pv0.extend(_solve_in_turn(
-        args=['DLDF+D09 TOTAL ENERGY',
-              'DLDF+D09 FUNCTIONAL TOTAL ENERGY',
-              'DLDF-DAS2009 DISPERSION CORRECTION ENERGY'],
-        coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(args=[
+            'DLDF+D09 TOTAL ENERGY', 'DLDF+D09 FUNCTIONAL TOTAL ENERGY', 'DLDF-DAS2009 DISPERSION CORRECTION ENERGY'
+        ],
+                       coeff=[-1, 1, 1]))
 
-    pv0.extend(_solve_in_turn(
-        args=['WB97X-D TOTAL ENERGY',
-              'WB97X FUNCTIONAL TOTAL ENERGY',
-              'WB97-CHG DISPERSION CORRECTION ENERGY'],
-        coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(
+            args=['WB97X-D TOTAL ENERGY', 'WB97X FUNCTIONAL TOTAL ENERGY', 'WB97-CHG DISPERSION CORRECTION ENERGY'],
+            coeff=[-1, 1, 1]))
 
     # misc.
-    pv0.extend(_solve_in_turn(
-        args=['CURRENT ENERGY', 'CURRENT REFERENCE ENERGY', 'CURRENT CORRELATION ENERGY'],
-        coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(args=['CURRENT ENERGY', 'CURRENT REFERENCE ENERGY', 'CURRENT CORRELATION ENERGY'],
+                       coeff=[-1, 1, 1]))
 
     return pv0
 
 
 def sapt_psivars():
-    """Returns dictionary of PsiVariable definitions.
+    """Returns dictionary of QCVariable definitions for SAPT."""
 
-    """
+    # yapf: disable
     pv1 = collections.OrderedDict()
     pv1['SAPT EXCHSCAL1'] = {'func': lambda x: 1.0 if x[0] < 1.0e-5 else x[0] / x[1],
                              'args': ['SAPT EXCH10 ENERGY', 'SAPT EXCH10(S^2) ENERGY']}  # special treatment in pandas
@@ -382,5 +389,6 @@ def sapt_psivars():
     pv1['SAPT2+3(CCD)DMP2 IND ENERGY'] = {'func': sum, 'args': ['SAPT2+3DMP2 IND ENERGY']}
     pv1['SAPT2+3(CCD)DMP2 DISP ENERGY'] = {'func': sum, 'args': ['SAPT2+3(CCD) DISP ENERGY']}
     pv1['SAPT2+3(CCD)DMP2 TOTAL ENERGY'] = {'func': sum, 'args': ['SAPT2+3(CCD)DMP2 ELST ENERGY', 'SAPT2+3(CCD)DMP2 EXCH ENERGY', 'SAPT2+3(CCD)DMP2 IND ENERGY', 'SAPT2+3(CCD)DMP2 DISP ENERGY']}
+    # yapf: enable
 
     return pv1

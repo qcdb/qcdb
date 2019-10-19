@@ -593,7 +593,7 @@ def dftd3_harvest(jobrec, dftd3rec):
 
     progvars = PreservingDict(dftd3var)
     qcvars.build_out(progvars)
-    calcinfo = qcvars.certify(progvars)
+    calcinfo = qcvars.certify_and_datumize(progvars)
 
     # amalgamate output
     text = dftd3rec['stdout']

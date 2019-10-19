@@ -196,7 +196,7 @@ class QcdbNWChemHarness(NWChemHarness):
             progvars["CUSTOM SCS-CCSD CORRELATION ENERGY"] = custom_scsccsd_corl
 
         qcvars.build_out(progvars)
-        calcinfo = qcvars.certify(progvars, plump=True, nat=len(output_model.molecule.symbols))
+        calcinfo = qcvars.certify_and_datumize(progvars, plump=True, nat=len(output_model.molecule.symbols))
         output_model.extras['qcdb:qcvars'] = calcinfo
 
         return output_model
