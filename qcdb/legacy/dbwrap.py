@@ -47,7 +47,7 @@ from collections import OrderedDict
 from .exceptions import *
 from .molecule import Molecule
 from .modelchems import Method, BasisSet, Error, methods, bases, errors, pubs
-from .util.paths import import_ignorecase, findfile_ignorecase 
+from .util.paths import import_ignorecase
 from . import textables
 
 
@@ -3550,3 +3550,20 @@ fnreservoir['blankslat'] = r"""Errors with respect to Benchmark. Guide lines are
 fnreservoir['5min'] = r"""Only equilibrium and near-equilibrium systems included. (All S22 and HSG, 50/194 NBC10, 28/118 HBC6.)"""
 fnreservoir['liliowa'] = r"""{0}MAE (dark by {1} kcal/mol) for subsets in residue classes cation, anion, polar, aliphatic, \& aromatic (L to R)."""
 fnreservoir['flat'] = r"""{0}Errors with respect to benchmark within $\pm${1} kcal/mol. Guide lines are at {2} overbound ($-$) and underbound ($+$)."""
+
+
+def findfile_ignorecase(fil, pre='', post=''):
+    """Function to locate a file *pre* + *fil* + *post* in any possible
+    lettercase permutation of *fil*. Returns *pre* + *fil* + *post* if
+    available, None if not.
+
+    """
+    afil = None
+    for per in list(all_casings(fil)):
+        if os.path.isfile(pre + per + post):
+            afil = pre + per + post
+            break
+        else:
+            pass
+
+    return afil

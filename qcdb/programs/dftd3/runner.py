@@ -26,8 +26,6 @@
 # @END LICENSE
 #
 """Module with functions that interface with Grimme's DFTD3 code."""
-from __future__ import absolute_import
-from __future__ import print_function
 import re
 import sys
 import copy
@@ -42,7 +40,8 @@ import numpy as np
 import qcelemental as qcel
 
 #from ..datastructures import *
-from ...util import update_with_error, der0th, der1st
+from qcelemental.util import update_with_error
+from ...util import der0th, der1st
 from ...exceptions import Dftd3Error, ValidationError
 from ...pdict import PreservingDict
 #from .dashparam import dash_server, dashcoeff

@@ -5,7 +5,7 @@ def plot_coord(ref, cand=None, orig=None, comment=None):
     plot candidate geometry `cand` as red dots and starting geometry `orig` as
     pale blue dots. Plot has text `comment`. For assessing alignment, red and
     black should overlap and pale blue shows where red started.
-    
+
     """
     try:
         from matplotlib import pyplot
@@ -33,5 +33,5 @@ def plot_coord(ref, cand=None, orig=None, comment=None):
     ax.set_ylim(-bound, bound)
     ax.set_zlim(-bound, bound)
     ax.legend()
-    
+
     pyplot.show()
