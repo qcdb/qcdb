@@ -1,16 +1,8 @@
-#import re
 import math
 
 import numpy as np
 
-from ..exceptions import *
-#from . import pe
-#from . import driver_util
-#from . import driver_helpers
-##from . import pe
-##from .driver import options
-#from .. import util
-#from .. import qcvars
+from ..exceptions import ValidationError
 
 
 #_zeta_values = ['d', 't', 'q', '5', '6', '7', '8']

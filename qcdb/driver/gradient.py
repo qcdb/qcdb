@@ -32,13 +32,6 @@ functionality, namely single-point energies, geometry optimizations,
 properties, and vibrational frequency calculations.
 
 """
-from __future__ import print_function
-from __future__ import absolute_import
-#   import os
-#   import re
-#   import sys
-#   import shutil
-
 import copy
 import pprint
 pp = pprint.PrettyPrinter(width=120)
@@ -49,7 +42,6 @@ from . import pe
 from . import driver_util
 from . import driver_helpers
 from . import cbs_driver
-#from psi4.driver import driver_nbody
 from .proc_table import procedures
 
 
@@ -72,7 +64,7 @@ def gradient(name, **kwargs):
 #       >>> np.array(G)
 #   
 #       """
-    from . import endorsed_plugins
+    from . import load_proc_table
     kwargs = driver_util.kwargs_lower(kwargs)
     text = ''
    
@@ -100,7 +92,7 @@ def gradient(name, **kwargs):
 
     if len(pe.nu_options.scroll) == 0:
         print('EMPTY OPT')
-        pe.load_nu_options()
+        pe.load_options()
 
 
     # Figure out lowername, dertype, and func

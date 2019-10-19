@@ -32,13 +32,6 @@ functionality, namely single-point energies, geometry optimizations,
 properties, and vibrational frequency calculations.
 
 """
-from __future__ import print_function
-from __future__ import absolute_import
-#   import os
-#   import re
-#   import sys
-#   import shutil
-
 import copy
 import pprint
 pp = pprint.PrettyPrinter(width=120)
@@ -212,7 +205,7 @@ from .gradient import gradient
 #
 #    """
 def optking(name, **kwargs):
-    from . import endorsed_plugins
+    from . import load_proc_table
     kwargs = driver_util.kwargs_lower(kwargs)
     text = ''
 
@@ -272,7 +265,7 @@ def optking(name, **kwargs):
 
     if len(pe.nu_options.scroll) == 0:
         print('EMPTY OPT')
-        pe.load_nu_options()
+        pe.load_options()
 
 #    # If we are freezing cartesian, do not orient or COM
 #    if core.get_local_option("OPTKING", "FROZEN_CARTESIAN"):
@@ -455,7 +448,7 @@ def optking(name, **kwargs):
 
 
 def geometric(name, **kwargs):
-    from . import endorsed_plugins
+    from . import load_proc_table
     kwargs = driver_util.kwargs_lower(kwargs)
     text = ''
 
@@ -474,7 +467,7 @@ def geometric(name, **kwargs):
 
     if len(pe.nu_options.scroll) == 0:
         print('EMPTY OPT')
-        pe.load_nu_options()
+        pe.load_options()
 
     import yaml
     tricin = {}

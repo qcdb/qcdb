@@ -49,7 +49,6 @@ def _merge_psi4_qcel_apis(args, kwargs):
     `kwargs` modified (and returned) in-place
 
     """
-
     def process_digits(digits):
         if digits >= 1:
             return 10**-digits

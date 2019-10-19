@@ -39,7 +39,7 @@ pp = pprint.PrettyPrinter(width=120)
 
 import numpy as np
    
-from ..exceptions import *
+from ..exceptions import ValidationError
 from ..molecule import Molecule
 from ..keyword import register_kwds
 from .. import util
@@ -75,7 +75,7 @@ def hessian(name, **kwargs):
 #    >>> np.array(H)
 #
 #    """
-    from . import endorsed_plugins
+    from . import load_proc_table
     kwargs = driver_util.kwargs_lower(kwargs)
     text = ''
 
@@ -135,7 +135,7 @@ def hessian(name, **kwargs):
 
     if len(pe.nu_options.scroll) == 0:
         print('EMPTY OPT')
-        pe.load_nu_options()
+        pe.load_options()
 
 #    # S/R: Mode of operation- whether finite difference freq run in one job or files farmed out
 #    freq_mode = kwargs.pop('mode', 'continuous').lower()
@@ -558,7 +558,7 @@ def frequency(name, **kwargs):
 #    >>> thermo(wfn, wfn.frequencies())
 #
 #    """
-    from . import endorsed_plugins
+    from . import load_proc_table
     kwargs = driver_util.kwargs_lower(kwargs)
     text = ''
 

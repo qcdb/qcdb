@@ -49,11 +49,11 @@ if which('xcfour'):
 
     procedures['gradient']['cfour'] = {}
     for mtd in cfour_gradient_list():
-       procedures['gradient']['cfour'][mtd.lower()] = run_cfour
+        procedures['gradient']['cfour'][mtd.lower()] = run_cfour
 
     procedures['hessian']['cfour'] = {}
     for mtd in cfour_hessian_list():
-       procedures['hessian']['cfour'][mtd.lower()] = run_cfour
+        procedures['hessian']['cfour'][mtd.lower()] = run_cfour
 
 if which('dftd3'):
 
@@ -71,7 +71,7 @@ if which('nwchem'):
 
     procedures['gradient']['nwchem'] = {}
     for mtd in nwchem_gradient_list():
-       procedures['gradient']['nwchem'][mtd.lower()] = run_nwchem
+        procedures['gradient']['nwchem'][mtd.lower()] = run_nwchem
 
     procedures['hessian']['nwchem'] = {}
     for mtd in nwchem_hessian_list():

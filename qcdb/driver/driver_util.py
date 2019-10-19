@@ -1,8 +1,14 @@
-from ..exceptions import *
+from ..exceptions import ValidationError
 from ..util import yes, no, der0th, der1st, der2nd, find_approximate_string_matches
 from .proc_table import procedures
-from .aids import pkgprefix
 
+
+pkgprefix = {'p4-': 'psi4',
+             'c4-': 'cfour',
+             'd3-': 'dftd3',
+             'nwc-': 'nwchem',
+             'gms-': 'gamess',
+            }
 
 def kwargs_lower(kwargs):
     """Sanitize user's `kwargs`.

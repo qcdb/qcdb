@@ -8,17 +8,14 @@ import numpy as np
 
 from qcelemental import Datum
 
-from ..exceptions import *
+from ..exceptions import ValidationError
 from . import pe
 from . import driver_util
 from . import driver_helpers
 from ..keyword import register_kwds
-#from . import pe
-#from .driver import options
-from .. import util
-from .. import qcvars
+from ..util import banner
+from ..qcvars import VARH
 from .cbs_helpers import *
-from .aids import pkgprefix
 
 
 def _cbs_wrapper_methods(**kwargs):
@@ -124,7 +121,7 @@ def _cbs_gufunc(func, total_method_name, molecule, **kwargs):
     # Find method and basis
     pkgmtd = method_list[0].split('-', 1)
     if (method_list[0] in ['scf', 'hf'] or
-        (len(pkgmtd) > 1 and (pkgmtd[1] in ['scf', 'hf'] and (pkgmtd[0] + '-' in pkgprefix)))):
+        (len(pkgmtd) > 1 and (pkgmtd[1] in ['scf', 'hf'] and (pkgmtd[0] + '-' in driver_util.pkgprefix)))):
         #method_list[0][3:] in ['scf', 'hf'] and method_list[0][:3] in pkgprefix):
     #if method_list[0] in ['scf', 'hf', 'c4-scf', 'c4-hf', 'p4-scf', 'p4-hf']:
         cbs_kwargs['scf_wfn'] = method_list[0]
@@ -524,38 +521,38 @@ def cbs(func, label, **kwargs):
     cbs_scf_wfn = kwargs.pop('scf_wfn', default_scf).lower()
 
     if do_scf:
-        if cbs_scf_wfn not in qcvars.VARH:
+        if cbs_scf_wfn not in VARH:
             raise ValidationError("""Requested SCF method '%s' is not recognized. Add it to VARH in wrapper.py to proceed.""" % (cbs_scf_wfn))
 
     # ... resume correlation logic
     if do_corl:
-        if cbs_corl_wfn not in qcvars.VARH:
+        if cbs_corl_wfn not in VARH:
             raise ValidationError("""Requested CORL method '%s' is not recognized. Add it to VARH in wrapper.py to proceed.""" % (cbs_corl_wfn))
 
         cbs_corl_wfn_lesser = kwargs.get('corl_wfn_lesser', cbs_scf_wfn).lower()
-        if cbs_corl_wfn_lesser not in qcvars.VARH:
+        if cbs_corl_wfn_lesser not in VARH:
             raise ValidationError("""Requested CORL method lesser '%s' is not recognized. Add it to VARH in wrapper.py to proceed.""" % (cbs_delta_wfn_lesser))
 
     # Establish method for delta correction energy
     if 'delta_wfn' in kwargs:
         do_delta = True
         cbs_delta_wfn = kwargs['delta_wfn'].lower()
-        if cbs_delta_wfn not in qcvars.VARH:
+        if cbs_delta_wfn not in VARH:
             raise ValidationError("""Requested DELTA method '%s' is not recognized. Add it to VARH in wrapper.py to proceed.""" % (cbs_delta_wfn))
 
         cbs_delta_wfn_lesser = kwargs.get('delta_wfn_lesser', cbs_corl_wfn).lower()
-        if cbs_delta_wfn_lesser not in qcvars.VARH:
+        if cbs_delta_wfn_lesser not in VARH:
             raise ValidationError("""Requested DELTA method lesser '%s' is not recognized. Add it to VARH in wrapper.py to proceed.""" % (cbs_delta_wfn_lesser))
 
     # Establish method for second delta correction energy
     if 'delta2_wfn' in kwargs:
         do_delta2 = True
         cbs_delta2_wfn = kwargs['delta2_wfn'].lower()
-        if cbs_delta2_wfn not in qcvars.VARH:
+        if cbs_delta2_wfn not in VARH:
             raise ValidationError("""Requested DELTA2 method '%s' is not recognized. Add it to VARH in wrapper.py to proceed.""" % (cbs_delta2_wfn))
 
         cbs_delta2_wfn_lesser = kwargs.get('delta2_wfn_lesser', cbs_delta_wfn).lower()
-        if cbs_delta2_wfn_lesser not in qcvars.VARH:
+        if cbs_delta2_wfn_lesser not in VARH:
             raise ValidationError("""Requested DELTA2 method lesser '%s' is not recognized. Add it to VARH in wrapper.py to proceed.""" % (cbs_delta2_wfn_lesser))
 
 #    # Establish method for third delta correction energy
@@ -738,7 +735,7 @@ def cbs(func, label, **kwargs):
 #            cbs_delta5_scheme = kwargs['delta5_scheme']
 
     # Build string of title banner
-    cbsbanners = util.banner(' CBS Setup: {} '.format(label))
+    cbsbanners = banner(' CBS Setup: {} '.format(label))
 #    cbsbanners = ''
 #    cbsbanners += """core.print_out('\\n')\n"""
 #    cbsbanners += """p4util.banner(' CBS Setup: %s ' % label)\n"""
@@ -827,7 +824,7 @@ def cbs(func, label, **kwargs):
     instructions += """    Naive listing of computations required.\n"""
     for mc in JOBS:
         instructions += """   %12s / %-24s for  %s%s\n""" % \
-            (mc['f_wfn'], mc['f_basis'], qcvars.VARH[mc['f_wfn']][mc['f_wfn']], addlremark[ptype])
+            (mc['f_wfn'], mc['f_basis'], VARH[mc['f_wfn']][mc['f_wfn']], addlremark[ptype])
 
     #     Remove duplicate modelchem portion listings
     for mc in MODELCHEM:
@@ -841,9 +838,9 @@ def cbs(func, label, **kwargs):
     #     Remove chemically subsumed modelchem portion listings
     if ptype == 'energy':
         for mc in MODELCHEM:
-            for wfn in qcvars.VARH[mc['f_wfn']]:
+            for wfn in VARH[mc['f_wfn']]:
                 for indx_job, job in enumerate(JOBS):
-                    if (qcvars.VARH[mc['f_wfn']][wfn] == qcvars.VARH[job['f_wfn']][job['f_wfn']]) and \
+                    if (VARH[mc['f_wfn']][wfn] == VARH[job['f_wfn']][job['f_wfn']]) and \
                        (mc['f_basis'] == job['f_basis']) and not \
                        (mc['f_wfn'] == job['f_wfn']):
                         del JOBS[indx_job]
@@ -851,12 +848,12 @@ def cbs(func, label, **kwargs):
     instructions += """\n    Enlightened listing of computations required.\n"""
     for mc in JOBS:
         instructions += """   %12s / %-24s for  %s%s\n""" % \
-            (mc['f_wfn'], mc['f_basis'], qcvars.VARH[mc['f_wfn']][mc['f_wfn']], addlremark[ptype])
+            (mc['f_wfn'], mc['f_basis'], VARH[mc['f_wfn']][mc['f_wfn']], addlremark[ptype])
 
     #     Expand listings to all that will be obtained
     JOBS_EXT = []
     for job in JOBS:
-        for wfn in qcvars.VARH[job['f_wfn']]:
+        for wfn in VARH[job['f_wfn']]:
             JOBS_EXT.append(dict(zip(f_fields, [wfn, job['f_basis'], job['f_zeta'],
                                                 0.0,
                                                 np.zeros((natom, 3)),
@@ -865,7 +862,7 @@ def cbs(func, label, **kwargs):
     instructions += """\n    Full listing of computations to be obtained (required and bonus).\n"""
     for mc in JOBS_EXT:
         instructions += """   %12s / %-24s for  %s%s\n""" % \
-            (mc['f_wfn'], mc['f_basis'], qcvars.VARH[mc['f_wfn']][mc['f_wfn']], addlremark[ptype])
+            (mc['f_wfn'], mc['f_basis'], VARH[mc['f_wfn']][mc['f_wfn']], addlremark[ptype])
     print(instructions)
 
 #    psioh = core.IOManager.shared_object()
@@ -880,7 +877,7 @@ def cbs(func, label, **kwargs):
         kwargs['name'] = mc['f_wfn']
 
         # Build string of title banner
-        cbsbanners = util.banner(' CBS Computation: {} / {}{} '.format(
+        cbsbanners = banner(' CBS Computation: {} / {}{} '.format(
             mc['f_wfn'].upper(), mc['f_basis'].upper(), addlremark[ptype]))
         print(cbsbanners)
 #        cbsbanners = ''
@@ -931,11 +928,11 @@ def cbs(func, label, **kwargs):
 
         # Fill in energies for subsumed methods
         if ptype == 'energy':
-            for wfn in qcvars.VARH[mc['f_wfn']]:
+            for wfn in VARH[mc['f_wfn']]:
                 for job in JOBS_EXT:
                     if (wfn == job['f_wfn']) and (mc['f_basis'] == job['f_basis']):
-                        #job['f_energy'] = core.get_variable(qcvars.VARH[wfn][wfn])
-                        job['f_energy'] = float(jrec['qcvars'][qcvars.VARH[wfn][wfn]].data)
+                        #job['f_energy'] = core.get_variable(VARH[wfn][wfn])
+                        job['f_energy'] = float(jrec['qcvars'][VARH[wfn][wfn]].data)
 
         if verbose > 1:
             jrec['qcvars'].print_variables()
@@ -953,7 +950,7 @@ def cbs(func, label, **kwargs):
 #    psioh.set_specific_retention(constants.PSIF_SCF_MOS, False)
 
     # Build string of title banner
-    cbsbanners = util.banner(' CBS Results: {}'.format(label))
+    cbsbanners = banner(' CBS Results: {}'.format(label))
     print(cbsbanners)
 #    cbsbanners = ''
 #    cbsbanners += """core.print_out('\\n')\n"""
@@ -972,14 +969,14 @@ def cbs(func, label, **kwargs):
 
                 #if lvl[1]['f_wfn'][:3] in pkgprefix:
                 #    rawlvl = lvl[1]['f_wfn'][3:]
-                if (pkgmtdlvl[0] + '-') in pkgprefix:
+                if (pkgmtdlvl[0] + '-') in driver_util.pkgprefix:
                     rawlvl = pkgmtdlvl[1]
                 else:
                     rawlvl = lvl[1]['f_wfn']
 
                 #if job['f_wfn'][:3] in pkgprefix:
                 #    rawjob = job['f_wfn'][3:]
-                if (pkgmtdjob[0] + '-') in pkgprefix:
+                if (pkgmtdjob[0] + '-') in driver_util.pkgprefix:
                     rawjob = pkgmtdjob[1]
                 else:
                     rawjob = job['f_wfn']
@@ -1032,7 +1029,7 @@ def cbs(func, label, **kwargs):
             if (job['f_wfn'] == mc['f_wfn']) and (job['f_basis'] == mc['f_basis']):
                 star = '*'
         tables += """     %6s %20s %1s %-27s %2s %16.8f   %-s\n""" % ('', job['f_wfn'],
-                  '/', job['f_basis'], star, job['f_energy'], qcvars.VARH[job['f_wfn']][job['f_wfn']])
+                  '/', job['f_basis'], star, job['f_energy'], VARH[job['f_wfn']][job['f_wfn']])
     tables += table_delimit
 
     tables += """\n   ==> %s <==\n\n""" % ('Stages')

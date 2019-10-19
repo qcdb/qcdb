@@ -1,5 +1,6 @@
 from ..molecule import Molecule
 
+
 def yaml_run(yamlin):
 
     import yaml
@@ -13,4 +14,3 @@ def yaml_run(yamlin):
                             return_wfn=True,
                             **kwargs)
     return jrec
-
