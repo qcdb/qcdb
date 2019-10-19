@@ -36,7 +36,7 @@ import math
 import copy
 import collections
 
-from ..vecutil import *
+from ..util.vecutil import *
 from ..exceptions import IncompleteAtomError, ValidationError
 
 

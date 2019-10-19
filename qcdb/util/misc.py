@@ -1,7 +1,6 @@
 import qcelemental as qcel
 
 
-
 def process_units(molrec):
     """From any (not both None) combination of `units` and
     `input_units_to_au`, returns both quantities validated. The degree
@@ -26,7 +25,8 @@ def process_units(molrec):
             funits = 'Angstrom'
             fiutau = input_units_to_au
         else:
-            raise ValidationError("""No big perturbations to physical constants! {} !~= ({} or {})""".format(input_units_to_au, 1.0, a2b))
+            raise ValidationError("""No big perturbations to physical constants! {} !~= ({} or {})""".format(
+                input_units_to_au, 1.0, a2b))
 
     elif units in ['Angstrom', 'Bohr'] and input_units_to_au is None:
         funits = units
@@ -43,7 +43,8 @@ def process_units(molrec):
             funits = units
             fiutau = input_units_to_au
         else:
-            raise ValidationError("""No big perturbations to physical constants! {} !~= {}""".format(input_units_to_au, expected_iutau))
+            raise ValidationError("""No big perturbations to physical constants! {} !~= {}""".format(
+                input_units_to_au, expected_iutau))
 
     else:
         raise ValidationError('Insufficient information: {} & {}'.format(units, input_units_to_au))

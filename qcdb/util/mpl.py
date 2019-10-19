@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def plot_coord(ref, cand=None, orig=None, comment=None):
     """Display target geometry `ref` as black dots in 3D plot. If present, also
     plot candidate geometry `cand` as red dots and starting geometry `orig` as
@@ -10,7 +11,9 @@ def plot_coord(ref, cand=None, orig=None, comment=None):
     try:
         from matplotlib import pyplot
     except ImportError:
-        raise ImportError("""Python module matplotlib not found. Solve by installing it: `conda install matplotlib` or https://matplotlib.org/faq/installing_faq.html""")
+        raise ImportError(
+            """Python module matplotlib not found. Solve by installing it: `conda install matplotlib` or https://matplotlib.org/faq/installing_faq.html"""
+        )
     from mpl_toolkits.mplot3d import Axes3D
 
     fig = pyplot.figure()

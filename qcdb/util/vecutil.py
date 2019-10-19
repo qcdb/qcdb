@@ -36,7 +36,7 @@ pure python instead of NumPy is the right choice efficiency-wise.
 import copy
 import math
 
-from .exceptions import *
+from ..exceptions import ValidationError
 
 ZERO = 1.0E-14
 

@@ -30,7 +30,7 @@ import sys
 import math
 
 from ..exceptions import ValidationError
-from ..vecutil import *
+from ..util.vecutil import *
 
 
 #

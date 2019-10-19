@@ -1,5 +1,3 @@
-
-
 def banner(text, type=1, width=35):
     """Function to print *text* to output file in a banner of
     minimum width *width* and minimum three-line height for
@@ -70,4 +68,3 @@ def find_approximate_string_matches(seq1, options, max_distance):
         if distance <= max_distance:
             matches.append(seq2)
     return matches
-

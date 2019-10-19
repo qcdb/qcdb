@@ -36,7 +36,7 @@ import numpy as np
 
 import qcelemental as qcel
 
-from ..vecutil import *
+from ..util.vecutil import *
 from ..exceptions import IncompleteAtomError, ValidationError
 from .libmintscoordentry import NumberValue, VariableValue, CartesianEntry, ZMatrixEntry
 from .libmintspointgrp import SymmOps, similar, SymmetryOperation, PointGroup

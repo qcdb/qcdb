@@ -75,4 +75,3 @@ def parse_dertype(dertype, max_derivative=2):
         raise FeatureNotImplemented("""derivative level ({})""".format(derint))
 
     return (derint, derdriver[derint])
-

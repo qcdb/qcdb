@@ -19,6 +19,8 @@ def search_file(filename, search_path):
         return os.path.abspath(os.path.join(path, filename))
     else:
         return None
+
+
 ## end of http://code.activestate.com/recipes/52224/ }}}
 
 
@@ -63,7 +65,6 @@ def import_ignorecase(module, lenv=None):
 
 class add_path():
     """https://stackoverflow.com/a/39855753"""
-
     def __init__(self, paths):
         # paths must be list
         self.paths = paths
