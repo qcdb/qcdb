@@ -1,18 +1,9 @@
-import re
 import sys
 import uuid
-import struct
 from collections import defaultdict
-from decimal import Decimal
 
-from ...pdict import PreservingDict
-#from ..periodictable import *
-#from ..physconst import *
 from ...exceptions import ValidationError
-from ...molecule import Molecule
-from decimal import Decimal
 from ...util import conv_float2negexp
-#from . import nwc_movecs
 
 
 def muster_inherited_options(ropts, verbose=1):

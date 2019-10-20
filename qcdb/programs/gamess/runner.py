@@ -24,7 +24,6 @@ from ... import qcvars
 from ...basisset import BasisSet
 from ...util import provenance_stamp
 from ...molecule import Molecule
-from ...pdict import PreservingDict
 from .molbasopt import muster_and_format_molecule_and_basis_for_gamess
 from .harvester import muster_modelchem, muster_inherited_options
 

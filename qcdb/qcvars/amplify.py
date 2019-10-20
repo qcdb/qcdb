@@ -4,9 +4,9 @@ from typing import Dict, Union
 import numpy as np
 
 from qcelemental import Datum
+from qcengine.programs.util import PreservingDict
 
 from ..exceptions import ValidationError
-from ..pdict import PreservingDict
 from .glossary import qcvardefs
 from .identities import wfn_psivars
 

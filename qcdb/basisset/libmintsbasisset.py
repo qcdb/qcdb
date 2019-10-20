@@ -184,7 +184,7 @@ class BasisSet(object):
 
         # Add a dummy atom at the origin, to hold this basis function
         self.molecule = Molecule()
-        self.molecule.add_atom(0, 0.0, 0.0, 0.0)
+        self.molecule.add_atom(0, 0.0, 0.0, 0.0, 'X')
         # Fill with data representing a single S function, at the origin, with 0 exponent
         self.n_uprimitive = 1
         self.n_shells = 1
@@ -1487,6 +1487,7 @@ class BasisSet(object):
 
     # <<< Methods not Implemented >>>
 
+    @classmethod
     def zero_so_basis_set(cls, factory):
         """ **NYI** Returns an empty SO basis set object.
         *  Returns an SOBasis object that actually has a single s-function

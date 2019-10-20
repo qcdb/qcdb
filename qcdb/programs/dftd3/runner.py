@@ -41,9 +41,10 @@ import qcelemental as qcel
 
 #from ..datastructures import *
 from qcelemental.util import update_with_error
+from qcengine.programs.util import PreservingDict
+
 from ...util import der0th, der1st
 from ...exceptions import Dftd3Error, ValidationError
-from ...pdict import PreservingDict
 #from .dashparam import dash_server, dashcoeff
 from . import dashparam
 from ... import qcvars

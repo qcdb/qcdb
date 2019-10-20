@@ -1,11 +1,9 @@
-import sys
 import copy
 import pprint
 pp = pprint.PrettyPrinter(width=120)
 from typing import Any, Dict, Optional
 import inspect
 
-import numpy as np
 import qcelemental as qcel
 from qcelemental.models import ResultInput
 
@@ -19,7 +17,6 @@ from ... import qcvars
 #from ..exceptions import *
 from ...util import provenance_stamp
 from ...molecule import Molecule
-from ...pdict import PreservingDict
 #from .worker import psi4_subprocess
 from .botanist import muster_inherited_options
 

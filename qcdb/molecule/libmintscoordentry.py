@@ -426,17 +426,6 @@ class CartesianEntry(CoordEntry):
         return "  %17s  %17s  %17s\n" % (xstr, ystr, zstr)
         # should go to outfile
 
-    def print_in_input_format_cfour(self):
-        """Prints the updated geometry, in the format provided by the user.
-        This, for Cfour, not different from regular version.
-
-        """
-        xstr = self.x.variable_to_string(12)
-        ystr = self.y.variable_to_string(12)
-        zstr = self.z.variable_to_string(12)
-        return " %17s %17s %17s\n" % (xstr, ystr, zstr)
-        # should go to outfile
-
     def clone(self):
         """Returns new, independent CartesianEntry object"""
         return copy.deepcopy(self)
@@ -494,37 +483,6 @@ class ZMatrixEntry(CoordEntry):
         return text
 #        outfile
 
-    def print_in_input_format_cfour(self):
-        """Prints the updated geometry, in the format provided by the user"""
-        text = ""
-        if self.rto is None and self.ato is None and self.dto is None:
-            # The first atom
-            text += "\n"
-        elif self.ato is None and self.dto is None:
-            # The second atom
-            now_rto = self.rto.entry_number() + 1
-            now_rval = self.rval.variable_to_string(10)
-            text += " %d %s\n" % (now_rto, now_rval)
-        elif self.dto is None:
-            # The third atom
-            now_rto = self.rto.entry_number() + 1
-            now_rval = self.rval.variable_to_string(10)
-            now_ato = self.ato.entry_number() + 1
-            now_aval = self.aval.variable_to_string(10)
-            text += " %d %s %d %s\n" % (now_rto, now_rval, now_ato, now_aval)
-        else:
-            # Remaining atoms
-            now_rto = self.rto.entry_number() + 1
-            now_rval = self.rval.variable_to_string(10)
-            now_ato = self.ato.entry_number() + 1
-            now_aval = self.aval.variable_to_string(10)
-            now_dto = self.dto.entry_number() + 1
-            now_dval = self.dval.variable_to_string(10)
-            text += " %d %s %d %s %d %s\n" % \
-                (now_rto, now_rval, now_ato, now_aval, now_dto, now_dval)
-        return text
-#        outfile
-
     def set_coordinates(self, x, y, z):
         """Given the current set of coordinates, updates the values of this
         atom's coordinates, and any variables that may depend on it.
@@ -553,7 +511,7 @@ class ZMatrixEntry(CoordEntry):
             val = self.d(self.coordinates, self.rto.compute(), self.ato.compute(), self.dto.compute())
             # Check for NaN, and don't update if we find one
             # what is this? proper py traslation?
-            if val == val:
+            if not cmath.isnan(val):
                 self.dval.rset(val * 180.0 / math.pi)
 
         self.computed = True

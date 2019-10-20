@@ -116,7 +116,6 @@ def _bond_profile(self):
 
     # determine bond topology from covalent radii
     bonds = []
-    b2a = qcel.constants.bohr2angstroms
     for i in range(self.natom()):
         for j in range(i + 1, self.natom()):
             try:

@@ -26,7 +26,6 @@
 # @END LICENSE
 #
 
-import sys
 import math
 
 from ..exceptions import ValidationError
@@ -1088,7 +1087,6 @@ class CharacterTable(object):
         if self.PYnirrep == 0:
             return 0
 
-        so = SymmetryOperation()
         self.PYgamma = []
         self.symop = []
         self.inv = []
@@ -1098,13 +1096,13 @@ class CharacterTable(object):
             self.inv.append(0)
 
         # this array forms a reducible representation for rotations about x,y,z
-        rot = zero(self.PYnirrep, 1)
+        # rot = zero(self.PYnirrep, 1)
 
         # this array forms a reducible representation for translations along x,y,z
-        trans = zero(self.PYnirrep, 1)
+        # trans = zero(self.PYnirrep, 1)
 
         # the angle to rotate about the principal axis
-        theta = 2.0 * math.pi if self.nt == 0 else 2.0 * math.pi / self.nt
+        # theta = 2.0 * math.pi if self.nt == 0 else 2.0 * math.pi / self.nt
 
         # Handle irreducible representations; set PYgamma
         if self.PYbits in [

@@ -1717,7 +1717,6 @@ class LibmintsMolecule():
         >>> H2OH2O.translate([1.0, 1.0, 0.0])
 
         """
-        temp = [None, None, None]
         for at in range(self.nallatom()):
             temp = scale(self.full_atoms[at].compute(), self.input_units_to_au())
             temp = add(temp, r)
@@ -1884,7 +1883,6 @@ class LibmintsMolecule():
         >>> H2OH2O.rotate([[0,-1,0],[-1,0,0],[0,0,1]])
 
         """
-        new_geom = zero(3, self.natom())
         geom = self.geometry()
         new_geom = mult(geom, R)
         self.set_geometry(new_geom)
@@ -1895,7 +1893,6 @@ class LibmintsMolecule():
         >>> H2OH2O.rotate_full([[0,-1,0],[-1,0,0],[0,0,1]])
 
         """
-        new_geom = zero(3, self.nallatom())
         geom = self.full_geometry()
         new_geom = mult(geom, R)
         self.set_full_geometry(new_geom)
@@ -2028,12 +2025,11 @@ class LibmintsMolecule():
         # Call this here, the programmer will forget to call it, as I have many times.
         self.form_symmetry_information()
 
-    def set_full_point_group(self, tol=FULL_PG_TOL):
+    def set_full_point_group(self, tol=FULL_PG_TOL, verbose=1):
         """Determine and set FULL point group. self.PYfull_pg_n is highest
         order n in Cn. 0 for atoms or infinity.
 
         """
-        verbose = 1  # TODO
         # Get cartesian geometry and put COM at origin
         geom = self.geometry()
         com = self.center_of_mass()
@@ -2060,10 +2056,8 @@ class LibmintsMolecule():
         if verbose > 2:
             print("""  Inversion symmetry               : %s""" % ('yes' if op_i else 'no'))
 
-        x_axis = [1, 0, 0]
         y_axis = [0, 1, 0]
         z_axis = [0, 0, 1]
-        rot_axis = [0.0, 0.0, 0.0]
 
         if rotor == 'RT_ATOM':  # atoms
             self.full_pg = 'ATOM'
@@ -2498,7 +2492,6 @@ class LibmintsMolecule():
             SymmetryOperation.sigma_yz]
 
         symop = SymmetryOperation()
-        matching_atom = -1
 
         # Only needs to detect the 8 symmetry operations
         for g in range(7):
@@ -2884,7 +2877,6 @@ class LibmintsMolecule():
         self.equiv.append([0])
 
         ct = self.point_group().char_table()
-        so = SymmetryOperation()
         np3 = [0.0, 0.0, 0.0]
 
         current_geom = self.geometry(np_out=False)
@@ -3267,7 +3259,6 @@ def compute_atom_map(mol, tol=0.05):
         atom_map[i] = [0] * ng
 
     np3 = [0.0, 0.0, 0.0]
-    so = SymmetryOperation()
 
     # loop over all centers
     for i in range(natom):
