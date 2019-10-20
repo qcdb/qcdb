@@ -175,7 +175,7 @@ options:
 """
 
     import yaml
-    asdf = yaml.load(yamlin)
+    asdf = yaml.load(yamlin, Loader=yaml.FullLoader)
 
     ene = asdf['driver'](asdf['method'],
                          options=asdf['options'],

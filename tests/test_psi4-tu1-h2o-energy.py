@@ -29,9 +29,7 @@ def test_tu1a():
     qcdb.energy('scf')
     print(qcdb.print_variables())
 
-    #assert compare_values(-76.0266327341067125, get_variable('SCF TOTAL ENERGY'), 6, tnm())
     assert compare_values(-76.0266327341067125, qcdb.variable('SCF TOTAL ENERGY'), 6, tnm())
-#    assert False
 
 
 @using_psi4
@@ -143,7 +141,7 @@ options:
 """
 
     import yaml
-    asdf = yaml.load(yamlin)
+    asdf = yaml.load(yamlin, Loader=yaml.FullLoader)
 
     ene = asdf['driver'](asdf['method'],
                          options=asdf['options'],
