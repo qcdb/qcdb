@@ -33,13 +33,9 @@ Organizationally, this module isolates qcdb code from psi4 code.
 
 """
 import os
-import re
 import copy
 import glob
-import uuid
 import shelve
-import shutil
-import difflib
 import datetime
 import subprocess
 import pprint

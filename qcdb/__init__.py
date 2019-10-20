@@ -61,6 +61,7 @@ from .driver.driver_helpers import get_variable, print_variables, variable
 from .driver.driver_helpers import set_options, get_active_options
 from .driver.driver_helpers import set_molecule, activate
 from .driver.yaml import yaml_run
+from .exceptions import *
 
 from .basisset import BasisSet, basishorde
 from .keywords import AliasKeyword, Keyword, Keywords

@@ -1011,7 +1011,7 @@ def mol_tester(lbl, molstr, pg, sigma, refgeomang, isbohr=False, iso=False):
     if isbohr:
         geom_now = symmol.full_geometry()
     else:
-        geom_now = qcdb.vecutil.mscale(symmol.full_geometry(), qcel.constants.bohr2angstroms)
+        geom_now = qcdb.util.vecutil.mscale(symmol.full_geometry(), qcel.constants.bohr2angstroms)
     if refgeomang:
         assert compare_values(refgeomang, geom_now, 6, pg + " orientation")
 

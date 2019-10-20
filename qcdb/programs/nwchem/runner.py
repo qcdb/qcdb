@@ -1,8 +1,7 @@
-import sys
 import copy
+import inspect
 import pprint
 pp = pprint.PrettyPrinter(width=120)
-import inspect
 from typing import Any, Dict, Optional
 from decimal import Decimal
 
@@ -16,14 +15,8 @@ from qcengine.programs.nwchem import NWChemHarness
 from qcengine.programs.nwchem.keywords import format_keywords
 
 from ... import qcvars
-#from ..exceptions import *
-#from ..iface_psi4.options import query_options_defaults_from_psi
 from ...basisset import BasisSet
 from ...util import print_jobrec, provenance_stamp
-#from ..pdict import PreservingDict
-from . import harvester
-from .worker import nwchem_subprocess
-#from .molbas import * #format_molecule_for_nwchem, format_basis_for_nwchem, format_basis_for_nwchem_puream, local_prepare_options_for_modules
 from .molbasopt import format_molecule, muster_and_format_basis_for_nwchem
 from .harvester import muster_inherited_options, format_modelchem_for_nwchem
 

@@ -90,7 +90,7 @@ def test_3():
         mol.set_basis_all_atoms("cc-pvdz", role=role)
         mol.set_basis_by_symbol("c", "aug-cc-pvdz", role=role)
         return basstrings
-    qcdb.libmintsbasisset.basishorde['DZ_PLUS'] = basisspec_psi4_yo__dz_plus
+    qcdb.basishorde['DZ_PLUS'] = basisspec_psi4_yo__dz_plus
 
     qmol = qcdb.Molecule.from_string(smol)
     wert, dwert = qcdb.BasisSet.pyconstruct(qmol, 'BASIS', BASIS, verbose=verbose, return_dict=True)
@@ -301,7 +301,7 @@ def test_3b():
 #           mol.set_basis_by_symbol("c", "aug-cc-pvdz", role=role)
 #           mol.set_basis_by_label("h_r", "aug-cc-pvdz", role=role)
 #           return basstrings
-#       qcdb.libmintsbasisset.basishorde['DZ_PLUSPLUS'] = basisspec_psi4_yo__dz_plusplus
+#       qcdb.basishorde['DZ_PLUSPLUS'] = basisspec_psi4_yo__dz_plusplus
 #       core.set_global_option("BASIS", "dz_PLUSplus")
 #       wert = psi4.core.BasisSet.build(mymol, 'BASIS', get_global_option('BASIS'))
 #       compare_strings('DZ_PLUSPLUS', get_global_option('BASIS'), 'name') 
@@ -316,7 +316,7 @@ def test_3b():
 #           basstrings = {}
 #           mol.set_basis_by_symbol("h", "cc-pvdz-ri", role=role)
 #           return basstrings
-#       qcdb.libmintsbasisset.basishorde['DZ_PLUSPLUSRI'] = basisspec_psi4_yo__dz_plusplusri
+#       qcdb.basishorde['DZ_PLUSPLUSRI'] = basisspec_psi4_yo__dz_plusplusri
 #       core.set_global_option("DF_BASIS_MP2", "dz_PLUSplusRI")
 #       wert = psi4.core.BasisSet.build(mymol, 'DF_BASIS_MP2', get_global_option('DF_BASIS_MP2'), 'RIFIT', get_global_option('BASIS'))
 #       compare_integers(156, wert.nbf(), 'nbf()') 
@@ -332,7 +332,7 @@ def test_3b():
 #           mol.set_basis_by_symbol("c", "aug-cc-pvdz", role=role)
 #           mol.set_basis_by_symbol("h", "aug-cc-pvdz", role=role)
 #           return basstrings
-#       qcdb.libmintsbasisset.basishorde['DZ_PLUSPLUSPLUS'] = basisspec_psi4_yo__dz_plusplusplus
+#       qcdb.basishorde['DZ_PLUSPLUSPLUS'] = basisspec_psi4_yo__dz_plusplusplus
 #       core.set_global_option("BASIS", "dz_PLUSplusplus")
 #       wert = psi4.core.BasisSet.build(mymol, 'BASIS', get_global_option('BASIS'))
 #       compare_integers(55, wert.nbf(), 'nbf()') 
@@ -392,7 +392,7 @@ def test_3b():
 #           basstrings = {}
 #           mol.set_basis_all_atoms("cc-pv5z", role=role)
 #           return basstrings
-#       qcdb.libmintsbasisset.basishorde['DISGUISED5Z'] = basisspec_psi4_yo__disguised5z
+#       qcdb.basishorde['DISGUISED5Z'] = basisspec_psi4_yo__disguised5z
 #       core.set_global_option("BASIS", "disguised5z")
 #       set_global_option('DF_BASIS_MP2', '') 
 #       print('[12]   <<<  cc-pV5Z on HeNe  >>>')
@@ -420,7 +420,7 @@ def test_3b():
 #           basstrings = {}
 #           mol.set_basis_by_symbol("he", "DEF2-QZVPP-JKFIT", role=role)
 #           return basstrings
-#       qcdb.libmintsbasisset.basishorde['UGGH'] = basisspec_psi4_yo__uggh
+#       qcdb.basishorde['UGGH'] = basisspec_psi4_yo__uggh
 #       core.set_global_option("DF_BASIS_SCF", "uggh")
 #       print('[15]   <<<  forced JK for cc-pV5Z on HeNe  >>>')
 #       wert = psi4.core.BasisSet.build(hene, 'DF_BASIS_SCF', '', 'JKFIT', get_global_option('BASIS'))

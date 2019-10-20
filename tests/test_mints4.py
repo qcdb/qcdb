@@ -65,7 +65,7 @@ def test_mints4():
 
     assert compare_values(refENuc * a2a, dimer.nuclear_repulsion_energy(), 9, "Bz-H3O+: nuclear repulsion energy")
 
-    geom_now = qcdb.vecutil.mscale(dimer.geometry(), qcel.constants.bohr2angstroms)
+    geom_now = qcdb.util.vecutil.mscale(dimer.geometry(), qcel.constants.bohr2angstroms)
     assert compare_values(refGEOM, geom_now, 6, "Bz-H3O+: geometry and orientation")
 
 
