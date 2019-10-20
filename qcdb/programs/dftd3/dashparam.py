@@ -28,14 +28,9 @@
 """
 Module to hold and distribute the -D dispersion correction parameters.
 """
-from __future__ import absolute_import
-from __future__ import print_function
 import copy
-try:
-    #from .p4regex import *
-    pass
-except ImportError:
-    from .exceptions import *
+
+from ...exceptions import ValidationError
 
 ## ==> Dispersion Aliases and Parameters <== ##
 

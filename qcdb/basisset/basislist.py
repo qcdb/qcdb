@@ -168,8 +168,8 @@ def load_basis_families():
     from .basislistother import load_basfam_other
 
     if len(basisfamily_list) == 0:
-        load_basfam_dunning()
-        load_basfam_other()
+        load_basfam_dunning(basisfamily_list)
+        load_basfam_other(basisfamily_list)
     return basisfamily_list
 
 

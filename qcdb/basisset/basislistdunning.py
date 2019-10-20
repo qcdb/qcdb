@@ -37,7 +37,7 @@ orbital bases.
 from .basislist import BasisFamily
 
 
-def load_basfam_dunning():
+def load_basfam_dunning(basisfamily_list):
 
     basis_ccpvdz = BasisFamily('cc-pVDZ', zeta=2)
     basisfamily_list.append(basis_ccpvdz)

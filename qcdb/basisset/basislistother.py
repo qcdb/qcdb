@@ -35,7 +35,7 @@ plausible fitting basis sets are supplied as defaults.
 from .basislist import BasisFamily
 
 
-def load_basfam_other():
+def load_basfam_other(basisfamily_list):
 
     # Pople
     basis_sto3g = BasisFamily('STO-3G', zeta=1)
