@@ -1,19 +1,6 @@
-<p align="center">
-<a href="https://travis-ci.org/qcdb/qcdb"> <img src="https://travis-ci.org/qcdb/qcdb.svg?branch=master" /></a>
-<!--<a href="https://github.com/qcdb/qcdb/releases"> <img src="https://img.shields.io/github/commits-since/qcdb/qcdb/v1.1.svg" /></a>-->
-<a href="https://github.com/qcdb/qcdb/pulls"> <img src="https://img.shields.io/github/issues-pr-closed-raw/qcdb/qcdb.svg" /></a>
-<a href="https://codecov.io/gh/qcdb/qcdb"> <img src="https://codecov.io/gh/qcdb/qcdb/branch/master/graph/badge.svg" /></a>
-<!--<a href="http://forum.psicode.org/"> <img src="https://img.shields.io/badge/chat-on_forum-5077AB.svg" /></a>-->
-<br>
-<!--<a href="http://www.psicode.org"> <img src="https://img.shields.io/badge/home-Psi4-5077AB.svg" /></a>-->
-<!--<a href="http://psicode.org/qcdbmanual/master/index.html"> <img src="https://img.shields.io/badge/docs-latest-5077AB.svg" /></a>-->
-<!--<a href="https://anaconda.org/qcdb/qcdb"> <img src="https://anaconda.org/qcdb/qcdb/badges/installer/conda.svg" /></a>-->
-<a href="https://opensource.org/licenses/BSD-3-Clause"> <img src="https://img.shields.io/github/license/qcdb/qcdb.svg" /></a>
-<a href="https://qcdb.slack.com/messages"> <img src="https://img.shields.io/badge/dev_chat-on_slack-808493.svg" /></a>
-<a href="https://join.slack.com/t/qcdb/shared_invite/enQtNDIzNTQ2OTExODk0LWM3OTgxN2ExYTlkMTlkZjA0OTExZDlmNGRlY2M4NWJlNDlkZGQyYWUxOTJmMzc3M2VlYzZjMjgxMDRkYzFmOTE"> <img src="https://img.shields.io/badge/dev_chat-invite-808493.svg" /></a>
-<br><br>
-<img src="https://github.com/qcdb/qcdb/blob/master/media/qcdb_newlogo.png" alt="qcdb banner logo" height=200> <br>
-</p>
+# <img src="https://github.com/qcdb/qcdb/blob/master/media/qcdb_newlogo.png" height=150>
 
-# QCDB
-quantum chemistry common driver and databases
+| **Status** | [![Travis build](https://img.shields.io/travis/qcdb/qcdb/master.svg?logo=linux&logoColor=white)](https://travis-ci.org/qcdb/qcdb) [![Codecov coverage](https://img.shields.io/codecov/c/github/qcdb/qcdb.svg?logo=Codecov&logoColor=white)](https://codecov.io/gh/qcdb/qcdb) [![LGTM analysis](https://img.shields.io/lgtm/grade/python/g/qcdb/qcdb.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/qcdb/qcdb/context:python) |
+| :------ | :------- |
+| **Communication** | [![closed pr](https://img.shields.io/github/issues-pr-closed-raw/qcdb/qcdb.svg)](https://github.com/qcdb/qcdb/pulls) [![dev chat on slack](https://img.shields.io/badge/dev_chat-on_slack-808493.svg?logo=slack)](https://join.slack.com/t/qcarchive/shared_invite/enQtNDIzNTQ2OTExODk0LTE3MWI0YzBjNzVhNzczNDM0ZTA5MmQ1ODcxYTc0YTA1ZDQ2MTk1NDhlMjhjMmQ0YWYwOGMzYzJkZTM2NDlmOGM) |
+| **Foundation** | [![license](https://img.shields.io/github/license/qcdb/qcdb.svg)](https://opensource.org/licenses/BSD-3-Clause) [![platforms](https://img.shields.io/badge/Platforms-Linux%2C%20MacOS%2C%20Windows%20WSL-orange.svg)](http://psicode.org/psi4manual/master/introduction.html#supported-systems) [![python](https://img.shields.io/badge/python-3.6+-blue.svg)](http://psicode.org/psi4manual/master/introduction.html#supported-systems) |
