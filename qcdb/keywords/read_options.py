@@ -1,5 +1,5 @@
 from . import parsers
-from .keyword import Keyword
+from .keywords import Keyword
 
 
 def load_qcdb_defaults(options):

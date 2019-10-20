@@ -1,4 +1,4 @@
-from ...keyword import parsers, Keyword
+from ...keywords import parsers, Keyword
 
 
 def load_gamess_defaults(options):

@@ -1,6 +1,6 @@
 import collections
 
-from ...keyword import Keyword
+from ...keywords import Keyword
 
 
 def load_psi4_defaults(peoptions):

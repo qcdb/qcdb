@@ -3,9 +3,9 @@ import collections
 from qcelemental.util import which, which_import
 
 from .. import data_dir
-from ..keyword import Keywords
+from ..keywords import Keywords
 from ..molecule import Molecule
-from ..keyword.read_options import load_qcdb_defaults
+from ..keywords.read_options import load_qcdb_defaults
 from ..programs.psi4.options import load_cfour_defaults_from_psi4, load_psi4_defaults
 from ..programs.nwchem.options import load_nwchem_defaults
 from ..programs.gamess.options import load_gamess_defaults

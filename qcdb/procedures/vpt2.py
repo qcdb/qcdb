@@ -54,7 +54,7 @@ import qcengine as qcng
 
 from ..driver import pe
 from ..util import provenance_stamp
-from ..keyword import Keywords, register_kwds
+from ..keywords import Keywords, register_kwds
 from ..driver.driver_util import kwargs_lower, get_package
 from ..driver.driver_helpers import get_active_molecule
 from ..driver.proc_table import procedures

@@ -1,6 +1,6 @@
 import collections
 
-from ...keyword import parsers, Keyword, AliasKeyword
+from ...keywords import parsers, Keyword, AliasKeyword
 
 #from ..exceptions import *
 #from . import parsers

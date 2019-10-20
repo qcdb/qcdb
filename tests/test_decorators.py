@@ -1,7 +1,7 @@
 import numpy as np
 
 import qcdb
-from qcdb.keyword.decorators import def_mol
+from qcdb.keywords.decorators import def_mol
 
 mol1 = qcdb.Molecule("""
 He

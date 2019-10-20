@@ -41,7 +41,7 @@ import numpy as np
    
 from ..exceptions import ValidationError
 from ..molecule import Molecule
-from ..keyword import register_kwds
+from ..keywords import register_kwds
 from .. import util
 from .. import vib
 from . import pe

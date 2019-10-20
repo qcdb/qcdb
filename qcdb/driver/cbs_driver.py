@@ -12,7 +12,7 @@ from ..exceptions import ValidationError
 from . import pe
 from . import driver_util
 from . import driver_helpers
-from ..keyword import register_kwds
+from ..keywords import register_kwds
 from ..util import banner
 from ..qcvars import VARH
 from .cbs_helpers import *

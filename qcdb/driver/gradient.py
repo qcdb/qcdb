@@ -36,7 +36,7 @@ import copy
 import pprint
 pp = pprint.PrettyPrinter(width=120)
 
-from ..keyword import register_kwds
+from ..keywords import register_kwds
 from ..exceptions import FeatureNotImplemented
 from . import pe
 from . import driver_util
