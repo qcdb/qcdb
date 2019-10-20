@@ -1,4 +1,5 @@
 #from .proc_table import procedures
+from . import pe
 from .energy import energy
 from .gradient import gradient
 from .hessian import hessian, frequency

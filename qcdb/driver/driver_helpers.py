@@ -256,13 +256,13 @@ def print_variables(qcvars=None):
 
     Parameters
     ----------
-    qcvars : dict of QCAspect, optional
-        Group of QCAspect objects to print. If `None`, will use `qcdb.pe.active_qcvars`.
+    qcvars : dict of Datum, optional
+        Group of Datumobjects to print. If `None`, will use `qcdb.pe.active_qcvars`.
 
     Returns
     -------
     str
-        Printable string representation of label, data, and unit in QCAspect-s.
+        Printable string representation of label, data, and unit in Datum-s.
 
     """
     text = []

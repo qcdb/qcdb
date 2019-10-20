@@ -41,7 +41,6 @@ from ..keywords import register_kwds
 from . import driver_util
 from . import driver_helpers
 from . import cbs_driver
-#from psi4.driver import driver_nbody
 from . proc_table import procedures
 
 
