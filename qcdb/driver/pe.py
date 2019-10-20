@@ -1,5 +1,3 @@
-import collections
-
 from qcelemental.util import which, which_import
 
 from .. import data_dir

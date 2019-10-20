@@ -32,14 +32,12 @@ import copy
 import json
 import pprint
 pp = pprint.PrettyPrinter(width=120)
-import collections
 from decimal import Decimal
 
 import numpy as np
 
 import qcelemental as qcel
 
-#from ..datastructures import *
 from qcelemental.util import update_with_error
 from qcengine.programs.util import PreservingDict
 

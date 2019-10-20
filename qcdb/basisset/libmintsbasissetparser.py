@@ -28,7 +28,6 @@
 
 import os
 import re
-import sys
 
 from ..exceptions import ValidationError
 from .libmintsgshell import ShellInfo

@@ -39,10 +39,8 @@ pp = pprint.PrettyPrinter(width=120)
 
 import numpy as np
    
-from ..exceptions import ValidationError
 from ..molecule import Molecule
 from ..keywords import register_kwds
-from .. import util
 from .. import vib
 from . import pe
 from . import driver_util

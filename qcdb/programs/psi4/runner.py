@@ -16,7 +16,6 @@ from ... import qcvars
 #from ..driver.driver_helpers import print_variables
 #from ..exceptions import *
 from ...util import provenance_stamp
-from ...molecule import Molecule
 #from .worker import psi4_subprocess
 from .botanist import muster_inherited_options
 

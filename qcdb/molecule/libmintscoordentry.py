@@ -33,6 +33,7 @@ psi4 developers.
 
 """
 import math
+import cmath
 import copy
 import collections
 

@@ -1,9 +1,4 @@
-import collections
-
 from ...keywords import parsers, Keyword, AliasKeyword
-
-#from ..exceptions import *
-#from . import parsers
 
 
 def load_nwchem_defaults(options):

@@ -34,7 +34,6 @@ Organizationally, this module isolates qcdb code from psi4 code.
 """
 import os
 import copy
-import glob
 import shelve
 import datetime
 import subprocess
@@ -53,7 +52,6 @@ from ..util import provenance_stamp
 from ..keywords import Keywords, register_kwds
 from ..driver.driver_util import kwargs_lower, get_package
 from ..driver.driver_helpers import get_active_molecule
-from ..driver.proc_table import procedures
 from ..programs.cfour.harvester import backtransform, format_fjobarc, harvest_zmat, jajo2mol
 from ..programs.cfour.jajo import getrec
 
