@@ -211,11 +211,9 @@ class Keyword(object):
 
         self.history.append((self._check(value), imperative, overlap, accession))
 
-        if verbose >= 1:
+        if verbose >= 2:
             added = self.history[-1]
-            # TODO add back somehow
-            #print('Setting {} to {} priority {} accession {}'.
-            #    format(self.keyword, added[0], added[2] + 100 * int(added[1]), added[3]))
+            print(f'Setting {self.keyword} to {added[0]} priority {added[2] + 100 * int(added[1])} accession {added[3]}')
 
     def _check(self, val):
         """Common function to check `val` against `self.validator` for setting, defaulting, etc."""

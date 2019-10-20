@@ -12,7 +12,6 @@ from qcengine.programs.cfour import CFOURHarness
 from qcengine.programs.cfour.keywords import format_keywords, format_keyword
 
 from ... import qcvars
-#from ..driver.driver_helpers import print_variables
 from ...basisset import BasisSet
 from ...util import print_jobrec, provenance_stamp
 from . import harvester
@@ -191,14 +190,3 @@ class QcdbCFOURHarness(CFOURHarness):
 #MEMORY=20000000)
 #
 #"""
-
-#    # amalgamate output
-#    text = cfourrec['stdout']
-#    text += '\n  <<<  Cfour {} {} Results  >>>\n\n'.format('', '') #name.lower(), calledby.capitalize()))  # banner()
-#
-#    for fl, contents in cfourrec['outputs'].items():
-#        if contents is not None:
-#            text += f'\n  Cfour scratch file {fl} has been read.\n'
-#            text += contents
-#    text += print_variables(calcinfo)
-#    jobrec['raw_output'] = text

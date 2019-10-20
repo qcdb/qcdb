@@ -62,7 +62,6 @@ def omega(args):
 
 
 def _linear(args):
-    coeff, varss = args
     return sum(c * v for c, v in zip(args))
 
 
