@@ -78,7 +78,6 @@ class QcdbPsi4Harness(Psi4Harness):
                          template: Optional[str] = None) -> Dict[str, Any]:
         input_data = input_model.dict()
 
-        molrec = qcel.molparse.from_schema(input_model.molecule.dict())
         ropts = input_model.extras['qcdb:options']
 
         muster_inherited_keywords(ropts)

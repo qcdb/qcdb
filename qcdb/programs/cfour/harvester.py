@@ -28,7 +28,6 @@
 
 import uuid
 import struct
-from collections import defaultdict
 
 import numpy as np
 import qcelemental as qcel

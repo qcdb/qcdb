@@ -1,5 +1,4 @@
 import uuid
-import collections
 from typing import Dict
 
 import qcelemental as qcel
@@ -18,13 +17,11 @@ def format_molecule(molrec: Dict, ropts: 'Keywords', verbose: int = 1) -> str:
 
 def muster_and_format_basis_for_nwchem(molrec, ropts, qbs, verbose=1):
     kwgs = {'accession': uuid.uuid4(), 'verbose': verbose}
-    units = 'Bohr'
 
     # this is bad b/c user can't reset puream. adjust after figuring out anonymous options better
     native_puream = qbs.has_puream()
     nwc_puream = {True: 'spherical', False: 'cartesian'}[native_puream]
     #    nwc_puream = 'cartesian'
-    atom_basisset = qbs.print_detail_gamess(return_list=True)
 
     bascmd = f"""basis {nwc_puream}\n"""  # nwc wants role, not basis name, I guess: f"""basis "{qbs.name}" {nwc_puream}\n"""
     bascmd += qbs.print_detail_nwchem()

@@ -1,6 +1,5 @@
 import sys
 import uuid
-from collections import defaultdict
 
 from ...exceptions import ValidationError
 from ...util import conv_float2negexp

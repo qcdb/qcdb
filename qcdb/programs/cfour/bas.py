@@ -1,7 +1,6 @@
 import os
 import re
 import uuid
-import collections
 from typing import List, Union
 
 import qcelemental as qcel
