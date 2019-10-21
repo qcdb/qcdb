@@ -171,6 +171,12 @@ class QcdbPsi4Harness(Psi4Harness):
 
         _print_helper(f'[2] {self.name} RESULTINPUT PRE-ENGINE', input_model.dict(), verbose >= 4)
 
+        # 'PATH': (':'.join([os.path.abspath(x) for x in os.environ.get('PSIPATH', '').split(':') if x != '']) +
+        #          ':' + os.environ.get('PATH')),# +
+        # 'PSI_SCRATCH': tmpdir,
+        # 'PYTHONPATH': os.environ.get('PYTHONPATH'),
+        # 'LD_LIBRARY_PATH': os.environ.get('LD_LIBRARY_PATH')
+
         output_model = Psi4Harness.compute(self, input_model=input_model, config=config)
 
         _print_helper(f'[3] {self.name} RESULT POST-ENGINE', output_model.dict(), verbose >= 4)

@@ -1,7 +1,7 @@
-from ...keywords import parsers, Keyword, AliasKeyword
+from ...keywords import parsers, Keyword, AliasKeyword, Keywords
 
 
-def load_nwchem_defaults(options):
+def load_nwchem_keywords(options: Keywords) -> None:
     options.add(
         'nwchem',
         Keyword(

@@ -1,8 +1,8 @@
 from . import parsers
-from .keywords import Keyword
+from .keywords import Keyword, Keywords
 
 
-def load_qcdb_defaults(options):
+def load_qcdb_keywords(options: Keywords) -> None:
 
     options.add(
         'qcdb',

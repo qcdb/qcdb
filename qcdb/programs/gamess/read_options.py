@@ -1,7 +1,7 @@
-from ...keywords import parsers, Keyword
+from ...keywords import parsers, Keyword, Keywords
 
 
-def load_gamess_defaults(options):
+def load_gamess_keywords(options: Keywords) -> None:
 
     # $SYSTEM
 

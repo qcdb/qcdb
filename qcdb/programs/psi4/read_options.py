@@ -1,9 +1,9 @@
 import collections
 
-from ...keywords import Keyword
+from ...keywords import Keyword, Keywords
 
 
-def load_psi4_defaults(peoptions):
+def load_psi4_keywords(peoptions: Keywords) -> None:
 
     opts = query_options_defaults_from_psi()
 
@@ -35,7 +35,7 @@ def _basic_validator(val):
     return nuval
 
 
-def load_cfour_defaults_from_psi4(peoptions):
+def load_cfour_keywords_from_psi4(peoptions: Keywords) -> None:
 
     opts = query_options_defaults_from_psi()
     opts = opts['CFOUR']
@@ -44,32 +44,6 @@ def load_cfour_defaults_from_psi4(peoptions):
         if o.startswith('CFOUR_'):
             peoptions.add('cfour',
                           Keyword(keyword=o[6:],
-                                       default=v['value'],
-                                       validator=_basic_validator))
-
-
-def load_nwchem_defaults_from_psi4(peoptions):
-
-    opts = query_options_defaults_from_psi()
-    opts = opts['NWCHEM']
-
-    for o, v in opts.items():
-        if o.startswith('NWCHEM_'):
-            peoptions.add('nwchem',
-                          Keyword(keyword=o[7:],
-                                       default=v['value'],
-                                       validator=_basic_validator))
-
-
-def load_gamess_defaults_from_psi4(peoptions):
-
-    opts = query_options_defaults_from_psi()
-    opts = opts['GAMESS']
-
-    for o, v in opts.items():
-        if o.startswith('GAMESS_'):
-            peoptions.add('gamess',
-                          Keyword(keyword=o[7:],
                                        default=v['value'],
                                        validator=_basic_validator))
 
@@ -98,7 +72,7 @@ def query_options_defaults_from_psi(changedOnly=False):
         "MCSCF", "MINTS", "MRCC", "OCC", "OPTKING", "PSIMRCC", "RESPONSE",
         "SAPT", "SCF", "STABILITY", "THERMO", "TRANSQT", "TRANSQT2",
         # External Modules
-        "CFOUR", "NWCHEM", "GAMESS",
+        "CFOUR",
         ]
 
     options = collections.defaultdict(dict)

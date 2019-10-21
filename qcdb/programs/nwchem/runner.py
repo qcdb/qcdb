@@ -58,6 +58,8 @@ class QcdbNWChemHarness(NWChemHarness):
 
         print_jobrec(f'[2] {self.name}REC PRE-ENGINE', job_inputs, verbose >= 4)
 
+        # 'NWCHEM_OMP_NUM_CORES': os.environ.get('NWCHEM_OMP_NUM_CORES'),
+
         success, dexe = self.execute(job_inputs)
 
         dexe["outfiles"]["stdout"] = dexe["stdout"]

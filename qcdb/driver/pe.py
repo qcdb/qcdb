@@ -3,38 +3,41 @@ from qcelemental.util import which, which_import
 from .. import data_dir
 from ..keywords import Keywords
 from ..molecule import Molecule
-from ..keywords.read_options import load_qcdb_defaults
-from ..programs.psi4.options import load_cfour_defaults_from_psi4, load_psi4_defaults
-from ..programs.nwchem.options import load_nwchem_defaults
-from ..programs.gamess.options import load_gamess_defaults
+from ..keywords.read_options import load_qcdb_keywords
+from ..programs.psi4.read_options import load_cfour_keywords_from_psi4, load_psi4_keywords
+from ..programs.nwchem.read_options import load_nwchem_keywords
+from ..programs.gamess.read_options import load_gamess_keywords
 
 
-def clean_options():
+def clean_options() -> None:
+    """Initialize the empty global keywords object."""
+
     global nu_options
     nu_options = Keywords()
 
 
-def load_options():
+def load_options() -> None:
+    """Initialize the global keywords object with program defaults."""
     global nu_options
 
     load_program_options(nu_options)
 
 
-def load_program_options(options):
-    """Initialize program options defaults onto `options`."""
+def load_program_options(options: Keywords) -> None:
+    """Initialize program keywords with defaults onto `options`."""
 
-    load_qcdb_defaults(options)
+    load_qcdb_keywords(options)
     if which('xcfour') and which_import('psi4'):
-        load_cfour_defaults_from_psi4(options)
+        load_cfour_keywords_from_psi4(options)
     if which('nwchem'):
-        load_nwchem_defaults(options)
+        load_nwchem_keywords(options)
     if which('rungms'):
-        load_gamess_defaults(options)
+        load_gamess_keywords(options)
     if which('psi4') and which_import('psi4'):
-        load_psi4_defaults(options)
+        load_psi4_keywords(options)
     if which_import('resp_qcdb'):
         import resp_qcdb
-        resp.load_defaults(nu_options)
+        resp.load_keywords(nu_options)
 
 
 # here liveth the options _during_ function calls
