@@ -6,7 +6,7 @@ from qcelemental import Datum
 
 from ..exceptions import ValidationError
 from .glossary import qcvardefs
-from .identities import wfn_psivars
+from .identities import wfn_qcvars
 
 
 def certify_and_datumize(dicary: Dict[str, Union[float, Decimal, np.ndarray]], *, plump: bool = False,
@@ -53,7 +53,7 @@ def build_out(rawvars: Dict[str, Datum], verbose: int = 1) -> None:
         But input dictionary `rawvars` is updated.
 
     """
-    for action in wfn_psivars():
+    for action in wfn_qcvars():
         pvar = action['form']
         buildline = """building {} {}""".format(pvar, '.' * (50 - len(pvar)))
 

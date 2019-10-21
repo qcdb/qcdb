@@ -795,7 +795,7 @@ def thermo(vibinfo, T, P, multiplicity, molecular_mass, E0, sigma, rot_const, ro
     Parameters
     ----------
     E0 : float
-        Electronic energy [Eh] at well bottom at 0 [K], :psivar:`CURRENT ENERGY`.
+        Electronic energy [Eh] at well bottom at 0 [K], :qcvar:`CURRENT ENERGY`.
     molecular_mass : float
         Mass in [u] of molecule under analysis.
     multiplicity: int

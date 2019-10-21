@@ -168,12 +168,12 @@ def cbs(func, label, **kwargs):
     .. hlist::
        :columns: 1
 
-       * :psivar:`CBS TOTAL ENERGY <CBSTOTALENERGY>`
-       * :psivar:`CBS REFERENCE ENERGY <CBSREFERENCEENERGY>`
-       * :psivar:`CBS CORRELATION ENERGY <CBSCORRELATIONENERGY>`
-       * :psivar:`CURRENT ENERGY <CURRENTENERGY>`
-       * :psivar:`CURRENT REFERENCE ENERGY <CURRENTREFERENCEENERGY>`
-       * :psivar:`CURRENT CORRELATION ENERGY <CURRENTCORRELATIONENERGY>`
+       * :qcvar:`CBS TOTAL ENERGY <CBSTOTALENERGY>`
+       * :qcvar:`CBS REFERENCE ENERGY <CBSREFERENCEENERGY>`
+       * :qcvar:`CBS CORRELATION ENERGY <CBSCORRELATIONENERGY>`
+       * :qcvar:`CURRENT ENERGY <CURRENTENERGY>`
+       * :qcvar:`CURRENT REFERENCE ENERGY <CURRENTREFERENCEENERGY>`
+       * :qcvar:`CURRENT CORRELATION ENERGY <CURRENTCORRELATIONENERGY>`
 
     .. caution:: Some features are not yet implemented. Buy a developer a coffee.
 

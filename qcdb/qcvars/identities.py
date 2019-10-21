@@ -1,31 +1,3 @@
-#
-# @BEGIN LICENSE
-#
-# Psi4: an open-source quantum chemistry software package
-#
-# Copyright (c) 2007-2017 The Psi4 Developers.
-#
-# The copyrights for code used from other parties are included in
-# the corresponding files.
-#
-# This file is part of Psi4.
-#
-# Psi4 is free software; you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, version 3.
-#
-# Psi4 is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License along
-# with Psi4; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-#
-# @END LICENSE
-#
-
 import collections
 from typing import Any, Dict, List
 from decimal import Decimal as Dm
@@ -89,7 +61,7 @@ def _solve_in_turn(args: List, coeff: List) -> List[Dict[str, Any]]:
     return pv0
 
 
-def wfn_psivars() -> List[Dict[str, Any]]:
+def wfn_qcvars() -> List[Dict[str, Any]]:
     """Define QCVariable identity equations (e.g., method total = method correlation + HF)."""
 
     pv0 = []
@@ -133,8 +105,8 @@ def wfn_psivars() -> List[Dict[str, Any]]:
     # DW-MP2
     # only defined at the (IE) reaction level (like SAPT)
     #    dwmp2['DW-MP2 OMEGA'][mt] = \
-    #        rxnm_contract_expand(df.xs('HF TOTAL ENERGY', level='psivar').xs(mtl[0], level='meta')) / \
-    #        rxnm_contract_expand(df.xs('MP2 TOTAL ENERGY', level='psivar').xs(mtl[1], level='meta'))
+    #        rxnm_contract_expand(df.xs('HF TOTAL ENERGY', level='qcvar').xs(mtl[0], level='meta')) / \
+    #        rxnm_contract_expand(df.xs('MP2 TOTAL ENERGY', level='qcvar').xs(mtl[1], level='meta'))
     #    df_omega = omega([0.15276, 1.89952, df_omega])
 
     #pv0.append({
@@ -224,7 +196,7 @@ def wfn_psivars() -> List[Dict[str, Any]]:
                            coeff=[-1, 1, 1]))
 
     #   fctl + D + DH
-    #   no psivar for fctl + dh, which would be the more restrictive def
+    #   no qcvar for fctl + dh, which would be the more restrictive def
     for dash in ['-D2', '-D3', '-D3(BJ)', '-D3M', '-D3M(BJ)']:
         for fctl in ['B2PLYP']:
             pv0.extend(
@@ -254,7 +226,7 @@ def wfn_psivars() -> List[Dict[str, Any]]:
     return pv0
 
 
-def sapt_psivars():
+def sapt_qcvars():
     """Returns dictionary of QCVariable definitions for SAPT."""
 
     # yapf: disable
