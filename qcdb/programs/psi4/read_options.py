@@ -21,10 +21,7 @@ def load_psi4_keywords(peoptions: Keywords) -> None:
             else:
                 keyword = m + '__' + o
 
-            peoptions.add('psi4',
-                          Keyword(keyword=keyword,
-                                       default=v['value'],
-                                       validator=p4_validator))
+            peoptions.add('psi4', Keyword(keyword=keyword, default=v['value'], validator=p4_validator))
 
 
 def _basic_validator(val):
@@ -42,10 +39,7 @@ def load_cfour_keywords_from_psi4(peoptions: Keywords) -> None:
 
     for o, v in opts.items():
         if o.startswith('CFOUR_'):
-            peoptions.add('cfour',
-                          Keyword(keyword=o[6:],
-                                       default=v['value'],
-                                       validator=_basic_validator))
+            peoptions.add('cfour', Keyword(keyword=o[6:], default=v['value'], validator=_basic_validator))
 
 
 def query_options_defaults_from_psi(changedOnly=False):
@@ -66,14 +60,41 @@ def query_options_defaults_from_psi(changedOnly=False):
 
     modules = [
         # PSI4 Modules
-        "ADC", "CCENERGY", "CCEOM", "CCDENSITY", "CCLAMBDA", "CCHBAR",
-        "CCRESPONSE", "CCSORT", "CCTRIPLES", "CLAG", "CPHF", "CIS",
-        "DCT", "DETCI", "DFMP2", "DFTSAPT", "FINDIF", "FNOCC", "LMP2",
-        "MCSCF", "MINTS", "MRCC", "OCC", "OPTKING", "PSIMRCC", "RESPONSE",
-        "SAPT", "SCF", "STABILITY", "THERMO", "TRANSQT", "TRANSQT2",
+        "ADC",
+        "CCENERGY",
+        "CCEOM",
+        "CCDENSITY",
+        "CCLAMBDA",
+        "CCHBAR",
+        "CCRESPONSE",
+        "CCSORT",
+        "CCTRIPLES",
+        "CLAG",
+        "CPHF",
+        "CIS",
+        "DCT",
+        "DETCI",
+        "DFMP2",
+        "DFTSAPT",
+        "FINDIF",
+        "FNOCC",
+        "LMP2",
+        "MCSCF",
+        "MINTS",
+        "MRCC",
+        "OCC",
+        "OPTKING",
+        "PSIMRCC",
+        "RESPONSE",
+        "SAPT",
+        "SCF",
+        "STABILITY",
+        "THERMO",
+        "TRANSQT",
+        "TRANSQT2",
         # External Modules
         "CFOUR",
-        ]
+    ]
 
     options = collections.defaultdict(dict)
 
