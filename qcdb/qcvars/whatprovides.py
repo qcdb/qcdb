@@ -1,6 +1,7 @@
-from qcengine.programs.nwchem.harvester import nwchem_psivar_list
+
 
 def return_energy_components():
+    # yapf: disable
     VARH = {}
     VARH['scf'] = {
                             'scf': 'SCF TOTAL ENERGY'}
@@ -32,7 +33,7 @@ def return_energy_components():
                             'mp3': 'MP3 TOTAL ENERGY',
                        #'mp4(sdq)': 'MP4(SDQ) TOTAL ENERGY',
                             'mp4': 'MP4 TOTAL ENERGY'}
-                            #'mp4': 'MP4(SDTQ) TOTAL ENERGY'}
+    #'mp4': 'MP4(SDTQ) TOTAL ENERGY'}
     VARH['omp2'] = {
                              'hf': 'HF TOTAL ENERGY',
                             'mp2': 'MP2 TOTAL ENERGY',
@@ -171,19 +172,20 @@ def return_energy_components():
            'mp{}'.format(mplevel): 'MP{} TOTAL ENERGY'.format(mplevel)}
         for mplevel2 in range(2, mplevel):
             VARH['mp{}'.format(mplevel)]['mp{}'.format(mplevel2)] = 'MP{} TOTAL ENERGY'.format(mplevel2)
+    # yapf: enable
 
     # Explicit Psi4 methods
     p4_VARH = {('p4-' + k): {('p4-' + kk): vv for kk, vv in v.items()} for k, v in VARH.items()}
     VARH.update(p4_VARH)
 
-    # Integrate CFOUR methods
-    # TODO rearrange imports
-    from ..intf_cfour.harvester import cfour_psivar_list
-    VARH.update(cfour_psivar_list())
-    VARH.update(nwchem_psivar_list())
-    from ..intf_gamess.harvester import gamess_psivar_list
-    VARH.update(gamess_psivar_list())
+    from ..programs.cfour.graft import cfour_qcvar_list
+    from ..programs.gamess.graft import gamess_qcvar_list
+    from ..programs.nwchem.graft import nwchem_qcvar_list
+
+    VARH.update(cfour_qcvar_list())
+    VARH.update(gamess_qcvar_list())
+    VARH.update(nwchem_qcvar_list())
     return VARH
 
-VARH = return_energy_components()
 
+VARH = return_energy_components()

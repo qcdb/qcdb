@@ -12,7 +12,6 @@
 #
 # @END LICENSE
 #
-from __future__ import print_function
 
 import os
 import re
@@ -308,7 +307,7 @@ def version_formatter(versdata, formatstring="""{version}"""):
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser(description='Script to extract PylibEFP version from source. Use pylibefp.version_formatter(fmt_string) after build.')
+    parser = argparse.ArgumentParser(description='Script to extract QCDB version from source. Use qcdb.version_formatter(fmt_string) after build.')
     parser.add_argument('--metaout', default='metadata.out.py', help='file to which the computed version info written')
     parser.add_argument('--cmakeout', default='metadata.out.cmake', help='file to which the CMake ConfigVersion generator written')
     parser.add_argument('--format', default='all', help='string like "{version} {githash}" to be filled in and returned')

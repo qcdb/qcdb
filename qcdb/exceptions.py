@@ -1,33 +1,4 @@
-#
-# @BEGIN LICENSE
-#
-# Psi4: an open-source quantum chemistry software package
-#
-# Copyright (c) 2007-2017 The Psi4 Developers.
-#
-# The copyrights for code used from other parties are included in
-# the corresponding files.
-#
-# This file is part of Psi4.
-#
-# Psi4 is free software; you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, version 3.
-#
-# Psi4 is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License along
-# with Psi4; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-#
-# @END LICENSE
-#
-
 """Module with non-generic exceptions classes."""
-from __future__ import print_function
 
 
 class QcdbException(Exception):
@@ -130,6 +101,7 @@ class Dftd3Error(QcdbException):
         self.msg = msg
         print('\nDftd3Error: %s\n\n' % (msg))
 
+
 class TestComparisonError(QcdbException):
     """Error called when a test case fails due to a failed
     compare_values() call. Prints error message *msg* to standard
@@ -160,17 +132,17 @@ class FeatureDeprecated(QcdbException):
         print('\nFeature deprecated: {}\n\n'.format(msg))
 
 
-class OptionValidationError(QcdbException):
-    """Error called when try to set illegitimate value for an option."""
+class KeywordValidationError(QcdbException):
+    """Error called when try to set illegitimate value for a keyword."""
     def __init__(self, msg=''):
         pass
         #QcdbException.__init__(self, msg)
         #self.msg = msg
         #print('\nFeature deprecated: {}\n\n'.format(msg))
-    
 
-class OptionReconciliationError(QcdbException):
-    """Error called when conflicting values given with equal priority for an option."""
+
+class KeywordReconciliationError(QcdbException):
+    """Error called when conflicting values given with equal priority for a keyword."""
     def __init__(self, msg=''):
         pass
 
@@ -185,7 +157,6 @@ class UpgradeHelper(QcdbException):
     the old syntax at first error and suggest the new.
 
     """
-
     def __init__(self, old, new, version, elaboration):
         msg = "Using `{}` instead of `{}` is obsolete as of {}.{}".format(old, new, version, elaboration)
         QcdbException.__init__(self, msg)

@@ -1,36 +1,7 @@
-#
-# @BEGIN LICENSE
-#
-# Psi4: an open-source quantum chemistry software package
-#
-# Copyright (c) 2007-2019 The Psi4 Developers.
-#
-# The copyrights for code used from other parties are included in
-# the corresponding files.
-#
-# This file is part of Psi4.
-#
-# Psi4 is free software; you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, version 3.
-#
-# Psi4 is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License along
-# with Psi4; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-#
-# @END LICENSE
-#
-
 import math
 
 import numpy as np
 import qcelemental as qcel
-
 
 BOND_FACTOR = 1.2  # fudge factor for bond length threshold
 
@@ -42,7 +13,7 @@ _expected_bonds = {
     'F': 1,
     'P': 3,
     'S': 2,
-    }
+}
 
 
 def xyz2mol(self):
@@ -116,7 +87,6 @@ def _bond_profile(self):
 
     # determine bond topology from covalent radii
     bonds = []
-    b2a = qcel.constants.bohr2angstroms
     for i in range(self.natom()):
         for j in range(i + 1, self.natom()):
             try:
@@ -126,7 +96,8 @@ def _bond_profile(self):
                 # psi4.core.Molecule
                 dist = self.xyz(j).distance(self.xyz(i))
             # TOOD check bohr/ang progress
-            bonded_dist = BOND_FACTOR * (qcel.covalentradii.get(self.symbol(i)) + qcel.covalentradii.get(self.symbol(j)))
+            bonded_dist = BOND_FACTOR * (qcel.covalentradii.get(self.symbol(i)) +
+                                         qcel.covalentradii.get(self.symbol(j)))
             if bonded_dist > dist:
                 bonds.append([i, j, 1])
 

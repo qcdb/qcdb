@@ -4,10 +4,9 @@ import warnings
 
 import numpy as np
 
-from ..exceptions import *
+from ..exceptions import ValidationError
 from ..molecule import Molecule
 from ..util import import_ignorecase
-#from .driver import options
 from . import pe
 
 
@@ -39,10 +38,7 @@ def _set_convergence_criterion(ptype, method_name, scf_Ec, pscf_Ec, scf_Dc, pscf
         E convergence criterion for post-scf target method
 
     """
-    optstash = p4util.OptionsState(
-        ['SCF', 'E_CONVERGENCE'],
-        ['SCF', 'D_CONVERGENCE'],
-        ['E_CONVERGENCE'])
+    optstash = p4util.OptionsState(['SCF', 'E_CONVERGENCE'], ['SCF', 'D_CONVERGENCE'], ['E_CONVERGENCE'])
 
     # Kind of want to move this out of here
     _method_exists(ptype, method_name)
@@ -90,8 +86,6 @@ def _set_convergence_criterion(ptype, method_name, scf_Ec, pscf_Ec, scf_Dc, pscf
     if verbose >= 2:
         print('')
     return optstash
-
-
 
 
 def _parse_arbitrary_order(name):
@@ -183,8 +177,7 @@ def set_molecule(molinit, name='default'):
 
         dbmod = import_ignorecase(db, lenv=dbPath.split(':'))
         if dbmod is None:
-            raise ImportError('Python module loading problem for database ({}): {}'.
-                format(db, dbPath))
+            raise ImportError('Python module loading problem for database ({}): {}'.format(db, dbPath))
 
         molecule = dbmod.GEOS[dbmod.dbse + '-' + rxn]
         # let KeyError on fail
@@ -206,11 +199,13 @@ def set_options(options_dict):
     """
     Sets Psi4 global options from an input dictionary.
     """
-    optionre = re.compile(r'\A((?P<silo>(cfour|psi4|nwchem|gamess|dftd3|resp))_)?(?P<module>\w+__)?(?P<option>[\w\(\)]+)\Z', re.IGNORECASE)
+    optionre = re.compile(
+        r'\A((?P<silo>(cfour|psi4|nwchem|gamess|dftd3|resp))_)?(?P<module>\w+__)?(?P<option>[\w\(\)]+)\Z',
+        re.IGNORECASE)
 
     if len(pe.nu_options.scroll) == 0:
         #print('EMPTY OPT')
-        pe.load_nu_options()
+        pe.load_options()
 
     for k, v, in options_dict.items():
         mobj = optionre.match(k.strip())
@@ -224,38 +219,11 @@ def set_options(options_dict):
             module = mobj.group('module').upper() if mobj.group('module') else ''
             option = mobj.group('option').upper()
 
-            print('SET_OPTIONS: [{}][{}] = {}'.format(silo, module + option, v)) 
+            print(f'SET_OPTIONS: [{silo}][{module + option}] = {v}')
             pe.nu_options.require(silo, module + option, v, accession=pe.nu_options.mark_of_the_user)
         else:
-            raise ValidationError('Option not in {space}?_{module}?__{option} format: {}'.format(k))
+            raise ValidationError(f'Keyword not in {{space}}?_{{module}}?__{{option}} format: {k}')
 
-    #print('after SET_OPT')
-    #print(pe.nu_options)
-
-
-def old_set_options(options_dict):
-    """
-    Sets Psi4 global options from an input dictionary.
-    """
-    optionre = re.compile(r'\A((?P<silo>(cfour|psi))_)?(?P<module>\w+__)?(?P<option>\w+)\Z', re.IGNORECASE)
-
-    for k, v, in options_dict.items():
-        mobj = optionre.match(k.strip())
-        try:
-            v = v.strip()
-        except AttributeError:
-            pass
-
-        if mobj:
-            silo = mobj.group('silo').upper() if mobj.group('silo') else 'GLOBALS'
-            module = mobj.group('module').upper() if mobj.group('module') else ''
-            option = mobj.group('option').upper()
-
-            pe.active_options[silo][module + option]['value'] = v
-            print('SET_OPTIONS: [{}][{}] = {}'.format(silo, module + option, v)) 
-        else:
-            raise ValidationError('Option not in {space}?_{module}?__{option} format: {}'.format(k))
-            
 
 def variable(key):
     ukey = key.upper()
@@ -264,7 +232,8 @@ def variable(key):
     else:
         # TODO this matches psi, as None confuses compare_values, but is it right soln?
         #return 0.
-        raise ValidationError('No such var as {}'.format(key))
+        raise ValidationError(f'No such var as {key}')
+
 
 def get_variable(key):
     warnings.warn(
@@ -287,13 +256,13 @@ def print_variables(qcvars=None):
 
     Parameters
     ----------
-    qcvars : dict of QCAspect, optional
-        Group of QCAspect objects to print. If `None`, will use `qcdb.pe.active_qcvars`.
+    qcvars : dict of Datum, optional
+        Group of Datumobjects to print. If `None`, will use `qcdb.pe.active_qcvars`.
 
     Returns
     -------
     str
-        Printable string representation of label, data, and unit in QCAspect-s.
+        Printable string representation of label, data, and unit in Datum-s.
 
     """
     text = []
@@ -315,14 +284,19 @@ def print_variables(qcvars=None):
         if isinstance(qca.data, np.ndarray):
             data = np.array_str(qca.data, max_line_width=120, precision=8, suppress_small=True)
             data = '\n'.join('        ' + ln for ln in data.splitlines())
-            text.append("""  {:{keywidth}} => {:{width}} [{}]""".
-                format('"' + k + '"', '', qca.units, keywidth=largest_key, width=20))
+            text.append("""  {:{keywidth}} => {:{width}} [{}]""".format('"' + k + '"',
+                                                                        '',
+                                                                        qca.units,
+                                                                        keywidth=largest_key,
+                                                                        width=20))
             text.append(data)
         else:
-            text.append("""  {:{keywidth}} => {:{width}.{prec}f} [{}]""".
-                format('"' + k + '"', qca.data, qca.units, keywidth=largest_key, width=20, prec=12))
+            text.append("""  {:{keywidth}} => {:{width}.{prec}f} [{}]""".format('"' + k + '"',
+                                                                                qca.data,
+                                                                                qca.units,
+                                                                                keywidth=largest_key,
+                                                                                width=20,
+                                                                                prec=12))
 
     text.append('')
     return '\n'.join(text)
-
-

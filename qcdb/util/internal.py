@@ -1,8 +1,9 @@
 import pprint
-pp = pprint.PrettyPrinter(width=120)
 from typing import Dict
 
 from .. import __version__
+
+pp = pprint.PrettyPrinter(width=120)
 
 
 def provenance_stamp(routine: str) -> Dict[str, str]:

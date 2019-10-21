@@ -1,36 +1,7 @@
-#
-# @BEGIN LICENSE
-#
-# Psi4: an open-source quantum chemistry software package
-#
-# Copyright (c) 2007-2019 The Psi4 Developers.
-#
-# The copyrights for code used from other parties are included in
-# the corresponding files.
-#
-# This file is part of Psi4.
-#
-# Psi4 is free software; you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, version 3.
-#
-# Psi4 is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License along
-# with Psi4; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-#
-# @END LICENSE
-#
+import math
 
-import sys
-
-from ..exceptions import *
-from ..vecutil import *
-
+from ..exceptions import ValidationError
+from ..util.vecutil import *
 
 #
 # Additional modifications made by Justin Turney <jturney@ccqc.uga.edu>
@@ -81,17 +52,7 @@ from ..vecutil import *
 #      June, 1993
 #
 
-
-SymmOps = {'E': 0,
-           'C2_z': 1,
-           'C2_y': 2,
-           'C2_x': 4,
-           'i': 8,
-           'Sigma_xy': 16,
-           'Sigma_xz': 32,
-           'Sigma_yz': 64,
-           'ID': 128
-           }
+SymmOps = {'E': 0, 'C2_z': 1, 'C2_y': 2, 'C2_x': 4, 'i': 8, 'Sigma_xy': 16, 'Sigma_xz': 32, 'Sigma_yz': 64, 'ID': 128}
 
 PointGroups = {
     'C1': SymmOps['E'],
@@ -156,7 +117,6 @@ class SymmetryOperation(object):
     representation of a symmetry operation, such as a rotation or reflection.
 
     """
-
     def __init__(self, *args):
         """Constructor"""
 
@@ -172,7 +132,8 @@ class SymmetryOperation(object):
             isinstance(args[0], SymmetryOperation):
             self.constructor_symmetryoperation(*args)
         else:
-            raise ValidationError('SymmetryOperation::constructor: Inappropriate configuration of constructor arguments')
+            raise ValidationError(
+                'SymmetryOperation::constructor: Inappropriate configuration of constructor arguments')
 
     # <<< Methods for Construction >>>
 
@@ -325,6 +286,7 @@ class SymmetryOperation(object):
         ret.analyze_d()
         return ret
 
+
 #    SymmetryOperation & operator = (SymmetryOperation const & a); // Assignment operator
 
     def rotation(self, theta):
@@ -387,7 +349,6 @@ class SymRep(object):
     hardwired to 5x5 since the H irrep in Ih is 5 dimensional.
 
     """
-
     def __init__(self, *args):
         """Constructor"""
 
@@ -677,7 +638,6 @@ class IrreducibleRepresentation(object):
     irrep).
 
     """
-
     def __init__(self, *args):
         """Constructor"""
 
@@ -708,7 +668,8 @@ class IrreducibleRepresentation(object):
             isinstance(args[3], str):
             self.constructor_order_degen_mulliken(*args)
         else:
-            raise ValidationError('IrreducibleRepresentation::constructor: Inappropriate configuration of constructor arguments')
+            raise ValidationError(
+                'IrreducibleRepresentation::constructor: Inappropriate configuration of constructor arguments')
 
     # <<< Methods for Construction >>>
 
@@ -737,10 +698,11 @@ class IrreducibleRepresentation(object):
             for i in range(order):
                 self.rep.append(SymRep(d))
 
+
 #    IrreducibleRepresentation(const IrreducibleRepresentation&);
 #    IrreducibleRepresentation& operator=(const IrreducibleRepresentation&);
 
-    # <<< Simple Methods for Basic IrreducibleRepresentation Information >>>
+# <<< Simple Methods for Basic IrreducibleRepresentation Information >>>
 
     def order(self):
         """Returns the order of the group."""
@@ -841,7 +803,6 @@ class CharacterTable(object):
     you'll find in most published character tables.
 
     """
-
     def __init__(self, *args):
         """Constructor"""
 
@@ -909,6 +870,7 @@ class CharacterTable(object):
         if self.make_table() < 0:
             raise ValidationError('CharacterTable::CharacterTable: could not make table')
 
+
 #    CharacterTable(const CharacterTable&);
 #CharacterTable::CharacterTable(const CharacterTable& ct)
 #    : nt(0), pg(PointGroups::C1), nirrep_(0), gamma_(0), symop(0), _inv(0), symb(0),
@@ -958,7 +920,7 @@ class CharacterTable(object):
 #    return *this;
 #}
 
-    # <<< Simple Methods for Basic CharacterTable Information >>>
+# <<< Simple Methods for Basic CharacterTable Information >>>
 
     def nirrep(self):
         """Returns the number of irreps."""
@@ -1045,39 +1007,26 @@ class CharacterTable(object):
 
         """
         # set nt and nirrep
-        if self.PYbits in [
-            PointGroups['C1']]:
+        if self.PYbits in [PointGroups['C1']]:
             self.PYnirrep = 1
             self.nt = 1
 
-        elif self.PYbits in [
-            PointGroups['CsX'],
-            PointGroups['CsY'],
-            PointGroups['CsZ'],
-            PointGroups['Ci']]:
+        elif self.PYbits in [PointGroups['CsX'], PointGroups['CsY'], PointGroups['CsZ'], PointGroups['Ci']]:
             self.PYnirrep = 2
             self.nt = 1
 
-        elif self.PYbits in [
-            PointGroups['C2X'],
-            PointGroups['C2Y'],
-            PointGroups['C2Z']]:
+        elif self.PYbits in [PointGroups['C2X'], PointGroups['C2Y'], PointGroups['C2Z']]:
             self.PYnirrep = 2
             self.nt = 2
 
         elif self.PYbits in [
-            PointGroups['C2hX'],
-            PointGroups['C2hY'],
-            PointGroups['C2hZ'],
-            PointGroups['C2vX'],
-            PointGroups['C2vY'],
-            PointGroups['C2vZ'],
-            PointGroups['D2']]:
+                PointGroups['C2hX'], PointGroups['C2hY'], PointGroups['C2hZ'], PointGroups['C2vX'],
+                PointGroups['C2vY'], PointGroups['C2vZ'], PointGroups['D2']
+        ]:
             self.PYnirrep = 4
             self.nt = 2
 
-        elif self.PYbits in [
-            PointGroups['D2h']]:
+        elif self.PYbits in [PointGroups['D2h']]:
             self.PYnirrep = 8
             self.nt = 2
 
@@ -1087,7 +1036,6 @@ class CharacterTable(object):
         if self.PYnirrep == 0:
             return 0
 
-        so = SymmetryOperation()
         self.PYgamma = []
         self.symop = []
         self.inv = []
@@ -1097,17 +1045,16 @@ class CharacterTable(object):
             self.inv.append(0)
 
         # this array forms a reducible representation for rotations about x,y,z
-        rot = zero(self.PYnirrep, 1)
+        # rot = zero(self.PYnirrep, 1)
 
         # this array forms a reducible representation for translations along x,y,z
-        trans = zero(self.PYnirrep, 1)
+        # trans = zero(self.PYnirrep, 1)
 
         # the angle to rotate about the principal axis
-        theta = 2.0 * math.pi if self.nt == 0 else 2.0 * math.pi / self.nt
+        # theta = 2.0 * math.pi if self.nt == 0 else 2.0 * math.pi / self.nt
 
         # Handle irreducible representations; set PYgamma
-        if self.PYbits in [
-            PointGroups['C1']]:
+        if self.PYbits in [PointGroups['C1']]:
             # no symmetry case
             self.PYgamma[0].init(1, 1, "A", "A")
             self.PYgamma[0].PYnrot = 3
@@ -1115,9 +1062,10 @@ class CharacterTable(object):
             self.PYgamma[0].rep[0][0][0] = 1.0
 
         elif self.PYbits in [
-            PointGroups['CsX'],  # reflection through the yz plane
-            PointGroups['CsY'],  # reflection through the xz plane
-            PointGroups['CsZ']]:  # reflection through the xy plane
+                PointGroups['CsX'],  # reflection through the yz plane
+                PointGroups['CsY'],  # reflection through the xz plane
+                PointGroups['CsZ']
+        ]:  # reflection through the xy plane
             self.PYgamma[0].init(2, 1, "A'", "Ap")
             self.PYgamma[0].rep[0][0][0] = 1.0
             self.PYgamma[0].rep[1][0][0] = 1.0
@@ -1130,8 +1078,7 @@ class CharacterTable(object):
             self.PYgamma[1].PYnrot = 2
             self.PYgamma[1].PYntrans = 1
 
-        elif self.PYbits in [
-            PointGroups['Ci']]:
+        elif self.PYbits in [PointGroups['Ci']]:
             # equivalent to S2 about the z axis
             self.PYgamma[0].init(2, 1, "Ag", "Ag")
             self.PYgamma[0].rep[0][0][0] = 1.0
@@ -1143,10 +1090,7 @@ class CharacterTable(object):
             self.PYgamma[1].rep[1][0][0] = -1.0
             self.PYgamma[1].PYntrans = 3
 
-        elif self.PYbits in [
-            PointGroups['C2X'],
-            PointGroups['C2Y'],
-            PointGroups['C2Z']]:
+        elif self.PYbits in [PointGroups['C2X'], PointGroups['C2Y'], PointGroups['C2Z']]:
             self.PYgamma[0].init(2, 1, "A", "A")
             self.PYgamma[0].rep[0][0][0] = 1.0
             self.PYgamma[0].rep[1][0][0] = 1.0
@@ -1159,10 +1103,7 @@ class CharacterTable(object):
             self.PYgamma[1].PYnrot = 2
             self.PYgamma[1].PYntrans = 2
 
-        elif self.PYbits in [
-            PointGroups['C2hX'],
-            PointGroups['C2hY'],
-            PointGroups['C2hZ']]:
+        elif self.PYbits in [PointGroups['C2hX'], PointGroups['C2hY'], PointGroups['C2hZ']]:
             self.PYgamma[0].init(4, 1, "Ag", "Ag")
             self.PYgamma[0].rep[0][0][0] = 1.0
             self.PYgamma[0].rep[1][0][0] = 1.0
@@ -1195,10 +1136,7 @@ class CharacterTable(object):
             self.PYgamma[3].PYnrot = 0
             self.PYgamma[3].PYntrans = 2
 
-        elif self.PYbits in [
-            PointGroups['C2vX'],
-            PointGroups['C2vY'],
-            PointGroups['C2vZ']]:
+        elif self.PYbits in [PointGroups['C2vX'], PointGroups['C2vY'], PointGroups['C2vZ']]:
             self.PYgamma[0].init(4, 1, "A1", "A1")
             self.PYgamma[0].rep[0][0][0] = 1.0
             self.PYgamma[0].rep[1][0][0] = 1.0
@@ -1231,8 +1169,7 @@ class CharacterTable(object):
             self.PYgamma[3].PYnrot = 1
             self.PYgamma[3].PYntrans = 1
 
-        elif self.PYbits in [
-            PointGroups['D2']]:
+        elif self.PYbits in [PointGroups['D2']]:
             self.PYgamma[0].init(4, 1, "A", "A")
             self.PYgamma[0].rep[0][0][0] = 1.0
             self.PYgamma[0].rep[1][0][0] = 1.0
@@ -1265,8 +1202,7 @@ class CharacterTable(object):
             self.PYgamma[3].PYnrot = 1
             self.PYgamma[3].PYntrans = 1
 
-        elif self.PYbits in [
-            PointGroups['D2h']]:
+        elif self.PYbits in [PointGroups['D2h']]:
 
             self.PYgamma[0].init(8, 1, "Ag", "Ag")
             self.PYgamma[0].rep[0][0][0] = 1.0
@@ -1508,7 +1444,6 @@ class PointGroup(object):
     the origin and then set the origin to zero.
 
     """
-
     def __init__(self, *args):
         """Constructor"""
 
@@ -1520,8 +1455,8 @@ class PointGroup(object):
         self.PYbits = 0
 
         # Divert to constructor functions
-#        if len(args) == 0:
-#            self.constructor_zero_ao_basis()
+        #        if len(args) == 0:
+        #            self.constructor_zero_ao_basis()
         if len(args) == 1 and \
             isinstance(args[0], str):
             self.constructor_schoenflies(*args)
@@ -1608,6 +1543,7 @@ class PointGroup(object):
         """Returns the order of this point group."""
         return self.char_table().order()
 
+
 #    def equiv(self, grp, tol=1.0e-6):
 #        """Returns 1 if the point groups *self* and *grp* are equivalent,
 #        0 otherwise.
@@ -1676,7 +1612,7 @@ class PointGroup(object):
 #}
 #
 
-    # <<< Methods for Printing >>>
+# <<< Methods for Printing >>>
 
     def __str__(self, out=None):
         text = 'PointGroup: %s\n' % (self.symb)

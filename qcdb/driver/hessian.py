@@ -1,31 +1,3 @@
-#
-# @BEGIN LICENSE
-#
-# Psi4: an open-source quantum chemistry software package
-#
-# Copyright (c) 2007-2017 The Psi4 Developers.
-#
-# The copyrights for code used from other parties are included in
-# the corresponding files.
-#
-# This file is part of Psi4.
-#
-# Psi4 is free software; you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, version 3.
-#
-# Psi4 is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License along
-# with Psi4; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-#
-# @END LICENSE
-#
-
 """Module with a *procedures* dictionary specifying available quantum
 chemical methods and functions driving the main quantum chemical
 functionality, namely single-point energies, geometry optimizations,
@@ -35,24 +7,22 @@ properties, and vibrational frequency calculations.
 
 import copy
 import pprint
-pp = pprint.PrettyPrinter(width=120)
 
 import numpy as np
-   
-from ..exceptions import *
-from ..molecule import Molecule
-from .. import moptions
-from .. import util
+
 from .. import vib
-from . import pe
-from . import driver_util
-from . import driver_helpers
-from . import cbs_driver
-from .proc_table import procedures
+from ..keywords import register_kwds
+from ..molecule import Molecule
+from . import cbs_driver, driver_helpers, driver_util, pe
 from .gradient import gradient
+from .proc_table import procedures
+
+pp = pprint.PrettyPrinter(width=120)
+
+   
 
 
-@moptions.register_opts(pe.nu_options)
+@register_kwds(pe.nu_options)
 def hessian(name, **kwargs):
 #    r"""Function complementary to :py:func:`~frequency`. Computes force
 #    constants, deciding analytic, finite difference of gradients, or
@@ -75,7 +45,7 @@ def hessian(name, **kwargs):
 #    >>> np.array(H)
 #
 #    """
-    from . import endorsed_plugins
+    from . import load_proc_table
     kwargs = driver_util.kwargs_lower(kwargs)
     text = ''
 
@@ -135,7 +105,7 @@ def hessian(name, **kwargs):
 
     if len(pe.nu_options.scroll) == 0:
         print('EMPTY OPT')
-        pe.load_nu_options()
+        pe.load_options()
 
 #    # S/R: Mode of operation- whether finite difference freq run in one job or files farmed out
 #    freq_mode = kwargs.pop('mode', 'continuous').lower()
@@ -467,7 +437,7 @@ def hessian(name, **kwargs):
 #            return wfn.hessian()
 
 
-@moptions.register_opts(pe.nu_options)
+@register_kwds(pe.nu_options)
 def frequency(name, **kwargs):
 #    r"""Function to compute harmonic vibrational frequencies.
 #
@@ -558,7 +528,7 @@ def frequency(name, **kwargs):
 #    >>> thermo(wfn, wfn.frequencies())
 #
 #    """
-    from . import endorsed_plugins
+    from . import load_proc_table
     kwargs = driver_util.kwargs_lower(kwargs)
     text = ''
 

@@ -1,55 +1,20 @@
-#
-# @BEGIN LICENSE
-#
-# Psi4: an open-source quantum chemistry software package
-#
-# Copyright (c) 2007-2017 The Psi4 Developers.
-#
-# The copyrights for code used from other parties are included in
-# the corresponding files.
-#
-# This file is part of Psi4.
-#
-# Psi4 is free software; you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, version 3.
-#
-# Psi4 is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License along
-# with Psi4; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-#
-# @END LICENSE
-#
-
 """Module with a *procedures* dictionary specifying available quantum
 chemical methods and functions driving the main quantum chemical
 functionality, namely single-point energies, geometry optimizations,
 properties, and vibrational frequency calculations.
 
 """
-from __future__ import print_function
-from __future__ import absolute_import
-#   import os
-#   import re
-#   import sys
-#   import shutil
-
 import copy
 import pprint
+
+from ..molecule import Molecule
+from . import driver_helpers, driver_util, pe
+from .gradient import gradient
+
 pp = pprint.PrettyPrinter(width=120)
 
 #   import numpy as np
 
-from ..molecule import Molecule
-from . import pe
-from . import driver_util
-from . import driver_helpers
-from .gradient import gradient
 
 
 #def optimize(name, **kwargs):
@@ -68,7 +33,7 @@ from .gradient import gradient
 #    .. hlist::
 #       :columns: 1
 #
-#       * :psivar:`CURRENT ENERGY <CURRENTENERGY>`
+#       * :qcvar:`CURRENT ENERGY <CURRENTENERGY>`
 #
 #    :type name: string
 #    :param name: ``'scf'`` || ``'mp2'`` || ``'ci5'`` || etc.
@@ -212,7 +177,7 @@ from .gradient import gradient
 #
 #    """
 def optking(name, **kwargs):
-    from . import endorsed_plugins
+    from . import load_proc_table
     kwargs = driver_util.kwargs_lower(kwargs)
     text = ''
 
@@ -272,7 +237,7 @@ def optking(name, **kwargs):
 
     if len(pe.nu_options.scroll) == 0:
         print('EMPTY OPT')
-        pe.load_nu_options()
+        pe.load_options()
 
 #    # If we are freezing cartesian, do not orient or COM
 #    if core.get_local_option("OPTKING", "FROZEN_CARTESIAN"):
@@ -455,7 +420,7 @@ def optking(name, **kwargs):
 
 
 def geometric(name, **kwargs):
-    from . import endorsed_plugins
+    from . import load_proc_table
     kwargs = driver_util.kwargs_lower(kwargs)
     text = ''
 
@@ -474,7 +439,7 @@ def geometric(name, **kwargs):
 
     if len(pe.nu_options.scroll) == 0:
         print('EMPTY OPT')
-        pe.load_nu_options()
+        pe.load_options()
 
     import yaml
     tricin = {}

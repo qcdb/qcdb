@@ -1,6 +1,7 @@
-from .mpl import plot_coord
-from .misc import update_with_error, filter_comments
-from .regex import yes, no, der0th, der1st, der2nd, parse_dertype
-from .paths import search_file, import_ignorecase
-from .text import banner, find_approximate_string_matches
+from . import vecutil
 from .internal import print_jobrec, provenance_stamp
+from .misc import conv_float2negexp
+from .mpl import plot_coord
+from .paths import import_ignorecase, search_file
+from .regex import der0th, der1st, der2nd, no, parse_dertype, yes
+from .text import banner, find_approximate_string_matches

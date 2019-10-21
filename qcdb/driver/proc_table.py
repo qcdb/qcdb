@@ -1,6 +1,1 @@
-procedures = {
-    'energy': {},
-    'gradient': {},
-    'hessian' : {},
-    'properties': {}
-}
+procedures = {'energy': {}, 'gradient': {}, 'hessian': {}, 'properties': {}}

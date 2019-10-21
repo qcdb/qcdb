@@ -1,43 +1,16 @@
-#
-# @BEGIN LICENSE
-#
-# Psi4: an open-source quantum chemistry software package
-#
-# Copyright (c) 2007-2019 The Psi4 Developers.
-#
-# The copyrights for code used from other parties are included in
-# the corresponding files.
-#
-# This file is part of Psi4.
-#
-# Psi4 is free software; you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, version 3.
-#
-# Psi4 is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License along
-# with Psi4; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-#
-# @END LICENSE
-#
-
 r"""Module to largely replicate in python the psi4 libmints
 CoordValue and CoordEntry classes, which were developed by
 Justin M. Turney, with incremental improvements by other
 psi4 developers.
 
 """
-import math
 import copy
+import math
+import cmath
 import collections
 
-from ..vecutil import *
-from ..exceptions import *
+from ..exceptions import IncompleteAtomError, ValidationError
+from ..util.vecutil import *
 
 
 class CoordValue(object):
@@ -48,7 +21,6 @@ class CoordValue(object):
     This class and its subclasses are used by `qcdb.Molecule` but not by users directly.
 
     """
-
     def __init__(self, fixed=False, computed=False):
         # Fixed coordinate? For a fixed value, the reset method does nothing.
         self.PYfixed = fixed
@@ -67,7 +39,6 @@ class CoordValue(object):
 
 class NumberValue(CoordValue):
     """Specialization of CoordValue that is simply a number to be stored."""
-
     def __init__(self, value, fixed=False):
         CoordValue.__init__(self, fixed, True)
         # coordinate number value
@@ -96,7 +67,7 @@ class NumberValue(CoordValue):
 
     def everything(self):
         print('\nNumberValue\n  Fixed = %s\n  Type = %s\n  Value = %f\n  FValue = %s\n\n' %
-            (self.PYfixed, self.type(), self.value, self.variable_to_string(4)))
+              (self.PYfixed, self.type(), self.value, self.variable_to_string(4)))
 
 
 class VariableValue(CoordValue):
@@ -155,8 +126,10 @@ class VariableValue(CoordValue):
             return self.PYname
 
     def everything(self):
-        print('\nVariableValue\n  Fixed = %s\n  Type = %s\n  Value = %f\n  FValue = %s\n  Name = %s\n  Negated = %s\n  Map = %s\n\n' %
-            (self.PYfixed, self.type(), self.compute(), self.variable_to_string(4), self.name(), self.negated(), self.geometryVariables))
+        print(
+            '\nVariableValue\n  Fixed = %s\n  Type = %s\n  Value = %f\n  FValue = %s\n  Name = %s\n  Negated = %s\n  Map = %s\n\n'
+            % (self.PYfixed, self.type(), self.compute(), self.variable_to_string(4), self.name(), self.negated(),
+               self.geometryVariables))
 
 
 class CoordEntry(object):
@@ -166,7 +139,6 @@ class CoordEntry(object):
     This class and its subclasses are used by `qcdb.Molecule` but not by users directly.
 
     """
-
     def __init__(self, entry_number, Z, charge, mass, symbol, label="", A=-1, basis=None, shells=None):
         """Constructor"""
         # Order in full atomic list
@@ -265,7 +237,8 @@ class CoordEntry(object):
                     #if other.PYshells[bas].has_puream() != self.PYshells[bas].has_puream():
                     #    return False
                 else:
-                    raise ValidationError("""Basis set %s set for one and not other. This shouldn't happen. Investigate.""" % (bas))
+                    raise ValidationError(
+                        """Basis set %s set for one and not other. This shouldn't happen. Investigate.""" % (bas))
         return True
 
     def is_ghosted(self):
@@ -368,10 +341,10 @@ class CoordEntry(object):
         self.computed = False
 
     def everything(self):
-        print('\nCoordEntry\n  Entry Number = %d\n  Computed = %s\n  Z = %d\n  Charge = %f\n  Mass = %f\n  Symbol = %s\n  Label = %s\n  A = %d\n  Ghosted = %s\n  Coordinates = %s\n  Basissets = %s\n\n  Shells = %s\n\n' %
-            (self.entry_number(), self.is_computed(), self.Z(), self.charge(),
-            self.mass(), self.symbol(), self.label(), self.A(), self.is_ghosted(),
-            self.coordinates, self.PYbasissets, self.PYshells))
+        print(
+            '\nCoordEntry\n  Entry Number = %d\n  Computed = %s\n  Z = %d\n  Charge = %f\n  Mass = %f\n  Symbol = %s\n  Label = %s\n  A = %d\n  Ghosted = %s\n  Coordinates = %s\n  Basissets = %s\n\n  Shells = %s\n\n'
+            % (self.entry_number(), self.is_computed(), self.Z(), self.charge(), self.mass(), self.symbol(),
+               self.label(), self.A(), self.is_ghosted(), self.coordinates, self.PYbasissets, self.PYshells))
 
 
 class CartesianEntry(CoordEntry):
@@ -379,7 +352,6 @@ class CartesianEntry(CoordEntry):
     coordinate specification as three Cartesians.
 
     """
-
     def __init__(self, entry_number, Z, charge, mass, symbol, label, A, x, y, z, basis=None, shells=None):
         CoordEntry.__init__(self, entry_number, Z, charge, mass, symbol, label, A, basis, shells)
         self.x = x
@@ -426,24 +398,14 @@ class CartesianEntry(CoordEntry):
         return "  %17s  %17s  %17s\n" % (xstr, ystr, zstr)
         # should go to outfile
 
-    def print_in_input_format_cfour(self):
-        """Prints the updated geometry, in the format provided by the user.
-        This, for Cfour, not different from regular version.
-
-        """
-        xstr = self.x.variable_to_string(12)
-        ystr = self.y.variable_to_string(12)
-        zstr = self.z.variable_to_string(12)
-        return " %17s %17s %17s\n" % (xstr, ystr, zstr)
-        # should go to outfile
-
     def clone(self):
         """Returns new, independent CartesianEntry object"""
         return copy.deepcopy(self)
 
     def everything(self):
         CoordEntry.everything(self)
-        print('\nCartesianEntry\n  Type = %s\n  x = %s\n  y = %s\n  z = %s\n\n' % (self.type(), self.x.variable_to_string(8), self.y.variable_to_string(8), self.z.variable_to_string(8)))
+        print('\nCartesianEntry\n  Type = %s\n  x = %s\n  y = %s\n  z = %s\n\n' %
+              (self.type(), self.x.variable_to_string(8), self.y.variable_to_string(8), self.z.variable_to_string(8)))
 
 
 class ZMatrixEntry(CoordEntry):
@@ -451,9 +413,22 @@ class ZMatrixEntry(CoordEntry):
     coordinate specification as any position of ZMatrix.
 
     """
-
-    def __init__(self, entry_number, Z, charge, mass, symbol, label, A,
-        rto=None, rval=0, ato=None, aval=0, dto=None, dval=0, basis=None, shells=None):
+    def __init__(self,
+                 entry_number,
+                 Z,
+                 charge,
+                 mass,
+                 symbol,
+                 label,
+                 A,
+                 rto=None,
+                 rval=0,
+                 ato=None,
+                 aval=0,
+                 dto=None,
+                 dval=0,
+                 basis=None,
+                 shells=None):
         """Constructor"""  # note that pos'n of basis arg changed from libmints
         CoordEntry.__init__(self, entry_number, Z, charge, mass, symbol, label, A, basis, shells)
         self.rto = rto
@@ -492,37 +467,8 @@ class ZMatrixEntry(CoordEntry):
             text += "  %5d %11s  %5d %11s  %5d %11s\n" % \
                 (now_rto, now_rval, now_ato, now_aval, now_dto, now_dval)
         return text
-#        outfile
 
-    def print_in_input_format_cfour(self):
-        """Prints the updated geometry, in the format provided by the user"""
-        text = ""
-        if self.rto is None and self.ato is None and self.dto is None:
-            # The first atom
-            text += "\n"
-        elif self.ato is None and self.dto is None:
-            # The second atom
-            now_rto = self.rto.entry_number() + 1
-            now_rval = self.rval.variable_to_string(10)
-            text += " %d %s\n" % (now_rto, now_rval)
-        elif self.dto is None:
-            # The third atom
-            now_rto = self.rto.entry_number() + 1
-            now_rval = self.rval.variable_to_string(10)
-            now_ato = self.ato.entry_number() + 1
-            now_aval = self.aval.variable_to_string(10)
-            text += " %d %s %d %s\n" % (now_rto, now_rval, now_ato, now_aval)
-        else:
-            # Remaining atoms
-            now_rto = self.rto.entry_number() + 1
-            now_rval = self.rval.variable_to_string(10)
-            now_ato = self.ato.entry_number() + 1
-            now_aval = self.aval.variable_to_string(10)
-            now_dto = self.dto.entry_number() + 1
-            now_dval = self.dval.variable_to_string(10)
-            text += " %d %s %d %s %d %s\n" % \
-                (now_rto, now_rval, now_ato, now_aval, now_dto, now_dval)
-        return text
+
 #        outfile
 
     def set_coordinates(self, x, y, z):
@@ -553,7 +499,7 @@ class ZMatrixEntry(CoordEntry):
             val = self.d(self.coordinates, self.rto.compute(), self.ato.compute(), self.dto.compute())
             # Check for NaN, and don't update if we find one
             # what is this? proper py traslation?
-            if val == val:
+            if not cmath.isnan(val):
                 self.dval.rset(val * 180.0 / math.pi)
 
         self.computed = True
@@ -640,8 +586,8 @@ class ZMatrixEntry(CoordEntry):
             eY = perp_unit(eDC, eCB)
             eX = perp_unit(eY, eCB)
             for xyz in range(3):
-                self.coordinates[xyz] = B[xyz] + r * (eX[xyz] * sinABC * cosABCD +
-                         eY[xyz] * sinABC * sinABCD - eCB[xyz] * cosABC)
+                self.coordinates[xyz] = B[xyz] + r * (eX[xyz] * sinABC * cosABCD + eY[xyz] * sinABC * sinABCD -
+                                                      eCB[xyz] * cosABC)
                 if math.fabs(self.coordinates[xyz]) < 1.E-14:
                     self.coordinates[xyz] = 0.0
 

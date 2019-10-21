@@ -4,14 +4,10 @@ import itertools
 import collections
 
 import numpy as np
-
 import qcelemental as qcel
 from qcelemental import Datum
 
-#from .psiutil import *
-from .util import *
 from .molecule.libmintsmolecule import compute_atom_map
-
 
 LINEAR_A_TOL = 1.0E-2  # tolerance (roughly max dev) for TR space
 
@@ -475,8 +471,8 @@ def harmonic_analysis(hess, geom, mass, basisset, irrep_labels, dipder=None, pro
                 if np.linalg.norm(vib) < 1.e-3:
                     active[-1] = '-'
 
-    vibinfo['TRV'] = Datum('translation/rotation/vibration', '', active)
-    vibinfo['gamma'] = Datum('irreducible representation', '', irrep_classification)
+    vibinfo['TRV'] = Datum('translation/rotation/vibration', '', active, numeric=False)
+    vibinfo['gamma'] = Datum('irreducible representation', '', irrep_classification, numeric=False)
 
     lowfreq = np.where(np.real(frequency_cm_1) < 100.0)[0]
     lowfreq = np.append(lowfreq, np.arange(nrt_expected))  # catch at least nrt modes
@@ -607,7 +603,6 @@ def print_vibs(vibinfo, atom_lbl=None, normco='x', shortlong=True, **kwargs):
         String suitable for printing.
 
     """
-
     def grouper(iterable, n, fillvalue=None):
         "Collect data into fixed-length chunks or blocks"
         # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx"
@@ -800,7 +795,7 @@ def thermo(vibinfo, T, P, multiplicity, molecular_mass, E0, sigma, rot_const, ro
     Parameters
     ----------
     E0 : float
-        Electronic energy [Eh] at well bottom at 0 [K], :psivar:`CURRENT ENERGY`.
+        Electronic energy [Eh] at well bottom at 0 [K], :qcvar:`CURRENT ENERGY`.
     molecular_mass : float
         Mass in [u] of molecule under analysis.
     multiplicity: int
@@ -1033,7 +1028,11 @@ def filter_nonvib(vibinfo, remove=None):
             axis = 1
         else:
             axis = 0
-        work[asp] = Datum(oasp.label, oasp.units, np.delete(oasp.data, remove, axis=axis), comment=oasp.comment)
+        work[asp] = Datum(oasp.label,
+                          oasp.units,
+                          np.delete(oasp.data, remove, axis=axis),
+                          comment=oasp.comment,
+                          numeric=False)
 
     return work
 
