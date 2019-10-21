@@ -1,4 +1,3 @@
-from qcengine.programs.nwchem.harvester import nwchem_psivar_list
 
 
 def return_energy_components():
@@ -179,13 +178,13 @@ def return_energy_components():
     p4_VARH = {('p4-' + k): {('p4-' + kk): vv for kk, vv in v.items()} for k, v in VARH.items()}
     VARH.update(p4_VARH)
 
-    # Integrate CFOUR methods
-    # TODO rearrange imports
-    from ..programs.cfour.harvester import cfour_psivar_list
-    VARH.update(cfour_psivar_list())
-    VARH.update(nwchem_psivar_list())
-    from ..programs.gamess.harvester import gamess_psivar_list
-    VARH.update(gamess_psivar_list())
+    from ..programs.cfour.graft import cfour_qcvar_list
+    from ..programs.gamess.graft import gamess_qcvar_list
+    from ..programs.nwchem.graft import nwchem_qcvar_list
+
+    VARH.update(cfour_qcvar_list())
+    VARH.update(gamess_qcvar_list())
+    VARH.update(nwchem_qcvar_list())
     return VARH
 
 

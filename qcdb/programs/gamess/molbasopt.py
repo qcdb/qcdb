@@ -1,18 +1,26 @@
 import uuid
+from typing import Dict
 
 import qcelemental as qcel
 
 from ...molecule import Molecule
 
 
-def muster_and_format_molecule_and_basis_for_gamess(molrec, ropts, qbs, verbose=1):
+def muster_and_format_molecule_and_basis_for_gamess(molrec: Dict, ropts: 'Keywords', qbs: 'BasisSet',
+                                                    verbose: int = 1) -> str:
     kwgs = {'accession': uuid.uuid4(), 'verbose': verbose}
     units = 'Bohr'
 
     native_puream = qbs.has_puream()
     atom_basisset = qbs.print_detail_gamess(return_list=True)
 
-    gamess_data_record_cart = qcel.molparse.to_string(molrec, dtype='gamess', units=units, atom_format=None, ghost_format=None, width=17, prec=12)
+    gamess_data_record_cart = qcel.molparse.to_string(molrec,
+                                                      dtype='gamess',
+                                                      units=units,
+                                                      atom_format=None,
+                                                      ghost_format=None,
+                                                      width=17,
+                                                      prec=12)
     all_atom_lines = gamess_data_record_cart.splitlines()[3:]
 
     qmol = Molecule(molrec)

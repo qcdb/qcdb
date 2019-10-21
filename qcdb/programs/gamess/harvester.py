@@ -1,14 +1,12 @@
 import uuid
+from typing import Dict
 
-#from ..exceptions import *
 from ...util import conv_float2negexp
 
 
-def muster_inherited_options(ropts, verbose=1):
+def muster_inherited_options(ropts: 'Keywords', verbose: int = 1) -> None:
     accession = uuid.uuid4()
 
-#    import sys
-#    accession = sys._getframe().f_code.co_name + '_' + str(uuid.uuid4())[:8]
     kwgs = {'accession': accession, 'verbose': verbose}
     do_translate = ropts.scroll['QCDB']['TRANSLATE_QCDB'].value
 
@@ -19,17 +17,13 @@ def muster_inherited_options(ropts, verbose=1):
         print('\n\nMEMORY', mem, '\n\n')
         ropts.suggest('GAMESS', 'system__mwords', mem, **kwgs)
 
-#    # qcdb/puream --> cfour/spherical
-#    ropts.suggest('CFOUR', 'SPHERICAL', ropts.scroll['QCDB']['PUREAM'].value, **kwgs)
-
     # qcdb/reference --> gamess/contrl__scftyp
     # TODO ref or scf__ref?
     qref = ropts.scroll['QCDB']['SCF__REFERENCE'].value
-#PR    print('<<<< QREF {} >>>'.format(qref))
     if qref in ['RHF', 'UHF', 'ROHF']:
-    #ref = {'RHF': 'RHF',
-    #       'UHF': 'UHF',
-    #       'ROHF': 'ROHF'}[ropts.scroll['QCDB']['REFERENCE'].value]
+        #ref = {'RHF': 'RHF',
+        #       'UHF': 'UHF',
+        #       'ROHF': 'ROHF'}[ropts.scroll['QCDB']['REFERENCE'].value]
         ropts.suggest('GAMESS', 'contrl__scftyp', qref, **kwgs)
 
     # qcdb/scf__d_convergence --> gamess/scf__conv
@@ -45,15 +39,7 @@ def muster_inherited_options(ropts, verbose=1):
         ropts.suggest('GAMESS', 'ccinp__iconv', conv, **kwgs)
 
 
-#    # qcdb/scf__maxiter --> cfour/scf_maxcyc
-#    ropts.suggest('CFOUR', 'SCF_MAXCYC', ropts.scroll['QCDB']['SCF__MAXITER'].value, **kwgs)
-#
-#    # qcdb/scf__damping_percentage --> cfour/scf_damping
-#    damp = int(10 * ropts.scroll['QCDB']['SCF__DAMPING_PERCENTAGE'].value)
-#    ropts.suggest('CFOUR', 'SCF_DAMPING', damp, **kwgs)
-
-
-def muster_modelchem(name, dertype, ropts, sysinfo, verbose=1):
+def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', sysinfo: Dict, verbose: int = 1) -> None:
     lowername = name.lower()
     accession = uuid.uuid4()
 
@@ -63,11 +49,12 @@ def muster_modelchem(name, dertype, ropts, sysinfo, verbose=1):
     #          'properties': 'prop',
     #         }[driver]
 
-    runtyp = {0: 'energy',
-              1: 'gradient',
-              2: 'hessian',
-              #'properties': 'prop',
-             }[dertype]
+    runtyp = {
+        0: 'energy',
+        1: 'gradient',
+        2: 'hessian',
+        #'properties': 'prop',
+    }[dertype]
 
     ropts.require('GAMESS', 'contrl__runtyp', runtyp, accession=accession, verbose=verbose)
 
@@ -112,8 +99,9 @@ def muster_modelchem(name, dertype, ropts, sysinfo, verbose=1):
         ropts.suggest('GAMESS', 'cidet__ncore', sysinfo['ncore'], accession=accession, verbose=verbose)
         ropts.suggest('GAMESS', 'cidet__nact', sysinfo['nact'], accession=accession, verbose=verbose)
         ropts.suggest('GAMESS', 'cidet__nels', sysinfo['nels'], accession=accession, verbose=verbose)
-        
+
     # unused from Nuwan
+
 
 #    elif lowername == 'gms-dft':
 #        if dertype == 0:
@@ -161,32 +149,3 @@ def muster_modelchem(name, dertype, ropts, sysinfo, verbose=1):
 
     else:
         raise ValidationError("""Requested GAMESS computational methods %d is not available.""" % (lowername))
-
-    return ''
-
-
-def gamess_psivar_list():
-    """Return a dict with keys of most GAMESS methods and values of dicts
-    with the PSI Variables returned by those methods. Used by cbs()
-    wrapper to avoid unnecessary computations in compound methods.
-    Result is appended to ``VARH``.
-
-    """
-    VARH = {}
-    VARH['gms-scf'] = {
-                         'gms-scf': 'SCF TOTAL ENERGY'}
-    VARH['gms-hf'] = {
-                          'gms-hf': 'HF TOTAL ENERGY'}
-    VARH['gms-mp2'] = {
-                          'gms-hf': 'HF TOTAL ENERGY',
-                         'gms-mp2': 'MP2 TOTAL ENERGY'}
-    VARH['gms-ccsd'] = {
-                          'gms-hf': 'HF TOTAL ENERGY',
-                         'gms-mp2': 'MP2 TOTAL ENERGY',
-                        'gms-ccsd': 'CCSD TOTAL ENERGY'}
-    VARH['gms-ccsd(t)'] = {
-                          'gms-hf': 'HF TOTAL ENERGY',
-                         'gms-mp2': 'MP2 TOTAL ENERGY',
-                        'gms-ccsd': 'CCSD TOTAL ENERGY',
-                     'gms-ccsd(t)': 'CCSD(T) TOTAL ENERGY'}
-    return VARH
