@@ -16,7 +16,6 @@ def format_molecule(molrec: Dict, ropts: 'Keywords', verbose: int = 1) -> str:
 
 
 def muster_and_format_basis_for_nwchem(molrec, ropts, qbs, verbose=1):
-    kwgs = {'accession': uuid.uuid4(), 'verbose': verbose}
 
     # this is bad b/c user can't reset puream. adjust after figuring out anonymous options better
     native_puream = qbs.has_puream()

@@ -168,7 +168,7 @@ def vpt2(name, **kwargs):
 
     # Cfour keywords to request vpt2 analysis through findif gradients
     c000_opts = Keywords()
-    pe.load_options(c000_opts)
+    pe.load_program_options(c000_opts)
     c000_opts.require('CFOUR', 'VIBRATION', 'FINDIF', **kwgs)
     c000_opts.require('CFOUR', 'FREQ_ALGORITHM', 'PARALLEL', **kwgs)
     c000_opts.require('CFOUR', 'ANH_ALGORITHM', 'PARALLEL', **kwgs)

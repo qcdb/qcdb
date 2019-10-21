@@ -61,11 +61,6 @@ install(DIRECTORY share/qcdb/basis
         USE_SOURCE_PERMISSIONS
         FILES_MATCHING PATTERN "*.gbs")
 
-install(DIRECTORY tests
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}${PYMOD_INSTALL_LIBDIR}/qcdb
-        USE_SOURCE_PERMISSIONS
-        FILES_MATCHING PATTERN "*.py")
-
 configure_file(qcdb/__init__.py qcdb/__init__.py @ONLY)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/qcdb/__init__.py
         DESTINATION ${CMAKE_INSTALL_LIBDIR}${PYMOD_INSTALL_LIBDIR}/qcdb)
