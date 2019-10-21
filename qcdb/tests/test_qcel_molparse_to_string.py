@@ -1,12 +1,12 @@
-import pytest
-from .utils import *
-from .addons import *
-
 import pint
+import pytest
 import qcelemental
 from qcelemental.tests import test_molparse_to_string
 
 import qcdb
+
+from .addons import *
+from .utils import *
 
 pytestmark = pytest.mark.quick
 

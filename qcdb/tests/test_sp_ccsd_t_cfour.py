@@ -1,10 +1,12 @@
 import os
 
 import pytest
-from .utils import *
-from .addons import *
 
 import qcdb
+
+from .addons import *
+from .utils import *
+
 
 @pytest.fixture
 def h2o():
@@ -410,4 +412,3 @@ def test_sp_rohf_ccsd_t_fc(nh2):
     check_rohf(lbl=tnm(), fc=True, prog='ecc')
     assert 'CC_PROGRAM           ICCPRO         ECC' in jrec['stdout']
     assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['stdout']
-

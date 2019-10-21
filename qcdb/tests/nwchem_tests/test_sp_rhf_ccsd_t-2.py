@@ -3,9 +3,11 @@
 # and able to harvest MP2 energy as well.
 import os
 import sys
-from ..utils import *
-from ..addons import *
+
 import qcdb
+
+from ..addons import *
+from ..utils import *
 
 
 def check_ccsd_t_2(return_value):
@@ -74,4 +76,3 @@ def test_1_a5050_no():
 #    print("testing mp2...")
 #    val = qcdb.energy('nwc-ccsd(t)')
 #    check_ccsd_t_2(val, is_5050=True)
-

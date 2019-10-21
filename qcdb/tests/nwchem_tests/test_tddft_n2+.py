@@ -2,9 +2,11 @@
 #Need to check out tddft excited states compared to harvester
 import os
 import sys
+
+import qcdb
+
 from ..addons import *
 from ..utils import *
-import qcdb
 
 
 def check_tddft(return_value):

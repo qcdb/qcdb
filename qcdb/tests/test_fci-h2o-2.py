@@ -1,8 +1,7 @@
-from .addons import *
-from .utils import *
-
 import qcdb
 
+from .addons import *
+from .utils import *
 
 _refnuc   =   9.2342185209120
 _refscf   = -75.985323665263

@@ -1,9 +1,9 @@
 import os
 
-from .utils import *
-from .addons import *
-
 import qcdb
+
+from .addons import *
+from .utils import *
 
 
 @using_psi4

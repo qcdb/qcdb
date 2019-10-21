@@ -2,9 +2,12 @@ import os
 import sys
 
 import pytest
+
+import qcdb
+
 from ..addons import *
 from ..utils import *
-import qcdb
+
 
 def check_dft(return_value):
     dft =   -76.420359078925

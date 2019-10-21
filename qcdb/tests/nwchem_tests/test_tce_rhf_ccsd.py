@@ -1,9 +1,11 @@
 #! single-point CCSD/cc-pvdz on water
 import os
 import sys
-from ..utils import *
-from ..addons import *
+
 import qcdb
+
+from ..addons import *
+from ..utils import *
 
 
 def check_ccsd(return_value):

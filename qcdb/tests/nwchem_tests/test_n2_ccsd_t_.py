@@ -1,9 +1,11 @@
 #non-TCE CCSD(T) energy for N2
 import os
 import sys
+
+import qcdb
+
 from ..addons import *
 from ..utils import *
-import qcdb
 
 
 def check_ccsd_t_(return_value, is5050):

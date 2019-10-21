@@ -1,7 +1,7 @@
-from .utils import *
-from .addons import *
-
 import qcdb
+
+from .addons import *
+from .utils import *
 
 #! A test of the basis specification.  Various basis sets are specified outright and in blocks, both
 #! orbital and auxiliary. Constructs libmints BasisSet objects through the constructor that calls
@@ -429,4 +429,3 @@ def test_3b():
 #       compare_strings('UGGH', wert.name(), 'callby') 
 #       compare_strings('CC-PV5Z-JKFIT + DEF2-QZVPP-JKFIT', wert.blend(), 'blend') 
 #       hene.print_out()
-

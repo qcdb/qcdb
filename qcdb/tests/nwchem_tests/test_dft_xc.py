@@ -3,10 +3,12 @@ import os
 import sys
 
 import pytest
-from ..utils import *
-from ..addons import *
 
 import qcdb
+
+from ..addons import *
+from ..utils import *
+
 
 @pytest.fixture
 def h2o():
@@ -557,4 +559,3 @@ def test_41_hcth147(h2o):
     })
     val = qcdb.energy('nwc-hcth147', molecule=h2o)
     check_hcth147(val)
-

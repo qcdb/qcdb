@@ -2,7 +2,9 @@
 
 import os
 import sys
+
 import qcdb
+
 from ..addons import *
 from ..utils import *
 
@@ -68,4 +70,3 @@ def test_2_lccsd():
         })
     val = qcdb.energy('nwc-lccsd')
     check_lccsd(val)
-

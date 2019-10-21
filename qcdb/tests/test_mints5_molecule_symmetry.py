@@ -1,10 +1,10 @@
-from .utils import *
-
 import collections
 
 import qcelemental as qcel
 
 import qcdb
+
+from .utils import *
 
 data = collections.defaultdict(dict)
 

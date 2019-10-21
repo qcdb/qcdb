@@ -1,12 +1,15 @@
 import os
 import sys
+import pprint as pp
 
+import numpy as py  # will keep for when QCDB transfer dipole from single var --> array
 import pytest
+
 import qcdb
+
 from ..addons import *
 from ..utils import *
-import numpy as py #will keep for when QCDB transfer dipole from single var --> array
-import pprint as pp
+
 
 def check_tce_ccsd(return_value):
     hf      =   -74.962663062078

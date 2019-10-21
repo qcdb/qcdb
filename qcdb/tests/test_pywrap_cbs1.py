@@ -1,8 +1,7 @@
-from .utils import *
-from .addons import *
-
 import qcdb
 
+from .addons import *
+from .utils import *
 
 yamlin_hf3 = """
 molecule: |

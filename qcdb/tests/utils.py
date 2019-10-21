@@ -1,8 +1,10 @@
 import sys
 import pprint
-pp = pprint.PrettyPrinter(width=120)
 
 import qcdb
+
+pp = pprint.PrettyPrinter(width=120)
+
 
 __all__ = [
     'a2a',

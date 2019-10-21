@@ -1,10 +1,12 @@
 import os
 
 import pytest
-from .utils import *
-from .addons import *
 
 import qcdb
+
+from .addons import *
+from .utils import *
+
 
 @pytest.fixture
 def h2o():

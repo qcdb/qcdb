@@ -4,9 +4,9 @@ import pprint
 import numpy as np
 import qcelemental as qcel
 
-from .utils import *
-
 import qcdb
+
+from .utils import *
 
 _arrays_prov_stamp = {'creator': 'QCElemental', 'version': '1.0', 'routine': 'qcelemental.molparse.from_arrays'}
 _string_prov_stamp = {'creator': 'QCElemental', 'version': '1.0', 'routine': 'qcelemental.molparse.from_string'}

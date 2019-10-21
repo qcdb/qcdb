@@ -1,13 +1,13 @@
 import os
 
-import pytest
-from .utils import *
-from .addons import *
-
 import numpy as np
-from qcengine.programs.util.hessparse import load_hessian
+import pytest
 
 import qcdb
+from qcengine.programs.util.hessparse import load_hessian
+
+from .addons import *
+from .utils import *
 
 #! Various gradients for a strained helium dimer and water molecule
 

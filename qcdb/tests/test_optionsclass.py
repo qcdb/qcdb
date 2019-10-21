@@ -1,7 +1,7 @@
 import pytest
 
 import qcdb
-from qcdb.keywords import parsers, register_kwds, AliasKeyword, Keyword, Keywords
+from qcdb.keywords import AliasKeyword, Keyword, Keywords, parsers, register_kwds
 
 
 def validator(v):

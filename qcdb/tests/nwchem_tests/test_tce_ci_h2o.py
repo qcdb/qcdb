@@ -1,9 +1,11 @@
 #Tensor Contraction Engine Configuration Interaction (CI) energies: SD, SDT, SDTQ 
 import os
 import sys
+
+import qcdb
+
 from ..addons import *
 from ..utils import *
-import qcdb
 
 
 def check_cisd(return_value):
@@ -84,4 +86,3 @@ def test_3_cisdtq():
         })
     val = qcdb.energy('nwc-cisdtq')
     check_cisdtq(val)
-

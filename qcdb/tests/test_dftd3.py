@@ -2,14 +2,13 @@ import copy
 import pprint
 
 import pytest
-from .utils import *
-from .addons import *
-
 import qcelemental as qcel
 
 import qcdb
 from qcdb.programs.dftd3 import runner as dftd3
 
+from .addons import *
+from .utils import *
 
 eneyne = """
 C   0.000000  -0.667578  -2.124659
@@ -166,4 +165,3 @@ def test_11_b():
     assert compare_values(ref_d3bj[1], E, 7, tnm())
     assert compare_values(ref_d3bj[1], jrec['qcvars']['DISPERSION CORRECTION ENERGY'].data, 7, tnm())
     assert compare_values(ref_d3bj[1], jrec['qcvars']['B3LYP-D3(BJ) DISPERSION CORRECTION ENERGY'].data, 7, tnm())
-

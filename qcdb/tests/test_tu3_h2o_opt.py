@@ -1,8 +1,9 @@
 import pytest
-from .utils import *
-from .addons import *
 
 import qcdb
+
+from .addons import *
+from .utils import *
 
 nucenergy =   9.3007948234239
 refenergy = -76.0270535127645
@@ -89,5 +90,3 @@ units au
 
     assert compare_values(nucenergy, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")
     assert compare_values(refenergy, qcdb.variable("CURRENT ENERGY"), 4, "Reference energy")
-
-

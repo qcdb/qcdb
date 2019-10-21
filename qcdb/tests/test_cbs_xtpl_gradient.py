@@ -1,12 +1,12 @@
 import os
 
-import pytest
-from .utils import *
-from .addons import *
-
 import numpy as np
+import pytest
 
 import qcdb
+
+from .addons import *
+from .utils import *
 
 #! Various gradients for a strained helium dimer and water molecule
 
@@ -315,4 +315,3 @@ def test_6d():
 #
 #    mp2_dtz = qcdb.gradient('MP2/cc-pV[DT]Z', dertype='energy')
 #    assert compare_arrays(ref_mp2_dtz, mp2_dtz, 6, "[7] MP2/cc-pV[DT]Z Gradient, dertype=0")
-

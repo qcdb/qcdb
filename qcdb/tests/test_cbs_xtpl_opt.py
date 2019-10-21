@@ -1,11 +1,11 @@
 import os
 
-from .utils import *
-from .addons import *
-
 import numpy as np
 
 import qcdb
+
+from .addons import *
+from .utils import *
 
 ##! Various gradients for a strained helium dimer and water molecule
 #
@@ -286,4 +286,3 @@ def test_6b():
 
     lbl = tnm() + " [7] CI2/cc-pV[DT]Z Optimized R"
 ##optimize('ci2/cc-pv[dt]z')
-

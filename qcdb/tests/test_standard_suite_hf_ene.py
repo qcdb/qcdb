@@ -1,11 +1,13 @@
 import os
 
 import pytest
-from .utils import *
-from .addons import *
 
 import qcdb
 import qcengine as qcng
+
+from .addons import *
+from .utils import *
+
 
 @pytest.fixture
 def h2o():
@@ -17,6 +19,7 @@ def h2o():
     R=0.958
     A=104.5
 """
+
 
 @pytest.fixture
 def nh2():
@@ -31,14 +34,16 @@ A=105.0
 """
 
 
-@pytest.mark.parametrize('method,keywords', [
-    pytest.param('c4-hf', {'cfour_basis': 'qz2p', 'cfour_scf_conv': 12}, marks=using_cfour),
-    pytest.param('c4-hf', {'basis': 'cfour-qz2p', 'cfour_scf_conv': 12}, marks=using_cfour),
-    pytest.param('gms-hf', {'basis': 'cfour-qz2p'}, marks=using_gamess),
-    pytest.param('nwc-hf', {'basis': 'cfour-qz2p', 'qc_module': 'tce'}, marks=using_nwchem), # tce doesn't matter here
-    pytest.param('nwc-hf', {'basis': 'cfour-qz2p'}, marks=using_nwchem),
-    pytest.param('p4-hf', {'basis': 'cfour-qz2p', 'psi4_scf_type' : 'direct'}, marks=using_psi4),
-])
+@pytest.mark.parametrize(
+    'method,keywords',
+    [
+        pytest.param('c4-hf', {'cfour_basis': 'qz2p', 'cfour_scf_conv': 12}, marks=using_cfour),
+        pytest.param('c4-hf', {'basis': 'cfour-qz2p', 'cfour_scf_conv': 12}, marks=using_cfour),
+        pytest.param('gms-hf', {'basis': 'cfour-qz2p'}, marks=using_gamess),
+        pytest.param('nwc-hf', {'basis': 'cfour-qz2p', 'qc_module': 'tce'}, marks=using_nwchem),  # tce doesn't matter here
+        pytest.param('nwc-hf', {'basis': 'cfour-qz2p'}, marks=using_nwchem),
+        pytest.param('p4-hf', {'basis': 'cfour-qz2p', 'psi4_scf_type': 'direct'}, marks=using_psi4),
+    ])  # yapf: disable
 def test_sp_hf_rhf(method, keywords, h2o):
     """cfour/???/input.dat
     #! single point HF/qz2p on water
@@ -60,13 +65,13 @@ def test_sp_hf_rhf(method, keywords, h2o):
 
 
 @pytest.mark.parametrize('method,keywords', [
-    pytest.param('c4-hf', {'cfour_basis': 'qz2p', 'cfour_reference': 'uhf', 'cfour_occupation': [[3,1,1,0],[3,0,1,0]], 'cfour_scf_conv': 12}, marks=using_cfour),
+    pytest.param('c4-hf', {'cfour_basis': 'qz2p', 'cfour_reference': 'uhf', 'cfour_occupation': [[3, 1, 1, 0], [3, 0, 1, 0]], 'cfour_scf_conv': 12}, marks=using_cfour),
     pytest.param('c4-hf', {'basis': 'cfour-qz2p', 'cfour_reference': 'uhf'}, marks=using_cfour),
     pytest.param('gms-hf', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'uhf'}, marks=using_gamess),
     pytest.param('nwc-hf', {'basis': 'cfour-qz2p', 'qc_module': 'tce', 'nwchem_scf__uhf': True}, marks=using_nwchem),
     pytest.param('nwc-hf', {'basis': 'cfour-qz2p', 'nwchem_scf__uhf': True}, marks=using_nwchem),
-    pytest.param('p4-hf', {'basis': 'cfour-qz2p', 'reference': 'uhf', 'psi4_scf_type' : 'direct'}, marks=using_psi4),
-])
+    pytest.param('p4-hf', {'basis': 'cfour-qz2p', 'reference': 'uhf', 'psi4_scf_type': 'direct'}, marks=using_psi4),
+])  # yapf: disable
 def test_sp_hf_uhf(method, keywords, nh2):
     """cfour/???/input.dat
     #! single-point HF/qz2p on NH2
@@ -88,13 +93,13 @@ def test_sp_hf_uhf(method, keywords, nh2):
 
 
 @pytest.mark.parametrize('method,keywords', [
-    pytest.param('c4-hf', {'cfour_basis': 'qz2p', 'cfour_reference': 'rohf', 'cfour_occupation': [[3,1,1,0],[3,0,1,0]], 'cfour_scf_conv': 12}, marks=using_cfour),
+    pytest.param('c4-hf', {'cfour_basis': 'qz2p', 'cfour_reference': 'rohf', 'cfour_occupation': [[3, 1, 1, 0], [3, 0, 1, 0]], 'cfour_scf_conv': 12}, marks=using_cfour),
     pytest.param('c4-hf', {'basis': 'cfour-qz2p', 'cfour_reference': 'rohf'}, marks=using_cfour),
     pytest.param('gms-hf', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'rohf'}, marks=using_gamess),
     pytest.param('nwc-hf', {'basis': 'cfour-qz2p', 'qc_module': 'tce', 'nwchem_scf__rohf': True}, marks=using_nwchem),
     pytest.param('nwc-hf', {'basis': 'cfour-qz2p', 'nwchem_scf__rohf': True}, marks=using_nwchem),
-    pytest.param('p4-hf', {'basis': 'cfour-qz2p', 'reference': 'rohf', 'psi4_scf_type' : 'direct'}, marks=using_psi4),
-])
+    pytest.param('p4-hf', {'basis': 'cfour-qz2p', 'reference': 'rohf', 'psi4_scf_type': 'direct'}, marks=using_psi4),
+])  # yapf: disable
 def test_sp_hf_rohf(method, keywords, nh2):
     """cfour/???/input.dat
     #! single-point HF/qz2p on NH2

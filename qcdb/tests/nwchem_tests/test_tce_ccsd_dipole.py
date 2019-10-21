@@ -1,9 +1,11 @@
 #! single-point CCSD/cc-pvdz on water
 import os
 import sys
-from ..utils import *
-from ..addons import *
+
 import qcdb
+
+from ..addons import *
+from ..utils import *
 
 h2o = qcdb.set_molecule('''
         O     0.000000000000    0.000000000000   0.22138519

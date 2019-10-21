@@ -88,5 +88,3 @@ def hide_test_24():
     assert subjects.scroll['QCDB']['SCF_E_CONV'].value == 1.e-5
     energy()
     assert subjects.scroll['QCDB']['SCF_E_CONV'].value == 1.e-5
-
-

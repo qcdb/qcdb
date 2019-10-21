@@ -2,9 +2,11 @@
 # ROHF-MP2 is not available in NWChem
 import os
 import sys
-from ..utils import *
-from ..addons import *
+
 import qcdb
+
+from ..addons import *
+from ..utils import *
 
 
 def check_uhf_mp2(return_value, is_5050):

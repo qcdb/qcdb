@@ -1,10 +1,12 @@
 import os
 
 import pytest
-from .utils import *
-from .addons import *
 
 import qcdb
+
+from .addons import *
+from .utils import *
+
 
 @pytest.fixture
 def h2o():
@@ -127,4 +129,3 @@ def test_sp_rhf_ccsd(h2o):
 #    compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, tnm() + 'CCSD')
 #    compare_values(ccsdcorl, qcdb.variable('current correlation energy'), 6, tnm() + 'Current corl')
 #    compare_values(ccsdtot, qcdb.variable('current energy'), 6, tnm() + 'Current')
-

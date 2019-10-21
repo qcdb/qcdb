@@ -1,13 +1,14 @@
-import pytest
-
 import os
 import sys
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from .utils import *
-from .addons import *
+
+import pytest
 
 import qcdb
 import qcengine as qcng
+
+from .addons import *
+from .utils import *
+
 
 @pytest.fixture
 def h2o():
@@ -19,6 +20,7 @@ def h2o():
     R=0.958
     A=104.5
 """
+
 
 @pytest.fixture
 def nh2():
@@ -40,7 +42,7 @@ def nh2():
     pytest.param('nwc-ccsd(t)', {'basis': 'cfour-qz2p', 'qc_module': 'tce'}, marks=using_nwchem),
     pytest.param('nwc-ccsd(t)', {'basis': 'cfour-qz2p'}, marks=using_nwchem),
     pytest.param('p4-ccsd(t)', {'basis': 'cfour-qz2p'}, marks=using_psi4),
-])
+])  # yapf: disable
 def test_sp_ccsd_t_rhf_ae(method, keywords, h2o):
     """cfour/???/input.dat
     #! single point CCSD(T)/qz2p on water
@@ -94,7 +96,7 @@ def test_sp_ccsd_t_rhf_ae(method, keywords, h2o):
     pytest.param('nwc-ccsd(t)', {'basis': 'cfour-qz2p', 'qc_module': 'tce', 'nwchem_tce__freeze': 1}, marks=using_nwchem),
     pytest.param('nwc-ccsd(t)', {'basis': 'cfour-qz2p', 'nwchem_ccsd__freeze': 1}, marks=using_nwchem),
     pytest.param('p4-ccsd(t)', {'basis': 'cfour-qz2p', 'psi4_freeze_core': True}, marks=using_psi4),
-])
+])  # yapf: disable
 def test_sp_ccsd_t_rhf_fc(method, keywords, h2o):
     """cfour/???/input.dat
     #! single point CCSD(T)/qz2p on water
@@ -144,7 +146,7 @@ def test_sp_ccsd_t_rhf_fc(method, keywords, h2o):
 @pytest.mark.parametrize('method,keywords,errmsg', [
     pytest.param('gms-ccsd(t)', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'uhf', 'gamess_ccinp__ncore': 0}, 'CCTYP IS PROGRAMMED ONLY FOR SCFTYP=RHF OR ROHF', marks=using_gamess),
     pytest.param('nwc-ccsd(t)', {'basis': 'cfour-qz2p', 'nwchem_scf__uhf': True}, 'ccsd: nopen is not zero', marks=using_nwchem),
-])
+])  # yapf: disable
 def test_sp_ccsd_t_uhf_ae_error(method, keywords, nh2, errmsg):
     nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options(keywords)
@@ -160,7 +162,7 @@ def test_sp_ccsd_t_uhf_ae_error(method, keywords, nh2, errmsg):
     pytest.param('c4-ccsd(t)', {'basis': 'cfour-qz2p', 'cfour_reference': 'uhf', 'cfour_scf_conv': 12, 'cfour_cc_conv': 12}, marks=using_cfour),
     pytest.param('nwc-ccsd(t)', {'basis': 'cfour-qz2p', 'qc_module': 'tce', 'nwchem_scf__uhf': True}, marks=using_nwchem),
     pytest.param('p4-ccsd(t)', {'basis': 'cfour-qz2p', 'reference': 'uhf'}, marks=using_psi4),
-])
+])  # yapf: disable
 def test_sp_ccsd_t_uhf_ae(method, keywords, nh2):
     """cfour/???/input.dat
     #! single point CCSD(T)/qz2p on water
@@ -210,7 +212,7 @@ def test_sp_ccsd_t_uhf_ae(method, keywords, nh2):
 @pytest.mark.parametrize('method,keywords,errmsg', [
     pytest.param('gms-ccsd(t)', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'uhf'}, 'CCTYP IS PROGRAMMED ONLY FOR SCFTYP=RHF OR ROHF', marks=using_gamess),
     pytest.param('nwc-ccsd(t)', {'basis': 'cfour-qz2p', 'nwchem_scf__uhf': True, 'nwchem_ccsd__freeze': 1}, 'ccsd: nopen is not zero', marks=using_nwchem),
-])
+])  # yapf: disable
 def test_sp_ccsd_t_uhf_fc_error(method, keywords, nh2, errmsg):
     nh2 = qcdb.set_molecule(nh2)
     qcdb.set_options(keywords)
@@ -226,7 +228,7 @@ def test_sp_ccsd_t_uhf_fc_error(method, keywords, nh2, errmsg):
     pytest.param('c4-ccsd(t)', {'basis': 'cfour-qz2p', 'cfour_reference': 'uhf', 'cfour_dropmo': 1, 'cfour_scf_conv': 12, 'cfour_cc_conv': 12}, marks=using_cfour),
     pytest.param('nwc-ccsd(t)', {'basis': 'cfour-qz2p', 'qc_module': 'tce', 'nwchem_tce__freeze': 1, 'nwchem_scf__uhf': True}, marks=using_nwchem),
     pytest.param('p4-ccsd(t)', {'basis': 'cfour-qz2p', 'reference': 'uhf', 'psi4_freeze_core': True}, marks=using_psi4),
-])
+])  # yapf: disable
 def test_sp_ccsd_t_uhf_fc(method, keywords, nh2):
     """cfour/???/input.dat
     #! single point CCSD(T)/qz2p on water
@@ -242,7 +244,6 @@ def test_sp_ccsd_t_uhf_fc(method, keywords, nh2):
     mp2_tot = -55.760531091806899
     ccsd_tot = -55.7776641914257188
     ccsd_t_tot = -55.7826468408968990
-
 
     mp2_corl = mp2_tot - scf_tot
     ccsd_corl = ccsd_tot - scf_tot
@@ -274,10 +275,12 @@ def test_sp_ccsd_t_uhf_fc(method, keywords, nh2):
     assert compare_values(scf_tot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
 
 
-@pytest.mark.parametrize('method,keywords,errmsg', [
-    pytest.param('gms-ccsd(t)', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'rohf', 'gamess_ccinp__ncore': 0}, 'ROHF\'S CCTYP MUST BE CCSD OR CR-CCL', marks=using_gamess), # No (T) w/ rohf in gms
-    pytest.param('nwc-ccsd(t)', {'basis': 'cfour-qz2p', 'nwchem_scf__rohf': True}, 'ccsd: nopen is not zero', marks=using_nwchem),
-])
+@pytest.mark.parametrize(
+    'method,keywords,errmsg',
+    [
+        pytest.param('gms-ccsd(t)', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'rohf', 'gamess_ccinp__ncore': 0}, 'ROHF\'S CCTYP MUST BE CCSD OR CR-CCL', marks=using_gamess),  # No (T) w/ rohf in gms
+        pytest.param('nwc-ccsd(t)', {'basis': 'cfour-qz2p', 'nwchem_scf__rohf': True}, 'ccsd: nopen is not zero', marks=using_nwchem),
+    ])  # yapf: disable
 def test_sp_ccsd_t_rohf_ae_error(method, keywords, errmsg, nh2):
     """cfour/???/input.dat
     #! single point CCSD(T)/qz2p on water
@@ -293,12 +296,11 @@ def test_sp_ccsd_t_rohf_ae_error(method, keywords, errmsg, nh2):
 
 
 @pytest.mark.parametrize('method,keywords', [
-    pytest.param('c4-ccsd(t)', {'cfour_basis': 'qz2p', 'cfour_reference': 'rohf', 'cfour_occupation': [[3,1,1,0],[3,0,1,0]], 'cfour_scf_conv': 12, 'cfour_cc_conv': 12}, marks=using_cfour),
-    pytest.param('c4-ccsd(t)', {'basis': 'cfour-qz2p', 'cfour_reference': 'rohf', 'cfour_occupation': [[3,1,1,0],[3,0,1,0]], 'cfour_scf_conv': 12, 'cfour_cc_conv': 12}, marks=using_cfour),
+    pytest.param('c4-ccsd(t)', {'cfour_basis': 'qz2p', 'cfour_reference': 'rohf', 'cfour_occupation': [[3, 1, 1, 0], [3, 0, 1, 0]], 'cfour_scf_conv': 12, 'cfour_cc_conv': 12}, marks=using_cfour),
+    pytest.param('c4-ccsd(t)', {'basis': 'cfour-qz2p', 'cfour_reference': 'rohf', 'cfour_occupation': [[3, 1, 1, 0], [3, 0, 1, 0]], 'cfour_scf_conv': 12, 'cfour_cc_conv': 12}, marks=using_cfour),
     pytest.param('nwc-ccsd(t)', {'basis': 'cfour-qz2p', 'qc_module': 'tce', 'nwchem_scf__rohf': True, 'nwchem_scf__thresh': 8, 'nwchem_tce__thresh': 8, 'nwchem_tce__freeze': 0, 'nwchem_scf__tol2e': 10}, marks=using_nwchem),
     pytest.param('p4-ccsd(t)', {'basis': 'cfour-qz2p', 'reference': 'rohf'}, marks=using_psi4),
-
-])
+])  # yapf: disable
 def test_sp_ccsd_t_rohf_ae(method, keywords, nh2):
     """cfour/???/input.dat
     #! single point CCSD(T)/qz2p on water
@@ -350,10 +352,12 @@ def test_sp_ccsd_t_rohf_ae(method, keywords, nh2):
     assert compare_values(scf_tot, qcdb.variable('scf total energy'), tnm() + ' SCF', atol=atol)
 
 
-@pytest.mark.parametrize('method,keywords,errmsg', [
-    pytest.param('gms-ccsd(t)', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'rohf'}, 'ROHF\'S CCTYP MUST BE CCSD OR CR-CCL', marks=using_gamess), # No (T) w/ rohf in gms
-    pytest.param('nwc-ccsd(t)', {'basis': 'cfour-qz2p', 'nwchem_scf__rohf': True, 'nwchem_ccsd__freeze': 1}, 'ccsd: nopen is not zero', marks=using_nwchem),
-])
+@pytest.mark.parametrize(
+    'method,keywords,errmsg',
+    [
+        pytest.param('gms-ccsd(t)', {'basis': 'cfour-qz2p', 'gamess_contrl__scftyp': 'rohf'}, 'ROHF\'S CCTYP MUST BE CCSD OR CR-CCL', marks=using_gamess),  # No (T) w/ rohf in gms
+        pytest.param('nwc-ccsd(t)', {'basis': 'cfour-qz2p', 'nwchem_scf__rohf': True, 'nwchem_ccsd__freeze': 1}, 'ccsd: nopen is not zero', marks=using_nwchem),
+    ])  # yapf: disable
 def test_sp_ccsd_t_rohf_fc_error(method, keywords, errmsg, nh2):
     """cfour/???/input.dat
     #! single point CCSD(T)/qz2p on water
@@ -373,7 +377,7 @@ def test_sp_ccsd_t_rohf_fc_error(method, keywords, errmsg, nh2):
     pytest.param('c4-ccsd(t)', {'basis': 'cfour-qz2p', 'cfour_reference': 'rohf', 'cfour_dropmo': 1, 'cfour_scf_conv': 12, 'cfour_cc_conv': 12}, marks=using_cfour),
     pytest.param('nwc-ccsd(t)', {'basis': 'cfour-qz2p', 'qc_module': 'tce', 'nwchem_tce__freeze': 1, 'nwchem_scf__rohf': True}, marks=using_nwchem),
     pytest.param('p4-ccsd(t)', {'basis': 'cfour-qz2p', 'reference': 'rohf', 'psi4_freeze_core': True}, marks=using_psi4),
-])
+])  # yapf: disable
 def test_sp_ccsd_t_rohf_fc(method, keywords, nh2):
     """cfour/???/input.dat
     #! single point CCSD(T)/qz2p on water

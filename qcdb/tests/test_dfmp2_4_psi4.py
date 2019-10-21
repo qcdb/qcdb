@@ -1,10 +1,11 @@
 import os
 
 import pytest
-from .utils import *
-from .addons import *
 
 import qcdb
+
+from .addons import *
+from .utils import *
 
 #! conventional and density-fitting mp2 test of mp2 itself and setting scs-mp2
 
@@ -144,4 +145,3 @@ def test_6_conv_custom_scs_mp2(h2o):
     print('   Testing user-def scs mp2 (conv) ...')
     val = qcdb.energy('mp2')
     check_mp2(val, is_df=False, is_5050=True)
-

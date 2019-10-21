@@ -1,9 +1,9 @@
 import os
 
-from .utils import *
-from .addons import *
-
 import qcdb
+
+from .addons import *
+from .utils import *
 
 _ref_h2o_pk_rhf  = -76.02696997325441
 _ref_ch2_pk_uhf  = -38.925088643363665

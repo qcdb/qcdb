@@ -1,9 +1,12 @@
 #TCE CCSD(T) and CCSD[T] calculations
 import os
 import sys
+
 import qcdb
+
 from ..addons import *
 from ..utils import *
+
 
 def check_ccsd_t_pr_br(return_value):
     ccsd_tot    =   -76.240077811301250

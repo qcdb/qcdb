@@ -1,10 +1,12 @@
 import os
 
 import pytest
-from .utils import *
-from .addons import *
 
 import qcdb
+
+from .addons import *
+from .utils import *
+
 
 @pytest.fixture
 def h2o():
@@ -112,4 +114,3 @@ if __name__ == '__main__':
 #    test_sp_rhf_mp2()
 #    test_sp_uhf_mp2()
     test_sp_rohf_mp2_sc()
-

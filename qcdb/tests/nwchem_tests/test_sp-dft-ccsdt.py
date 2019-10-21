@@ -2,9 +2,11 @@
 
 import os
 import sys
-from ..utils import *
-from ..addons import *
+
 import qcdb
+
+from ..addons import *
+from ..utils import *
 
 
 def check_dft(return_value, is_dft):

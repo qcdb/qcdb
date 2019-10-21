@@ -1,15 +1,15 @@
-import pytest
-
 import os
 import sys
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from .utils import *
-from .addons import *
 
 import numpy as np
+import pytest
 
 import qcdb
 import qcengine as qcng
+
+from .addons import *
+from .utils import *
+
 
 @pytest.fixture
 def h2o():

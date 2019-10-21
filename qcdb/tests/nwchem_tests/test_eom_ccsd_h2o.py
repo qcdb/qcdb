@@ -1,9 +1,11 @@
 #EOM CCSD
 import os
 import sys
+
+import qcdb
+
 from ..addons import *
 from ..utils import *
-import qcdb
 
 
 def check_eomccsd(return_value):

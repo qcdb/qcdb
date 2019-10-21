@@ -1,9 +1,11 @@
 #Tensor Contraction Engine Moller-Plesset perturbation to second order (MP2)
 import os
 import sys
+
+import qcdb
+
 from ..addons import *
 from ..utils import *
-import qcdb
 
 
 def check_tce_mp2(return_value):
@@ -95,4 +97,3 @@ def test_3_mp4():
         })
     val = qcdb.energy('nwc-mp4')
     check_tce_mp4(val)
-

@@ -1,10 +1,11 @@
 import os
 import sys
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from .utils import *
-from .addons import *
 
 import qcdb
+
+from .addons import *
+from .utils import *
+
 
 _ref_h2o_pk_rhf  = -76.02696997325441
 _ref_ch2_pk_uhf  = -38.925088643363665

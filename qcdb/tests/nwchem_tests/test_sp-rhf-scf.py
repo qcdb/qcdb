@@ -3,9 +3,11 @@
 
 import os
 import sys
-from ..utils import *
-from ..addons import *
+
 import qcdb
+
+from ..addons import *
+from ..utils import *
 
 
 def check_hf(return_value):

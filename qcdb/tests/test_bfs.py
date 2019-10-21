@@ -1,8 +1,8 @@
-from .utils import *
-
 import qcelemental as qcel
 
 import qcdb
+
+from .utils import *
 
 
 def test_Molecule_BFS():

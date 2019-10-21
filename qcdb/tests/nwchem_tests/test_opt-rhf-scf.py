@@ -1,9 +1,11 @@
 #Geometry optimization HF/6-31g* on water
 import os
 import sys
-from ..utils import *
-from ..addons import *
+
 import qcdb
+
+from ..addons import *
+from ..utils import *
 
 
 def check_rhf(return_value):

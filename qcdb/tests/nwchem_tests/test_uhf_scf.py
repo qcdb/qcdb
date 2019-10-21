@@ -1,10 +1,10 @@
 #! single-point UHF/cc-pVDZ  on NH2
 import os
 
-from ..utils import *
-from ..addons import *
-
 import qcdb
+
+from ..addons import *
+from ..utils import *
 
 
 def check_uhf_hf(return_value):
