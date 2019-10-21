@@ -35,42 +35,7 @@ import qcelemental as qcel
 from qcelemental.models import Molecule
 
 from ...exceptions import ValidationError
-#from ..molecule import Molecule
 from ...util import conv_float2negexp
-
-#def nu_muster_memory(mem, ropts, verbose=1):
-#    """Transform input *mem* in MB into psi4-type options for cfour.
-#
-#    """
-#    text = ''
-#    accession = 4567
-#
-#    # prepare memory keywords to be set as c-side keywords
-#    #options['CFOUR']['CFOUR_MEMORY_SIZE']['value'] = int(mem)
-#    #options['CFOUR']['CFOUR_MEM_UNIT']['value'] = 'MB'
-#    ropts.require('CFOUR', 'MEMORY_SIZE', int(mem), accession=accession, verbose=verbose)
-#    ropts.require('CFOUR', 'MEM_UNIT', 'MB', accession=accession, verbose=verbose)
-#
-#    #for item in options['CFOUR']:
-#    #    options['CFOUR'][item]['clobber'] = True
-#    #return text, options
-#
-#    return ''
-#
-#def muster_memory(mem):
-#    """Transform input *mem* in MB into psi4-type options for cfour.
-#
-#    """
-#    text = ''
-#
-#    # prepare memory keywords to be set as c-side keywords
-#    options = defaultdict(lambda: defaultdict(dict))
-#    options['CFOUR']['CFOUR_MEMORY_SIZE']['value'] = int(mem)
-#    options['CFOUR']['CFOUR_MEM_UNIT']['value'] = 'MB'
-#
-#    for item in options['CFOUR']:
-#        options['CFOUR'][item]['clobber'] = True
-#    return text, options
 
 #   Ways of modifying a computation
 #   global:     set global c-side option
@@ -91,7 +56,13 @@ from ...util import conv_float2negexp
 #   P4 infrastructure replacing interfaced infrastructure (mol, basis, mem) where unavoidable overlap in how things are specified (mult in mol{} vs keyword) is treated as a clobber & complain if conflict VS P4 infrastructure as an aliased/convenient leak into interfaced infrastructure (psi) and is strictly no clobber or complain.
 
 
-def muster_inherited_options(ropts, verbose=1):
+def muster_inherited_keywords(ropts: 'Keywords', verbose: int = 1) -> None:
+    """Translate psi4 keywords *opt* that have been explicitly set into
+    their Cfour counterparts. Since explicitly set Cfour module keyword
+    values will always be used preferentially to these inferred from
+    psi4, the 'clobber' property is set to False.
+
+    """
     import sys
     accession = sys._getframe().f_code.co_name + '_' + str(uuid.uuid4())[:8]
     kwgs = {'accession': accession, 'verbose': verbose}
@@ -112,16 +83,16 @@ def muster_inherited_options(ropts, verbose=1):
     # TODO ref or scf__ref?
     qref = ropts.scroll['QCDB']['SCF__REFERENCE'].value
     if qref in ['RHF', 'UHF', 'ROHF']:
-    #ref = {'RHF': 'RHF',
-    #       'UHF': 'UHF',
-    #       'ROHF': 'ROHF'}[ropts.scroll['QCDB']['REFERENCE'].value]
+        #ref = {'RHF': 'RHF',
+        #       'UHF': 'UHF',
+        #       'ROHF': 'ROHF'}[ropts.scroll['QCDB']['REFERENCE'].value]
         ropts.suggest('CFOUR', 'REFERENCE', qref, **kwgs)
 
     # qcdb/scf__d_convergence --> cfour/scf_conv
     qopt = ropts.scroll['QCDB']['SCF__D_CONVERGENCE']
     if qopt.disputed():
         conv = conv_float2negexp(qopt.value)
-    #conv = conv_float2negexp(ropts.scroll['QCDB']['SCF__D_CONVERGENCE'].value)
+        #conv = conv_float2negexp(ropts.scroll['QCDB']['SCF__D_CONVERGENCE'].value)
         ropts.suggest('CFOUR', 'SCF_CONV', conv, **kwgs)
 
     # qcdb/scf__maxiter --> cfour/scf_maxcyc
@@ -131,44 +102,6 @@ def muster_inherited_options(ropts, verbose=1):
     damp = int(10 * ropts.scroll['QCDB']['SCF__DAMPING_PERCENTAGE'].value)
     ropts.suggest('CFOUR', 'SCF_DAMPING', damp, **kwgs)
 
-
-def muster_psi4options(opt):
-    """Translate psi4 keywords *opt* that have been explicitly set into
-    their Cfour counterparts. Since explicitly set Cfour module keyword
-    values will always be used preferentially to these inferred from
-    psi4, the 'clobber' property is set to False.
-
-    """
-    text = ''
-    options = defaultdict(lambda: defaultdict(dict))
-
-    if 'GLOBALS' in opt:
-        if 'PUREAM' in opt['GLOBALS']:
-            options['CFOUR']['CFOUR_SPHERICAL']['value'] = \
-                opt['MINTS']['PUREAM']['value']
-
-    if 'SCF' in opt:
-        if 'REFERENCE' in opt['SCF']:
-            options['CFOUR']['CFOUR_REFERENCE']['value'] = \
-                {'RHF': 'RHF',
-                 'UHF': 'UHF',
-                 'ROHF': 'ROHF'}[opt['SCF']['REFERENCE']['value']]
-
-        if 'D_CONVERGENCE' in opt['SCF']:
-            options['CFOUR']['CFOUR_SCF_CONV']['value'] = \
-                conv_float2negexp(opt['SCF']['D_CONVERGENCE']['value'])
-
-        if 'MAXITER' in opt['SCF']:
-            options['CFOUR']['CFOUR_SCF_MAXCYC']['value'] = \
-                opt['SCF']['MAXITER']['value']
-
-        if 'DAMPING_PERCENTAGE' in opt['SCF']:
-            options['CFOUR']['CFOUR_SCF_DAMPING']['value'] = \
-                int(10 * opt['SCF']['DAMPING_PERCENTAGE']['value'])
-
-    for item in options['CFOUR']:
-        options['CFOUR'][item]['clobber'] = False
-    return text, options
 
 # Philosophy break:
 #   Specification options
@@ -192,9 +125,19 @@ def muster_psi4options(opt):
 #   c4-scf                  CCSD from set {...}
 
 
-def nu_muster_modelchem(name, dertype, ropts, verbose=1):
+def muster_modelchem(name, dertype, ropts, verbose=1):
+    """Transform calculation method *name* and derivative level *dertype*
+    into options for cfour. While deliberately requested pieces,
+    generally |cfour__cfour_deriv_level| and |cfour__cfour_calc_level|,
+    are set to complain if contradicted ('clobber' set to True), other
+    'recommended' settings, like |cfour__cfour_cc_program|, can be
+    countermanded by keywords in input file ('clobber' set to False).
+    Occasionally, want these pieces to actually overcome keywords in
+    input file ('superclobber' set to True).
+
+    """
     lowername = name.lower()
-    accession=2345
+    accession = 2345
 
     if dertype == 0:
         if lowername == 'c4-cfour':
@@ -263,108 +206,8 @@ def nu_muster_modelchem(name, dertype, ropts, verbose=1):
     else:
         raise ValidationError(f"""Requested Cfour computational method '{lowername}' is not available.""")
 
-#    # Set clobbering
-#    if 'CFOUR_DERIV_LEVEL' in options['CFOUR']:
-#        options['CFOUR']['CFOUR_DERIV_LEVEL']['clobber'] = True
-#        options['CFOUR']['CFOUR_DERIV_LEVEL']['superclobber'] = True
-#    if 'CFOUR_CALC_LEVEL' in options['CFOUR']:
-#        options['CFOUR']['CFOUR_CALC_LEVEL']['clobber'] = True
-#        options['CFOUR']['CFOUR_CALC_LEVEL']['superclobber'] = True
-#    if 'CFOUR_CC_PROGRAM' in options['CFOUR']:
-#        options['CFOUR']['CFOUR_CC_PROGRAM']['clobber'] = False
 
-#    return ''
-
-
-def muster_modelchem(name, dertype):
-    """Transform calculation method *name* and derivative level *dertype*
-    into options for cfour. While deliberately requested pieces,
-    generally |cfour__cfour_deriv_level| and |cfour__cfour_calc_level|,
-    are set to complain if contradicted ('clobber' set to True), other
-    'recommended' settings, like |cfour__cfour_cc_program|, can be
-    countermanded by keywords in input file ('clobber' set to False).
-    Occasionally, want these pieces to actually overcome keywords in
-    input file ('superclobber' set to True).
-
-    """
-    text = ''
-    lowername = name.lower()
-    options = defaultdict(lambda: defaultdict(dict))
-
-    if dertype == 0:
-        if lowername == 'c4-cfour':
-            pass  # permit clean operation of sandwich mode
-        else:
-            options['CFOUR']['CFOUR_DERIV_LEVEL']['value'] = 'ZERO'
-    elif dertype == 1:
-        options['CFOUR']['CFOUR_DERIV_LEVEL']['value'] = 'FIRST'
-    elif dertype == 2:
-        options['CFOUR']['CFOUR_DERIV_LEVEL']['value'] = 'SECOND'
-    else:
-        raise ValidationError("""Requested Cfour dertype %d is not available.""" % (dertype))
-
-    if lowername == 'c4-cfour':
-        pass
-    elif lowername in ['c4-scf', 'c4-hf']:
-        options['CFOUR']['CFOUR_CALC_LEVEL']['value'] = 'SCF'
-
-    elif lowername == 'c4-mp2':
-        options['CFOUR']['CFOUR_CALC_LEVEL']['value'] = 'MP2'
-
-    elif lowername == 'c4-mp3':
-        options['CFOUR']['CFOUR_CALC_LEVEL']['value'] = 'MP3'
-
-    elif lowername == 'c4-mp4(sdq)':
-        options['CFOUR']['CFOUR_CALC_LEVEL']['value'] = 'SDQ-MP4'
-
-    elif lowername == 'c4-mp4':
-        options['CFOUR']['CFOUR_CALC_LEVEL']['value'] = 'MP4'
-
-    elif lowername == 'c4-cc2':
-        options['CFOUR']['CFOUR_CALC_LEVEL']['value'] = 'CC2'
-
-    elif lowername == 'c4-ccsd':
-        options['CFOUR']['CFOUR_CALC_LEVEL']['value'] = 'CCSD'
-        options['CFOUR']['CFOUR_CC_PROGRAM']['value'] = 'ECC'
-
-    elif lowername == 'c4-cc3':
-        options['CFOUR']['CFOUR_CALC_LEVEL']['value'] = 'CC3'
-
-    elif lowername == 'c4-ccsd(t)':
-        # Can't use (T) b/c bug in xsymcor lops it off
-        #options['CFOUR']['CFOUR_CALC_LEVEL']['value'] = 'CCSD(T)'
-        options['CFOUR']['CFOUR_CALC_LEVEL']['value'] = 'CCSD[T]'
-        options['CFOUR']['CFOUR_CC_PROGRAM']['value'] = 'ECC'
-
-    elif lowername == 'c4-ccsdt':
-        options['CFOUR']['CFOUR_CALC_LEVEL']['value'] = 'CCSDT'
-        options['CFOUR']['CFOUR_CC_PROGRAM']['value'] = 'ECC'
-
-    elif lowername == 'c4-ccsdt(q)':
-        options['CFOUR']['CFOUR_CALC_LEVEL']['value'] = 'CCSDT(Q)'
-        options['CFOUR']['CFOUR_CC_PROGRAM']['value'] = 'NCC'
-
-    elif lowername == 'c4-ccsdtq':
-        options['CFOUR']['CFOUR_CALC_LEVEL']['value'] = 'CCSDTQ'
-        options['CFOUR']['CFOUR_CC_PROGRAM']['value'] = 'NCC'
-
-    else:
-        raise ValidationError("""Requested Cfour computational methods %d is not available.""" % (lowername))
-
-    # Set clobbering
-    if 'CFOUR_DERIV_LEVEL' in options['CFOUR']:
-        options['CFOUR']['CFOUR_DERIV_LEVEL']['clobber'] = True
-        options['CFOUR']['CFOUR_DERIV_LEVEL']['superclobber'] = True
-    if 'CFOUR_CALC_LEVEL' in options['CFOUR']:
-        options['CFOUR']['CFOUR_CALC_LEVEL']['clobber'] = True
-        options['CFOUR']['CFOUR_CALC_LEVEL']['superclobber'] = True
-    if 'CFOUR_CC_PROGRAM' in options['CFOUR']:
-        options['CFOUR']['CFOUR_CC_PROGRAM']['clobber'] = False
-
-    return text, options
-
-
-def harvest_zmat(zmat):
+def harvest_zmat(zmat: str) -> Molecule:
     """Parses the contents of the Cfour ZMAT file into array and
     coordinate information. The coordinate info is converted into a
     rather dinky Molecule (no fragment, but does read charge, mult,
@@ -404,13 +247,16 @@ def harvest_zmat(zmat):
                 isBohr = ' bohr'
 
     molxyz = f'{Nat}{isBohr}\n{charge} {mult}\n' + molxyz
-    mol = Molecule(validate=False, **qcel.molparse.to_schema(qcel.molparse.from_string(molxyz, dtype='xyz+', fix_com=True, fix_orientation=True)["qm"], dtype=2))
+    mol = Molecule(validate=False,
+                   **qcel.molparse.to_schema(qcel.molparse.from_string(molxyz,
+                                                                       dtype='xyz+',
+                                                                       fix_com=True,
+                                                                       fix_orientation=True)["qm"],
+                                             dtype=2))
 
     return mol
 
 
-#def backtransform(chgeMol, permMol, chgeGrad=None, chgeDip=None):
-#def format_fjobarc(fje, fjelem, fjcoord, fjgrd, map, fjdip):
 def format_fjobarc(energy, amap, elem, coordinates, gradient, dipole):
     """Takes the key results from a gradient computation (*energy*,
     element Z list *elem*, *coordinates*, *gradient*,
@@ -444,7 +290,8 @@ def format_fjobarc(energy, amap, elem, coordinates, gradient, dipole):
     fja += 'GRD FILE\n'
     fja += '%5d%20.10f\n' % (Nat, 0.0)
     for at in range(Nat):
-        fja += '%20.10f%20.10f%20.10f%20.10f\n' % (elem[at], coordinates[at][0], coordinates[at][1], coordinates[at][2])
+        fja += '%20.10f%20.10f%20.10f%20.10f\n' % (elem[at], coordinates[at][0], coordinates[at][1],
+                                                   coordinates[at][2])
     for at in range(Nat):
         fja += '%20.10f%20.10f%20.10f%20.10f\n' % (elem[at], gradient[at][0], gradient[at][1], gradient[at][2])
     fja += 'DIPOL FILE\n'
@@ -559,6 +406,11 @@ def jajo2mol(jajodic):
         el = 'GH' if elem[posn] == 0 else qcel.periodictable.to_E(elem[posn])
         posn *= 3
         molxyz += '%s %21.15f %21.15f %21.15f\n' % (el, coord[posn], coord[posn + 1], coord[posn + 2])
-    mol = Molecule(validate=False, **qcel.molparse.to_schema(qcel.molparse.from_string(molxyz, dtype='xyz+', fix_com=True, fix_orientation=True)["qm"], dtype=2))
+    mol = Molecule(validate=False,
+                   **qcel.molparse.to_schema(qcel.molparse.from_string(molxyz,
+                                                                       dtype='xyz+',
+                                                                       fix_com=True,
+                                                                       fix_orientation=True)["qm"],
+                                             dtype=2))
 
     return mol

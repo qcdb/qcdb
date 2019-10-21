@@ -9,7 +9,7 @@ import qcelemental as qcel
 from ...driver import pe
 
 
-def format_molecule(molrec, ropts, verbose: int=1):
+def format_molecule(molrec, ropts, verbose: int = 1):
     kwgs = {'accession': uuid.uuid4(), 'verbose': verbose}
 
     molcmd, moldata = qcel.molparse.to_string(molrec, dtype='cfour', units='Bohr', return_data=True)
@@ -20,7 +20,7 @@ def format_molecule(molrec, ropts, verbose: int=1):
     return molcmd
 
 
-def format_basis_for_cfour(molrec, ropts, native_puream, verbose=1): #puream):
+def format_basis_for_cfour(molrec, ropts, native_puream, verbose=1):
     """Function to print the BASIS=SPECIAL block for Cfour according
     to the active atoms in Molecule. Special short basis names
     are used by qcdb GENBAS-writer in accordance with
@@ -40,44 +40,12 @@ def format_basis_for_cfour(molrec, ropts, native_puream, verbose=1): #puream):
     # cfour or qcdb keywords here?
     # req or sugg for puream?
 
-    #options['CFOUR']['CFOUR_BASIS']['value'] = 'SPECIAL'
-    #options['CFOUR']['CFOUR_SPHERICAL']['value'] = puream
-    #options['CFOUR']['CFOUR_BASIS']['clobber'] = True
-    #options['CFOUR']['CFOUR_SPHERICAL']['clobber'] = True
-    #options['CFOUR']['CFOUR_BASIS']['superclobber'] = True
     #options['CFOUR']['CFOUR_SPHERICAL']['superclobber'] = True
 
     return text
 
 
-def old_format_basis_for_cfour(molrec, puream):
-    """Function to print the BASIS=SPECIAL block for Cfour according
-    to the active atoms in Molecule. Special short basis names
-    are used by qcdb GENBAS-writer in accordance with
-    Cfour constraints.
-
-    """
-    text = []
-    for iat, elem in enumerate(molrec['elem']):
-        text.append("""{}:CD_{}""".format(elem.upper(), iat + 1))
-    text.append('')
-    text.append('')
-    text = '\n'.join(text)
-
-    options = collections.defaultdict(lambda: collections.defaultdict(dict))
-    options['CFOUR']['CFOUR_BASIS']['value'] = 'SPECIAL'
-    options['CFOUR']['CFOUR_SPHERICAL']['value'] = puream
-
-    options['CFOUR']['CFOUR_BASIS']['clobber'] = True
-    options['CFOUR']['CFOUR_SPHERICAL']['clobber'] = True
-
-    options['CFOUR']['CFOUR_BASIS']['superclobber'] = True
-    options['CFOUR']['CFOUR_SPHERICAL']['superclobber'] = True
-
-    return text, options
-
-
-def extract_basis_from_genbas(basis: str, elem: Union[str, List], exact: bool=True, verbose: int=1) -> str:
+def extract_basis_from_genbas(basis: str, elem: Union[str, List], exact: bool = True, verbose: int = 1) -> str:
     """
 
     Parameters
@@ -109,7 +77,7 @@ def extract_basis_from_genbas(basis: str, elem: Union[str, List], exact: bool=Tr
     library_genbas_loc = os.sep.join([pe.data_dir, 'basis', 'GENBAS'])
     with open(library_genbas_loc, 'r') as handle:
         genbas = handle.read()
-    
+
     toks = re.split('(^[A-Z]{1,2}:.*$)', genbas, flags=re.MULTILINE)
     allbas = dict(zip(toks[1::2], toks[2::2]))
 

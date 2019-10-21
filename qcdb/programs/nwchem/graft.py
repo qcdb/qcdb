@@ -1,7 +1,7 @@
 from typing import Dict, List
 
 
-def nwchem_list():
+def nwchem_list() -> List:
     """Return an array of NWChem methods with energies. Appended
     to procedures[qcdb.energy()].
 
@@ -38,7 +38,7 @@ def nwchem_list():
     return val
 
 
-def nwchem_gradient_list():
+def nwchem_gradient_list() -> List:
     """Return an array of NWChem methods with energies. Appended
     to procedures['gradient'].
 
@@ -63,7 +63,7 @@ def nwchem_gradient_list():
     return val
 
 
-def nwchem_hessian_list():
+def nwchem_hessian_list() -> List:
     """Return an array of NWChem methods with energies. Appended to procedures
     ['hessian']"""
 
@@ -75,7 +75,7 @@ def nwchem_hessian_list():
     return []
 
 
-def _dft_functionals_list():
+def _dft_functionals_list() -> List:
     """Return an array of available method of dft functionals through nwchem interface. 
 
     """

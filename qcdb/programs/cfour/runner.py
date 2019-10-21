@@ -14,11 +14,11 @@ from qcengine.programs.util import PreservingDict
 from ... import qcvars
 from ...basisset import BasisSet
 from ...util import print_jobrec, provenance_stamp
-from . import harvester
 from .bas import extract_basis_from_genbas, format_basis_for_cfour, format_molecule
+from .harvester import muster_inherited_keywords, muster_modelchem
 
 
-def run_cfour(name, molecule, options, **kwargs):
+def run_cfour(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -> Dict:
     """QCDB API to QCEngine connection for CFOUR."""
 
     resi = ResultInput(
@@ -89,11 +89,12 @@ class QcdbCFOURHarness(CFOURHarness):
         molcmd = format_molecule(molrec, ropts, verbose=1)
 
         # Handle qcdb keywords implying cfour keyword values
-        harvester.muster_inherited_options(ropts)
+        muster_inherited_keywords(ropts)
 
         _qcdb_basis = ropts.scroll['QCDB']['BASIS'].value
         _cfour_basis = ropts.scroll['CFOUR']['BASIS'].value
-        if input_model.model.basis != '(auto)' and not ropts.scroll['QCDB']['BASIS'].disputed() and not ropts.scroll['CFOUR']['BASIS'].disputed():
+        if (input_model.model.basis != '(auto)' and not ropts.scroll['QCDB']['BASIS'].disputed()
+                and not ropts.scroll['CFOUR']['BASIS'].disputed()):
             qbs = BasisSet.pyconstruct(molrec, 'BASIS', input_model.model.basis)
             cfourrec['infiles']['GENBAS'] = qbs.print_detail_cfour()
             bascmd = format_basis_for_cfour(molrec, ropts, qbs.has_puream())
@@ -110,7 +111,7 @@ class QcdbCFOURHarness(CFOURHarness):
             bascmd = format_basis_for_cfour(molrec, ropts, qbs.has_puream())
 
         # Handle calc type and quantum chemical method
-        harvester.nu_muster_modelchem(input_model.model.method, input_model.driver.derivative_int(), ropts)
+        muster_modelchem(input_model.model.method, input_model.driver.derivative_int(), ropts)
 
         #print(jobrec['options'].print_changed(history=False))
         # Handle driver vs input/default keyword reconciliation

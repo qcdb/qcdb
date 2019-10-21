@@ -4,7 +4,7 @@ from typing import Dict
 from ...util import conv_float2negexp
 
 
-def muster_inherited_options(ropts: 'Keywords', verbose: int = 1) -> None:
+def muster_inherited_keywords(ropts: 'Keywords', verbose: int = 1) -> None:
     accession = uuid.uuid4()
 
     kwgs = {'accession': accession, 'verbose': verbose}

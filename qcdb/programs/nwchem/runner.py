@@ -16,13 +16,10 @@ from qcengine.programs.util import PreservingDict
 from ... import qcvars
 from ...basisset import BasisSet
 from ...util import print_jobrec, provenance_stamp
-from .harvester import format_modelchem_for_nwchem, muster_inherited_options
+from .harvester import format_modelchem_for_nwchem, muster_inherited_keywords
 from .molbasopt import format_molecule, muster_and_format_basis_for_nwchem
 
 pp = pprint.PrettyPrinter(width=120)
-
-
-
 
 
 def run_nwchem(name, molecule, options, **kwargs):
@@ -108,26 +105,27 @@ class QcdbNWChemHarness(NWChemHarness):
 
         molcmd = format_molecule(molrec, ropts, verbose=1)
 
-    # Handle memory
-    # I don't think memory belongs in jobrec. it goes in pkgrec (for pbs) and possibly duplicated in options (for prog)
-#    if 'memory' in jobrec:
-#        memcmd, memkw = harvester.muster_memory(jobrec['memory'])
-#    else:
-#        memcmd, memkw = '', {}
-    #mem = int(0.000001 * core.get_memory())
-    #if mem == 524:
-    #    memcmd, memkw = '', {}
-    #else:
-    #    memcmd, memkw = qcdb.cfour.muster_memory(mem)
+        # Handle memory
+        # I don't think memory belongs in jobrec. it goes in pkgrec (for pbs) and possibly duplicated in options (for prog)
+        #    if 'memory' in jobrec:
+        #        memcmd, memkw = harvester.muster_memory(jobrec['memory'])
+        #    else:
+        #        memcmd, memkw = '', {}
+        #mem = int(0.000001 * core.get_memory())
+        #if mem == 524:
+        #    memcmd, memkw = '', {}
+        #else:
+        #    memcmd, memkw = qcdb.cfour.muster_memory(mem)
 
         # Handle qcdb keywords implying nwchem keyword values
         # used to be before molecule formatting -- was that necessary?
-        muster_inherited_options(ropts)
+        muster_inherited_keywords(ropts)
 
         _qcdb_basis = ropts.scroll['QCDB']['BASIS'].value
         # TODO _gamess_basis = ropts.scroll['NWCHEM']['BASIS'].value
         if _qcdb_basis == '':
-            raise ValueError('nwchem bas not impl. set with `basis cc-pvdz`, etc. to use qcdb (psi4) basis set library.')
+            raise ValueError(
+                'nwchem bas not impl. set with `basis cc-pvdz`, etc. to use qcdb (psi4) basis set library.')
         # create a qcdb.Molecule to reset PG to c1 so all atoms. but print_detail isn't transmitting in a way nwc is picking up on, so per-element for now
         #qmol = Molecule(jobrec['molecule'])
         #qmol.reset_point_group('c1')  # need basis printed for *every* atom
@@ -138,29 +136,32 @@ class QcdbNWChemHarness(NWChemHarness):
         bascmd = muster_and_format_basis_for_nwchem(molrec, ropts, qbs, verbose=1)
 
         # Handle calc type and quantum chemical method
-  #      harvester.nu_muster_modelchem(jobrec['method'], jobrec['dertype'], ropts])
-        mdccmd = format_modelchem_for_nwchem(input_model.model.method, input_model.driver.derivative_int(), ropts, sysinfo=None)
+        #      harvester.nu_muster_modelchem(jobrec['method'], jobrec['dertype'], ropts])
+        mdccmd = format_modelchem_for_nwchem(input_model.model.method,
+                                             input_model.driver.derivative_int(),
+                                             ropts,
+                                             sysinfo=None)
 
-    #PRprint('Touched Keywords')
-    #PRprint(ropts.print_changed(history=False))
+        #PRprint('Touched Keywords')
+        #PRprint(ropts.print_changed(history=False))
 
         # Handle driver vs input/default keyword reconciliation
 
         # Handle conversion of qcdb keyword structure into nwchem format
-#OLD    optcmd = moptions.prepare_options_for_nwchem(jobrec['options'])
-#    resolved_options = {k: v.value for k, v in jobrec['options'].scroll['NWCHEM'].items() if v.disputed()}
+        #OLD    optcmd = moptions.prepare_options_for_nwchem(jobrec['options'])
+        #    resolved_options = {k: v.value for k, v in jobrec['options'].scroll['NWCHEM'].items() if v.disputed()}
         skma_options = {key: ropt.value for key, ropt in sorted(ropts.scroll['NWCHEM'].items()) if ropt.disputed()}
         optcmd = format_keywords(skma_options)
 
-    # Handle text to be passed untouched to cfour
-#    litcmd = core.get_global_option('LITERAL_CFOUR')
+        # Handle text to be passed untouched to cfour
+        #    litcmd = core.get_global_option('LITERAL_CFOUR')
 
         # Assemble ZMAT pieces
-    #zmat = memcmd + molcmd + optcmd + mdccmd + psicmd + bascmd + litcmd
-    #zmat = molcmd + optcmd + bascmd
+        #zmat = memcmd + molcmd + optcmd + mdccmd + psicmd + bascmd + litcmd
+        #zmat = molcmd + optcmd + bascmd
         nwchemrec['infiles']['nwchem.nw'] = 'echo\n' + molcmd + bascmd + optcmd + mdccmd
-#OLD    nwchemrec['nwchem.nw'] = write_input(jobrec['method'], jobrec['dertype'], jobrec['molecule'], jobrec['options']) #molecule)
-#    print('<<< ZMAT||\n{}\n||>>>\n'.format(nwchemrec['nwchem.nw']))
+        #OLD    nwchemrec['nwchem.nw'] = write_input(jobrec['method'], jobrec['dertype'], jobrec['molecule'], jobrec['options']) #molecule)
+        #    print('<<< ZMAT||\n{}\n||>>>\n'.format(nwchemrec['nwchem.nw']))
         nwchemrec['command'] = ['nwchem']  # subnw?
 
         return nwchemrec

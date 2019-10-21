@@ -16,7 +16,7 @@ from qcengine.programs.util import PreservingDict
 from ... import qcvars
 from ...basisset import BasisSet
 from ...util import print_jobrec, provenance_stamp
-from .harvester import muster_inherited_options, muster_modelchem
+from .harvester import muster_inherited_keywords, muster_modelchem
 from .molbasopt import muster_and_format_molecule_and_basis_for_gamess
 
 pp = pprint.PrettyPrinter(width=120)
@@ -92,7 +92,7 @@ class QcdbGAMESSHarness(GAMESSHarness):
         ropts = input_model.extras['qcdb:options']
 
         # Handle qcdb keywords implying gamess keyword values
-        muster_inherited_options(ropts)
+        muster_inherited_keywords(ropts)
 
         _qcdb_basis = ropts.scroll['QCDB']['BASIS'].value
         #_gamess_basis = ropts.scroll['GAMESS']['BASIS'].value
@@ -118,7 +118,6 @@ class QcdbGAMESSHarness(GAMESSHarness):
 
         # Handle calc type and quantum chemical method
         muster_modelchem(input_model.model.method, input_model.driver.derivative_int(), ropts, sysinfo)
-
 
         # Handle conversion of psi4 keyword structure into cfour format
         skma_options = {key: ropt.value for key, ropt in sorted(ropts.scroll['GAMESS'].items()) if ropt.disputed()}
