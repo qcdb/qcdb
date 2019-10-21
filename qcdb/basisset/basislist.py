@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 r"""Module to define a class :py:class:`~BasisFamily` that associates
 fitting basis sets to an orbital basis and to provide functions to
 query appropriate fitting bases for any orbital basis distributed
@@ -44,7 +43,6 @@ class BasisFamily(object):
     *rifit*, and *dualfit* auxiliary bases can be found.
 
     """
-
     def __init__(self, ornate, orbital=None, zeta=None):
         """Constructor"""
         # literature name of orbital basis set, e.g., aug-cc-pVTZ or 6-31+G*
@@ -191,6 +189,7 @@ def corresponding_zeta(name):
     for fam in basisfamily_list:
         if sanitize_basisname(fam.ornate) == sanitize_basisname(name):
             return fam.zeta
+
 
 def corresponding_basis(name, role='BASIS'):
     """Function to validate if the orbital basis *name* in coded or

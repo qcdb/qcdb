@@ -603,7 +603,6 @@ def print_vibs(vibinfo, atom_lbl=None, normco='x', shortlong=True, **kwargs):
         String suitable for printing.
 
     """
-
     def grouper(iterable, n, fillvalue=None):
         "Collect data into fixed-length chunks or blocks"
         # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx"
@@ -1029,7 +1028,11 @@ def filter_nonvib(vibinfo, remove=None):
             axis = 1
         else:
             axis = 0
-        work[asp] = Datum(oasp.label, oasp.units, np.delete(oasp.data, remove, axis=axis), comment=oasp.comment, numeric=False)
+        work[asp] = Datum(oasp.label,
+                          oasp.units,
+                          np.delete(oasp.data, remove, axis=axis),
+                          comment=oasp.comment,
+                          numeric=False)
 
     return work
 

@@ -23,8 +23,6 @@ def register_kwds(ros):
     return decorator
 
 
-
-
 def def_mol():
     def decorator(func):
         @functools.wraps(func)

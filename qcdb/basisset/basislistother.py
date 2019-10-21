@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """Module with commands building :py:class:`~basislist.BasisFamily` objects
 for Pople and other non-Dunning orbital basis sets. Some
 plausible fitting basis sets are supplied as defaults.
@@ -519,12 +518,12 @@ def load_basfam_other(basisfamily_list):
     basis_6311ppg_3df_3pd_.add_rifit('aug-cc-pvtz-ri')
 
     # Petersson's nZaPa-NR basis sets
-    basis_2zapa_nr = BasisFamily('2zapa-nr',zeta=2)
-    basis_3zapa_nr = BasisFamily('3zapa-nr',zeta=3)
-    basis_4zapa_nr = BasisFamily('4zapa-nr',zeta=4)
-    basis_5zapa_nr = BasisFamily('5zapa-nr',zeta=5)
-    basis_6zapa_nr = BasisFamily('6zapa-nr',zeta=6)
-    basis_7zapa_nr = BasisFamily('7zapa-nr',zeta=7)
+    basis_2zapa_nr = BasisFamily('2zapa-nr', zeta=2)
+    basis_3zapa_nr = BasisFamily('3zapa-nr', zeta=3)
+    basis_4zapa_nr = BasisFamily('4zapa-nr', zeta=4)
+    basis_5zapa_nr = BasisFamily('5zapa-nr', zeta=5)
+    basis_6zapa_nr = BasisFamily('6zapa-nr', zeta=6)
+    basis_7zapa_nr = BasisFamily('7zapa-nr', zeta=7)
 
     # fitting sets for nZaPa-NR
     # Dunnings zeta+1 to be safe, tested on water dimer
@@ -559,11 +558,10 @@ def load_basfam_other(basisfamily_list):
     basisfamily_list.append(basis_6zapa_nr)
     basisfamily_list.append(basis_7zapa_nr)
 
-
     # F12 basis sets
-    basis_cc_pvdz_f12 = BasisFamily('cc-pvdz-f12',zeta=2)
-    basis_cc_pvtz_f12 = BasisFamily('cc-pvtz-f12',zeta=3)
-    basis_cc_pvqz_f12 = BasisFamily('cc-pvqz-f12',zeta=4)
+    basis_cc_pvdz_f12 = BasisFamily('cc-pvdz-f12', zeta=2)
+    basis_cc_pvtz_f12 = BasisFamily('cc-pvtz-f12', zeta=3)
+    basis_cc_pvqz_f12 = BasisFamily('cc-pvqz-f12', zeta=4)
     # basis_cc_pv5z_f12 = BasisFamily('cc-pV5Z-F12')
 
     # ORCA manual suggests for F12 basis sets Dunning's zeta+1

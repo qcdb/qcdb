@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """Module with matplotlib plotting routines. These are not hooked up to
 any particular qcdb data structures but can be called with basic
 arguments.
@@ -126,9 +125,14 @@ def bars(data, title='', saveas=None, relpath=False, graphicsformat=['pdf'], vie
     plt.xticks([])
 
     # label plot and tiers
-    ax.text(0.4, 4.6, title,
-        verticalalignment='bottom', horizontalalignment='left',
-        family='Times New Roman', weight='bold', fontsize=12)
+    ax.text(0.4,
+            4.6,
+            title,
+            verticalalignment='bottom',
+            horizontalalignment='left',
+            family='Times New Roman',
+            weight='bold',
+            fontsize=12)
 
     widths = [0.15, 0.02, 0.02, 0.02]  # TT, HB, MX, DD
     xval = 0.1  # starting posn along x-axis
@@ -144,13 +148,19 @@ def bars(data, title='', saveas=None, relpath=False, graphicsformat=['pdf'], vie
             rect[2].set_color('green')
             rect[3].set_color('blue')
 
-            ax.text(xval + .08, 4.3, bar['mc'],
-                verticalalignment='center', horizontalalignment='right', rotation='vertical',
-                family='Times New Roman', fontsize=8)
+            ax.text(xval + .08,
+                    4.3,
+                    bar['mc'],
+                    verticalalignment='center',
+                    horizontalalignment='right',
+                    rotation='vertical',
+                    family='Times New Roman',
+                    fontsize=8)
         xval += 0.20
 
     # save and show
-    pltuid = title + '_' + hashlib.sha1((title + repr([bar['mc'] for bar in data if bar is not None])).encode()).hexdigest()
+    pltuid = title + '_' + hashlib.sha1(
+        (title + repr([bar['mc'] for bar in data if bar is not None])).encode()).hexdigest()
     pltfile = expand_saveas(saveas, pltuid, def_prefix='bar_', relpath=relpath)
     files_saved = {}
     for ext in graphicsformat:
@@ -163,8 +173,17 @@ def bars(data, title='', saveas=None, relpath=False, graphicsformat=['pdf'], vie
     return files_saved
 
 
-def flat(data, color=None, title='', xlimit=4.0, xlines=[0.0, 0.3, 1.0], mae=None, mape=None, view=True,
-    saveas=None, relpath=False, graphicsformat=['pdf']):
+def flat(data,
+         color=None,
+         title='',
+         xlimit=4.0,
+         xlines=[0.0, 0.3, 1.0],
+         mae=None,
+         mape=None,
+         view=True,
+         saveas=None,
+         relpath=False,
+         graphicsformat=['pdf']):
     """Generates a slat diagram between model chemistries with errors in
     single-item list *data*, which is supplied as part of the dictionary
     for each participating reaction, along with *dbse* and *rxn* keys in
@@ -186,8 +205,8 @@ def flat(data, color=None, title='', xlimit=4.0, xlines=[0.0, 0.3, 1.0], mae=Non
     plt.ylim([-1 * Nweft - 1, 0])
     plt.yticks([])
     plt.xticks([])
-#    fig.patch.set_visible(False)
-#    ax.patch.set_visible(False)
+    #    fig.patch.set_visible(False)
+    #    ax.patch.set_visible(False)
     ax.axis('off')
 
     for xl in xlines:
@@ -214,8 +233,7 @@ def flat(data, color=None, title='', xlimit=4.0, xlines=[0.0, 0.3, 1.0], mae=Non
     files_saved = {}
     for ext in graphicsformat:
         savefile = pltfile + '.' + ext.lower()
-        plt.savefig(savefile, transparent=True, format=ext, bbox_inches='tight',
-                   frameon=False, pad_inches=0.0)
+        plt.savefig(savefile, transparent=True, format=ext, bbox_inches='tight', frameon=False, pad_inches=0.0)
         files_saved[ext.lower()] = savefile
     if view:
         plt.show()
@@ -285,8 +303,7 @@ def flat(data, color=None, title='', xlimit=4.0, xlines=[0.0, 0.3, 1.0], mae=Non
 #    plt.savefig('scratch/' + pltfile + '_trimd' + '.eps', transparent=True, format='EPS')
 
 
-def valerr(data, color=None, title='', xtitle='', view=True,
-    saveas=None, relpath=False, graphicsformat=['pdf']):
+def valerr(data, color=None, title='', xtitle='', view=True, saveas=None, relpath=False, graphicsformat=['pdf']):
     """
 
     """
@@ -365,9 +382,17 @@ def valerr(data, color=None, title='', xtitle='', view=True,
     return files_saved
 
 
-def disthist(data, title='', xtitle='', xmin=None, xmax=None,
-    me=None, stde=None, view=True,
-    saveas=None, relpath=False, graphicsformat=['pdf']):
+def disthist(data,
+             title='',
+             xtitle='',
+             xmin=None,
+             xmax=None,
+             me=None,
+             stde=None,
+             view=True,
+             saveas=None,
+             relpath=False,
+             graphicsformat=['pdf']):
     """Saves a plot with name *saveas* with a histogram representation
     of the reaction errors in *data*. Also plots a gaussian distribution
     with mean *me* and standard deviation *stde*. Plot has x-range
@@ -509,10 +534,23 @@ def disthist(data, title='', xtitle='', xmin=None, xmax=None,
 #    plt.show()
 
 
-def threads(data, labels, color=None, title='', xlimit=4.0, mae=None, mape=None,
-    mousetext=None, mouselink=None, mouseimag=None, mousetitle=None, mousediv=None,
-    labeled=True, view=True,
-    saveas=None, relpath=False, graphicsformat=['pdf']):
+def threads(data,
+            labels,
+            color=None,
+            title='',
+            xlimit=4.0,
+            mae=None,
+            mape=None,
+            mousetext=None,
+            mouselink=None,
+            mouseimag=None,
+            mousetitle=None,
+            mousediv=None,
+            labeled=True,
+            view=True,
+            saveas=None,
+            relpath=False,
+            graphicsformat=['pdf']):
     """Generates a tiered slat diagram between model chemistries with
     errors (or simply values) in list *data*, which is supplied as part of the
     dictionary for each participating reaction, along with *dbse* and *rxn* keys
@@ -563,13 +601,23 @@ def threads(data, labels, color=None, title='', xlimit=4.0, mae=None, mape=None,
 
     # label plot and tiers
     if labeled:
-        ax.text(-0.9 * xlimit, -0.25, title,
-            verticalalignment='bottom', horizontalalignment='left',
-            family='Times New Roman', weight='bold', fontsize=12)
+        ax.text(-0.9 * xlimit,
+                -0.25,
+                title,
+                verticalalignment='bottom',
+                horizontalalignment='left',
+                family='Times New Roman',
+                weight='bold',
+                fontsize=12)
         for weft in labels:
-            ax.text(-0.9 * xlimit, -(1.2 + labels.index(weft)), weft,
-                verticalalignment='bottom', horizontalalignment='left',
-                family='Times New Roman', weight='bold', fontsize=18)
+            ax.text(-0.9 * xlimit,
+                    -(1.2 + labels.index(weft)),
+                    weft,
+                    verticalalignment='bottom',
+                    horizontalalignment='left',
+                    family='Times New Roman',
+                    weight='bold',
+                    fontsize=18)
 
     # plot reaction errors and threads
     for rxn in data:
@@ -600,7 +648,7 @@ def threads(data, labels, color=None, title='', xlimit=4.0, mae=None, mape=None,
         #    npxvals, [rxn['show']] * Nweft, xscreen, yscreen))
 
         # labeling
-        if not(mousetext or mouselink or mouseimag):
+        if not (mousetext or mouselink or mouseimag):
             if labeled and len(data) < 200:
                 try:
                     toplblposn = next(item for item in xvals if item is not None)
@@ -608,12 +656,20 @@ def threads(data, labels, color=None, title='', xlimit=4.0, mae=None, mape=None,
                 except StopIteration:
                     pass
                 else:
-                    ax.text(toplblposn, -0.75 + 0.6 * random.random(), rxn['sys'],
-                        verticalalignment='bottom', horizontalalignment='center',
-                        family='Times New Roman', fontsize=8)
-                    ax.text(botlblposn, -1 * Nweft - 0.75 + 0.6 * random.random(), rxn['sys'],
-                        verticalalignment='bottom', horizontalalignment='center',
-                        family='Times New Roman', fontsize=8)
+                    ax.text(toplblposn,
+                            -0.75 + 0.6 * random.random(),
+                            rxn['sys'],
+                            verticalalignment='bottom',
+                            horizontalalignment='center',
+                            family='Times New Roman',
+                            fontsize=8)
+                    ax.text(botlblposn,
+                            -1 * Nweft - 0.75 + 0.6 * random.random(),
+                            rxn['sys'],
+                            verticalalignment='bottom',
+                            horizontalalignment='center',
+                            family='Times New Roman',
+                            fontsize=8)
 
     # plot trimmings
     if mae is not None:
@@ -624,7 +680,8 @@ def threads(data, labels, color=None, title='', xlimit=4.0, mae=None, mape=None,
         plt.axvline(0, color='#cccc00')
 
     # save and show
-    pltuid = title + '_' + ('lbld' if labeled else 'bare') + '_' + hashlib.sha1((title + repr(labels) + repr(xlimit)).encode()).hexdigest()
+    pltuid = title + '_' + ('lbld' if labeled else 'bare') + '_' + hashlib.sha1(
+        (title + repr(labels) + repr(xlimit)).encode()).hexdigest()
     pltfile = expand_saveas(saveas, pltuid, def_prefix='thread_', relpath=relpath)
     files_saved = {}
     for ext in graphicsformat:
@@ -699,8 +756,7 @@ def threads(data, labels, color=None, title='', xlimit=4.0, mae=None, mape=None,
         return files_saved, htmlcode
 
 
-def ternary(sapt, title='', labeled=True, view=True,
-            saveas=None, relpath=False, graphicsformat=['pdf']):
+def ternary(sapt, title='', labeled=True, view=True, saveas=None, relpath=False, graphicsformat=['pdf']):
     """Takes array of arrays *sapt* in form [elst, indc, disp] and builds formatted
     two-triangle ternary diagrams. Either fully-readable or dotsonly depending
     on *labeled*. Saves in formats *graphicsformat*.
@@ -736,18 +792,38 @@ def ternary(sapt, title='', labeled=True, view=True,
         ax.plot([-0.167, 0.5], [0.289, 0.866], color='#7ec0ee', lw=0.5)
 
         # label corners
-        ax.text(1.0, -0.15, u'Elst (\u2212)',
-            verticalalignment='bottom', horizontalalignment='center',
-            family='Times New Roman', weight='bold', fontsize=18)
-        ax.text(0.5, 0.9, u'Ind (\u2212)',
-            verticalalignment='bottom', horizontalalignment='center',
-            family='Times New Roman', weight='bold', fontsize=18)
-        ax.text(0.0, -0.15, u'Disp (\u2212)',
-            verticalalignment='bottom', horizontalalignment='center',
-            family='Times New Roman', weight='bold', fontsize=18)
-        ax.text(-0.5, 0.9, u'Elst (+)',
-            verticalalignment='bottom', horizontalalignment='center',
-            family='Times New Roman', weight='bold', fontsize=18)
+        ax.text(1.0,
+                -0.15,
+                u'Elst (\u2212)',
+                verticalalignment='bottom',
+                horizontalalignment='center',
+                family='Times New Roman',
+                weight='bold',
+                fontsize=18)
+        ax.text(0.5,
+                0.9,
+                u'Ind (\u2212)',
+                verticalalignment='bottom',
+                horizontalalignment='center',
+                family='Times New Roman',
+                weight='bold',
+                fontsize=18)
+        ax.text(0.0,
+                -0.15,
+                u'Disp (\u2212)',
+                verticalalignment='bottom',
+                horizontalalignment='center',
+                family='Times New Roman',
+                weight='bold',
+                fontsize=18)
+        ax.text(-0.5,
+                0.9,
+                u'Elst (+)',
+                verticalalignment='bottom',
+                horizontalalignment='center',
+                family='Times New Roman',
+                weight='bold',
+                fontsize=18)
 
     xvals = []
     yvals = []
@@ -780,13 +856,20 @@ def ternary(sapt, title='', labeled=True, view=True,
     ax.spines['left'].set_visible(False)
 
     # save and show
-    pltuid = title + '_' + ('lbld' if labeled else 'bare') + '_' + hashlib.sha1((title + repr(sapt)).encode()).hexdigest()
+    pltuid = title + '_' + ('lbld' if labeled else 'bare') + '_' + hashlib.sha1(
+        (title + repr(sapt)).encode()).hexdigest()
     pltfile = expand_saveas(saveas, pltuid, def_prefix='tern_', relpath=relpath)
     files_saved = {}
     for ext in graphicsformat:
         savefile = pltfile + '.' + ext.lower()
-        plt.savefig(savefile, transparent=True, format=ext, bbox_inches='tight',
-                    frameon=False, dpi=450, edgecolor='none', pad_inches=0.0)
+        plt.savefig(savefile,
+                    transparent=True,
+                    format=ext,
+                    bbox_inches='tight',
+                    frameon=False,
+                    dpi=450,
+                    edgecolor='none',
+                    pad_inches=0.0)
         files_saved[ext.lower()] = savefile
     if view:
         plt.show()
@@ -911,8 +994,7 @@ def composition_tile(db, aa1, aa2):
     return np.reshape(np.array(tiles), (dim, dim))
 
 
-def iowa(mcdat, mclbl, title='', xtitle='', xlimit=2.0, view=True,
-    saveas=None, relpath=False, graphicsformat=['pdf']):
+def iowa(mcdat, mclbl, title='', xtitle='', xlimit=2.0, view=True, saveas=None, relpath=False, graphicsformat=['pdf']):
     """Saves a plot with (extensionless) name *pltfile* with an Iowa
     representation of the modelchems errors in *mcdat* for BBI/SSI-style
     *labels*.
@@ -923,7 +1005,10 @@ def iowa(mcdat, mclbl, title='', xtitle='', xlimit=2.0, view=True,
     import matplotlib
     import matplotlib.pyplot as plt
 
-    aa = ['ARG', 'HIE', 'LYS', 'ASP', 'GLU', 'SER', 'THR', 'ASN', 'GLN', 'CYS', 'MET', 'GLY', 'ALA', 'VAL', 'ILE', 'LEU', 'PRO', 'PHE', 'TYR', 'TRP']
+    aa = [
+        'ARG', 'HIE', 'LYS', 'ASP', 'GLU', 'SER', 'THR', 'ASN', 'GLN', 'CYS', 'MET', 'GLY', 'ALA', 'VAL', 'ILE', 'LEU',
+        'PRO', 'PHE', 'TYR', 'TRP'
+    ]
     #aa = ['ILE', 'LEU', 'ASP', 'GLU', 'PHE']
     err = dict(zip(mclbl, mcdat))
 
@@ -982,8 +1067,7 @@ def iowa(mcdat, mclbl, title='', xtitle='', xlimit=2.0, view=True,
     return files_saved
 
 
-def liliowa(mcdat, title='', xlimit=2.0, view=True,
-    saveas=None, relpath=False, graphicsformat=['pdf']):
+def liliowa(mcdat, title='', xlimit=2.0, view=True, saveas=None, relpath=False, graphicsformat=['pdf']):
     """Saves a plot with a heatmap representation of *mcdat*.
 
     """
@@ -1022,8 +1106,7 @@ def liliowa(mcdat, title='', xlimit=2.0, view=True,
     files_saved = {}
     for ext in graphicsformat:
         savefile = pltfile + '.' + ext.lower()
-        plt.savefig(savefile, transparent=True, format=ext, bbox_inches='tight',
-                   frameon=False, pad_inches=0.0)
+        plt.savefig(savefile, transparent=True, format=ext, bbox_inches='tight', frameon=False, pad_inches=0.0)
         files_saved[ext.lower()] = savefile
     if view:
         plt.show()
@@ -1032,6 +1115,7 @@ def liliowa(mcdat, title='', xlimit=2.0, view=True,
 
 
 if __name__ == "__main__":
+    # yapf: disable
 
     merge_dats = [
     {'show':'a', 'db':'HSG', 'sys':'1', 'data':[0.3508, 0.1234, 0.0364, 0.0731, 0.0388]},
@@ -1081,3 +1165,4 @@ if __name__ == "__main__":
     valerrdata = [{'color': 0.14255710779686612, 'db': 'NBC1', 'sys': 'BzBz_S-3.6', 'error': [0.027999999999999803], 'mcdata': -1.231, 'bmdata': -1.259, 'axis': 3.6}, {'color': 0.08862098445220466, 'db': 'NBC1', 'sys': 'BzBz_S-3.7', 'error': [0.02300000000000013], 'mcdata': -1.535, 'bmdata': -1.558, 'axis': 3.7}, {'color': 0.246634626511043, 'db': 'NBC1', 'sys': 'BzBz_S-3.4', 'error': [0.04200000000000001], 'mcdata': 0.189, 'bmdata': 0.147, 'axis': 3.4}, {'color': 0.19526236766857613, 'db': 'NBC1', 'sys': 'BzBz_S-3.5', 'error': [0.03500000000000003], 'mcdata': -0.689, 'bmdata': -0.724, 'axis': 3.5}, {'color': 0.3443039102164425, 'db': 'NBC1', 'sys': 'BzBz_S-3.2', 'error': [0.05999999999999961], 'mcdata': 3.522, 'bmdata': 3.462, 'axis': 3.2}, {'color': 0.29638827303466814, 'db': 'NBC1', 'sys': 'BzBz_S-3.3', 'error': [0.050999999999999934], 'mcdata': 1.535, 'bmdata': 1.484, 'axis': 3.3}, {'color': 0.42859228971962615, 'db': 'NBC1', 'sys': 'BzBz_S-6.0', 'error': [0.0020000000000000018], 'mcdata': -0.099, 'bmdata': -0.101, 'axis': 6.0}, {'color': 0.30970751839224836, 'db': 'NBC1', 'sys': 'BzBz_S-5.0', 'error': [0.0040000000000000036], 'mcdata': -0.542, 'bmdata': -0.546, 'axis': 5.0}, {'color': 0.3750832778147902, 'db': 'NBC1', 'sys': 'BzBz_S-5.5', 'error': [0.0030000000000000027], 'mcdata': -0.248, 'bmdata': -0.251, 'axis': 5.5}, {'color': 0.0335358832178858, 'db': 'NBC1', 'sys': 'BzBz_S-3.8', 'error': [0.019000000000000128], 'mcdata': -1.674, 'bmdata': -1.693, 'axis': 3.8}, {'color': 0.021704594689389095, 'db': 'NBC1', 'sys': 'BzBz_S-3.9', 'error': [0.016000000000000014], 'mcdata': -1.701, 'bmdata': -1.717, 'axis': 3.9}, {'color': 0.22096255119953187, 'db': 'NBC1', 'sys': 'BzBz_S-4.5', 'error': [0.008000000000000007], 'mcdata': -1.058, 'bmdata': -1.066, 'axis': 4.5}, {'color': 0.10884135031532088, 'db': 'NBC1', 'sys': 'BzBz_S-4.1', 'error': [0.01200000000000001], 'mcdata': -1.565, 'bmdata': -1.577, 'axis': 4.1}, {'color': 0.06911476296747143, 'db': 'NBC1', 'sys': 'BzBz_S-4.0', 'error': [0.014000000000000012], 'mcdata': -1.655, 'bmdata': -1.669, 'axis': 4.0}, {'color': 0.14275218373289067, 'db': 'NBC1', 'sys': 'BzBz_S-4.2', 'error': [0.01100000000000012], 'mcdata': -1.448, 'bmdata': -1.459, 'axis': 4.2}, {'color': 0.4740372133275638, 'db': 'NBC1', 'sys': 'BzBz_S-6.5', 'error': [0.0010000000000000009], 'mcdata': -0.028, 'bmdata': -0.029, 'axis': 6.5}, {'color': 0.6672504378283713, 'db': 'NBC1', 'sys': 'BzBz_S-10.0', 'error': [0.0], 'mcdata': 0.018, 'bmdata': 0.018, 'axis': 10.0}]
     valerr({'cat': valerrdata},
         color='sapt', xtitle='Rang', title='aggh', graphicsformat=['png'])
+    # yapf: enable

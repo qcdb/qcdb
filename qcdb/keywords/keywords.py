@@ -213,7 +213,8 @@ class Keyword(object):
 
         if verbose >= 2:
             added = self.history[-1]
-            print(f'Setting {self.keyword} to {added[0]} priority {added[2] + 100 * int(added[1])} accession {added[3]}')
+            print(
+                f'Setting {self.keyword} to {added[0]} priority {added[2] + 100 * int(added[1])} accession {added[3]}')
 
     def _check(self, val):
         """Common function to check `val` against `self.validator` for setting, defaulting, etc."""

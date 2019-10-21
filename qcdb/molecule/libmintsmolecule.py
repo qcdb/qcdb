@@ -684,7 +684,9 @@ class LibmintsMolecule():
         except TypeError:
             lghosts = [ghosts - 1]
         if len(lreals) + len(lghosts) > self.nfragments():
-            raise ValidationError('Molecule::extract_fragments: sum of real- and ghost-atom subsets is greater than the number of subsets')
+            raise ValidationError(
+                'Molecule::extract_fragments: sum of real- and ghost-atom subsets is greater than the number of subsets'
+            )
 
         subset = self.clone()
         subset.deactivate_all_fragments()
@@ -748,7 +750,8 @@ class LibmintsMolecule():
         Called from constructor.
 
         """
-        raise FeatureDeprecated("qcdb.Molecule.create_molecule_from_string. Replace with qcdb.Molecule.from_string(..., dtype='psi4+')")
+        raise FeatureDeprecated(
+            "qcdb.Molecule.create_molecule_from_string. Replace with qcdb.Molecule.from_string(..., dtype='psi4+')")
 
     def init_with_checkpoint(self, chkpt):
         """ **NYI** Pull information from the *chkpt* object passed
@@ -803,7 +806,8 @@ class LibmintsMolecule():
 
             for i in range(self.natom()):
                 geom = self.atoms[i].compute()
-                text += """      %3s%-7s """ % ("" if self.Z(i) else "Gh(", self.symbol(i) + ("" if self.Z(i) else ")"))
+                text += """      %3s%-7s """ % ("" if self.Z(i) else "Gh(", self.symbol(i) +
+                                                ("" if self.Z(i) else ")"))
                 for j in range(3):
                     text += """  %17.12f""" % (geom[j])
                 text += "\n"
@@ -813,8 +817,7 @@ class LibmintsMolecule():
                 Astr = '' if self.mass_number(i) == -1 else str(self.mass_number(i))
                 text += """    %8s\n""" % (Astr + self.label(i))
                 for bas in self.atoms[i].basissets().keys():
-                    text += """              %-15s %-20s""" % (bas,
-                        self.atoms[i].basissets()[bas])
+                    text += """              %-15s %-20s""" % (bas, self.atoms[i].basissets()[bas])
                     if bas in self.atoms[i].shells():
                         text += """%s""" % (self.atoms[i].shells()[bas])
                     text += '\n'
@@ -841,7 +844,8 @@ class LibmintsMolecule():
             text += """    ------------   -----------------  -----------------  -----------------\n"""
 
             for i in range(self.natom()):
-                text += """      %3s%-7s """ % ("" if self.Z(i) else "Gh(", self.symbol(i) + ("" if self.Z(i) else ")"))
+                text += """      %3s%-7s """ % ("" if self.Z(i) else "Gh(", self.symbol(i) +
+                                                ("" if self.Z(i) else ")"))
                 text += ("""  %17.12f""" * 3).format(*(self.xyz(i)))
                 text += "\n"
             text += "\n"
@@ -867,7 +871,8 @@ class LibmintsMolecule():
             text += """    ------------   -----------------  -----------------  -----------------\n"""
 
             for i in range(self.natom()):
-                text += """      %3s%-7s """ % ("" if self.Z(i) else "Gh(", self.symbol(i) + ("" if self.Z(i) else ")"))
+                text += """      %3s%-7s """ % ("" if self.Z(i) else "Gh(", self.symbol(i) +
+                                                ("" if self.Z(i) else ")"))
                 text += ("""  %17.12f""" * 3).format(*self.xyz(i) * qcel.constants.bohr2angstroms)
                 text += "\n"
             text += "\n"
@@ -893,7 +898,8 @@ class LibmintsMolecule():
 
             for i in range(self.nallatom()):
                 geom = self.full_atoms[i].compute()
-                text += """      %3s%-7s """ % ("" if self.fZ(i) else "Gh(", self.fsymbol(i) + ("" if self.fZ(i) else ")"))
+                text += """      %3s%-7s """ % ("" if self.fZ(i) else "Gh(", self.fsymbol(i) +
+                                                ("" if self.fZ(i) else ")"))
                 for j in range(3):
                     text += """  %17.12f""" % (geom[j])
                 text += "\n"
@@ -964,10 +970,9 @@ class LibmintsMolecule():
             for fr in range(self.nfragments()):
                 if self.fragment_types[fr] == 'Absent' and not self.has_zmatrix():
                     continue
-                text += "%s    %s%d %d\n" % (
-                    "" if Pfr == 0 else "    --\n",
-                    "#" if self.fragment_types[fr] == 'Ghost' or self.fragment_types[fr] == 'Absent' else "",
-                    self.fragment_charges[fr], self.fragment_multiplicities[fr])
+                text += "%s    %s%d %d\n" % ("" if Pfr == 0 else "    --\n", "#" if self.fragment_types[fr] == 'Ghost'
+                                             or self.fragment_types[fr] == 'Absent' else "", self.fragment_charges[fr],
+                                             self.fragment_multiplicities[fr])
                 Pfr += 1
                 for at in range(self.fragments[fr][0], self.fragments[fr][1] + 1):
                     if self.fragment_types[fr] == 'Absent':
@@ -1037,8 +1042,9 @@ class LibmintsMolecule():
         #if self.atom_at_position([x, y, z]) == -1:
         if True:
             # Dummies go to full_atoms, ghosts need to go to both.
-            self.full_atoms.append(CartesianEntry(self.nallatom(), Z, charge, mass, symbol, label, A,
-                NumberValue(x), NumberValue(y), NumberValue(z)))
+            self.full_atoms.append(
+                CartesianEntry(self.nallatom(), Z, charge, mass, symbol, label, A, NumberValue(x), NumberValue(y),
+                               NumberValue(z)))
             if label.upper() != 'X':
                 self.atoms.append(self.full_atoms[-1])
         else:
@@ -1056,36 +1062,32 @@ class LibmintsMolecule():
             xval = self.get_coord_value(anchor[0])
             yval = self.get_coord_value(anchor[1])
             zval = self.get_coord_value(anchor[2])
-            self.full_atoms.append(CartesianEntry(currentAtom, Z, charge,
-                mass, symbol, label, A,
-                xval, yval, zval))
-        
+            self.full_atoms.append(CartesianEntry(currentAtom, Z, charge, mass, symbol, label, A, xval, yval, zval))
+
         # handle first line of Zmat
         elif numEntries == 0:
             self.set_has_zmatrix(True)
-            self.full_atoms.append(ZMatrixEntry(currentAtom, Z, charge,
-                mass, symbol, label, A))
-        
+            self.full_atoms.append(ZMatrixEntry(currentAtom, Z, charge, mass, symbol, label, A))
+
         # handle second line of Zmat
         elif numEntries == 2:
             self.set_has_zmatrix(True)
-        
+
             rTo = self.get_anchor_atom(anchor[0], '')
             if rTo >= currentAtom:
                 raise ValidationError("Error finding defined anchor atom {}".format(anchor[0]))
             rval = self.get_coord_value(anchor[1])
-        
+
             if self.full_atoms[rTo].symbol() == 'X':
                 rval.set_fixed(True)
-        
-            self.full_atoms.append(ZMatrixEntry(currentAtom, Z, charge,
-                mass, symbol, label, A,
-                self.full_atoms[rTo], rval))
-        
+
+            self.full_atoms.append(
+                ZMatrixEntry(currentAtom, Z, charge, mass, symbol, label, A, self.full_atoms[rTo], rval))
+
         # handle third line of Zmat
         elif numEntries == 4:
             self.set_has_zmatrix(True)
-        
+
             rTo = self.get_anchor_atom(anchor[0], '')
             if rTo >= currentAtom:
                 raise ValidationError("Error finding defined anchor atom {}".format(anchor[0]))
@@ -1096,21 +1098,20 @@ class LibmintsMolecule():
                 raise ValidationError("Error: atom used multiple times")
             rval = self.get_coord_value(anchor[1])
             aval = self.get_coord_value(anchor[3])
-        
+
             if self.full_atoms[rTo].symbol() == 'X':
                 rval.set_fixed(True)
             if self.full_atoms[aTo].symbol() == 'X':
                 aval.set_fixed(True)
-        
-            self.full_atoms.append(ZMatrixEntry(currentAtom, Z, charge,
-                mass, symbol, label, A,
-                self.full_atoms[rTo], rval,
-                self.full_atoms[aTo], aval))
-        
+
+            self.full_atoms.append(
+                ZMatrixEntry(currentAtom, Z, charge, mass, symbol, label, A, self.full_atoms[rTo], rval,
+                             self.full_atoms[aTo], aval))
+
         # handle fourth line of Zmat
         elif numEntries == 6:
             self.set_has_zmatrix(True)
-        
+
             rTo = self.get_anchor_atom(anchor[0], '')
             if rTo >= currentAtom:
                 raise ValidationError("Error finding defined anchor atom {}".format(anchor[0]))
@@ -1122,27 +1123,25 @@ class LibmintsMolecule():
                 raise ValidationError("Error finding defined anchor atom {}".format(anchor[4]))
             if aTo == rTo or rTo == dTo or aTo == dTo:  # for you star wars fans
                 raise ValidationError("Error: atom used multiple times")
-        
+
             rval = self.get_coord_value(anchor[1])
             aval = self.get_coord_value(anchor[3])
             dval = self.get_coord_value(anchor[5])
-        
+
             if self.full_atoms[rTo].symbol() == 'X':
                 rval.set_fixed(True)
             if self.full_atoms[aTo].symbol() == 'X':
                 aval.set_fixed(True)
             if self.full_atoms[dTo].symbol() == 'X':
                 dval.set_fixed(True)
-        
-            self.full_atoms.append(ZMatrixEntry(currentAtom, Z, charge,
-                mass, symbol, label, A,
-                self.full_atoms[rTo], rval,
-                self.full_atoms[aTo], aval,
-                self.full_atoms[dTo], dval))
-        
+
+            self.full_atoms.append(
+                ZMatrixEntry(currentAtom, Z, charge, mass, symbol, label, A, self.full_atoms[rTo], rval,
+                             self.full_atoms[aTo], aval, self.full_atoms[dTo], dval))
+
         else:
             raise ValidationError('Illegal geometry specification (neither Cartesian nor Z-Matrix)')
-        
+
     def atom_entry(self, atom):
         """Returns the CoordEntry for an atom."""
         return self.atoms[atom]
@@ -1228,7 +1227,8 @@ class LibmintsMolecule():
             for i in range(self.nallatom()):
                 if self.full_atoms[i].label() == vstr:
                     return i
-            raise ValidationError("Molecule::get_anchor_atom: Illegal value %s in atom specification on line %s.\n" % (vstr, line))
+            raise ValidationError("Molecule::get_anchor_atom: Illegal value %s in atom specification on line %s.\n" %
+                                  (vstr, line))
 
     def geometry(self, np_out=False):
         """Returns the geometry in Bohr as a N X 3 array.
@@ -1510,7 +1510,8 @@ class LibmintsMolecule():
             self.PYmolecular_charge = temp_charge
             self.PYmultiplicity = temp_multiplicity
         else:
-            if (self.fragment_types.count('Real') == len(self.fragments)) and ((temp_multiplicity % 2) == (high_spin_multiplicity % 2)):
+            if (self.fragment_types.count('Real') == len(
+                    self.fragments)) and ((temp_multiplicity % 2) == (high_spin_multiplicity % 2)):
                 # give low-spin a chance, so long as ghost/absent fragments can't be complicating the picture
                 self.PYmultiplicity = temp_multiplicity
             else:
@@ -1616,7 +1617,7 @@ class LibmintsMolecule():
             entry = [0.0, 0.0, 0.0]
             for j in range(self.natom()):
                 if i != j:
-                    temp = distance(self.xyz(i), self.xyz(j)) ** 3.0
+                    temp = distance(self.xyz(i), self.xyz(j))**3.0
                     Zi = self.Z(i)
                     Zj = self.Z(j)
                     entry[0] -= (self.x(i) - self.x(j)) * Zi * Zj / temp
@@ -1705,7 +1706,8 @@ class LibmintsMolecule():
             return nfzc
 
         else:
-            raise ValidationError("Molecule::nfrozen_core: Frozen core '%s' is not supported, options are {true, false}." % (depth))
+            raise ValidationError(
+                "Molecule::nfrozen_core: Frozen core '%s' is not supported, options are {true, false}." % (depth))
 
     # <<< Involved Methods for Frame >>>
 
@@ -1809,7 +1811,8 @@ class LibmintsMolecule():
         evals = np.asarray(evals)
 
         im_amuA = qcel.constants.bohr2angstroms * qcel.constants.bohr2angstroms
-        im_ghz = qcel.constants.h * qcel.constants.na * 1e14 / (8 * math.pi * math.pi * qcel.constants.bohr2angstroms * qcel.constants.bohr2angstroms)
+        im_ghz = qcel.constants.h * qcel.constants.na * 1e14 / (8 * math.pi * math.pi * qcel.constants.bohr2angstroms *
+                                                                qcel.constants.bohr2angstroms)
         im_mhz = im_ghz * 1000.
         im_cm = im_ghz * 1.e7 / qcel.constants.c
 
@@ -1865,12 +1868,12 @@ class LibmintsMolecule():
         if self.natom() == 1:
             rotor_type = 'RT_ATOM'
         elif rot_const[0] == 0.0:
-            rotor_type = 'RT_LINEAR'          # 0  <  IB == IC      inf > B == C
+            rotor_type = 'RT_LINEAR'  #         0  <  IB == IC      inf > B == C
         elif degen == 2:
-            rotor_type = 'RT_SPHERICAL_TOP'   # IA == IB == IC       A == B == C
+            rotor_type = 'RT_SPHERICAL_TOP'  #  IA == IB == IC       A == B == C
         elif degen == 1:
-            rotor_type = 'RT_SYMMETRIC_TOP'   # IA <  IB == IC       A >  B == C --or--
-                                              # IA == IB <  IC       A == B >  C
+            rotor_type = 'RT_SYMMETRIC_TOP'  #  IA <  IB == IC       A >  B == C --or--
+            #                                   IA == IB <  IC       A == B >  C
         else:
             rotor_type = 'RT_ASYMMETRIC_TOP'  # IA <  IB <  IC       A >  B >  C
         return rotor_type
@@ -1943,6 +1946,7 @@ class LibmintsMolecule():
             self.PYfix_orientation = False
 
     # <<< Methods for Saving >>>
+
 
 #    def save_string_xyz(self, save_ghosts=True):
 #        """Save a string for a XYZ-style file.
@@ -2193,7 +2197,8 @@ class LibmintsMolecule():
                     break
 
             if pivot_atom_i == self.natom():  # needs to be in else clause?
-                raise ValidationError("Molecule::set_full_point_group: Not a linear molecule but could not find off-axis atom.")
+                raise ValidationError(
+                    "Molecule::set_full_point_group: Not a linear molecule but could not find off-axis atom.")
 
             # Rotate around z-axis to put pivot atom in the yz plane
             xy_point = normalize([geom[pivot_atom_i][0], geom[pivot_atom_i][1], 0])
@@ -2433,7 +2438,9 @@ class LibmintsMolecule():
                     # Assume the user knows what they're doing.
                     #   Make sure user is subgroup of pg
                     if (pg.bits() & user.bits()) != user.bits():
-                        raise ValidationError("Molecule::find_point_group: User specified point group (%s) is not a subgroup of the highest detected point group (%s)" % (PointGroup.bits_to_full_name(user.bits()), PointGroup.bits_to_full_name(pg.bits())))
+                        raise ValidationError(
+                            "Molecule::find_point_group: User specified point group (%s) is not a subgroup of the highest detected point group (%s)"
+                            % (PointGroup.bits_to_full_name(user.bits()), PointGroup.bits_to_full_name(pg.bits())))
 
                 else:
                     similars, count = similar(user.bits())
@@ -2450,7 +2457,9 @@ class LibmintsMolecule():
                         user = PointGroup(similars[typ])
 
                     else:
-                        raise ValidationError("Molecule::find_point_group: User specified point group (%s) is not a subgroup of the highest detected point group (%s). If this is because the symmetry increased, try to start the calculation again from the last geometry, after checking any symmetry-dependent input, such as DOCC." % (PointGroup.bits_to_full_name(user.bits()), PointGroup.bits_to_full_name(pg.bits())))
+                        raise ValidationError(
+                            "Molecule::find_point_group: User specified point group (%s) is not a subgroup of the highest detected point group (%s). If this is because the symmetry increased, try to start the calculation again from the last geometry, after checking any symmetry-dependent input, such as DOCC."
+                            % (PointGroup.bits_to_full_name(user.bits()), PointGroup.bits_to_full_name(pg.bits())))
 
                 # If we make it here, what the user specified is good.
                 pg = user
@@ -2472,22 +2481,14 @@ class LibmintsMolecule():
 
         # The order of the next 2 arrays MUST match!
         symm_bit = [
-            SymmOps['C2_z'],
-            SymmOps['C2_y'],
-            SymmOps['C2_x'],
-            SymmOps['i'],
-            SymmOps['Sigma_xy'],
-            SymmOps['Sigma_xz'],
-            SymmOps['Sigma_yz']]
+            SymmOps['C2_z'], SymmOps['C2_y'], SymmOps['C2_x'], SymmOps['i'], SymmOps['Sigma_xy'], SymmOps['Sigma_xz'],
+            SymmOps['Sigma_yz']
+        ]
 
         symm_func = [
-            SymmetryOperation.c2_z,
-            SymmetryOperation.c2_y,
-            SymmetryOperation.c2_x,
-            SymmetryOperation.i,
-            SymmetryOperation.sigma_xy,
-            SymmetryOperation.sigma_xz,
-            SymmetryOperation.sigma_yz]
+            SymmetryOperation.c2_z, SymmetryOperation.c2_y, SymmetryOperation.c2_x, SymmetryOperation.i,
+            SymmetryOperation.sigma_xy, SymmetryOperation.sigma_xz, SymmetryOperation.sigma_yz
+        ]
 
         symop = SymmetryOperation()
 
@@ -3188,8 +3189,8 @@ def matrix_3d_rotation(mat, axis, phi, Sn):
     #Matrix rotated_coord(nrow(),3);
     #rotated_coord.gemm(false, true, 1.0, *this, R, 0.0);
     rotated_coord = mult(mat, transpose(R))
-#    print('after C')
-#    show(rotated_coord)
+    #    print('after C')
+    #    show(rotated_coord)
 
     if Sn:  # delta_ij - 2 a_i a_j / ||a||^2
         R = identity(3)
@@ -3277,11 +3278,10 @@ def compute_atom_map(mol, tol=0.05):
                 mol.print_out()
                 print("""  attempted to find atom at\n""")
                 print("""    %lf %lf %lf\n""" % (np3[0], np3[1], np3[2]))
-                raise ValidationError("ERROR: Symmetry operation %d did not map atom %d to another atom:\n" % (g, i + 1))
+                raise ValidationError("ERROR: Symmetry operation %d did not map atom %d to another atom:\n" %
+                                      (g, i + 1))
 
     return atom_map
-
-
 
 
 # TODO outfile

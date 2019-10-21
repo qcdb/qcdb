@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 r"""Module to largely replicate in python the psi4 libmints
 CoordValue and CoordEntry classes, which were developed by
 Justin M. Turney, with incremental improvements by other
@@ -49,7 +48,6 @@ class CoordValue(object):
     This class and its subclasses are used by `qcdb.Molecule` but not by users directly.
 
     """
-
     def __init__(self, fixed=False, computed=False):
         # Fixed coordinate? For a fixed value, the reset method does nothing.
         self.PYfixed = fixed
@@ -68,7 +66,6 @@ class CoordValue(object):
 
 class NumberValue(CoordValue):
     """Specialization of CoordValue that is simply a number to be stored."""
-
     def __init__(self, value, fixed=False):
         CoordValue.__init__(self, fixed, True)
         # coordinate number value
@@ -97,7 +94,7 @@ class NumberValue(CoordValue):
 
     def everything(self):
         print('\nNumberValue\n  Fixed = %s\n  Type = %s\n  Value = %f\n  FValue = %s\n\n' %
-            (self.PYfixed, self.type(), self.value, self.variable_to_string(4)))
+              (self.PYfixed, self.type(), self.value, self.variable_to_string(4)))
 
 
 class VariableValue(CoordValue):
@@ -156,8 +153,10 @@ class VariableValue(CoordValue):
             return self.PYname
 
     def everything(self):
-        print('\nVariableValue\n  Fixed = %s\n  Type = %s\n  Value = %f\n  FValue = %s\n  Name = %s\n  Negated = %s\n  Map = %s\n\n' %
-            (self.PYfixed, self.type(), self.compute(), self.variable_to_string(4), self.name(), self.negated(), self.geometryVariables))
+        print(
+            '\nVariableValue\n  Fixed = %s\n  Type = %s\n  Value = %f\n  FValue = %s\n  Name = %s\n  Negated = %s\n  Map = %s\n\n'
+            % (self.PYfixed, self.type(), self.compute(), self.variable_to_string(4), self.name(), self.negated(),
+               self.geometryVariables))
 
 
 class CoordEntry(object):
@@ -167,7 +166,6 @@ class CoordEntry(object):
     This class and its subclasses are used by `qcdb.Molecule` but not by users directly.
 
     """
-
     def __init__(self, entry_number, Z, charge, mass, symbol, label="", A=-1, basis=None, shells=None):
         """Constructor"""
         # Order in full atomic list
@@ -266,7 +264,8 @@ class CoordEntry(object):
                     #if other.PYshells[bas].has_puream() != self.PYshells[bas].has_puream():
                     #    return False
                 else:
-                    raise ValidationError("""Basis set %s set for one and not other. This shouldn't happen. Investigate.""" % (bas))
+                    raise ValidationError(
+                        """Basis set %s set for one and not other. This shouldn't happen. Investigate.""" % (bas))
         return True
 
     def is_ghosted(self):
@@ -369,10 +368,10 @@ class CoordEntry(object):
         self.computed = False
 
     def everything(self):
-        print('\nCoordEntry\n  Entry Number = %d\n  Computed = %s\n  Z = %d\n  Charge = %f\n  Mass = %f\n  Symbol = %s\n  Label = %s\n  A = %d\n  Ghosted = %s\n  Coordinates = %s\n  Basissets = %s\n\n  Shells = %s\n\n' %
-            (self.entry_number(), self.is_computed(), self.Z(), self.charge(),
-            self.mass(), self.symbol(), self.label(), self.A(), self.is_ghosted(),
-            self.coordinates, self.PYbasissets, self.PYshells))
+        print(
+            '\nCoordEntry\n  Entry Number = %d\n  Computed = %s\n  Z = %d\n  Charge = %f\n  Mass = %f\n  Symbol = %s\n  Label = %s\n  A = %d\n  Ghosted = %s\n  Coordinates = %s\n  Basissets = %s\n\n  Shells = %s\n\n'
+            % (self.entry_number(), self.is_computed(), self.Z(), self.charge(), self.mass(), self.symbol(),
+               self.label(), self.A(), self.is_ghosted(), self.coordinates, self.PYbasissets, self.PYshells))
 
 
 class CartesianEntry(CoordEntry):
@@ -380,7 +379,6 @@ class CartesianEntry(CoordEntry):
     coordinate specification as three Cartesians.
 
     """
-
     def __init__(self, entry_number, Z, charge, mass, symbol, label, A, x, y, z, basis=None, shells=None):
         CoordEntry.__init__(self, entry_number, Z, charge, mass, symbol, label, A, basis, shells)
         self.x = x
@@ -433,7 +431,8 @@ class CartesianEntry(CoordEntry):
 
     def everything(self):
         CoordEntry.everything(self)
-        print('\nCartesianEntry\n  Type = %s\n  x = %s\n  y = %s\n  z = %s\n\n' % (self.type(), self.x.variable_to_string(8), self.y.variable_to_string(8), self.z.variable_to_string(8)))
+        print('\nCartesianEntry\n  Type = %s\n  x = %s\n  y = %s\n  z = %s\n\n' %
+              (self.type(), self.x.variable_to_string(8), self.y.variable_to_string(8), self.z.variable_to_string(8)))
 
 
 class ZMatrixEntry(CoordEntry):
@@ -441,9 +440,22 @@ class ZMatrixEntry(CoordEntry):
     coordinate specification as any position of ZMatrix.
 
     """
-
-    def __init__(self, entry_number, Z, charge, mass, symbol, label, A,
-        rto=None, rval=0, ato=None, aval=0, dto=None, dval=0, basis=None, shells=None):
+    def __init__(self,
+                 entry_number,
+                 Z,
+                 charge,
+                 mass,
+                 symbol,
+                 label,
+                 A,
+                 rto=None,
+                 rval=0,
+                 ato=None,
+                 aval=0,
+                 dto=None,
+                 dval=0,
+                 basis=None,
+                 shells=None):
         """Constructor"""  # note that pos'n of basis arg changed from libmints
         CoordEntry.__init__(self, entry_number, Z, charge, mass, symbol, label, A, basis, shells)
         self.rto = rto
@@ -482,6 +494,8 @@ class ZMatrixEntry(CoordEntry):
             text += "  %5d %11s  %5d %11s  %5d %11s\n" % \
                 (now_rto, now_rval, now_ato, now_aval, now_dto, now_dval)
         return text
+
+
 #        outfile
 
     def set_coordinates(self, x, y, z):
@@ -599,8 +613,8 @@ class ZMatrixEntry(CoordEntry):
             eY = perp_unit(eDC, eCB)
             eX = perp_unit(eY, eCB)
             for xyz in range(3):
-                self.coordinates[xyz] = B[xyz] + r * (eX[xyz] * sinABC * cosABCD +
-                         eY[xyz] * sinABC * sinABCD - eCB[xyz] * cosABC)
+                self.coordinates[xyz] = B[xyz] + r * (eX[xyz] * sinABC * cosABCD + eY[xyz] * sinABC * sinABCD -
+                                                      eCB[xyz] * cosABC)
                 if math.fabs(self.coordinates[xyz]) < 1.E-14:
                     self.coordinates[xyz] = 0.0
 

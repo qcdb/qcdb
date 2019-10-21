@@ -2,6 +2,7 @@ from qcengine.programs.nwchem.harvester import nwchem_psivar_list
 
 
 def return_energy_components():
+    # yapf: disable
     VARH = {}
     VARH['scf'] = {
                             'scf': 'SCF TOTAL ENERGY'}
@@ -33,7 +34,7 @@ def return_energy_components():
                             'mp3': 'MP3 TOTAL ENERGY',
                        #'mp4(sdq)': 'MP4(SDQ) TOTAL ENERGY',
                             'mp4': 'MP4 TOTAL ENERGY'}
-                            #'mp4': 'MP4(SDTQ) TOTAL ENERGY'}
+    #'mp4': 'MP4(SDTQ) TOTAL ENERGY'}
     VARH['omp2'] = {
                              'hf': 'HF TOTAL ENERGY',
                             'mp2': 'MP2 TOTAL ENERGY',
@@ -172,6 +173,7 @@ def return_energy_components():
            'mp{}'.format(mplevel): 'MP{} TOTAL ENERGY'.format(mplevel)}
         for mplevel2 in range(2, mplevel):
             VARH['mp{}'.format(mplevel)]['mp{}'.format(mplevel2)] = 'MP{} TOTAL ENERGY'.format(mplevel2)
+    # yapf: enable
 
     # Explicit Psi4 methods
     p4_VARH = {('p4-' + k): {('p4-' + kk): vv for kk, vv in v.items()} for k, v in VARH.items()}
@@ -185,5 +187,6 @@ def return_energy_components():
     from ..programs.gamess.harvester import gamess_psivar_list
     VARH.update(gamess_psivar_list())
     return VARH
+
 
 VARH = return_energy_components()

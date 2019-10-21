@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """Module with non-generic exceptions classes."""
 
 
@@ -129,6 +128,7 @@ class Dftd3Error(QcdbException):
         self.msg = msg
         print('\nDftd3Error: %s\n\n' % (msg))
 
+
 class TestComparisonError(QcdbException):
     """Error called when a test case fails due to a failed
     compare_values() call. Prints error message *msg* to standard
@@ -184,7 +184,6 @@ class UpgradeHelper(QcdbException):
     the old syntax at first error and suggest the new.
 
     """
-
     def __init__(self, old, new, version, elaboration):
         msg = "Using `{}` instead of `{}` is obsolete as of {}.{}".format(old, new, version, elaboration)
         QcdbException.__init__(self, msg)

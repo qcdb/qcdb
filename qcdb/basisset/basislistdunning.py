@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """Module (auto-generated from make_dunning.pl script)
 with commands building :py:class:`~basislist.BasisFamily` objects that
 encode the Dunning basis set orbital definitions in

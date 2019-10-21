@@ -6,7 +6,6 @@ from .. import __version__
 pp = pprint.PrettyPrinter(width=120)
 
 
-
 def provenance_stamp(routine: str) -> Dict[str, str]:
     """Return dictionary satisfying QCSchema,
     https://github.com/MolSSI/QCSchema/blob/master/qcschema/dev/definitions.py#L23-L41

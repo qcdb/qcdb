@@ -154,7 +154,6 @@ class ShellInfo(object):
     @param rpowers For an ECP, the array of radial powers.
 
     """
-
     def __init__(self, am, c, e, pure, nc, center, start, pt='Normalized', rpowers=None):
         # Angular momentum
         self.l = am
@@ -186,7 +185,7 @@ class ShellInfo(object):
             self.normalize_shell()
             self.erd_normalize_shell()
         else:
-            self.PYerd_coef = [0.0] * self.nprimitive() 
+            self.PYerd_coef = [0.0] * self.nprimitive()
 
     def primitive_normalization(self, p):
         """Normalizes a single primitive.
@@ -214,7 +213,7 @@ class ShellInfo(object):
         try:
             norm = math.sqrt(1.0 / (tmp * e_sum))
         except ZeroDivisionError:
-            # This is likely an ECP with no local function. 
+            # This is likely an ECP with no local function.
             pass
         else:
             # Normalize, as usual.
@@ -255,13 +254,11 @@ class ShellInfo(object):
     def copy(self, nc=None, c=None):
         """Return a copy of the ShellInfo"""
         if nc is not None and c is not None:
-            return ShellInfo(self.l, self.PYoriginal_coef, self.PYexp,
-                self.puream, nc, c,
-                self.start, 'Unnormalized', self.rpowers)
+            return ShellInfo(self.l, self.PYoriginal_coef, self.PYexp, self.puream, nc, c, self.start, 'Unnormalized',
+                             self.rpowers)
         else:
-            return ShellInfo(self.l, self.PYoriginal_coef, self.PYexp,
-                self.puream, self.nc, self.center,
-                self.start, 'Unnormalized', self.rpowers)
+            return ShellInfo(self.l, self.PYoriginal_coef, self.PYexp, self.puream, self.nc, self.center, self.start,
+                             'Unnormalized', self.rpowers)
         # better to just deepcopy?
 
     def nprimitive(self):
@@ -282,7 +279,7 @@ class ShellInfo(object):
 
     def amchar(self):
         """Return the character symbol for the angular momentum of the given contraction"""
-        return 'spdfghiklmnopqrtuvwxyz'[self.l]
+        return 'spdfghiklmnopqrtuvwxyz' [self.l]
 
     def AMCHAR(self):
         """Return the character symbol for the angular momentum of the given contraction (upper case)"""
@@ -340,7 +337,8 @@ class ShellInfo(object):
         """Return minimal list of shell info"""
         if self.rpowers and self.rpowers[0] is not None:
             # This is an ECP, so we tack the radial powers onto the end of the list
-            info = [self.l] + [(self.PYexp[K], self.PYoriginal_coef[K], self.rpower(K)) for K in range(self.nprimitive())]
+            info = [self.l] + [(self.PYexp[K], self.PYoriginal_coef[K], self.rpower(K))
+                               for K in range(self.nprimitive())]
         else:
             # This is a regular shell, with only coefficients and exponents to worry about
             info = [self.l] + [(self.PYexp[K], self.PYoriginal_coef[K]) for K in range(self.nprimitive())]

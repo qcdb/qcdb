@@ -52,7 +52,6 @@ class Molecule(LibmintsMolecule):
     `psi4.core.Molecule` itself.
 
     """
-
     def __init__(self,
                  molinit=None,
                  dtype=None,
@@ -217,8 +216,8 @@ class Molecule(LibmintsMolecule):
             try:
                 infile = open(xyzfilename, 'r')
             except IOError:
-                raise ValidationError(
-                    """Molecule::init_with_mol2: given filename '%s' does not exist.""" % (xyzfilename))
+                raise ValidationError("""Molecule::init_with_mol2: given filename '%s' does not exist.""" %
+                                      (xyzfilename))
             if os.stat(xyzfilename).st_size == 0:
                 raise ValidationError("""Molecule::init_with_mol2: given filename '%s' is blank.""" % (xyzfilename))
             text = infile.readlines()
@@ -282,8 +281,8 @@ class Molecule(LibmintsMolecule):
                     raise ValidationError("Molecule::init_with_mol2: Malformed atom information line %d." % (i + 5))
 
             except IndexError:
-                raise ValidationError(
-                    "Molecule::init_with_mol2: Expected atom in file at line %d.\n%s" % (i + 5, text[i + 4]))
+                raise ValidationError("Molecule::init_with_mol2: Expected atom in file at line %d.\n%s" %
+                                      (i + 5, text[i + 4]))
 
         # We need to make 1 fragment with all atoms
         instance.fragments.append([0, fileNatom - 1])
@@ -770,8 +769,8 @@ class Molecule(LibmintsMolecule):
             else:
                 # psi4.core.Molecule
                 geom = np.array(self.full_geometry())
-            mass = np.asarray(
-                [(0. if (ghost_as_dummy and self.fZ(at) == 0) else self.fmass(at)) for at in range(self.nallatom())])
+            mass = np.asarray([(0. if (ghost_as_dummy and self.fZ(at) == 0) else self.fmass(at))
+                               for at in range(self.nallatom())])
             elem = np.asarray(
                 ['X' if (ghost_as_dummy and self.fZ(at) == 0) else self.fsymbol(at) for at in range(self.nallatom())])
             elez = np.asarray(

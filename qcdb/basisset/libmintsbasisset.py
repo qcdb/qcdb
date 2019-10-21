@@ -43,6 +43,7 @@ from .libmintsgshell import ShellInfo
 
 basishorde = {}
 
+
 class BasisSet(object):
     """Basis set container class
     Reads the basis set from a checkpoint file object. Also reads the molecule
@@ -144,13 +145,9 @@ class BasisSet(object):
         """Naive equality test. Haven't considered exp/coeff distribution among shells or AM"""
 
         if isinstance(other, self.__class__):
-            if ((self.name == other.name) and
-                (self.puream == other.puream) and
-                (self.PYnao == other.PYnao) and
-                (self.PYnbf == other.PYnbf) and
-                (self.n_prim_per_shell == other.n_prim_per_shell) and
-                (self.ucoefficients == other.ucoefficients) and
-                (self.uexponents == other.uexponents)):
+            if ((self.name == other.name) and (self.puream == other.puream) and (self.PYnao == other.PYnao)
+                    and (self.PYnbf == other.PYnbf) and (self.n_prim_per_shell == other.n_prim_per_shell)
+                    and (self.ucoefficients == other.ucoefficients) and (self.uexponents == other.uexponents)):
                 return True
             else:
                 return False
@@ -158,7 +155,6 @@ class BasisSet(object):
 
     def __ne__(self, other):
         return not self.__eq__(other)
-
 
     # <<< Methods for Construction >>>
 
@@ -208,8 +204,7 @@ class BasisSet(object):
         self.xyz = [0.0, 0.0, 0.0]
         self.name = '(Empty Basis Set)'
         self.shells = []
-        self.shells.append(ShellInfo(0, self.uoriginal_coefficients,
-            self.uexponents, 'Cartesian', 0, self.xyz, 0))
+        self.shells.append(ShellInfo(0, self.uoriginal_coefficients, self.uexponents, 'Cartesian', 0, self.xyz, 0))
 
     def constructor_role_mol_shellmap(self, role, mol, shell_map):
         """The most commonly used constructor. Extracts basis set name for *role*
@@ -334,10 +329,14 @@ class BasisSet(object):
                 tst = ustart + atom_nprim
                 tsp = ustart + atom_nprim + shell_nprim
                 self.shells[shell_count] = ShellInfo(am,
-                    self.uoriginal_coefficients[tst:tsp],
-                    self.uexponents[tst:tsp],
-                    'Pure' if self.puream else 'Cartesian',
-                    n, xyz_ptr, bf_count, pt='Unnormalized', rpowers=rpowers[tst:tsp])
+                                                     self.uoriginal_coefficients[tst:tsp],
+                                                     self.uexponents[tst:tsp],
+                                                     'Pure' if self.puream else 'Cartesian',
+                                                     n,
+                                                     xyz_ptr,
+                                                     bf_count,
+                                                     pt='Unnormalized',
+                                                     rpowers=rpowers[tst:tsp])
                 for thisbf in range(thisshell.nfunction()):
                     self.function_to_shell[bf_count] = shell_count
                     self.function_center[bf_count] = n
@@ -443,10 +442,14 @@ class BasisSet(object):
                 tst = prim_count
                 tsp = prim_count + shell_nprim
                 self.shells[shell_count] = ShellInfo(am,
-                    self.uoriginal_coefficients[tst:tsp],
-                    self.uexponents[tst:tsp],
-                    'Pure' if self.puream else 'Cartesian',
-                    center, self.xyz, bf_count, pt='Unnormalized', rpowers=None)
+                                                     self.uoriginal_coefficients[tst:tsp],
+                                                     self.uexponents[tst:tsp],
+                                                     'Pure' if self.puream else 'Cartesian',
+                                                     center,
+                                                     self.xyz,
+                                                     bf_count,
+                                                     pt='Unnormalized',
+                                                     rpowers=None)
                 self.shells[shell_count].pyprint()
                 for thisbf in range(shell.nfunction()):
                     self.function_to_shell[bf_count] = shell_count
@@ -562,7 +565,14 @@ class BasisSet(object):
 #TRIAL#            return bsdict
 
     @staticmethod
-    def pyconstruct(mol, key, target, fitrole='ORBITAL', other=None, return_atomlist=False, return_dict=False, verbose=1):
+    def pyconstruct(mol,
+                    key,
+                    target,
+                    fitrole='ORBITAL',
+                    other=None,
+                    return_atomlist=False,
+                    return_dict=False,
+                    verbose=1):
         """Builds a BasisSet object for *mol* (either a qcdb.Molecule or
         a string that can be instantiated into one) from basis set
         specifications passed in as python functions or as a string that
@@ -620,7 +630,8 @@ class BasisSet(object):
             aux = target
 
         if verbose >= 2:
-            print('BasisSet::pyconstructP', 'key =', key, 'aux =', aux, 'fitrole =', fitrole, 'orb =', orb, 'orbonly =', orbonly) #, mol)
+            print('BasisSet::pyconstructP', 'key =', key, 'aux =', aux, 'fitrole =', fitrole, 'orb =', orb,
+                  'orbonly =', orbonly)  #, mol)
 
         # Create (if necessary) and update qcdb.Molecule
         if not isinstance(mol, Molecule):
@@ -645,7 +656,9 @@ class BasisSet(object):
             mol.set_basis_all_atoms(orb, role='BASIS')
             callby = orb
         else:
-            raise ValidationError("""Orbital basis argument must be function that applies basis sets to Molecule or a string of the basis to be applied to all atoms.""")
+            raise ValidationError(
+                """Orbital basis argument must be function that applies basis sets to Molecule or a string of the basis to be applied to all atoms."""
+            )
 
         if not orbonly:
             if aux is None or aux == '':
@@ -657,13 +670,16 @@ class BasisSet(object):
                 mol.set_basis_all_atoms(aux, role=fitrole)
                 callby = aux
             else:
-                raise ValidationError("""Auxiliary basis argument must be function that applies basis sets to Molecule or a string of the basis to be applied to all atoms.""")
+                raise ValidationError(
+                    """Auxiliary basis argument must be function that applies basis sets to Molecule or a string of the basis to be applied to all atoms."""
+                )
 
         # Not like we're ever using a non-G94 format
         parser = Gaussian94BasisSetParser()
 
         # Molecule and parser prepped, call the constructor
-        bs, msg, ecp = BasisSet.construct(parser, mol,
+        bs, msg, ecp = BasisSet.construct(parser,
+                                          mol,
                                           'BASIS' if fitrole == 'ORBITAL' else fitrole,
                                           None if fitrole == 'ORBITAL' else fitrole,
                                           basstrings['BASIS'] if fitrole == 'ORBITAL' else basstrings[fitrole],
@@ -692,7 +708,7 @@ class BasisSet(object):
                     bsdict['molecule'] = atbs.molecule.to_dict(force_c1=True)
                     atom_basis_list.append(bsdict)
                 return bs, atom_basis_list
-            else:  
+            else:
                 return bs
 
         if return_dict:
@@ -753,11 +769,13 @@ class BasisSet(object):
 
         # Validate deffit for key
         univdef_zeta = 4
-        univdef = {'JFIT': ('def2-qzvpp-jfit', 'def2-qzvpp-jfit', None),
-                   'JKFIT': ('def2-qzvpp-jkfit', 'def2-qzvpp-jkfit', None),
-                   'RIFIT': ('def2-qzvpp-ri', 'def2-qzvpp-ri', None),
-                   'DECON': (None, None, BasisSet.decontract),
-                   'F12': ('def2-qzvpp-f12', 'def2-qzvpp-f12', None)}
+        univdef = {
+            'JFIT': ('def2-qzvpp-jfit', 'def2-qzvpp-jfit', None),
+            'JKFIT': ('def2-qzvpp-jkfit', 'def2-qzvpp-jkfit', None),
+            'RIFIT': ('def2-qzvpp-ri', 'def2-qzvpp-ri', None),
+            'DECON': (None, None, BasisSet.decontract),
+            'F12': ('def2-qzvpp-f12', 'def2-qzvpp-f12', None)
+        }
 
         if deffit is not None:
             if deffit not in univdef.keys():
@@ -788,7 +806,7 @@ class BasisSet(object):
             except KeyError:
                 if key == 'BASIS' or deffit is None:
                     raise BasisSetNotDefined("""BasisSet::construct: No basis set specified for %s and %s.""" %
-                        (symbol, key))
+                                             (symbol, key))
                 else:
                     # No auxiliary basis set for atom, so try darnedest to find one.
                     #   This involves querying the BasisFamily for default and
@@ -884,7 +902,7 @@ class BasisSet(object):
 
             else:
                 # Ne'er found :-(
-                text2  = """  Shell Entries: %s\n""" % (seek['entry'])
+                text2 = """  Shell Entries: %s\n""" % (seek['entry'])
                 text2 += """  Basis Sets: %s\n""" % (seek['basis'])
                 text2 += """  File Path: %s\n""" % (', '.join(map(str, seek['path'].split(':'))))
                 text2 += """  Input Blocks: %s\n""" % (', '.join(seek['strings']))
@@ -951,6 +969,7 @@ class BasisSet(object):
     def set_name(self, name):
         """Sets the name of this basis set"""
         self.name = name
+
 
 # JET added but I think should fail
 #+    def atom_shell_map(self):
@@ -1221,7 +1240,6 @@ class BasisSet(object):
             with open(out, mode='w') as handle:
                 handle.write(text)
 
-
     def export_for_libmints(self, role):
         """From complete BasisSet object, returns array where
         triplets of elements are each unique atom label, the hash
@@ -1243,7 +1261,7 @@ class BasisSet(object):
                 # If core information is present, this is an ECP so we add the
                 # number of electrons this atom's ECP basis accounts for here.
                 try:
-                   atominfo.append(self.ecp_coreinfo[label])
+                    atominfo.append(self.ecp_coreinfo[label])
                 except KeyError:
                     raise ValidationError("Problem with number of cores in ECP constuction!")
             for Q in range(n_shell):
@@ -1310,7 +1328,7 @@ class BasisSet(object):
             max_am_center = 0
             for Q in range(n_shell):
                 if self.shells[Q + first_shell].am() > max_am_center:
-                    max_am_center = self.shells[Q + first_shell].am() 
+                    max_am_center = self.shells[Q + first_shell].am()
 
                 #max_am_center = self.shells[Q + first_shell].am() if \
                 #self.shells[Q + first_shell].am() > max_am_center else max_am_center
@@ -1475,9 +1493,8 @@ class BasisSet(object):
                     if abs(exp - _exp) < 1.0e-6:
                         unique = False
                 if unique:
-                    us = ShellInfo(am, [1.0], [exp],
-                        'Pure' if pure else 'Cartesian',
-                        nc, center, start, 'Unnormalized')
+                    us = ShellInfo(am, [1.0], [exp], 'Pure' if pure else 'Cartesian', nc, center, start,
+                                   'Unnormalized')
                     shell_list.append(us)
                     exp_map[am].append(exp)
 

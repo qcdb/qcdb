@@ -32,7 +32,6 @@ isort:skip_file
 """
 __author__ = 'Lori A. Burns'
 
-
 # Figure out psidatadir: envvar trumps staged/installed
 import os
 qcdb_module_loc = os.path.dirname(os.path.abspath(__file__))
