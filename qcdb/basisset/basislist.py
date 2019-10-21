@@ -34,7 +34,6 @@ with Psi4.
 """
 import os
 
-
 basisfamily_list = []
 
 

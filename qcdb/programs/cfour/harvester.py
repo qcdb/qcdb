@@ -31,14 +31,12 @@ import struct
 from collections import defaultdict
 
 import numpy as np
-
 import qcelemental as qcel
 from qcelemental.models import Molecule
 
 from ...exceptions import ValidationError
 #from ..molecule import Molecule
 from ...util import conv_float2negexp
-
 
 #def nu_muster_memory(mem, ropts, verbose=1):
 #    """Transform input *mem* in MB into psi4-type options for cfour.

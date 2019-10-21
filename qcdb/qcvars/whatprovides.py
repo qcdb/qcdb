@@ -1,5 +1,6 @@
 from qcengine.programs.nwchem.harvester import nwchem_psivar_list
 
+
 def return_energy_components():
     VARH = {}
     VARH['scf'] = {
@@ -186,4 +187,3 @@ def return_energy_components():
     return VARH
 
 VARH = return_energy_components()
-

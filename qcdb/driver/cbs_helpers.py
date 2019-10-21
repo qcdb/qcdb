@@ -4,7 +4,6 @@ import numpy as np
 
 from ..exceptions import ValidationError
 
-
 __all__ = ['xtpl_highest_1', 'scf_xtpl_helgaker_2', 'scf_xtpl_helgaker_3', 'corl_xtpl_helgaker_2',]
 
 
@@ -353,4 +352,3 @@ def corl_xtpl_helgaker_2(mtdname, zLO, valueLO, zHI, valueHI, verbose=1):
 
     else:
         raise ValidationError("corl_xtpl_helgaker_2: datatype is not recognized '%s'." % type(valueLO))
-

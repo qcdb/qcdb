@@ -28,6 +28,7 @@
 """Module to facilitate quantum chemical computations on chemical
 databases. Contains Molecule class and physical constants from psi4 suite.
 
+isort:skip_file
 """
 __author__ = 'Lori A. Burns'
 

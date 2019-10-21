@@ -1,13 +1,14 @@
 from qcelemental.util import which, which_import
 
-from .proc_table import procedures
-from ..programs.psi4 import QcdbPsi4Harness, run_psi4
-from ..programs.cfour import (QcdbCFOURHarness, run_cfour, cfour_list, cfour_gradient_list, cfour_hessian_list)
-from ..programs.dftd3 import (dftd3_list, alt_run_dftd3)
-from ..programs.nwchem import (QcdbNWChemHarness, run_nwchem, nwchem_list, nwchem_gradient_list, nwchem_hessian_list)
-from ..programs.gamess import (QcdbGAMESSHarness, run_gamess, gamess_list, gamess_gradient_list)
-
 from qcengine.programs import register_program
+
+from ..programs.cfour import QcdbCFOURHarness, cfour_gradient_list, cfour_hessian_list, cfour_list, run_cfour
+from ..programs.dftd3 import alt_run_dftd3, dftd3_list
+from ..programs.gamess import QcdbGAMESSHarness, gamess_gradient_list, gamess_list, run_gamess
+from ..programs.nwchem import QcdbNWChemHarness, nwchem_gradient_list, nwchem_hessian_list, nwchem_list, run_nwchem
+from ..programs.psi4 import QcdbPsi4Harness, run_psi4
+from .proc_table import procedures
+
 register_program(QcdbCFOURHarness(name='QCDB-CFOUR'))
 register_program(QcdbGAMESSHarness(name='QCDB-GAMESS'))
 register_program(QcdbPsi4Harness(name='QCDB-Psi4'))

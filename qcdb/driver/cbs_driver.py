@@ -2,20 +2,21 @@ import re
 import copy
 import math
 import pprint
-pp = pprint.PrettyPrinter(width=120)
 
 import numpy as np
-
 from qcelemental import Datum
 
 from ..exceptions import ValidationError
-from . import pe
-from . import driver_util
-from . import driver_helpers
 from ..keywords import register_kwds
-from ..util import banner
 from ..qcvars import VARH
+from ..util import banner
+from . import driver_helpers, driver_util, pe
 from .cbs_helpers import *
+
+pp = pprint.PrettyPrinter(width=120)
+
+
+
 
 
 def _cbs_wrapper_methods(**kwargs):
@@ -1258,4 +1259,3 @@ def _contract_bracketed_basis(basisarray):
         post = basisarray[0][zetaindx + 1:]
         basisstring = pre + '[' + ''.join(ZSET) + ']' + post
         return basisstring
-

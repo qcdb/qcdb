@@ -7,9 +7,9 @@ import qcelemental as qcel
 from qcelemental.models import ResultInput
 
 import qcengine as qcng
-from qcengine.programs.util import PreservingDict
 from qcengine.programs.cfour import CFOURHarness
-from qcengine.programs.cfour.keywords import format_keywords, format_keyword
+from qcengine.programs.cfour.keywords import format_keyword, format_keywords
+from qcengine.programs.util import PreservingDict
 
 from ... import qcvars
 from ...basisset import BasisSet

@@ -34,15 +34,15 @@ properties, and vibrational frequency calculations.
 """
 import copy
 import pprint
+
+from ..molecule import Molecule
+from . import driver_helpers, driver_util, pe
+from .gradient import gradient
+
 pp = pprint.PrettyPrinter(width=120)
 
 #   import numpy as np
 
-from ..molecule import Molecule
-from . import pe
-from . import driver_util
-from . import driver_helpers
-from .gradient import gradient
 
 
 #def optimize(name, **kwargs):

@@ -1,2 +1,2 @@
-from .runner import run_nwchem, QcdbNWChemHarness
-from .harvester import nwchem_list, nwchem_gradient_list, nwchem_hessian_list
+from .harvester import nwchem_gradient_list, nwchem_hessian_list, nwchem_list
+from .runner import QcdbNWChemHarness, run_nwchem

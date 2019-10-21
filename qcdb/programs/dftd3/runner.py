@@ -31,23 +31,26 @@ import sys
 import copy
 import json
 import pprint
-pp = pprint.PrettyPrinter(width=120)
 from decimal import Decimal
 
 import numpy as np
-
 import qcelemental as qcel
-
 from qcelemental.util import update_with_error
+
 from qcengine.programs.util import PreservingDict
 
-from ...util import der0th, der1st
+from ... import __version__, qcvars
+from ...driver.driver_helpers import print_variables
 from ...exceptions import Dftd3Error, ValidationError
+from ...util import der0th, der1st
 #from .dashparam import dash_server, dashcoeff
 from . import dashparam
-from ... import qcvars
-from ... import __version__
-from ...driver.driver_helpers import print_variables
+
+pp = pprint.PrettyPrinter(width=120)
+
+
+
+
 
 
 """Compute dispersion correction using Grimme's DFTD3 executable.

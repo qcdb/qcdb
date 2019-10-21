@@ -1,6 +1,8 @@
 import uuid
 import functools
 
+from ..driver import driver_helpers
+
 
 def register_kwds(ros):
     def decorator(func):
@@ -21,7 +23,6 @@ def register_kwds(ros):
     return decorator
 
 
-from ..driver import driver_helpers
 
 
 def def_mol():

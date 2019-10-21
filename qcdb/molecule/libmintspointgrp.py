@@ -31,7 +31,6 @@ import math
 from ..exceptions import ValidationError
 from ..util.vecutil import *
 
-
 #
 # Additional modifications made by Justin Turney <jturney@ccqc.uga.edu>
 # for use in PSI4.

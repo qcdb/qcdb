@@ -4,12 +4,10 @@ import itertools
 import collections
 
 import numpy as np
-
 import qcelemental as qcel
 from qcelemental import Datum
 
 from .molecule.libmintsmolecule import compute_atom_map
-
 
 LINEAR_A_TOL = 1.0E-2  # tolerance (roughly max dev) for TR space
 

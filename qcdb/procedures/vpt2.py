@@ -34,26 +34,30 @@ Organizationally, this module isolates qcdb code from psi4 code.
 """
 import os
 import copy
+import pprint
 import shelve
 import datetime
 import subprocess
-import pprint
-pp = pprint.PrettyPrinter(width=120)
 from pathlib import Path
-
-#from psi4.driver.p4util.exceptions import *
 
 import qcelemental as qcel
 from qcelemental.models import ResultInput
+
 import qcengine as qcng
 
 from ..driver import pe
-from ..util import provenance_stamp
-from ..keywords import Keywords, register_kwds
-from ..driver.driver_util import kwargs_lower, get_package
 from ..driver.driver_helpers import get_active_molecule
+from ..driver.driver_util import get_package, kwargs_lower
+from ..keywords import Keywords, register_kwds
 from ..programs.cfour.harvester import backtransform, format_fjobarc, harvest_zmat, jajo2mol
 from ..programs.cfour.jajo import getrec
+from ..util import provenance_stamp
+
+pp = pprint.PrettyPrinter(width=120)
+
+#from psi4.driver.p4util.exceptions import *
+
+
 
 
 def run_cfour_module(xmod):

@@ -1,1 +1,1 @@
-from .runner import run_psi4, QcdbPsi4Harness
+from .runner import QcdbPsi4Harness, run_psi4

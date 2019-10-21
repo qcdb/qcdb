@@ -34,15 +34,14 @@ properties, and vibrational frequency calculations.
 """
 import copy
 import pprint
+
+from ..exceptions import FeatureNotImplemented
+from ..keywords import register_kwds
+from . import cbs_driver, driver_helpers, driver_util, pe
+from .proc_table import procedures
+
 pp = pprint.PrettyPrinter(width=120)
 
-from ..keywords import register_kwds
-from ..exceptions import FeatureNotImplemented
-from . import pe
-from . import driver_util
-from . import driver_helpers
-from . import cbs_driver
-from .proc_table import procedures
 
 
 @register_kwds(pe.nu_options)
@@ -334,4 +333,3 @@ def gradient(name, **kwargs):
 #            return (wfn.gradient(), wfn)
 #        else:
 #            return wfn.gradient()
-   

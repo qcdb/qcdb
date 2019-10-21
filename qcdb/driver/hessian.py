@@ -35,19 +35,19 @@ properties, and vibrational frequency calculations.
 
 import copy
 import pprint
-pp = pprint.PrettyPrinter(width=120)
 
 import numpy as np
-   
-from ..molecule import Molecule
-from ..keywords import register_kwds
+
 from .. import vib
-from . import pe
-from . import driver_util
-from . import driver_helpers
-from . import cbs_driver
-from .proc_table import procedures
+from ..keywords import register_kwds
+from ..molecule import Molecule
+from . import cbs_driver, driver_helpers, driver_util, pe
 from .gradient import gradient
+from .proc_table import procedures
+
+pp = pprint.PrettyPrinter(width=120)
+
+   
 
 
 @register_kwds(pe.nu_options)

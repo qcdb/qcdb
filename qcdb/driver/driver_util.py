@@ -1,7 +1,6 @@
 from ..exceptions import ValidationError
-from ..util import yes, no, der0th, der1st, der2nd, find_approximate_string_matches
+from ..util import der0th, der1st, der2nd, find_approximate_string_matches, no, yes
 from .proc_table import procedures
-
 
 pkgprefix = {'p4-': 'psi4',
              'c4-': 'cfour',

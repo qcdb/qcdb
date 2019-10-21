@@ -33,14 +33,12 @@ import math
 import collections
 
 import numpy as np
-
 import qcelemental as qcel
 
-from ..util.vecutil import *
 from ..exceptions import IncompleteAtomError, ValidationError
-from .libmintscoordentry import NumberValue, VariableValue, CartesianEntry, ZMatrixEntry
-from .libmintspointgrp import SymmOps, similar, SymmetryOperation, PointGroup
-
+from ..util.vecutil import *
+from .libmintscoordentry import CartesianEntry, NumberValue, VariableValue, ZMatrixEntry
+from .libmintspointgrp import PointGroup, SymmetryOperation, SymmOps, similar
 
 LINEAR_A_TOL = 1.0E-2  # When sin(a) is below this, we consider the angle to be linear
 DEFAULT_SYM_TOL = 1.0E-8

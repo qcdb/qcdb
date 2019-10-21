@@ -32,13 +32,13 @@ Justin M. Turney, with incremental improvements by other
 psi4 developers.
 
 """
+import copy
 import math
 import cmath
-import copy
 import collections
 
-from ..util.vecutil import *
 from ..exceptions import IncompleteAtomError, ValidationError
+from ..util.vecutil import *
 
 
 class CoordValue(object):

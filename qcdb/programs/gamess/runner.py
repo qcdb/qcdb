@@ -1,8 +1,7 @@
-from typing import Any, Dict, Optional
 import copy
 import pprint
-pp = pprint.PrettyPrinter(width=120)
 import inspect
+from typing import Any, Dict, Optional
 
 import qcelemental as qcel
 from qcelemental.models import ResultInput
@@ -10,15 +9,20 @@ from qcelemental.util import which
 
 import qcengine as qcng
 from qcengine.exceptions import InputError
-from qcengine.programs.util import PreservingDict
 from qcengine.programs.gamess import GAMESSHarness
 from qcengine.programs.gamess.keywords import format_keywords
+from qcengine.programs.util import PreservingDict
 
 from ... import qcvars
 from ...basisset import BasisSet
 from ...util import provenance_stamp
+from .harvester import muster_inherited_options, muster_modelchem
 from .molbasopt import muster_and_format_molecule_and_basis_for_gamess
-from .harvester import muster_modelchem, muster_inherited_options
+
+pp = pprint.PrettyPrinter(width=120)
+
+
+
 
 
 #def run_gamess_old(name, molecule, options, **kwargs):

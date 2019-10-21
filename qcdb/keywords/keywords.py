@@ -1,7 +1,7 @@
 import uuid
 import collections
 
-from ..exceptions import KeywordValidationError, KeywordReconciliationError, ValidationError
+from ..exceptions import KeywordReconciliationError, KeywordValidationError, ValidationError
 
 
 class Keywords(object):

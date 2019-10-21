@@ -1,16 +1,14 @@
 import copy
 import pprint
-pp = pprint.PrettyPrinter(width=120)
-from typing import Any, Dict, Optional
 import inspect
+from typing import Any, Dict, Optional
 
 import qcelemental as qcel
 from qcelemental.models import ResultInput
 
 import qcengine as qcng
-from qcengine.programs.util import PreservingDict
 from qcengine.programs.psi4 import Psi4Harness
-#from qcengine.programs.cfour.keywords import format_keywords, format_keyword
+from qcengine.programs.util import PreservingDict
 
 from ... import qcvars
 #from ..driver.driver_helpers import print_variables
@@ -18,6 +16,12 @@ from ... import qcvars
 from ...util import provenance_stamp
 #from .worker import psi4_subprocess
 from .botanist import muster_inherited_options
+
+pp = pprint.PrettyPrinter(width=120)
+
+
+#from qcengine.programs.cfour.keywords import format_keywords, format_keyword
+
 
 
 #def run_psi4_old(name, molecule, options, **kwargs):
@@ -242,4 +246,3 @@ class QcdbPsi4Harness(Psi4Harness):
         output_model.extras['qcdb:qcvars'] = calcinfo
 
         return output_model
-

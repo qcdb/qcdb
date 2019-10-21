@@ -33,14 +33,13 @@ import hashlib
 import collections
 
 import numpy as np
-
 import qcelemental as qcel
 
-from ..util import parse_dertype
-from ..testing import compare_values, compare, compare_molrecs
 from ..bfs import BFS
+from ..testing import compare, compare_molrecs, compare_values
+from ..util import parse_dertype
 from ..util.vecutil import *
-from .libmintsmolecule import LibmintsMolecule, FULL_PG_TOL, ZERO
+from .libmintsmolecule import FULL_PG_TOL, ZERO, LibmintsMolecule
 
 
 class Molecule(LibmintsMolecule):
@@ -1588,7 +1587,7 @@ class Molecule(LibmintsMolecule):
 
 
 # Attach methods to qcdb.Molecule class
-from .parker import xyz2mol as _parker_xyz2mol_yo
+from .parker import xyz2mol as _parker_xyz2mol_yo  # isort:skip
 Molecule.format_molecule_for_mol = _parker_xyz2mol_yo
 #from .interface_gcp import run_gcp as _gcp_qcdb_yo
 #Molecule.run_gcp = _gcp_qcdb_yo

@@ -1,4 +1,4 @@
-from ...keywords import parsers, Keyword, Keywords
+from ...keywords import Keyword, Keywords, parsers
 
 
 def load_gamess_keywords(options: Keywords) -> None:

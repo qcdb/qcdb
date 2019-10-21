@@ -1,2 +1,2 @@
-from .plant import gamess_list, gamess_gradient_list
-from .runner import run_gamess, QcdbGAMESSHarness
+from .plant import gamess_gradient_list, gamess_list
+from .runner import QcdbGAMESSHarness, run_gamess

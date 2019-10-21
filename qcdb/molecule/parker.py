@@ -31,7 +31,6 @@ import math
 import numpy as np
 import qcelemental as qcel
 
-
 BOND_FACTOR = 1.2  # fudge factor for bond length threshold
 
 _expected_bonds = {

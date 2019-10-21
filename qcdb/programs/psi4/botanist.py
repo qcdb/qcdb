@@ -1,6 +1,7 @@
 import sys
 import uuid
 
+
 #@moptions.register_opts(pe.nu_options)
 def muster_inherited_options(ropts, verbose=1):
     accession = sys._getframe().f_code.co_name + '_' + str(uuid.uuid4())
@@ -31,5 +32,3 @@ def muster_inherited_options(ropts, verbose=1):
     qopt = ropts.scroll['QCDB']['MP2__MP2_TYPE']
     if qopt.disputed():
         ropts.suggest('PSI4', 'MP2_TYPE', qopt.value, **kwgs)
-
-

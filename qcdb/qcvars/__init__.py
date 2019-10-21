@@ -1,2 +1,2 @@
-from .amplify import certify_and_datumize, build_out
+from .amplify import build_out, certify_and_datumize
 from .whatprovides import VARH

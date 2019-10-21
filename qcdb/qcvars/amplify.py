@@ -1,8 +1,7 @@
-from decimal import Decimal
 from typing import Dict, Union
+from decimal import Decimal
 
 import numpy as np
-
 from qcelemental import Datum
 
 from ..exceptions import ValidationError

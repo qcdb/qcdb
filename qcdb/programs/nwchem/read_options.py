@@ -1,4 +1,4 @@
-from ...keywords import parsers, Keyword, AliasKeyword, Keywords
+from ...keywords import AliasKeyword, Keyword, Keywords, parsers
 
 
 def load_nwchem_keywords(options: Keywords) -> None:

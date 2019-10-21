@@ -1,7 +1,6 @@
 import copy
-import inspect
 import pprint
-pp = pprint.PrettyPrinter(width=120)
+import inspect
 from typing import Any, Dict, Optional
 from decimal import Decimal
 
@@ -10,15 +9,20 @@ from qcelemental.models import FailedOperation, ResultInput
 
 import qcengine as qcng
 from qcengine.exceptions import InputError
-from qcengine.programs.util import PreservingDict
 from qcengine.programs.nwchem import NWChemHarness
 from qcengine.programs.nwchem.keywords import format_keywords
+from qcengine.programs.util import PreservingDict
 
 from ... import qcvars
 from ...basisset import BasisSet
 from ...util import print_jobrec, provenance_stamp
+from .harvester import format_modelchem_for_nwchem, muster_inherited_options
 from .molbasopt import format_molecule, muster_and_format_basis_for_nwchem
-from .harvester import muster_inherited_options, format_modelchem_for_nwchem
+
+pp = pprint.PrettyPrinter(width=120)
+
+
+
 
 
 def run_nwchem(name, molecule, options, **kwargs):

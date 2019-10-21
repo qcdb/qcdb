@@ -1,1 +1,1 @@
-from .libmintsbasisset import basishorde, BasisSet
+from .libmintsbasisset import BasisSet, basishorde

@@ -2,11 +2,11 @@ from qcelemental.util import which, which_import
 
 from .. import data_dir
 from ..keywords import Keywords
-from ..molecule import Molecule
 from ..keywords.read_options import load_qcdb_keywords
-from ..programs.psi4.read_options import load_cfour_keywords_from_psi4, load_psi4_keywords
-from ..programs.nwchem.read_options import load_nwchem_keywords
+from ..molecule import Molecule
 from ..programs.gamess.read_options import load_gamess_keywords
+from ..programs.nwchem.read_options import load_nwchem_keywords
+from ..programs.psi4.read_options import load_cfour_keywords_from_psi4, load_psi4_keywords
 
 
 def clean_options() -> None:
