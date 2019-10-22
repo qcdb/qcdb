@@ -3,9 +3,9 @@ import collections
 from ...keywords import Keyword, Keywords
 
 
-def load_psi4_keywords(peoptions: Keywords) -> None:
+def load_psi4_keywords(options: Keywords) -> None:
 
-    opts = query_options_defaults_from_psi()
+    opts = _query_options_defaults_from_psi()
 
     def p4_validator(val):
         try:
@@ -21,7 +21,7 @@ def load_psi4_keywords(peoptions: Keywords) -> None:
             else:
                 keyword = m + '__' + o
 
-            peoptions.add('psi4', Keyword(keyword=keyword, default=v['value'], validator=p4_validator))
+            options.add('psi4', Keyword(keyword=keyword, default=v['value'], validator=p4_validator))
 
 
 def _basic_validator(val):
@@ -32,17 +32,17 @@ def _basic_validator(val):
     return nuval
 
 
-def load_cfour_keywords_from_psi4(peoptions: Keywords) -> None:
+def load_cfour_keywords_from_psi4(options: Keywords) -> None:
 
-    opts = query_options_defaults_from_psi()
+    opts = _query_options_defaults_from_psi()
     opts = opts['CFOUR']
 
     for o, v in opts.items():
         if o.startswith('CFOUR_'):
-            peoptions.add('cfour', Keyword(keyword=o[6:], default=v['value'], validator=_basic_validator))
+            options.add('cfour', Keyword(keyword=o[6:], default=v['value'], validator=_basic_validator))
 
 
-def query_options_defaults_from_psi(changedOnly=False):
+def _query_options_defaults_from_psi(changedOnly=False):
     """Function to return a string of commands to replicate the
     current state of user-modified options. Used to capture C++
     options information for distributed (sow/reap) input files.

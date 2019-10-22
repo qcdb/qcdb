@@ -1,50 +1,3 @@
-import sys
-import uuid
-
-from ...exceptions import ValidationError
-from ...util import conv_float2negexp
-
-
-def muster_inherited_keywords(ropts: 'Keywords', verbose: int = 1):
-    accession = sys._getframe().f_code.co_name + '_' + str(uuid.uuid4())
-    kwgs = {'accession': accession, 'verbose': verbose}
-
-    do_translate = ropts.scroll['QCDB']['TRANSLATE_QCDB'].value
-
-    # REVISIT MEMORY
-    # qcdb/memory [B] --> nwchem/total_memory [MB]
-    qopt = ropts.scroll['QCDB']['MEMORY']
-    if do_translate or qopt.is_required():
-        mem = str(int(0.000001 * qopt.value)) + ' mb'
-        ropts.suggest('NWCHEM', 'memory', mem, **kwgs)
-
-    # qcdb/reference --> nwchem/scf_[r|u|ro]hf
-    # TODO ref or scf__ref?
-    qref = ropts.scroll['QCDB']['SCF__REFERENCE'].value
-    print('<<<< QREF {} >>>'.format(qref))
-    if qref in ['RHF', 'UHF', 'ROHF']:
-        rhf = (qref == 'RHF')
-        uhf = (qref == 'UHF')
-        rohf = (qref == 'ROHF')
-        ropts.suggest('NWCHEM', 'scf__rhf', rhf, **kwgs)
-        ropts.suggest('NWCHEM', 'scf__uhf', uhf, **kwgs)
-        ropts.suggest('NWCHEM', 'scf__rohf', rohf, **kwgs)
-
-    # qcdb/scf__d_convergence --> nwchem/scf__thresh
-    # TODO should be e_conv?
-    qopt = ropts.scroll['QCDB']['SCF__D_CONVERGENCE']
-    if qopt.disputed():
-        conv = conv_float2negexp(qopt.value)
-        ropts.suggest('NWCHEM', 'scf__thresh', conv, **kwgs)
-
-    # qcdb/e_convergence --> nwchem/ccsd(t)__thresh or dft__convergence__energy
-    qopt = ropts.scroll['QCDB']['E_CONVERGENCE']
-    if qopt.disputed():
-        conv = conv_float2negexp(qopt.value)
-        ropts.suggest('NWCHEM', 'ccsd__thresh', conv, **kwgs)
-        ropts.suggest('NWCHEM', 'dft__convergence__energy', conv, **kwgs)
-
-
 #def muster_psi4options(opt, mol):
 #    """Translate psi4 keywords *opt* that have been explicitly set into
 #    their NWChem counterparts. Since explicitly set NWChem module keyword
@@ -366,305 +319,117 @@ def muster_inherited_keywords(ropts: 'Keywords', verbose: int = 1):
 #
 #    return dft_functional, dft_dispersion
 
+#def local_prepare_options_for_modules(changedOnly=False, commandsInsteadDict=False):
+#    from ..intf_psi4.options import query_options_defaults_from_psi
+#    return query_options_defaults_from_psi(changedOnly=changedOnly)
+#
+#
+#def prepare_options_for_nwchem(options):
+#    """Function to take the full snapshot of the liboptions object
+#    encoded in dictionary *options*, find the options directable toward
+#    NWChem (options['NWCHEM']['NWCHEM_**']) that aren't default, then write
+#    a NWCHEM deck with those options.
+#
+#    """
+#    text = ''
+#    scf_block_text = ''
+#    mp2_block_text = ''
+#    dft_block_text = ''
+#    tce_block_text = ''
+#    ccsd_block_text = ''
+#    tddft_block_text = ''
+#
+#    for opt, val in options['NWCHEM'].items():
+#        if opt.startswith('NWCHEM_'):
+#            if opt.startswith('NWCHEM_TASK'):
+#                pass
+#
+#            elif opt.startswith('NWCHEM_SCF'):
+#                if (opt == 'NWCHEM_SCF_PRINT') or (opt == 'NWCHEM_SCF_NOPRINT'):
+#                    if val['has_changed']:
+#                        scf_block_text += """%s \"%s\" \n""" % (format_option_for_theory_block_nwchem(
+#                            opt[11:], val['value']))
+#                else:
+#                    if val['has_changed']:
+#                        scf_block_text += """%s %s \n""" % (format_option_for_theory_block_nwchem(
+#                            opt[11:], val['value']))
+#
+#            elif opt.startswith('NWCHEM_MP2'):
+#                if val['has_changed']:
+#                    mp2_block_text += """%s %s \n""" % (format_option_for_theory_block_nwchem(opt[11:], val['value']))
+#
+#            elif opt.startswith('NWCHEM_DFT'):
+#                if (opt == 'NWCHEM_DFT_GRID'):
+#                    if val['has_changed']:
+#                        dft_block_text += """%s lebedev %s \n""" % (format_option_for_theory_block_nwchem(
+#                            opt[11:], val['value']))
+#
+#                elif (opt == 'NWCHEM_DFT_PRINT') or (opt == 'NWCHEM_DFT_NOPRINT'):
+#                    if val['has_changed']:
+#                        dft_block_text += """%s \"%s\" \n""" % (format_option_for_theory_block_nwchem(
+#                            opt[11:], val['value']))
+#                else:
+#                    if val['has_changed']:
+#                        dft_block_text += """%s %s \n""" % (format_option_for_theory_block_nwchem(
+#                            opt[11:], val['value']))
+#
+#            elif opt.startswith('NWCHEM_CCSD'):
+#                if val['has_changed']:
+#                    ccsd_block_text += """%s %s \n""" % (format_option_for_theory_block_nwchem(opt[12:], val['value']))
+#
+#            elif opt.startswith('NWCHEM_TCE'):
+#                if (opt == 'NWCHEM_TCE_MODULE'):
+#                    if val['has_changed']:
+#                        tce_block_text += """%s \n""" % (val['value'])
+#                elif (opt == 'NWCHEM_TCE'):
+#                    pass
+#                else:
+#                    if val['has_changed']:
+#                        tce_block_text += """%s %s \n""" % (format_option_for_theory_block_nwchem(
+#                            opt[11:], val['value']))
+#
+#            elif opt.startswith('NWCHEM_TDDFT'):
+#                if val['has_changed']:
+#                    tddft_block_text += """%s %s \n""" % (format_option_for_theory_block_nwchem(
+#                        opt[13:], val['value']))
+#            else:
+#                if val['has_changed']:
+#                    text += """%s %s \n""" % (format_option_for_nwchem(opt, val['value']))
+#
+#    if options['NWCHEM']['NWCHEM_TASK_DFT']['has_changed']:
+#        if dft_block_text:
+#            text += "dft\n" + dft_block_text + "end\n\n"
+#
+#    elif options['NWCHEM']['NWCHEM_TASK_TDDFT']['has_changed']:
+#        if dft_block_text:
+#            text += "dft\n" + dft_block_text + "end\n\n"
+#
+#        if tddft_block_text:
+#            text += "tddft\n" + tddft_block_text + "end\n\n"
+#
+#    elif options['NWCHEM']['NWCHEM_TCE_DFT']['has_changed']:  # DFT is used as TCE reference wavefunction
+#        if dft_block_text:
+#            text += "dft\n" + dft_block_text + "end\n\n"
+#        if tce_block_text:
+#            text += "tce\n" + tce_block_text + "end\n\n"
+#
+#    else:  #SCF, MP2 block, TCE block w/ scf reference wavefunction,
+#        if scf_block_text:
+#            text += "scf\n" + scf_block_text + "end\n\n"
+#
+#        if mp2_block_text:
+#            text += "mp2\n" + mp2_block_text + "end\n\n"
+#
+#        if tce_block_text:
+#            text += "tce\n" + tce_block_text + "end\n\n"
+#
+#        if ccsd_block_text:
+#            text += "ccsd\n" + ccsd_block_text + "end\n\n"
+#
+#    if text:
+#        text = text[:-1] + '\n'
+#
+#    return text
 
-def format_modelchem_for_nwchem(name, dertype, ropts, sysinfo, verbose=1):
-    accession = sys._getframe().f_code.co_name + '_' + str(uuid.uuid4())
-    kwgs = {'accession': accession, 'verbose': verbose}
-
-    lowername = name.lower()
-
-    #runtyp = {'energy': 'energy',
-    #          'gradient': 'gradient',
-    #          'hessian': 'hessian',
-    #          'properties': 'prop',
-    #         }[driver]
-
-    runtyp = {
-        0: 'energy',
-        1: 'gradient',
-        2: 'hessian',
-        #'properties': 'prop',
-    }[dertype]
-
-    if lowername == 'nwc-nwchem':
-        pass
-
-    elif lowername in ['nwc-scf', 'nwc-hf']:
-        #ropts.require('NWCHEM', 'task__scf', runtyp, **kwgs)
-        mdccmd = f'task scf {runtyp}\n\n'
-
-    #MPn options
-    elif lowername == 'nwc-mp2':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            mdccmd = f'task tce {runtyp}\n\n'
-            ropts.require('NWCHEM', 'tce__mp2', True, **kwgs)
-        else:
-            mdccmd = f'task mp2 {runtyp} \n\n'
-    elif lowername == 'nwc-mp3':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            mdccmd = f'task tce {runtyp}\n\n'
-            ropts.require('NWCHEM', 'tce__mp3', True, **kwgs)
-    elif lowername == 'nwc-mp4':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            mdccmd = f'task tce {runtyp}\n\n'
-            ropts.require('NWCHEM', 'tce__mp4', True, **kwgs)
-    #CC options
-    elif lowername == 'nwc-ccd':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            mdccmd = f'task tce {runtyp} \n\n'
-            ropts.require('NWCHEM', 'tce__ccd', True, **kwgs)
-    elif lowername == 'nwc-ccsd':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            mdccmd = f'task tce {runtyp}\n\n'
-            ropts.require('NWCHEM', 'tce__ccsd', True, **kwgs)
-        else:
-            mdccmd = f'task ccsd {runtyp}\n\n'
-    elif lowername == 'nwc-ccsdt':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            mdccmd = f'task tce {runtyp} \n\n'
-            ropts.require('NWCHEM', 'tce__ccsdt', True, **kwgs)
-        else:
-            mdccmd = f'task ccsdt {runtyp}\n\n'
-    elif lowername == 'nwc-ccsd(t)':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            mdccmd = f'task tce {runtyp} \n\n'
-            ropts.require('NWCHEM', 'tce__ccsd(t)', True, **kwgs)
-        else:
-            mdccmd = f'task ccsd(t) {runtyp}\n\n'
-    elif lowername == 'nwc-ccsdtq':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            mdccmd = f'task tce {runtyp} \n\n'
-            ropts.require('NWCHEM', 'tce__ccsdtq', True, **kwgs)
-    elif lowername == 'nwc-eom-ccsd':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            mdccmd = f'task tce {runtyp} \n\n'
-            ropts.require('NWCHEM', 'tce__ccsd', True, **kwgs)
-            ropts.suggest('NWCHEM', 'tce__nroots', 4, **kwgs)
-    elif lowername == 'nwc-eom-ccsdt':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            ropts.require('NWCHEM', 'tce__ccsdt', True, **kwgs)
-            ropts.suggest('NWCHEM', 'tce__nroots', 4, **kwgs)
-
-# elif lowername == 'nwc-ccsd_act':
-
-#TCE only opts
-    elif lowername == 'nwc-ccsd[t]':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            mdccmd = f'task tce {runtyp} \n\n'
-            ropts.require('NWCHEM', 'tce__ccsd[t]', True, **kwgs)
-
-    elif lowername == 'nwc-cisd':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            mdccmd = f'task tce {runtyp} \n\n'
-            ropts.require('NWCHEM', 'tce__cisd', True, **kwgs)
-    elif lowername == 'nwc-cisdt':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            mdccmd = f'task tce {runtyp} \n\n'
-            ropts.require('NWCHEM', 'tce__cisdt', True, **kwgs)
-    elif lowername == 'nwc-cisdtq':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            mdccmd = f'task tce {runtyp} \n\n'
-            ropts.require('NWCHEM', 'tce__cisdtq', True, **kwgs)
-    elif lowername == 'nwc-qcisd':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            mdccmd = f'task tce {runtyp} \n\n'
-            ropts.require('NWCHEM', 'tce__qcisd', True, **kwgs)
-
-    elif lowername == 'nwc-lccd':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            mdccmd = f'task tce {runtyp} \n\n'
-            ropts.require('NWCHEM', 'tce__lccd', True, **kwgs)
-    elif lowername == 'nwc-lccsd':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            mdccmd = f'task tce {runtyp} \n\n'
-            ropts.require('NWCHEM', 'tce__lccsd', True, **kwgs)
-    elif lowername == 'nwc-cc2':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            mdccmd = f'task tce {runtyp} \n\n'
-            ropts.require('NWCHEM', 'tce__cc2', True, **kwgs)
-    elif lowername == 'nwc-lr-ccsd':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            mdccmd = f'task tce {runtyp} \n\n'
-            ropts.require('NWCHEM', 'tce__lr-ccsd', True, **kwgs)
-    #add more opts that are necessary for ccsdta
-    elif lowername == 'nwc-ccsdta':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            mdccmd = f'task tce {runtyp} \n\n'
-            ropts.require('NWCHEM', 'tce__ccsdta', True, **kwgs)
-
-    elif lowername == 'nwc-eaccsd':
-        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
-            mdccmd = f'task tce {runtyp} \n\n'
-            ropts.require('NWCHEM', 'tce__eaccsd', True, **kwgs)
-            ropts.suggest('NWCHEM', 'tce__nroots', 4, **kwgs)
-
-    elif lowername == 'nwc-sodft':
-        ropts.suggest('NWCHEM', 'xc', 'b3lyp', **kwgs)
-        mdccmd = f'task sodft {runtyp} \n\n'
-
-    elif lowername == 'nwc-dft':
-        mdccmd = f'task dft {runtyp} \n\n'
-
-    #DFT xc functionals
-    elif lowername == 'nwc-pbe0':
-        ropts.require('NWCHEM', 'xc', 'pbe0', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-pbeop':
-        ropts.require('NWCHEM', 'xc', 'pbeop', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-acm':
-        ropts.require('NWCHEM', 'xc', 'acm', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-bhlyp':
-        ropts.require('NWCHEM', 'xc', 'bhlyp', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-b3lyp':
-        ropts.require('NWCHEM', 'xc', 'b3lyp', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-b1b95':
-        ropts.require('NWCHEM', 'xc', 'b1b95', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-b97-1':
-        ropts.require('NWCHEM', 'xc', 'becke97-1', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-b97-2':
-        ropts.require('NWCHEM', 'xc', 'becke97-2', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-b97-d':
-        ropts.require('NWCHEM', 'xc', 'becke97-d', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-b97-gga1':
-        ropts.require('NWCHEM', 'xc', 'becke97gga1', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-b98':
-        ropts.require('NWCHEM', 'xc', 'becke98', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-bb1k':
-        ropts.require('NWCHEM', 'xc', 'bb1k', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-bhandh':
-        ropts.require('NWCHEM', 'xc', 'beckehandh', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-bop':
-        ropts.require('NWCHEM', 'xc', 'bop', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-cft97':
-        ropts.require('NWCHEM', 'xc', 'cft97', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-dldf':
-        ropts.require('NWCHEM', 'xc', 'dldf', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-ft97':
-        ropts.require('NWCHEM', 'xc', 'ft97', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-hcth':
-        ropts.require('NWCHEM', 'xc', 'hcth', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-hcth120':
-        ropts.require('NWCHEM', 'xc', 'hcth120', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-hcth147':
-        ropts.require('NWCHEM', 'xc', 'hcth147', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-hcth407':
-        ropts.require('NWCHEM', 'xc', 'hcth407', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-hcth407p':
-        ropts.require('NWCHEM', 'xc', 'hcth407p', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-hcthp14':
-        ropts.require('NWCHEM', 'xc', 'hcthp14', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-m05':
-        ropts.require('NWCHEM', 'xc', 'm05', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-m05-2x':
-        ropts.require('NWCHEM', 'xc', 'm05-2x', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-m06':
-        ropts.require('NWCHEM', 'xc', 'm06', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-m06-2x':
-        ropts.require('NWCHEM', 'xc', 'm06-2x', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-m06-hf':
-        ropts.require('NWCHEM', 'xc', 'm06-hf', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-m06-l':
-        ropts.require('NWCHEM', 'xc', 'm06-l', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-m08-hx':
-        ropts.require('NWCHEM', 'xc', 'm08-hx', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-m08-so':
-        ropts.require('NWCHEM', 'xc', 'm08-so', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-m11':
-        ropts.require('NWCHEM', 'xc', 'm11', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-m11-l':
-        ropts.require('NWCHEM', 'xc', 'm11-l', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-mpw1b95':
-        ropts.require('NWCHEM', 'xc', 'mpw1b95', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-mpw1k':
-        ropts.require('NWCHEM', 'xc', 'mpw1k', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-mpwb1k':
-        ropts.require('NWCHEM', 'xc', 'mpwb1k', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-pw6b95':
-        ropts.require('NWCHEM', 'xc', 'pw6b95', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-pwb6k':
-        ropts.require('NWCHEM', 'xc', 'pwb6k', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-op':
-        ropts.require('NWCHEM', 'xc', 'op', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-optx':
-        ropts.require('NWCHEM', 'xc', 'optx', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-tpssh':
-        ropts.require('NWCHEM', 'xc', 'xctpssh', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-vs98':
-        ropts.require('NWCHEM', 'xc', 'vs98', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-xft97':
-        ropts.require('NWCHEM', 'xc', 'xft97', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-xtpss03':
-        ropts.require('NWCHEM', 'xc', 'xtpss03', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    #DFT functionals potential issues - multiple options or req conditions, need to be on one line or format as:
-    #dft [block start]
-    #xc functional required_numeric
-    #func2
-    #end #TODO
-    elif lowername == 'nwc-b86bpbe':
-        ropts.require('NWCHEM', 'xc', 'becke86b', **kwgs)
-        ropts.require('NWCHEM', 'xc', 'cpbe96', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-blyp':
-        ropts.require('NWCHEM', 'xc', 'becke88', **kwgs)
-        ropts.require('NWCHEM', 'xc', 'lyp', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n'
-    elif lowername == 'nwc-bp86':
-        ropts.require('NWCHEM', 'xc', 'becke88', **kwgs)
-        ropts.require('NWCHEM', 'xc', 'perdew86', **kwgs)
-    elif lowername == 'nwc-pw86pbe':
-        ropts.require('NWCHEM', 'xc', 'xperdew86', **kwgs)
-        ropts.require('NWCHEM', 'xc', 'cpbe96', **kwgs)
-    elif lowername == 'nwc-pw91':
-        ropts.require('NWCHEM', 'xc', 'xperdew91', **kwgs)
-        ropts.require('NWCHEM', 'xc', 'perdew91', **kwgs)
-
-    elif lowername == 'nwc-tddft':
-        mdccmd = f'task tddft {runtyp} \n\n'
-
-    else:
-        raise ValidationError(f"""Requested NWChem computational method {lowername} is not available.""")
-
-    return mdccmd
+#    elif str(val) == 'RODFT':
+#        text += str(val) + '\ncgmin'

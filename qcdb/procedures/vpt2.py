@@ -900,7 +900,8 @@ def sown_jobs_status(dir, prefix, zmats, validate_func=None, linkage=None, keys=
     isOk = True
     msgError = ''
     instructions = '\n'
-    instructions += '{:_^45}'.format(prefix + ' Status: ' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M"), strNotOutfile=True)
+    instructions += '{:_^45}'.format(prefix + ' Status: ' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
+    instructions += '\n'
     instructions += '\n'
     for job in sorted(zmats):
         outfile = dir + '/' + prefix + '-' + job + '.out'

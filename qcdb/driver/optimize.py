@@ -179,7 +179,6 @@ pp = pprint.PrettyPrinter(width=120)
 def optking(name, **kwargs):
     from . import load_proc_table
     kwargs = driver_util.kwargs_lower(kwargs)
-    text = ''
 
     if hasattr(name, '__call__'):
         lowername = name
@@ -422,7 +421,6 @@ def optking(name, **kwargs):
 def geometric(name, **kwargs):
     from . import load_proc_table
     kwargs = driver_util.kwargs_lower(kwargs)
-    text = ''
 
     if hasattr(name, '__call__'):
         lowername = name
