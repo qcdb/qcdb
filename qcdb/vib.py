@@ -209,7 +209,6 @@ def _check_degen_modes(arr, freq, verbose=1):
     sort into std order for comparison. Returns eigenvectors back sorted.
 
     """
-    arr2 = np.zeros_like(arr)
     dfreq, didx, dinv, dcts = np.unique(np.around(freq, 2), return_index=True, return_inverse=True, return_counts=True)
 
     # judging degen normco to only 2 decimals is probably sign need to resolve evec
@@ -420,9 +419,9 @@ def harmonic_analysis(hess, geom, mass, basisset, irrep_labels, dipder=None, pro
     for lf in set(pre_lowfreq):
         vlf = pre_frequency_cm_1[lf]
         if vlf.imag > vlf.real:
-            text.append('  pre-proj  low-frequency mode: {:9.4f}i [cm^-1]'.format(vlf.real, vlf.imag))
+            text.append('  pre-proj  low-frequency mode: {:9.4f}i [cm^-1]'.format(vlf.imag))
         else:
-            text.append('  pre-proj  low-frequency mode: {:9.4f}  [cm^-1]'.format(vlf.real, ''))
+            text.append('  pre-proj  low-frequency mode: {:9.4f}  [cm^-1]'.format(vlf.real))
     text.append('  pre-proj  all modes:' + str(_format_omega(pre_frequency_cm_1, 4)))
 
     # project & solve

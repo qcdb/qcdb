@@ -1,6 +1,6 @@
 from qcelemental.util import which, which_import
 
-from .. import data_dir
+from .. import data_dir  # lgtm: [py/unused-import]
 from ..keywords import Keywords
 from ..keywords.read_options import load_qcdb_keywords
 from ..molecule import Molecule

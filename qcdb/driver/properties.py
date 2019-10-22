@@ -167,7 +167,7 @@ def properties(name, **kwargs):
 #PR    pp.pprint(jobrec)
     pe.active_qcvars = copy.deepcopy(jobrec['qcvars'])
 
-   # if return_wfn:  # TODO current properties safer than wfn.energy() for now, but should be revisited
+    if return_wfn:  # TODO current properties safer than wfn.energy() for now, but should be revisited
 
 #        # TODO place this with the associated call, very awkward to call this in other areas at the moment
 #        if lowername in ['efp', 'mrcc', 'dmrg', 'psimrcc']:
@@ -177,7 +177,6 @@ def properties(name, **kwargs):
 #            core.print_out("\n\nWarning! %s does not have an associated derived wavefunction." % name)
 #            core.print_out("The returned wavefunction is the dimer SCF wavefunction.\n\n")
 
-    #    return (float(jobrec['qcvars']['CURRENT ENERGY'].data), jobrec)
-    #else:
-    #    return float(jobrec['qcvars']['CURRENT ENERGY'].data)
-        # float() is for decimal.Decimal
+        return (float(jobrec['qcvars']['CURRENT ENERGY'].data), jobrec)
+    else:
+        return float(jobrec['qcvars']['CURRENT ENERGY'].data)

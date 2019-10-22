@@ -3088,7 +3088,6 @@ class LibmintsMolecule():
             if self.equiv[iuniq][i] == iatom:
                 return i
         raise ValidationError("Molecule::atom_to_unique_offset: I should've found the atom requested...but didn't.")
-        return -1
 
     def max_nequivalent(self):
         """Returns the maximum number of equivalent atoms."""

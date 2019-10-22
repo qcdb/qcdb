@@ -454,7 +454,6 @@ class Molecule(LibmintsMolecule):
         """(reals only, 1-indexed)
 
         """
-        pass
         # TODO allow handle lines
         text = ""
         summ = []

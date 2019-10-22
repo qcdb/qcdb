@@ -4,7 +4,6 @@ query appropriate fitting bases for any orbital basis distributed
 with Psi4.
 
 """
-import os
 
 basisfamily_list = []
 

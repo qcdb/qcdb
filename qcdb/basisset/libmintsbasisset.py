@@ -30,7 +30,6 @@ class BasisSet(object):
     initialized_shared = False
     # Global arrays of x, y, z exponents (Need libmint for max ang mom)
     LIBINT_MAX_AM = 6  # TODO
-    exp_ao = [[] for l in range(LIBINT_MAX_AM)]
 
     def __init__(self, *args):
 

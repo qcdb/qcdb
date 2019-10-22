@@ -1,6 +1,5 @@
 import re
 import copy
-import math
 import pprint
 
 import numpy as np
