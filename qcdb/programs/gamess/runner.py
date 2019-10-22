@@ -16,13 +16,12 @@ from qcengine.programs.util import PreservingDict
 from ... import qcvars
 from ...basisset import BasisSet
 from ...util import print_jobrec, provenance_stamp
-from .harvester import muster_inherited_keywords, muster_modelchem
-from .molbasopt import muster_and_format_molecule_and_basis_for_gamess
+from .germinate import muster_inherited_keywords, muster_modelchem, muster_molecule_and_basisset
 
 pp = pprint.PrettyPrinter(width=120)
 
 
-def run_gamess(name, molecule, options, **kwargs):
+def run_gamess(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -> Dict:
 
     resi = ResultInput(
         **{
@@ -45,7 +44,7 @@ def run_gamess(name, molecule, options, **kwargs):
 
 
 class QcdbGAMESSHarness(GAMESSHarness):
-    def compute(self, input_model: 'ResultInput', config: 'JobConfig') -> 'Result':
+    def compute(self, input_model: ResultInput, config: 'JobConfig') -> 'Result':
         self.found(raise_error=True)
 
         verbose = 1
@@ -79,7 +78,7 @@ class QcdbGAMESSHarness(GAMESSHarness):
 
         return output_model
 
-    def qcdb_build_input(self, input_model: 'ResultInput', config: 'JobConfig',
+    def qcdb_build_input(self, input_model: ResultInput, config: 'JobConfig',
                          template: Optional[str] = None) -> Dict[str, Any]:
         gamessrec = {
             'infiles': {},
@@ -98,7 +97,7 @@ class QcdbGAMESSHarness(GAMESSHarness):
         #_gamess_basis = ropts.scroll['GAMESS']['BASIS'].value
         qbs = BasisSet.pyconstruct(molrecc1, 'BASIS', _qcdb_basis)
 
-        molbascmd = muster_and_format_molecule_and_basis_for_gamess(molrec, ropts, qbs)
+        molbascmd = muster_molecule_and_basisset(molrec, ropts, qbs)
 
         nel = sum([z * int(real) for z, real in zip(molrec['elez'], molrec['real'])]) - molrec['molecular_charge']
         nel = int(nel)
@@ -129,7 +128,7 @@ class QcdbGAMESSHarness(GAMESSHarness):
 
         return gamessrec
 
-    def qcdb_post_parse_output(self, input_model: 'ResultInput', output_model: 'Result') -> 'Result':
+    def qcdb_post_parse_output(self, input_model: ResultInput, output_model: 'Result') -> 'Result':
 
         dqcvars = PreservingDict(copy.deepcopy(output_model.extras['qcvars']))
         qcvars.build_out(dqcvars)

@@ -12,12 +12,12 @@ from qcengine.programs.util import PreservingDict
 
 from ... import qcvars
 from ...util import print_jobrec, provenance_stamp
-from .harvester import muster_inherited_keywords
+from .germinate import muster_inherited_keywords
 
 pp = pprint.PrettyPrinter(width=120)
 
 
-def run_psi4(name, molecule, options, **kwargs):
+def run_psi4(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -> Dict:
 
     resi = ResultInput(
         **{
@@ -41,7 +41,7 @@ def run_psi4(name, molecule, options, **kwargs):
 
 
 class QcdbPsi4Harness(Psi4Harness):
-    def compute(self, input_model: 'ResultInput', config: 'JobConfig') -> 'Result':
+    def compute(self, input_model: ResultInput, config: 'JobConfig') -> 'Result':
         self.found(raise_error=True)
 
         verbose = 1
@@ -74,7 +74,7 @@ class QcdbPsi4Harness(Psi4Harness):
 
         return output_model
 
-    def qcdb_build_input(self, input_model: 'ResultInput', config: 'JobConfig',
+    def qcdb_build_input(self, input_model: ResultInput, config: 'JobConfig',
                          template: Optional[str] = None) -> Dict[str, Any]:
         input_data = input_model.dict()
 
@@ -110,7 +110,7 @@ class QcdbPsi4Harness(Psi4Harness):
 
         return input_data
 
-    def qcdb_post_parse_output(self, input_model: 'ResultInput', output_model: 'Result') -> 'Result':
+    def qcdb_post_parse_output(self, input_model: ResultInput, output_model: 'Result') -> 'Result':
 
         dqcvars = PreservingDict(copy.deepcopy(output_model.extras['qcvars']))
         for k in list(dqcvars.keys()):

@@ -14,8 +14,8 @@ from qcengine.programs.util import PreservingDict
 from ... import qcvars
 from ...basisset import BasisSet
 from ...util import print_jobrec, provenance_stamp
-from .bas import extract_basis_from_genbas, format_basis_for_cfour, format_molecule
-from .harvester import muster_inherited_keywords, muster_modelchem
+from .germinate import (extract_basis_from_genbas, muster_basisset, muster_inherited_keywords, muster_modelchem,
+                        muster_molecule)
 
 
 def run_cfour(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -> Dict:
@@ -44,7 +44,7 @@ def run_cfour(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) ->
 
 
 class QcdbCFOURHarness(CFOURHarness):
-    def compute(self, input_model: 'ResultInput', config: 'JobConfig') -> 'Result':
+    def compute(self, input_model: ResultInput, config: 'JobConfig') -> 'Result':
         self.found(raise_error=True)
 
         verbose = 1
@@ -75,7 +75,7 @@ class QcdbCFOURHarness(CFOURHarness):
 
         return output_model
 
-    def qcdb_build_input(self, input_model: 'ResultInput', config: 'JobConfig',
+    def qcdb_build_input(self, input_model: ResultInput, config: 'JobConfig',
                          template: Optional[str] = None) -> Dict[str, Any]:
         cfourrec = {
             'infiles': {},
@@ -86,7 +86,7 @@ class QcdbCFOURHarness(CFOURHarness):
         molrec['fix_symmetry'] = 'c1'  # write _all_ atoms to GENBAS
         ropts = input_model.extras['qcdb:options']
 
-        molcmd = format_molecule(molrec, ropts, verbose=1)
+        molcmd = muster_molecule(molrec, ropts, verbose=1)
 
         # Handle qcdb keywords implying cfour keyword values
         muster_inherited_keywords(ropts)
@@ -97,7 +97,7 @@ class QcdbCFOURHarness(CFOURHarness):
                 and not ropts.scroll['CFOUR']['BASIS'].disputed()):
             qbs = BasisSet.pyconstruct(molrec, 'BASIS', input_model.model.basis)
             cfourrec['infiles']['GENBAS'] = qbs.print_detail_cfour()
-            bascmd = format_basis_for_cfour(molrec, ropts, qbs.has_puream())
+            bascmd = muster_basisset(molrec, ropts, qbs.has_puream())
         elif _qcdb_basis == '':
             _, cased_basis = format_keyword('CFOUR_BASIS', _cfour_basis)
             cfourrec['infiles']['GENBAS'] = extract_basis_from_genbas(cased_basis,
@@ -108,7 +108,7 @@ class QcdbCFOURHarness(CFOURHarness):
             qbs = BasisSet.pyconstruct(molrec, 'BASIS', _qcdb_basis)
             #if qbs.has_ECP(): #    raise ValidationError("""ECPs not hooked up for Cfour""")
             cfourrec['infiles']['GENBAS'] = qbs.print_detail_cfour()  #qbs.genbas()
-            bascmd = format_basis_for_cfour(molrec, ropts, qbs.has_puream())
+            bascmd = muster_basisset(molrec, ropts, qbs.has_puream())
 
         # Handle calc type and quantum chemical method
         muster_modelchem(input_model.model.method, input_model.driver.derivative_int(), ropts)
@@ -126,7 +126,7 @@ class QcdbCFOURHarness(CFOURHarness):
 
         return cfourrec
 
-    def qcdb_post_parse_output(self, input_model: 'ResultInput', output_model: 'Result') -> 'Result':
+    def qcdb_post_parse_output(self, input_model: ResultInput, output_model: 'Result') -> 'Result':
 
         dqcvars = PreservingDict(copy.deepcopy(output_model.extras['qcvars']))
 

@@ -2,7 +2,7 @@ import struct
 from typing import Dict, List
 
 
-def getrec(reclabelarray: List[bytes], bjobarc: bytes, bjaindx: bytes, *, verbose: bool=False) -> Dict[bytes, bytes]:
+def getrec(reclabelarray: List[bytes], bjobarc: bytes, bjaindx: bytes, *, verbose: bool = False) -> Dict[bytes, bytes]:
     """Reads binary files JOBARC and JAINDX and returns contents
     of each record in *reclabelarray*.
 
@@ -48,7 +48,8 @@ def getrec(reclabelarray: List[bytes], bjobarc: bytes, bjaindx: bytes, *, verbos
         b"LINEAR  ": 'INTEGER',
         b"NATOMS  ": 'INTEGER',
         b"COORD   ": 'DOUBLE',
-        b"ORIENTMT": 'DOUBLE',  # input orientation from ZMAT (mostly useful for Cartesians) to Cfour standard orientation
+        b"ORIENTMT":
+        'DOUBLE',  # input orientation from ZMAT (mostly useful for Cartesians) to Cfour standard orientation
         b"ATOMMASS": 'DOUBLE',
         b"ORIENT3 ": 'DOUBLE',
         b"FULLPTGP": 'CHARACTER',
@@ -349,7 +350,6 @@ def getrec(reclabelarray: List[bytes], bjobarc: bytes, bjaindx: bytes, *, verbos
         b"REFD4EDX": 'DOUBLE',
         b"ZPE_ANHA": 'DOUBLE',
         b"OPENSLOT": 'INTEGER',
-
         b"BOLTZMAN": 'DOUBLE',
         b"MRCCOCC ": 'INTEGER',
         b"ABELPTGP": 'CHARACTER',
@@ -362,63 +362,62 @@ def getrec(reclabelarray: List[bytes], bjobarc: bytes, bjaindx: bytes, *, verbos
         b"ABELPOPV": 'INTEGER',
         b"ABELCLSS": 'INTEGER',
         b"ABELSTGP": 'CHARACTER',
-        b"REALCHRG": 'INTEGER',      # atom/mol? charge taking into acct edp
-        b"NSOSCF  ": 'INTEGER',      # whether is spin orbital calc?
-        b"SCFVCFLA": 'DOUBLE',       # scf vector expanded from sph to cart basis for symm anal - determin orb sym
-        b"EFG_SYM1": 'INTEGER',       # symmetry property of components of electric field gradient  integrals
-        b"EFG_SYM2": 'INTEGER',       # symm prop of comp of EFG
-
+        b"REALCHRG": 'INTEGER',  # atom/mol? charge taking into acct edp
+        b"NSOSCF  ": 'INTEGER',  # whether is spin orbital calc?
+        b"SCFVCFLA": 'DOUBLE',  # scf vector expanded from sph to cart basis for symm anal - determin orb sym
+        b"EFG_SYM1": 'INTEGER',  # symmetry property of components of electric field gradient  integrals
+        b"EFG_SYM2": 'INTEGER',  # symm prop of comp of EFG
         b"DCTDISPL": 'DOUBLE',
-        b"DANGERUS": 'INTEGER',   #?
-        b"FULLCHAR": 'CHARACTER', #?
-        b"FULLDEGN": 'CHARACTER', #?
-        b"FULLLABL": 'CHARACTER', #?
-        b"FULLNIRX": 'CHARACTER', #?
-        b"COMPCHAR": 'CHARACTER', #?
-        b"COMPDEGN": 'CHARACTER', #?
-        b"COMPLABL": 'CHARACTER', #?
-        b"COMPNIRX": 'CHARACTER', #?
-        b"ROTVECX ": 'CHARACTER', #?
-        b"ROTVECY ": 'CHARACTER', #?
-        b"ROTVECZ ": 'CHARACTER', #?
-        b"COMPNSYQ": 'CHARACTER', #?
-        b"COMPSYQT": 'CHARACTER', #?
-        b"COMPSYMQ": 'CHARACTER', #?
-        b"TRAVECX ": 'CHARACTER', #?
-        b"TRAVECY ": 'CHARACTER', #?
-        b"TRAVECZ ": 'CHARACTER', #?
-        b"NVIBSYM ": 'CHARACTER', #?
-        b"NUMVIBRT": 'CHARACTER', #?
-        b"SBGRPSYM": 'CHARACTER', #?
-        b"ORDERREF": 'CHARACTER', #?
-        b"OPERSREF": 'CHARACTER', #?
-        b"NVIBSYMF": 'CHARACTER', #?
-        b"FULLNSYQ": 'CHARACTER', #?
-        b"FULLSYQT": 'CHARACTER', #?
-        b"FULLSYMQ": 'CHARACTER', #?
-        b"INVPSMAT": 'CHARACTER', #?
-        b"FDCOORDS": 'CHARACTER', #?
-        b"FDCALCTP": 'CHARACTER', #?
-        b"NUMPOINT": 'CHARACTER', #?
-        b"NPTIRREP": 'CHARACTER', #?
-        b"GRDPOINT": 'CHARACTER', #?
-        b"DIPPOINT": 'CHARACTER', #?
-        b"ENGPOINT": 'CHARACTER', #?
-        b"PASS1FIN": 'CHARACTER', #?
-        b"REFENERG": 'CHARACTER', #?
-        b"NEXTCALC": 'CHARACTER', #?
-        b"PRINSPIN": 'CHARACTER', #?
-        b"PRINFROM": 'CHARACTER', #?
-        b"PRININTO": 'CHARACTER', #?
-        b"NEXTGEOF": 'CHARACTER', #?
-        b"ZPE_HARM": 'DOUBLE', #?
+        b"DANGERUS": 'INTEGER',  #?
+        b"FULLCHAR": 'CHARACTER',  #?
+        b"FULLDEGN": 'CHARACTER',  #?
+        b"FULLLABL": 'CHARACTER',  #?
+        b"FULLNIRX": 'CHARACTER',  #?
+        b"COMPCHAR": 'CHARACTER',  #?
+        b"COMPDEGN": 'CHARACTER',  #?
+        b"COMPLABL": 'CHARACTER',  #?
+        b"COMPNIRX": 'CHARACTER',  #?
+        b"ROTVECX ": 'CHARACTER',  #?
+        b"ROTVECY ": 'CHARACTER',  #?
+        b"ROTVECZ ": 'CHARACTER',  #?
+        b"COMPNSYQ": 'CHARACTER',  #?
+        b"COMPSYQT": 'CHARACTER',  #?
+        b"COMPSYMQ": 'CHARACTER',  #?
+        b"TRAVECX ": 'CHARACTER',  #?
+        b"TRAVECY ": 'CHARACTER',  #?
+        b"TRAVECZ ": 'CHARACTER',  #?
+        b"NVIBSYM ": 'CHARACTER',  #?
+        b"NUMVIBRT": 'CHARACTER',  #?
+        b"SBGRPSYM": 'CHARACTER',  #?
+        b"ORDERREF": 'CHARACTER',  #?
+        b"OPERSREF": 'CHARACTER',  #?
+        b"NVIBSYMF": 'CHARACTER',  #?
+        b"FULLNSYQ": 'CHARACTER',  #?
+        b"FULLSYQT": 'CHARACTER',  #?
+        b"FULLSYMQ": 'CHARACTER',  #?
+        b"INVPSMAT": 'CHARACTER',  #?
+        b"FDCOORDS": 'CHARACTER',  #?
+        b"FDCALCTP": 'CHARACTER',  #?
+        b"NUMPOINT": 'CHARACTER',  #?
+        b"NPTIRREP": 'CHARACTER',  #?
+        b"GRDPOINT": 'CHARACTER',  #?
+        b"DIPPOINT": 'CHARACTER',  #?
+        b"ENGPOINT": 'CHARACTER',  #?
+        b"PASS1FIN": 'CHARACTER',  #?
+        b"REFENERG": 'CHARACTER',  #?
+        b"NEXTCALC": 'CHARACTER',  #?
+        b"PRINSPIN": 'CHARACTER',  #?
+        b"PRINFROM": 'CHARACTER',  #?
+        b"PRININTO": 'CHARACTER',  #?
+        b"NEXTGEOF": 'CHARACTER',  #?
+        b"ZPE_HARM": 'DOUBLE',  #?
         b"NDROPPED": 'INTEGER',
-        b"REFCPTGP": 'INTEGER', #?
-        b"REFFPTGP": 'INTEGER', #?
-        }
+        b"REFCPTGP": 'INTEGER',  #?
+        b"REFFPTGP": 'INTEGER',  #?
+    }
 
     #with open('JAINDX', mode='rb') as file:  # b is important -> binary
-    fileContent = bjaindx #file.read()
+    fileContent = bjaindx  #file.read()
     fileLength = len(fileContent)
 
     if fileLength == 16012:
@@ -441,18 +440,18 @@ def getrec(reclabelarray: List[bytes], bjobarc: bytes, bjaindx: bytes, *, verbos
         'DOUBLE': 8,
         'INTEGER': srcints,
         'CHARACTER': 1,
-        }
+    }
 
     intlen2format = {
         4: 'i',
         8: 'l',
-        }
+    }
 
     type2format = {
         'DOUBLE': 'd',
         'INTEGER': intlen2format[type2len['INTEGER']],
         'CHARACTER': 'c',
-        }
+    }
 
     if verbose:
         print('\n<<<  JAINDX  >>>\n')
@@ -514,7 +513,7 @@ def getrec(reclabelarray: List[bytes], bjobarc: bytes, bjaindx: bytes, *, verbos
         print('\n<<<  JOBARC  >>>\n')
 
     #with open('JOBARC', mode='rb') as file:  # b is important -> binary
-    fileContent = bjobarc #file.read()
+    fileContent = bjobarc  #file.read()
 
     returnRecords = {}
     poss = 0
@@ -537,6 +536,7 @@ def getrec(reclabelarray: List[bytes], bjobarc: bytes, bjaindx: bytes, *, verbos
             returnRecords[jaindx[item]] = jobarc
 
     return returnRecords
+
 
 #if __name__ == "__main__":
 #    want = ['NATOMS  ', 'AU_LENGT', 'COORD   ', 'HBAR    ', 'ATOMCHRG']

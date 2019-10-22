@@ -16,13 +16,12 @@ from qcengine.programs.util import PreservingDict
 from ... import qcvars
 from ...basisset import BasisSet
 from ...util import print_jobrec, provenance_stamp
-from .harvester import format_modelchem_for_nwchem, muster_inherited_keywords
-from .molbasopt import format_molecule, muster_and_format_basis_for_nwchem
+from .germinate import muster_basisset, muster_inherited_keywords, muster_modelchem, muster_molecule
 
 pp = pprint.PrettyPrinter(width=120)
 
 
-def run_nwchem(name, molecule, options, **kwargs):
+def run_nwchem(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -> Dict:
     """QCDB API to QCEngine connection for NWChem."""
 
     resi = ResultInput(
@@ -48,7 +47,7 @@ def run_nwchem(name, molecule, options, **kwargs):
 
 
 class QcdbNWChemHarness(NWChemHarness):
-    def compute(self, input_model: 'ResultInput', config: 'JobConfig') -> 'Result':
+    def compute(self, input_model: ResultInput, config: 'JobConfig') -> 'Result':
         self.found(raise_error=True)
 
         verbose = 1
@@ -90,7 +89,7 @@ class QcdbNWChemHarness(NWChemHarness):
 
         return output_model
 
-    def qcdb_build_input(self, input_model: 'ResultInput', config: 'JobConfig',
+    def qcdb_build_input(self, input_model: ResultInput, config: 'JobConfig',
                          template: Optional[str] = None) -> Dict[str, Any]:
 
         nwchemrec = {
@@ -103,7 +102,7 @@ class QcdbNWChemHarness(NWChemHarness):
         molrecc1['fix_symmetry'] = 'c1'  # write _all_ atoms to input
         ropts = input_model.extras['qcdb:options']
 
-        molcmd = format_molecule(molrec, ropts, verbose=1)
+        molcmd = muster_molecule(molrec, ropts, verbose=1)
 
         # Handle memory
         # I don't think memory belongs in jobrec. it goes in pkgrec (for pbs) and possibly duplicated in options (for prog)
@@ -133,14 +132,11 @@ class QcdbNWChemHarness(NWChemHarness):
         qbs = BasisSet.pyconstruct(molrec, 'BASIS', _qcdb_basis)
 
         #if qbs.has_ECP(): #    raise ValidationError("""ECPs not hooked up for Cfour""")
-        bascmd = muster_and_format_basis_for_nwchem(molrec, ropts, qbs, verbose=1)
+        bascmd = muster_basisset(molrec, ropts, qbs, verbose=1)
 
         # Handle calc type and quantum chemical method
         #      harvester.nu_muster_modelchem(jobrec['method'], jobrec['dertype'], ropts])
-        mdccmd = format_modelchem_for_nwchem(input_model.model.method,
-                                             input_model.driver.derivative_int(),
-                                             ropts,
-                                             sysinfo=None)
+        mdccmd = muster_modelchem(input_model.model.method, input_model.driver.derivative_int(), ropts)
 
         #PRprint('Touched Keywords')
         #PRprint(ropts.print_changed(history=False))
@@ -166,7 +162,7 @@ class QcdbNWChemHarness(NWChemHarness):
 
         return nwchemrec
 
-    def qcdb_post_parse_output(self, input_model: 'ResultInput', output_model: 'Result') -> 'Result':
+    def qcdb_post_parse_output(self, input_model: ResultInput, output_model: 'Result') -> 'Result':
 
         progvars = PreservingDict(copy.deepcopy(output_model.extras['qcvars']))
         ropts = input_model.extras['qcdb:options']
