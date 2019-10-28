@@ -24,12 +24,12 @@ def check_ccsd(return_value):
     y   =   0.00000000
     z   =   2.1073264
 
-    assert compare_values(ref, qcdb.get_variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(ccsd_corl, qcdb.get_variable('CCSD CORRELATION ENERGY'), 5, 'ccsd corl')
-    assert compare_values(ccsd_tot, qcdb.get_variable('CCSD TOTAL ENERGY'), 5, 'ccsd total')
-    assert compare_values(x, qcdb.get_variable('CURRENT DIPOLE X'), 5, 'dipole x')
-    assert compare_values(y, qcdb.get_variable('CURRENT DIPOLE Y'), 5, 'dipole y')
-    assert compare_values(z, qcdb.get_variable('CURRENT DIPOLE Z'), 5, 'dipole z')
+    assert compare_values(ref, qcdb.variable('HF TOTAL ENERGY'), 5, 'hf ref')
+    assert compare_values(ccsd_corl, qcdb.variable('CCSD CORRELATION ENERGY'), 5, 'ccsd corl')
+    assert compare_values(ccsd_tot, qcdb.variable('CCSD TOTAL ENERGY'), 5, 'ccsd total')
+    assert compare_values(x, qcdb.variable('CURRENT DIPOLE X'), 5, 'dipole x')
+    assert compare_values(y, qcdb.variable('CURRENT DIPOLE Y'), 5, 'dipole y')
+    assert compare_values(z, qcdb.variable('CURRENT DIPOLE Z'), 5, 'dipole z')
 
 @using_nwchem
 def test_1_ccsd():

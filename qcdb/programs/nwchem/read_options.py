@@ -222,6 +222,24 @@ def load_nwchem_keywords(options: Keywords) -> None:
             glossary=
             'Generates files using molden format. Has option to normalize to JANPA convention. Highly recommend using spherical basis set'
         ))
+    
+    options.add(
+        'nwchem',
+        Keyword(
+            keyword= 'property__shielding',
+            default= '',
+            validator= parsers.atompair,
+            glossary= 'Shielding'))
+
+   # options.add(
+        #'nwchem',
+        #Keyword(
+        #    keyword= 'property__spinspin',
+        #    default= (1, 1, 2),
+        #    validator=,
+        #    glossary= ))
+
+            
     #Property adds: shielding, spinspin both use multiple integer input
     #Example: spinspin 1 1 2 reads for 1 coupling pair between atoms 1 and 2
 
@@ -1142,10 +1160,6 @@ def load_nwchem_keywords(options: Keywords) -> None:
         Will use fractional occupation of the orbital levels during the initial cycles of SCF convergence (A.D. Rabuck and G. Scuseria, J. Chem. Phys 110, 695(1999). 
         This option specifies the number of cycles the Rabuck method is active.'''))
 
-    #        validator=parsers.enum(
-    #            ''' acm b3lyp beckehandh pbe0 becke97 becke97-1 becke97-2 becke97-3 becke98 hcth hcth120 hcth 147 hcth407
-    #    becke97ggal cth407p optx hcthp14 mpw91 mpwlk xft97 cft97 ft97 op bop pbeop HFexch becke88 xperdew91 xpbe96 gill96 lyp perdew81
-    #    perdew86 perdew 91 cpbe96 pw91lda slater vwn_1 vwn_2 vwn_3 vwn_4 vwn_5 vwn_1_rpa'''),
     options.add(
         'nwchem',
         Keyword(keyword='dft__iterations',
@@ -1155,7 +1169,10 @@ def load_nwchem_keywords(options: Keywords) -> None:
 
     options.add(
         'nwchem',
-        Keyword(keyword='dft__mult', default=1, validator=parsers.positive_integer, glossary='DFT Mulitiplicity'))
+        Keyword(keyword='dft__mult', 
+                default=1, 
+                validator=parsers.positive_integer, 
+                glossary='DFT Mulitiplicity'))
 
     options.add(
         'nwchem',
@@ -1232,7 +1249,10 @@ def load_nwchem_keywords(options: Keywords) -> None:
                 glossary='No print options for the DFT block. Default is none.'))
     #DFT XC [Functionals]
     options.add('nwchem',
-                Keyword(keyword='dft__xc', default='', validator=lambda x: x.lower(), glossary='DFT functional'))
+                Keyword(keyword='dft__xc', 
+                        default='', 
+                        validator=lambda x: x.lower(), 
+                        glossary='DFT functional'))
     #Need to resolve conflicts with nesting for multiple dft functionals in input #TODO
 
     options.add(

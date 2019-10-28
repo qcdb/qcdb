@@ -102,6 +102,16 @@ def bool_or_elem_dict(inputval):
     else:
         return boolean(inputval)
 
+def atompair(inputval):
+
+    if isinstance(inputval, dict):
+        retdict = {}
+        for k, v in inputval.items():
+            atom1, atom2 = v
+            retdict[k] = (positive_integer(atom1), positive_integer(atom2))
+        return dict(sorted(retdict.items()))  # to place '' key first
+    else:
+        return {''}
 
 def percentage(inputval):
     if 0.0 <= inputval <= 100.0:

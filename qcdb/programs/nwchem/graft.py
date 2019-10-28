@@ -37,6 +37,15 @@ def nwchem_list() -> List:
 
     return val
 
+def nwchem_properties_list() -> List:
+    """Return an array of NWChem methods with properties. Appended to
+    procedures ['properties'].
+    """
+
+    val = []
+    val.append('nwc-scf')
+    val.append('nwc-hf')
+    val.append('nwc-dft')
 
 def nwchem_gradient_list() -> List:
     """Return an array of NWChem methods with energies. Appended
@@ -57,7 +66,7 @@ def nwchem_gradient_list() -> List:
     #    val.append('nwc-eom-ccsd')
     #    val.append('nwc-eom-ccsdt')
     #    val.append('nwc-eom-ccsdtq')
-    #    val.extend(_dft_functionals_list())
+    val.extend(_dft_functionals_list())
     val.append('nwc-tddft')
 
     return val

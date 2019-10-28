@@ -1,7 +1,6 @@
 """Module with a *procedures* dictionary specifying available quantum
 chemical methods and functions driving the main quantum chemical
-functionality, namely single-point energies, geometry optimizations,
-properties, and vibrational frequency calculations.
+functionality, namely properties calculations
 
 """
 import copy
@@ -87,7 +86,7 @@ def properties(name, **kwargs):
 
     # Bounce if name is function
     if hasattr(name, '__call__'):
-        return name(properties, kwargs.pop('label', 'custom function'), ptype='energy', **kwargs)
+        return name(properties, kwargs.pop('label', 'custom function'), ptype='properties', **kwargs)
 
     # Allow specification of methods to arbitrary order
     lowername = name.lower()
@@ -177,6 +176,6 @@ def properties(name, **kwargs):
 #            core.print_out("\n\nWarning! %s does not have an associated derived wavefunction." % name)
 #            core.print_out("The returned wavefunction is the dimer SCF wavefunction.\n\n")
 
-        return (float(jobrec['qcvars']['CURRENT ENERGY'].data), jobrec)
-    else:
-        return float(jobrec['qcvars']['CURRENT ENERGY'].data)
+#        return (float(jobrec['qcvars']['CURRENT ENERGY'].data), jobrec)
+#    else:
+#        return float(jobrec['qcvars']['CURRENT ENERGY'].data)
