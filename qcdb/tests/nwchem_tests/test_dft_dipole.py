@@ -37,19 +37,3 @@ def test_1_dft():
     val = qcdb.properties('nwc-b3lyp')
     check_dft(val)
 
-def test_2_dipole():
-    h2o =   qcdb.set_molecule('''
-                O      0.00000000     0.00000000     0.11726921
-                H      0.75698224     0.00000000    -0.46907685
-                H     -0.75698224     0.00000000    -0.46907685
-                ''')
-
-    qcdb.set_options({
-        'basis' :   'cc-pvdz',
-        'nwchem_dft__xc'    :   'b3lyp',
-        'nwchem_property__dipole':  True,
-        })
-
-    val = qcdb.properties('nwc-b3lyp')
-    check_dft(val)
-
