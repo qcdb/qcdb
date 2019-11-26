@@ -108,8 +108,8 @@ def properties(name, **kwargs):
 #        return driver_nbody.nbody_gufunc(properties, name, ptype='energy', **kwargs)
 
     # Bounce to CBS if "method/basis" name
-    if '/' in lowername:
-        return cbs_driver._cbs_gufunc(properties, name, ptype='properties', molecule=molecule, **kwargs)
+    #if '/' in lowername:
+    #    return cbs_driver._cbs_gufunc(properties, name, ptype='properties', molecule=molecule, **kwargs)
 
     # Commit to procedures['properties'] call hereafter
     return_wfn = kwargs.pop('return_wfn', False)
@@ -164,9 +164,9 @@ def properties(name, **kwargs):
 #    optstash.restore()
     #jobrec.pop('raw_output')  # just to moderate printint to screen
 #PR    pp.pprint(jobrec)
-    pe.active_qcvars = copy.deepcopy(jobrec['qcvars'])
+#    pe.active_qcvars = copy.deepcopy(jobrec['qcvars'])
 
-    if return_wfn:  # TODO current properties safer than wfn.energy() for now, but should be revisited
+#    if return_wfn:  # TODO current properties safer than wfn.energy() for now, but should be revisited
 
 #        # TODO place this with the associated call, very awkward to call this in other areas at the moment
 #        if lowername in ['efp', 'mrcc', 'dmrg', 'psimrcc']:
