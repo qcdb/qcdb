@@ -756,6 +756,19 @@ def define_ex_transition_qcvars(max_root, mtd, sym):
                 The total energy of EOM-{} in {} symmetry from 0 to root {}""".format(mtd, sym, i)
         }
 
+def define_tddft_roots_qcvars(max_root, sym):
+    sym = []
+
+    for i in range(max_root):
+        qcvardefs['TDDFT ROOT {} EXCITATION ENERGY - {} SYMMETRY'.format(i+1, sym)] = {
+                'units' : 'Eh',
+                'glossary' : """ The excitation energy of time-dependent DFT in {} symmetry from 0 to root {}""".format(sym, i+1)
+                }
+
+        qcvardefs['TDDFT ROOT {} EXCITED STATE ENERGY - {} SYMMETRY'.format(i+1, sym)] = {
+                'units' : 'Eh',
+                'glossary' : """The excited state energy of time dependent DFT from root 0 to root {} in {} symmetry""".format(i+1, sym)
+                }
 
 #TRACELESS QUADRUPOLE POLARIZABILITY XZYY
 #.. qcvar:: db_name DATABASE MEAN ABSOLUTE DEVIATION
@@ -1931,5 +1944,6 @@ define_dashd_qcvars('pbe0', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
 define_dashd_qcvars('wpbe', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
 #define_dashd_qcvars('wb97x', dashes=['d'])
 define_ex_transition_qcvars(4, 'ccsd', ['B1', 'A1', 'A2', 'B2'])
+define_tddft_roots_qcvars(10, ['B2U', 'B3U', 'AU'])
 define_prop_qcvars('ccsd')
 define_prop_qcvars('cc')  # TODO reconsider
