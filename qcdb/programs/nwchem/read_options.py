@@ -19,28 +19,28 @@ def load_nwchem_keywords(options: Keywords) -> None:
 
     options.add(
         'nwchem',
-        Keyword(keyword='total_memory',
+        Keyword(keyword='memory__total',
                 default='400 mb',
                 validator=parsers.parse_memory,
                 glossary='Total memory allocation, which can be specified further to stack, heap, and global.'))
 
     options.add(
         'nwchem',
-        Keyword(keyword='stack_memory',
+        Keyword(keyword='memory__stack',
                 default='100 mb',
                 validator=parsers.parse_memory_nomin,
                 glossary='Stack memory allocation that can be specified beyond the total memory.'))
 
     options.add(
         'nwchem',
-        Keyword(keyword='heap_memory',
+        Keyword(keyword='memory__heap',
                 default='100 mb',
                 validator=parsers.parse_memory_nomin,
                 glossary='Heap memory allocation that can be specified beyond the total memory allocation.'))
 
     options.add(
         'nwchem',
-        Keyword(keyword='global_memory',
+        Keyword(keyword='memory__heap',
                 default='200 mb',
                 validator=parsers.parse_memory_nomin,
                 glossary='Global memory allocation.'))
@@ -49,7 +49,7 @@ def load_nwchem_keywords(options: Keywords) -> None:
     options.add(
         'nwchem',
         Keyword(
-            keyword='geometry_center',
+            keyword='geometry__center',
             default=True,
             validator=parsers.boolean,
             glossary=
@@ -58,7 +58,7 @@ def load_nwchem_keywords(options: Keywords) -> None:
 
     options.add(
         'nwchem',
-        Keyword(keyword='geometry_autosym',
+        Keyword(keyword='geometry__autosym',
                 default=True,
                 validator=parsers.boolean,
                 glossary='The option to automatically determine the symmetry of the geometric system. Default is on.'))
@@ -66,7 +66,7 @@ def load_nwchem_keywords(options: Keywords) -> None:
     options.add(
         'nwchem',
         Keyword(
-            keyword='geometry_autoz',
+            keyword='geometry__autoz',
             default=True,
             validator=parsers.boolean,
             glossary=
@@ -850,7 +850,7 @@ def load_nwchem_keywords(options: Keywords) -> None:
         'nwchem',
         Keyword(keyword='tddft__nroots',
                 default=1,
-                validator=lambda x: float(x),
+                validator= parsers.positive_integer,
                 glossary='The number of excited state roots in a TDDFT caclulation.'))
     options.add(
         'nwchem',

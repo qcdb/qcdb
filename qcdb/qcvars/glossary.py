@@ -1944,6 +1944,6 @@ define_dashd_qcvars('pbe0', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
 define_dashd_qcvars('wpbe', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
 #define_dashd_qcvars('wb97x', dashes=['d'])
 define_ex_transition_qcvars(4, 'ccsd', ['B1', 'A1', 'A2', 'B2'])
-define_tddft_roots_qcvars(10, ['B2U', 'B3U', 'AU'])
+define_tddft_roots_qcvars(10, ['B1U' , 'AG','B2U', 'B3U', 'AU'])
 define_prop_qcvars('ccsd')
 define_prop_qcvars('cc')  # TODO reconsider

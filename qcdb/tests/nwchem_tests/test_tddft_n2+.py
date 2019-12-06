@@ -11,7 +11,7 @@ from ..utils import *
 
 def check_tddft(return_value):
     ref = -108.945393441525 #ground state
-    root1_ex = 0.039837937 #a.u.
+    root1_ex = 0.039837937 
     root2_ex = 0.039837937
     root3_ex = 0.116062978
     root4_ex = 0.254048147
@@ -21,16 +21,16 @@ def check_tddft(return_value):
     root8_ex = 0.351283436
     root9_ex = 0.363212907
     root10_ex = 0.363212907
-    root1_energy = 1.0840 #eV
-    root2_energy = 1.0840
-    root3_energy = 3.1582
-    root4_energy = 6.9130
-    root5_energy = 7.8625
-    root6_energy = 7.8625
-    root7_energy = 9.2734
-    root8_energy = 9.5589
-    root9_energy = 9.8835
-    root10_energy= 9.8835
+    root1_energy = ref + root1_ex 
+    root2_energy = ref + root2_ex
+    root3_energy = ref + root3_ex
+    root4_energy = ref + root4_ex
+    root5_energy = ref + root5_ex
+    root6_energy = ref + root6_ex
+    root7_energy = ref + root7_ex
+    root8_energy = ref + root8_ex
+    root9_energy = ref + root9_ex
+    root10_energy= ref + root10_ex
         #excitation = 0.039837937441
         #excited_energy = -108.905555504084
 
@@ -67,8 +67,6 @@ def test_1_dft():
 
     qcdb.set_options({
         'basis': '6-31g**',
-        'memory' : '3000 mb',
-        'nwchem_charge' : 1,
         'nwchem_dft__xc': 'b3lyp',
         'nwchem_dft__mult': 2,
         'nwchem_tddft__nroots': 10
