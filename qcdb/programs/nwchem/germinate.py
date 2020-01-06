@@ -73,6 +73,11 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp}\n\n'
             ropts.require('NWCHEM', 'tce__mp4', True, **kwgs)
+    elif lowername == 'nwc-direct_mp2':
+        mdccmd = f'task direct_mp2 {runtyp} \n\n'
+    elif lowername == 'nwc-rimp2':
+        #rimp2 requires fitting basis meaning topline must be <basis "ri-mp2 basis">
+        mdccmd = f'task rimp2 {runtyp} \n\n'
     #CC options
     elif lowername == 'nwc-ccd':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':

@@ -13,6 +13,8 @@ def nwchem_list() -> List:
     val.append('nwc-mp2')
     val.append('nwc-mp3')
     val.append('nwc-mp4')
+    val.append('nwc-direct_mp2') #untested
+    val.append('nwc-rimp2') #untested
     val.append('nwc-dft')
     val.append('nwc-cc2')
     val.append('nwc-ccsd')
@@ -57,6 +59,8 @@ def nwchem_gradient_list() -> List:
     val.append('nwc-scf')
     val.append('nwc-hf')
     val.append('nwc-mp2')
+    val.append('nwc-direct_mp2') #untested
+    val.append('nwc-rimp2') #untested
     val.append('nwc-dft')
     val.append('nwc-ccsd')
     val.append('nwc-ccsdt')
@@ -161,7 +165,7 @@ def _dft_functionals_list() -> List:
     val.append('nwc-vs98')
     val.append('nwc-m06-l')
     val.append('nwc-hcth147')
-
+    
     return val
 
 
