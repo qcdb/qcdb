@@ -1833,6 +1833,58 @@ qcvardefs['TWO-ELECTRON ENERGY'] = {
 """
 }
 
+qcvardefs['N ALPHA ELECTRONS'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+The number of alpha electrons
+"""
+}
+
+qcvardefs['N BETA ELECTRONS'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+  The number of beta electrons 
+"""
+}
+
+qcvardefs['N ATOMS'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+The number of atoms
+"""
+}
+
+qcvardefs['N MO'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+The number of molecular orbitals
+"""
+}
+
+qcvardefs['N BASIS'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+The number of molecular orbitals
+"""
+}
+
+qcvardefs['MCSCF TOTAL ENERGY'] = {
+        'units': 'Eh',
+        'glossary': """ 
+        The total energy for a MultiConfiguration Self-Consistent Field energy calculation.
+        """
+}
+
 qcvardefs['DLDF-DAS2009 DISPERSION CORRECTION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""

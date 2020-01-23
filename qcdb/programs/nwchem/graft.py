@@ -36,6 +36,7 @@ def nwchem_list() -> List:
     val.append('nwc-eom-ccsdtq')  #untested
     val.extend(_dft_functionals_list())
     val.append('nwc-tddft')
+    val.append('nwc-mcscf')
 
     return val
 

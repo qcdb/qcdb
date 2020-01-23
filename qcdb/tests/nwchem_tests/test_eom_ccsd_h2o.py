@@ -76,7 +76,7 @@ def test_1_eomccsd():
 
     qcdb.set_options({
         'basis'     :       '6-31g*',
-        'memory'    :       '15000 mb',
+        'memory'    :       '1500 mb',
         'scf__e_convergence'    : 1.0e-10,
         #'nwchem_memory' :   '1500 mb',
         #'nwchem_memory' :   '[total, 1500, stack, 400, heap, 400, global, 700, mb]', #The way nwchem speak for memory may need to change

@@ -661,6 +661,12 @@ def load_nwchem_keywords(options: Keywords) -> None:
                 default=1,
                 validator=parsers.nonnegative_integer,
                 glossary='Spin multiplicity in CASSCF/MCSCF block, must be specified for MCSCF to work.'))
+
+    options.add('nwchem', Keyword(
+        keyword='mcscf__state',
+        default='',
+        validator= lambda x: x.lower(),
+        glossary='Defines the spatial symmetry and multiplicity format is [multiplicity][state], e.g. 3b2 for triplet in B2.'))
     #alternative to mcscf_multiplicity & mcscf_symmetry can use mcscf_state
     #    options.add(
     #        'nwchem',
