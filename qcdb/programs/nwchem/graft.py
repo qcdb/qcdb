@@ -96,6 +96,8 @@ def _dft_functionals_list() -> List:
     val = []
     val.append('nwc-b3lyp')
     val.append('nwc-pbe0')
+    val.append('nwc-pbe96')
+    val.append('nwc-bp86')
     val.append('nwc-m05')
     val.append('nwc-m05-2x')
     val.append('nwc-ft97')
