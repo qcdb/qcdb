@@ -387,19 +387,19 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
         mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-pbeh':
         ropts.suggest('NWCHEM', 'xc', 'xpbe96 0.75 hfexch 0.25 cpbe96' **kwgs)
-        mdccmd = f'task dft runtyp} \n\n'
+        mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-pbelyp1w':
         ropts.suggest('NWCHEM', 'xc', 'xpbe96 vwn_5 0.26 lyp 0.74', **kwgs)
-        mdccmd = f'task dft runtyp} \n\n'
+        mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-pw86pbe':
         ropts.suggest('NWCHEM', 'xc', 'xperdew86 cpbe96' **kwgs)
-        mdccmd = f'task dft runtyp} \n\n'
+        mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-tpsslyp1w':
         ropts.suggest('NWCHEM', 'xc', 'xtpss03 vwn_5 0.26 lyp 0.74', **kwgs)
-        mdccmd = f'task dft runtyp} \n\n'
+        mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-wpbe':
         ropts.suggest('NWCHEM', 'xc', 'xwpbe 1.0 cpbe96 1.0 hfexch 1.0 cam 0.40 cam_alpha 0 cam_beta 1.0', **kwgs)
-        mdccmd = f'task dft runtyp} \n\n'
+        mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-xlyp':
         ropts.suggest('NWCHEM', 'xc', 'slater -0.0690 becke88 0.722 xperdew91 0.347 lyp', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
