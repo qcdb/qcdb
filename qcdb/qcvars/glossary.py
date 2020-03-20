@@ -1851,6 +1851,28 @@ qcvardefs['N BETA ELECTRONS'] = {
 """
 }
 
+qcvardefs['HOMO'] = {
+    'units':
+    'Eh a0/u', 
+    'dimension':
+    '(1 , 1)', 
+    'glossary':
+    """
+    Highest occupied molecular orbitals
+    """
+}
+
+qcvardefs['LUMO'] = {
+    'units':
+    'Eh a0/u',  
+    'dimension':
+    '(1 , 1)',  
+    'glossary':
+    """
+    Lowest unoccupied molecular orbitals
+    """
+}
+
 qcvardefs['N ATOMS'] = {
     'units':
     'Eh',

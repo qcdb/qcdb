@@ -1471,7 +1471,7 @@ def load_nwchem_keywords(options: Keywords) -> None:
 
     options.add(
         'nwchem',
-        Keyword(keyword='tce__lrccsd(tq1)',
+        Keyword(keyword='tce__lrccsd(tq)1',
                 default=False,
                 validator=parsers.boolean,
                 glossary=
@@ -1480,21 +1480,26 @@ def load_nwchem_keywords(options: Keywords) -> None:
     options.add(
         'nwchem',
         Keyword(
-            keyword='tce__creomsd(t)',
-            default=False,
-            validator=parsers.boolean,
-            glossary=
-            '''TCE module option of EOM CCSD energies and completely renormalized EOMCCSD(T)(IA) correction. NWChem will print out two components:
-
-        1- total energy of the k-th state
-        2- the delta-corrected EOMCCSD excitation energy'''))
-
-    options.add(
-        'nwchem',
-        Keyword(keyword='tce__creom(t)_ac',
+            keyword='tce__creom(t)ac',
                 default=False,
                 validator=parsers.boolean,
                 glossary='TCE module option of active space CR-EOMCCSD(T) approach.'))
+
+    options.add(
+        'nwchem',
+        Keyword(
+            keyword='tce__crccsd[t]',
+                default=False,
+                validator=parsers.boolean,
+                glossary='TCE module option of completely renormalized CCSD[T] method.'))
+
+    options.add(
+        'nwchem',
+        Keyword(
+            keyword='tce__crccsd(t)',
+                default=False,
+                validator=parsers.boolean,
+                glossary='TCE module option of completely renormalized CCSD(T) method.'))
 
     options.add(
         'nwchem',

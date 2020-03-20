@@ -318,6 +318,7 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
     #dft [block start]
     #xc functional required_numeric
     #func2
+    #Current fix: dft__xc is taking full string
     #end #TODO
     elif lowername == 'nwc-pw91':
         ropts.suggest('NWCHEM', 'xc', 'xperdew91 perdew91', **kwgs)
