@@ -756,6 +756,19 @@ def define_ex_transition_qcvars(max_root, mtd, sym):
                 The total energy of EOM-{} in {} symmetry from 0 to root {}""".format(mtd, sym, i)
         }
 
+def define_tddft_roots_qcvars(max_root, sym):
+    sym = []
+
+    for i in range(max_root):
+        qcvardefs['TDDFT ROOT {} EXCITATION ENERGY - {} SYMMETRY'.format(i+1, sym)] = {
+                'units' : 'Eh',
+                'glossary' : """ The excitation energy of time-dependent DFT in {} symmetry from 0 to root {}""".format(sym, i+1)
+                }
+
+        qcvardefs['TDDFT ROOT {} EXCITED STATE ENERGY - {} SYMMETRY'.format(i+1, sym)] = {
+                'units' : 'Eh',
+                'glossary' : """The excited state energy of time dependent DFT from root 0 to root {} in {} symmetry""".format(i+1, sym)
+                }
 
 #TRACELESS QUADRUPOLE POLARIZABILITY XZYY
 #.. qcvar:: db_name DATABASE MEAN ABSOLUTE DEVIATION
@@ -1820,6 +1833,80 @@ qcvardefs['TWO-ELECTRON ENERGY'] = {
 """
 }
 
+qcvardefs['N ALPHA ELECTRONS'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+The number of alpha electrons
+"""
+}
+
+qcvardefs['N BETA ELECTRONS'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+  The number of beta electrons 
+"""
+}
+
+qcvardefs['HOMO'] = {
+    'units':
+    'Eh a0/u', 
+    'dimension':
+    '(1 , 1)', 
+    'glossary':
+    """
+    Highest occupied molecular orbitals
+    """
+}
+
+qcvardefs['LUMO'] = {
+    'units':
+    'Eh a0/u',  
+    'dimension':
+    '(1 , 1)',  
+    'glossary':
+    """
+    Lowest unoccupied molecular orbitals
+    """
+}
+
+qcvardefs['N ATOMS'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+The number of atoms
+"""
+}
+
+qcvardefs['N MO'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+The number of molecular orbitals
+"""
+}
+
+qcvardefs['N BASIS'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+The number of molecular orbitals
+"""
+}
+
+qcvardefs['MCSCF TOTAL ENERGY'] = {
+        'units': 'Eh',
+        'glossary': """ 
+        The total energy for a MultiConfiguration Self-Consistent Field energy calculation.
+        """
+}
+
 qcvardefs['DLDF-DAS2009 DISPERSION CORRECTION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
@@ -1931,5 +2018,6 @@ define_dashd_qcvars('pbe0', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
 define_dashd_qcvars('wpbe', dashes=['d2', 'd3', 'd3(bj)', 'd3m', 'd3m(bj)'])
 #define_dashd_qcvars('wb97x', dashes=['d'])
 define_ex_transition_qcvars(4, 'ccsd', ['B1', 'A1', 'A2', 'B2'])
+define_tddft_roots_qcvars(10, ['B1U' , 'AG','B2U', 'B3U', 'AU'])
 define_prop_qcvars('ccsd')
 define_prop_qcvars('cc')  # TODO reconsider

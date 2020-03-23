@@ -13,6 +13,8 @@ def nwchem_list() -> List:
     val.append('nwc-mp2')
     val.append('nwc-mp3')
     val.append('nwc-mp4')
+    val.append('nwc-direct_mp2') #untested
+    val.append('nwc-rimp2') #untested
     val.append('nwc-dft')
     val.append('nwc-cc2')
     val.append('nwc-ccsd')
@@ -20,6 +22,8 @@ def nwchem_list() -> List:
     val.append('nwc-ccsdtq')
     val.append('nwc-ccsd[t]')
     val.append('nwc-ccsd(t)')
+    val.append('nwc-ccsd(2)_t') #untested
+    val.append('nwc-ccsd(2)_tq') #untested
     val.append('nwc-eaccsd')
     val.append('nwc-qcisd')
     val.append('nwc-cisd')
@@ -28,15 +32,31 @@ def nwchem_list() -> List:
     val.append('nwc-lccd')
     val.append('nwc-lccsd')
     val.append('nwc-ccd')
+    val.append('nwc-cr-ccsd[t]') #untested
+    val.append('nwc-cr-ccsd(t)') #untested
     val.append('nwc-lr-ccsd')
+    val.append('nwc-lr-ccsd[t]') #untested
+    val.append('nwc-lrccsd(tq)-1') #untested
+    val.append('nwc-creomsd(t)') #untested
+    val.append('nwc-creom(t)ac') #untested
     val.append('nwc-eom-ccsd')  #untested
     val.append('nwc-eom-ccsdt')  #untested
     val.append('nwc-eom-ccsdtq')  #untested
     val.extend(_dft_functionals_list())
     val.append('nwc-tddft')
+    val.append('nwc-mcscf')
 
     return val
 
+def nwchem_properties_list() -> List:
+    """Return an array of NWChem methods with properties. Appended to
+    procedures ['properties'].
+    """
+
+    val = []
+    val.append('nwc-scf')
+    val.append('nwc-hf')
+    val.append('nwc-dft')
 
 def nwchem_gradient_list() -> List:
     """Return an array of NWChem methods with energies. Appended
@@ -48,16 +68,18 @@ def nwchem_gradient_list() -> List:
     val.append('nwc-scf')
     val.append('nwc-hf')
     val.append('nwc-mp2')
+    val.append('nwc-direct_mp2') #untested
+    val.append('nwc-rimp2') #untested
     val.append('nwc-dft')
     val.append('nwc-ccsd')
     val.append('nwc-ccsdt')
     val.append('nwc-ccsdtq')
     val.append('nwc-ccsd(t)')
-    #    val.append('nwc-lccd')
-    #    val.append('nwc-eom-ccsd')
-    #    val.append('nwc-eom-ccsdt')
-    #    val.append('nwc-eom-ccsdtq')
-    #    val.extend(_dft_functionals_list())
+    val.append('nwc-lccd')
+    val.append('nwc-eom-ccsd')
+    val.append('nwc-eom-ccsdt')
+    val.append('nwc-eom-ccsdtq')
+    val.extend(_dft_functionals_list())
     val.append('nwc-tddft')
 
     return val
@@ -74,6 +96,11 @@ def nwchem_hessian_list() -> List:
 
     return []
 
+def nwchem_properties_list() -> List:
+    """Return an array of NWChem methods with energies. Appended to procedures ['properties']"""
+    
+    val = []
+    va.append('nwc-')
 
 def _dft_functionals_list() -> List:
     """Return an array of available method of dft functionals through nwchem interface. 
@@ -82,6 +109,8 @@ def _dft_functionals_list() -> List:
     val = []
     val.append('nwc-b3lyp')
     val.append('nwc-pbe0')
+    val.append('nwc-pbe96')
+    val.append('nwc-bp86')
     val.append('nwc-m05')
     val.append('nwc-m05-2x')
     val.append('nwc-ft97')
@@ -152,7 +181,7 @@ def _dft_functionals_list() -> List:
     val.append('nwc-vs98')
     val.append('nwc-m06-l')
     val.append('nwc-hcth147')
-
+    
     return val
 
 

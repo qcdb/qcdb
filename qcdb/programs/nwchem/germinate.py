@@ -57,6 +57,11 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
     elif lowername in ['nwc-scf', 'nwc-hf']:
         #ropts.require('NWCHEM', 'task__scf', runtyp, **kwgs)
         mdccmd = f'task scf {runtyp}\n\n'
+    
+    elif lowername == 'nwc-mcscf':
+        ropts.suggest('NWCHEM', 'mcscf__active', 1, **kwgs)
+        ropts.suggest('NWCHEM', 'mcscf__actelec', 1, **kwgs)
+        mdccmd = f'task mcscf {runtyp} \n\n'
 
     #MPn options
     elif lowername == 'nwc-mp2':
@@ -73,6 +78,11 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp}\n\n'
             ropts.require('NWCHEM', 'tce__mp4', True, **kwgs)
+    elif lowername == 'nwc-direct_mp2':
+        mdccmd = f'task direct_mp2 {runtyp} \n\n'
+    elif lowername == 'nwc-rimp2':
+        #rimp2 requires fitting basis meaning topline must be <basis "ri-mp2 basis">
+        mdccmd = f'task rimp2 {runtyp} \n\n'
     #CC options
     elif lowername == 'nwc-ccd':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
@@ -308,25 +318,93 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
     #dft [block start]
     #xc functional required_numeric
     #func2
+    #Current fix: dft__xc is taking full string
     #end #TODO
-    elif lowername == 'nwc-b86bpbe':
-        ropts.require('NWCHEM', 'xc', 'becke86b', **kwgs)
-        ropts.require('NWCHEM', 'xc', 'cpbe96', **kwgs)
+    elif lowername == 'nwc-pw91':
+        ropts.suggest('NWCHEM', 'xc', 'xperdew91 perdew91', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-pbe96':
+        ropts.suggest('NWCHEM', 'xc', 'xpbe96 perdew91', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-bp91':
+        ropts.suggest('NWCHEM', 'xc', 'becke88 perdew91', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-blyp':
-        ropts.require('NWCHEM', 'xc', 'becke88', **kwgs)
-        ropts.require('NWCHEM', 'xc', 'lyp', **kwgs)
+        ropts.suggest('NWCHEM', 'xc', 'becke88 lyp', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-b97':
+        ropts.suggest('NWCHEM', 'xc', 'becke97 hfexch 0.1943', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-mpw1pw':
+        ropts.suggest('NWCHEM', 'xc', 'mpw91 0.75 hfexch 0.25 perdew91', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-mpwlyp1m':
+        ropts.suggest('NWCHEM', 'xc', 'mpw91 0.95 hfexch 0.05 lyp', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-mpwlyp1w':
+        ropts.suggest('NWCHEM', 'xc', 'mpw91 vwn_5 0.12 lyp 0.88', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-b1lyp':
+        ropts.suggest('NWCHEM', 'xc', 'hfexch 0.25 becke88 0.75 lyp', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-b1pw91':
+        ropts.suggest('NWCHEM', 'xc', 'hfexch 0.25 becke88 0.75 perdew91', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-b2plyp':
+        ropts.suggest('NWCHEM', 'xc', 'hfexch 0.53 becke88 0.47 lyp 0.73', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-b3lyp5':
+        ropts.suggest('NWCHEM', 'xc', 'hfexch 0.2 slater 0.8 becke88 0.72 vwn_5 0.190 lyp 0.81', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n' 
+    elif lowername == 'nwc-b86bpbe':
+        ropts.suggest('NWCHEM', 'xc', 'becke86 cpbe96', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-b97-1p':
+        ropts.suggest('NWCHEM', 'xc', 'becke97gga1 hfexch', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-b97-0':
+        ropts.suggest('NWCHEM', 'xc', 'becke97 hfexch', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-bhandhlyp' or 'nwc-bhhlyp':
+        ropts.suggest('NWCHEM', 'xc', 'becke88 0.50 hfexch 0.50 lyp', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-bp86':
-        ropts.require('NWCHEM', 'xc', 'becke88', **kwgs)
-        ropts.require('NWCHEM', 'xc', 'perdew86', **kwgs)
+        ropts.suggest('NWCHEM', 'xc', 'becke88 perdew86', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-cam-b3lyp':
+        ropts.suggest('NWCHEM', 'xc', 'xcamb88 1.00 lyp 0.81 vwn_5 0.19 hfexch 1.0 cam 0.33 cam_alpha 0.19 cam_beta 0.46', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-lrc-wpbe':
+        ropts.suggest('NWCHEM', 'xc', 'xwpbe 1.0 cpbe 1.0 hfexch 1.0 cam 0.3 cam_alpha 0 cam_beta 1.0', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-lrc-wpbeh':
+        ropts.suggest('NWCHEM', 'xc', 'xwpbe 0.8 cpbe96 1.0 hfexch 1.0 cam 0.2 cam_alpha 0.20 cam_beta 0.80', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-pbe':
+        ropts.suggest('NWCHEM', 'xc', 'xpbe96 cpbe96', **kwgs)  
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-pbe0-13':
+        ropts.suggest('NWCHEM', 'xc', 'mpw91 0.95 HFexch 0.05 lyp', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-pbeh':
+        ropts.suggest('NWCHEM', 'xc', 'xpbe96 0.75 hfexch 0.25 cpbe96' **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-pbelyp1w':
+        ropts.suggest('NWCHEM', 'xc', 'xpbe96 vwn_5 0.26 lyp 0.74', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-pw86pbe':
-        ropts.require('NWCHEM', 'xc', 'xperdew86', **kwgs)
-        ropts.require('NWCHEM', 'xc', 'cpbe96', **kwgs)
-    elif lowername == 'nwc-pw91':
-        ropts.require('NWCHEM', 'xc', 'xperdew91', **kwgs)
-        ropts.require('NWCHEM', 'xc', 'perdew91', **kwgs)
-
+        ropts.suggest('NWCHEM', 'xc', 'xperdew86 cpbe96' **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-tpsslyp1w':
+        ropts.suggest('NWCHEM', 'xc', 'xtpss03 vwn_5 0.26 lyp 0.74', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-wpbe':
+        ropts.suggest('NWCHEM', 'xc', 'xwpbe 1.0 cpbe96 1.0 hfexch 1.0 cam 0.40 cam_alpha 0 cam_beta 1.0', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == 'nwc-xlyp':
+        ropts.suggest('NWCHEM', 'xc', 'slater -0.0690 becke88 0.722 xperdew91 0.347 lyp', **kwgs)
+        mdccmd = f'task dft {runtyp} \n\n'
+    
     elif lowername == 'nwc-tddft':
         mdccmd = f'task tddft {runtyp} \n\n'
 

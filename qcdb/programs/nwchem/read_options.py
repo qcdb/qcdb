@@ -19,28 +19,28 @@ def load_nwchem_keywords(options: Keywords) -> None:
 
     options.add(
         'nwchem',
-        Keyword(keyword='total_memory',
+        Keyword(keyword='memory__total',
                 default='400 mb',
                 validator=parsers.parse_memory,
                 glossary='Total memory allocation, which can be specified further to stack, heap, and global.'))
 
     options.add(
         'nwchem',
-        Keyword(keyword='stack_memory',
+        Keyword(keyword='memory__stack',
                 default='100 mb',
                 validator=parsers.parse_memory_nomin,
                 glossary='Stack memory allocation that can be specified beyond the total memory.'))
 
     options.add(
         'nwchem',
-        Keyword(keyword='heap_memory',
+        Keyword(keyword='memory__heap',
                 default='100 mb',
                 validator=parsers.parse_memory_nomin,
                 glossary='Heap memory allocation that can be specified beyond the total memory allocation.'))
 
     options.add(
         'nwchem',
-        Keyword(keyword='global_memory',
+        Keyword(keyword='memory__heap',
                 default='200 mb',
                 validator=parsers.parse_memory_nomin,
                 glossary='Global memory allocation.'))
@@ -49,7 +49,7 @@ def load_nwchem_keywords(options: Keywords) -> None:
     options.add(
         'nwchem',
         Keyword(
-            keyword='geometry_center',
+            keyword='geometry__center',
             default=True,
             validator=parsers.boolean,
             glossary=
@@ -58,7 +58,7 @@ def load_nwchem_keywords(options: Keywords) -> None:
 
     options.add(
         'nwchem',
-        Keyword(keyword='geometry_autosym',
+        Keyword(keyword='geometry__autosym',
                 default=True,
                 validator=parsers.boolean,
                 glossary='The option to automatically determine the symmetry of the geometric system. Default is on.'))
@@ -66,7 +66,7 @@ def load_nwchem_keywords(options: Keywords) -> None:
     options.add(
         'nwchem',
         Keyword(
-            keyword='geometry_autoz',
+            keyword='geometry__autoz',
             default=True,
             validator=parsers.boolean,
             glossary=
@@ -222,6 +222,24 @@ def load_nwchem_keywords(options: Keywords) -> None:
             glossary=
             'Generates files using molden format. Has option to normalize to JANPA convention. Highly recommend using spherical basis set'
         ))
+    
+    options.add(
+        'nwchem',
+        Keyword(
+            keyword= 'property__shielding',
+            default= '',
+            validator= parsers.atompair,
+            glossary= 'Shielding'))
+
+   # options.add(
+        #'nwchem',
+        #Keyword(
+        #    keyword= 'property__spinspin',
+        #    default= (1, 1, 2),
+        #    validator=,
+        #    glossary= ))
+
+            
     #Property adds: shielding, spinspin both use multiple integer input
     #Example: spinspin 1 1 2 reads for 1 coupling pair between atoms 1 and 2
 
@@ -643,6 +661,12 @@ def load_nwchem_keywords(options: Keywords) -> None:
                 default=1,
                 validator=parsers.nonnegative_integer,
                 glossary='Spin multiplicity in CASSCF/MCSCF block, must be specified for MCSCF to work.'))
+
+    options.add('nwchem', Keyword(
+        keyword='mcscf__state',
+        default='',
+        validator= lambda x: x.lower(),
+        glossary='Defines the spatial symmetry and multiplicity format is [multiplicity][state], e.g. 3b2 for triplet in B2.'))
     #alternative to mcscf_multiplicity & mcscf_symmetry can use mcscf_state
     #    options.add(
     #        'nwchem',
@@ -832,7 +856,7 @@ def load_nwchem_keywords(options: Keywords) -> None:
         'nwchem',
         Keyword(keyword='tddft__nroots',
                 default=1,
-                validator=lambda x: float(x),
+                validator= parsers.positive_integer,
                 glossary='The number of excited state roots in a TDDFT caclulation.'))
     options.add(
         'nwchem',
@@ -1142,10 +1166,6 @@ def load_nwchem_keywords(options: Keywords) -> None:
         Will use fractional occupation of the orbital levels during the initial cycles of SCF convergence (A.D. Rabuck and G. Scuseria, J. Chem. Phys 110, 695(1999). 
         This option specifies the number of cycles the Rabuck method is active.'''))
 
-    #        validator=parsers.enum(
-    #            ''' acm b3lyp beckehandh pbe0 becke97 becke97-1 becke97-2 becke97-3 becke98 hcth hcth120 hcth 147 hcth407
-    #    becke97ggal cth407p optx hcthp14 mpw91 mpwlk xft97 cft97 ft97 op bop pbeop HFexch becke88 xperdew91 xpbe96 gill96 lyp perdew81
-    #    perdew86 perdew 91 cpbe96 pw91lda slater vwn_1 vwn_2 vwn_3 vwn_4 vwn_5 vwn_1_rpa'''),
     options.add(
         'nwchem',
         Keyword(keyword='dft__iterations',
@@ -1155,7 +1175,10 @@ def load_nwchem_keywords(options: Keywords) -> None:
 
     options.add(
         'nwchem',
-        Keyword(keyword='dft__mult', default=1, validator=parsers.positive_integer, glossary='DFT Mulitiplicity'))
+        Keyword(keyword='dft__mult', 
+                default=1, 
+                validator=parsers.positive_integer, 
+                glossary='DFT Mulitiplicity'))
 
     options.add(
         'nwchem',
@@ -1232,7 +1255,10 @@ def load_nwchem_keywords(options: Keywords) -> None:
                 glossary='No print options for the DFT block. Default is none.'))
     #DFT XC [Functionals]
     options.add('nwchem',
-                Keyword(keyword='dft__xc', default='', validator=lambda x: x.lower(), glossary='DFT functional'))
+                Keyword(keyword='dft__xc', 
+                        default='', 
+                        validator=lambda x: x.lower(), 
+                        glossary='DFT functional'))
     #Need to resolve conflicts with nesting for multiple dft functionals in input #TODO
 
     options.add(
@@ -1445,7 +1471,7 @@ def load_nwchem_keywords(options: Keywords) -> None:
 
     options.add(
         'nwchem',
-        Keyword(keyword='tce__lrccsd(tq1)',
+        Keyword(keyword='tce__lrccsd(tq)1',
                 default=False,
                 validator=parsers.boolean,
                 glossary=
@@ -1454,21 +1480,26 @@ def load_nwchem_keywords(options: Keywords) -> None:
     options.add(
         'nwchem',
         Keyword(
-            keyword='tce__creomsd(t)',
-            default=False,
-            validator=parsers.boolean,
-            glossary=
-            '''TCE module option of EOM CCSD energies and completely renormalized EOMCCSD(T)(IA) correction. NWChem will print out two components:
-
-        1- total energy of the k-th state
-        2- the delta-corrected EOMCCSD excitation energy'''))
-
-    options.add(
-        'nwchem',
-        Keyword(keyword='tce__creom(t)_ac',
+            keyword='tce__creom(t)ac',
                 default=False,
                 validator=parsers.boolean,
                 glossary='TCE module option of active space CR-EOMCCSD(T) approach.'))
+
+    options.add(
+        'nwchem',
+        Keyword(
+            keyword='tce__crccsd[t]',
+                default=False,
+                validator=parsers.boolean,
+                glossary='TCE module option of completely renormalized CCSD[T] method.'))
+
+    options.add(
+        'nwchem',
+        Keyword(
+            keyword='tce__crccsd(t)',
+                default=False,
+                validator=parsers.boolean,
+                glossary='TCE module option of completely renormalized CCSD(T) method.'))
 
     options.add(
         'nwchem',

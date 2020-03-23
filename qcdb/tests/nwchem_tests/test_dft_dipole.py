@@ -21,7 +21,7 @@ def check_dft(return_value):
     assert compare_values(z, qcdb.variable('CURRENT DIPOLE Z'), 5, 'dipole z')
 
 @pytest.mark.xfail(True, reason='Property not implement | harvester error', run=True)
-def test_1_dipole():
+def test_1_dft():
     h2o =   qcdb.set_molecule('''
                 O      0.00000000     0.00000000     0.11726921
                 H      0.75698224     0.00000000    -0.46907685
@@ -34,5 +34,6 @@ def test_1_dipole():
         'nwchem_property__dipole':  True,
         })
 
-    val = qcdb.energy('nwc-b3lyp')
+    val = qcdb.properties('nwc-b3lyp')
     check_dft(val)
+

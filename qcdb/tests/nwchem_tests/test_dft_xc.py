@@ -559,3 +559,7 @@ def test_41_hcth147(h2o):
     })
     val = qcdb.energy('nwc-hcth147', molecule=h2o)
     check_hcth147(val)
+
+def check_pw91(return_value):
+    pw91 = -76.406989374352
+    assert compare_values(pw91, qcdb.variable('DFT TOTAL ENERGY'), 5, 'dft hcth147')
