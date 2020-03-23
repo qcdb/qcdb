@@ -13,7 +13,7 @@ import subprocess
 from pathlib import Path
 
 import qcelemental as qcel
-from qcelemental.models import ResultInput
+from qcelemental.models import AtomicInput
 
 import qcengine as qcng
 
@@ -194,7 +194,7 @@ def vpt2(name, **kwargs):
         shelf['linkage'] = os.getpid()
         shelf['zmat'] = {}  # Cfour-generated ZMAT files with finite difference geometries
         shelf['fjobarc'] = {}  # Cfour- or Psi4-generated ascii files with packaged gradient results
-        shelf['results'] = {}  # models.Result
+        shelf['results'] = {}  # models.AtomicResult
         shelf.sync()
     else:
         pass
@@ -218,7 +218,7 @@ def vpt2(name, **kwargs):
     #shelf['status'] = 'anharm_jobs_sown'  # temporary to force backtrack
     print('STAT', shelf['status'])  # temporary
 
-    resi = ResultInput(
+    resi = AtomicInput(
         **{
             'driver': 'energy',  # to prevent qcdb imposition of analytic hessian
             'extras': {
@@ -771,7 +771,7 @@ def vpt2_reaprun_files(item, linkage, isSowReap, isC4notP4, isC4fully, zmat, low
         # C: Run the job and collect results
         else:
 
-            resi = ResultInput(
+            resi = AtomicInput(
                 **{
                     'driver': 'gradient',
                     'extras': {

@@ -4,7 +4,7 @@ from typing import Any, Dict, Optional
 from decimal import Decimal
 
 import qcelemental as qcel
-from qcelemental.models import ResultInput
+from qcelemental.models import AtomicInput
 
 import qcengine as qcng
 from qcengine.programs.cfour import CFOURHarness
@@ -21,7 +21,7 @@ from .germinate import (extract_basis_from_genbas, muster_basisset, muster_inher
 def run_cfour(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -> Dict:
     """QCDB API to QCEngine connection for CFOUR."""
 
-    resi = ResultInput(
+    resi = AtomicInput(
         **{
             'driver': inspect.stack()[1][3],
             'extras': {
@@ -44,7 +44,7 @@ def run_cfour(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) ->
 
 
 class QcdbCFOURHarness(CFOURHarness):
-    def compute(self, input_model: ResultInput, config: 'JobConfig') -> 'Result':
+    def compute(self, input_model: AtomicInput, config: 'JobConfig') -> 'AtomicResult':
         self.found(raise_error=True)
 
         verbose = 1
@@ -75,7 +75,7 @@ class QcdbCFOURHarness(CFOURHarness):
 
         return output_model
 
-    def qcdb_build_input(self, input_model: ResultInput, config: 'JobConfig',
+    def qcdb_build_input(self, input_model: AtomicInput, config: 'JobConfig',
                          template: Optional[str] = None) -> Dict[str, Any]:
         cfourrec = {
             'infiles': {},
@@ -126,7 +126,7 @@ class QcdbCFOURHarness(CFOURHarness):
 
         return cfourrec
 
-    def qcdb_post_parse_output(self, input_model: ResultInput, output_model: 'Result') -> 'Result':
+    def qcdb_post_parse_output(self, input_model: AtomicInput, output_model: 'AtomicResult') -> 'AtomicResult':
 
         dqcvars = PreservingDict(copy.deepcopy(output_model.extras['qcvars']))
 

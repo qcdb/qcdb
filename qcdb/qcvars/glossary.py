@@ -930,6 +930,18 @@ qcvardefs['HF DIPOLE GRADIENT'] = {
 """
 }
 
+qcvardefs['HF DIPOLE'] = {
+    'units':
+    'e a0',
+    'dimension':
+    '(3,)',  # T?
+    'glossary':
+    """
+   The Hartree--Fock method dipole with respect to nuclear perturbations
+   as a length-3 array.
+"""
+}
+
 qcvardefs['HF TOTAL HESSIAN'] = {
     'units': 'Eh/a0/a0',
     'dimension': '(3 * {nat}, 3 * {nat})',
@@ -1811,6 +1823,18 @@ qcvardefs['SCF DIPOLE GRADIENT'] = {
     """
    The derivative of the SCF dipole with respect to nuclear perturbations
    as a degree-of-freedom by dipole component array.
+"""
+}
+
+qcvardefs['SCF DIPOLE'] = {
+    'units':
+    'e a0',
+    'dimension':
+    '(3,)',  # T?
+    'glossary':
+    """
+   The SCF dipole with respect to nuclear perturbations
+   as a length-3 array.
 """
 }
 

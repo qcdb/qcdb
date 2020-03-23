@@ -33,8 +33,8 @@ def _parse_cbs_gufunc_string(method_name):
     """Process a 'mtd/bas + D:bas2'-like `method_name` into list of methods and bases."""
 
     method_name_list = re.split( r"""\+(?![^\[\]]*\]|[^\(\)]*\))""", method_name)
-    if len(method_name_list) > 2:
-        raise ValidationError("CBS gufunc: Text parsing is only valid for a single delta, please use the CBS wrapper directly")
+    if len(method_name_list) > 3:
+        raise ValidationError("CBS gufunc: Text parsing is only valid for a single dor double delta, please use the CBS wrapper directly")
 
     method_list = []
     basis_list = []
@@ -134,6 +134,11 @@ def _cbs_gufunc(func, total_method_name, molecule, **kwargs):
         if 'corl_scheme' in kwargs:
             cbs_kwargs['corl_scheme'] = kwargs['corl_scheme']
 
+    if len(method_list) > 2:
+        cbs_kwargs['delta2_wfn'] = method_list[2]
+        cbs_kwargs['delta2_basis'] = basis_list[2]
+        if 'delta2_scheme' in kwargs:
+            cbs_kwargs['delta2_scheme'] = kwargs['delta2_scheme']
     if len(method_list) > 1:
         cbs_kwargs['delta_wfn'] = method_list[1]
         cbs_kwargs['delta_basis'] = basis_list[1]
@@ -540,6 +545,15 @@ def cbs(func, label, **kwargs):
         if cbs_delta_wfn not in VARH:
             raise ValidationError("""Requested DELTA method '%s' is not recognized. Add it to VARH in wrapper.py to proceed.""" % (cbs_delta_wfn))
 
+        #if 'delta_wfn_lesser' in kwargs:
+        #    cbs_delta_wfn_lesser = kwargs['delta_wfn_lesser'].lower()
+        #    if cbs_delta_wfn.split('-', 1)[0] != cbs_delta_wfn_lesser.split('-', 1)[0]:
+        #        raise ValidationError("""Bad idea to mix programs.""")
+        #else:
+        #    prog = cbs_delta_wfn.split('-', 1)[0]
+        #    mtd = cbs_corl_wfn.split('-', 1)[1]
+        #    cbs_delta_wfn_lesser = prog + '-' + mtd
+
         cbs_delta_wfn_lesser = kwargs.get('delta_wfn_lesser', cbs_corl_wfn).lower()
         if cbs_delta_wfn_lesser not in VARH:
             raise ValidationError("""Requested DELTA method lesser '%s' is not recognized. Add it to VARH in wrapper.py to proceed.""" % (cbs_delta_wfn_lesser))
@@ -550,6 +564,15 @@ def cbs(func, label, **kwargs):
         cbs_delta2_wfn = kwargs['delta2_wfn'].lower()
         if cbs_delta2_wfn not in VARH:
             raise ValidationError("""Requested DELTA2 method '%s' is not recognized. Add it to VARH in wrapper.py to proceed.""" % (cbs_delta2_wfn))
+
+        #if 'delta2_wfn_lesser' in kwargs:
+        #    cbs_delta2_wfn_lesser = kwargs['delta2_wfn_lesser'].lower()
+        #    if cbs_delta2_wfn.split('-', 1)[0] != cbs_delta2_wfn_lesser.split('-', 1)[0]:
+        #        raise ValidationError("""Bad idea to mix programs.""")
+        #else:
+        #    prog = cbs_delta2_wfn.split('-', 1)[0]
+        #    mtd = cbs_delta_wfn.split('-', 1)[1]
+        #    cbs_delta2_wfn_lesser = prog + '-' + mtd
 
         cbs_delta2_wfn_lesser = kwargs.get('delta2_wfn_lesser', cbs_delta_wfn).lower()
         if cbs_delta2_wfn_lesser not in VARH:
