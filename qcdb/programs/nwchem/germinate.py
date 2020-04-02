@@ -4,6 +4,7 @@ from typing import Dict
 
 import qcelemental as qcel
 
+from ...util import conv_float2negexp
 
 def muster_molecule(molrec: Dict, ropts: 'Keywords', verbose: int = 1) -> str:
     kwgs = {'accession': uuid.uuid4(), 'verbose': verbose}

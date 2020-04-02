@@ -592,55 +592,30 @@ qcvardefs['CURRENT REFERENCE ENERGY'] = {
 """
 }
 
-qcvardefs['CURRENT DIPOLE X'] = {
-    'units': 'D',
-    'glossary': """
-   The X component of the dipole [Debye] for the requested
-   level of theory and root.
-"""
-}
-
-qcvardefs['CURRENT DIPOLE Y'] = {
-    'units': 'D',
-    'glossary': """
-   The Y component of the dipole [Debye] for the requested
-   level of theory and root.
-"""
-}
-
-qcvardefs['CURRENT DIPOLE Z'] = {
-    'units': 'D',
-    'glossary': """
-   The Z component of the dipole [Debye] for the requested
-   level of theory and root.
-"""
-}
-
-
 def define_prop_qcvars(mtd, extra=''):
     mtd = mtd.upper()
 
-    for i in _dip_components:
-        qcvardefs['{} DIPOLE {}'.format(mtd, i)] = {
+    qcvardefs[f'{mtd} DIPOLE'] = {
             'units':
-            'D',
+            'e a0',
+            'dimension': '(3,)',
             'glossary':
             """
-           The {} component of the dipole for the {} level of theory
+           The total dipole for the {} level of theory
            and root *n* (number starts at GS = 0). {}
-    """.format(i, mtd, extra)
-        }
+    """.format(mtd, extra)
+    }
 
-    for i in _quad_components:
-        qcvardefs['{} QUADRUPOLE {}'.format(mtd, i)] = {
+    qcvardefs[f'{mtd} QUADRUPOLE'] = {
             'units':
-            'D A',
+            'e a0^2',
+            'dimension': ('(3,3)'),
             'glossary':
             """
-           The {} component of the quadrupole for the {} level of theory
+           The total quadrupole for the {} level of theory
            and root *n* (number starts at GS = 0). {}
-    """.format(i, mtd, extra)
-        }
+    """.format(mtd, extra)
+    }
 
 
 def define_scf_qcvars(mtd, is_dft=True, extra='', is_dh=False):
@@ -678,25 +653,25 @@ def define_scf_qcvars(mtd, is_dft=True, extra='', is_dh=False):
         """.format(mtd, extra)
         }
 
-    for i in _dip_components:
-        qcvardefs['{} DIPOLE {}'.format(mtd, i)] = {
+    qcvardefs[f'{mtd} DIPOLE'] = {
             'units':
-            'D',
+            'e a0',
+            'dimension': '(3,)',
             'glossary':
             """
-           The {} component of the dipole for the {} level of theory. {}
-    """.format(i, mtd, extra)
-        }
+           The total dipole for the {} level of theory. {}
+    """.format(mtd, extra)
+    }
 
-    for i in _quad_components:
-        qcvardefs['{} QUADRUPOLE {}'.format(mtd, i)] = {
+    qcvardefs[f'{mtd} QUADRUPOLE'] = {
             'units':
-            'D A',
+            'e a0^2',
+            'dimension': ('(3,3)'),
             'glossary':
             """
-           The {} component of the quadrupole for the {} level of theory. {}
-    """.format(i, mtd, extra)
-        }
+           The total quadrupole for the {} level of theory. {}
+    """.format(mtd, extra)
+    }
 
 
 def define_dashd_qcvars(fctl, dashes, extra=''):
@@ -927,18 +902,6 @@ qcvardefs['HF DIPOLE GRADIENT'] = {
     """
    The derivative of the Hartree--Fock method dipole with respect to nuclear perturbations
    as a degree-of-freedom by dipole component array.
-"""
-}
-
-qcvardefs['HF DIPOLE'] = {
-    'units':
-    'e a0',
-    'dimension':
-    '(3,)',  # T?
-    'glossary':
-    """
-   The Hartree--Fock method dipole with respect to nuclear perturbations
-   as a length-3 array.
 """
 }
 
@@ -1823,18 +1786,6 @@ qcvardefs['SCF DIPOLE GRADIENT'] = {
     """
    The derivative of the SCF dipole with respect to nuclear perturbations
    as a degree-of-freedom by dipole component array.
-"""
-}
-
-qcvardefs['SCF DIPOLE'] = {
-    'units':
-    'e a0',
-    'dimension':
-    '(3,)',  # T?
-    'glossary':
-    """
-   The SCF dipole with respect to nuclear perturbations
-   as a length-3 array.
 """
 }
 
