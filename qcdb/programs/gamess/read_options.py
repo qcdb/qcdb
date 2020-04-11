@@ -171,6 +171,15 @@ def load_gamess_keywords(options: Keywords) -> None:
             """Perfor DIIS extrapolation of the open shell CCSD every n iterations. Enter 0 to avoid using the DIIS converger."""
         ))
 
+    options.add(
+        'gamess',
+        Keyword(
+            keyword='ccinp__maxcc',
+            default=30,
+            validator=parsers.positive_integer,
+            glossary="""Max iterations for CCSD iterations, also ROHF left CC vector solver."""
+        ))
+
     # $DFT
 
     options.add(

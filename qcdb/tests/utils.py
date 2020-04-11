@@ -30,11 +30,11 @@ def true_false_decorator(compare_fn, *args, **kwargs):
 
     def true_false_wrapper(*args, **kwargs):
         try:
-            compare_fn(*args, **kwargs)
+            response = compare_fn(*args, **kwargs)
         except qcdb.TestComparisonError as err:
-            return False
+            return (False, err) if "return_message" in kwargs else False
         else:
-            return True
+            return (True, "") if "return_message" in kwargs else True
 
     return true_false_wrapper
 
