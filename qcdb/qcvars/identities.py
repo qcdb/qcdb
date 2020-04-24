@@ -102,6 +102,18 @@ def wfn_qcvars() -> List[Dict[str, Any]]:
         'args': ['HF TOTAL ENERGY', 'SCS(N)-MP2 CORRELATION ENERGY']
     })
 
+    # SCS-MP2-VDW
+    # * https://doi.org/10.1080/00268970802641242
+    pv0.append({
+        'form': 'SCS-MP2-VDW CORRELATION ENERGY',
+        'func': _spin_component_scaling_wsing,
+        'args': [Dm(1.28), Dm(0.50), 'MP2 CORRELATION ENERGY', 'MP2 SAME-SPIN CORRELATION ENERGY', 'MP2 SINGLES ENERGY']})  # yapf: disable
+    pv0.append({
+        'form': 'SCS-MP2-VDW TOTAL ENERGY',
+        'func': sum,
+        'args': ['HF TOTAL ENERGY', 'SCS-MP2-VDW CORRELATION ENERGY']
+    })
+
     # DW-MP2
     # only defined at the (IE) reaction level (like SAPT)
     #    dwmp2['DW-MP2 OMEGA'][mt] = \

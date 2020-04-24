@@ -1385,7 +1385,7 @@ class BasisSet(object):
 
             for Q in range(n_shell):
                 if not numbersonly:
-                    text += """%2s """ % (self.molecule.symbol(A))
+                    text += """%2s%d """ % (self.molecule.symbol(A), A + 1)
                 text += self.shells[Q + first_shell].pyprint_nwchem(outfile=None)
         text += """\n"""
 

@@ -592,55 +592,30 @@ qcvardefs['CURRENT REFERENCE ENERGY'] = {
 """
 }
 
-qcvardefs['CURRENT DIPOLE X'] = {
-    'units': 'D',
-    'glossary': """
-   The X component of the dipole [Debye] for the requested
-   level of theory and root.
-"""
-}
-
-qcvardefs['CURRENT DIPOLE Y'] = {
-    'units': 'D',
-    'glossary': """
-   The Y component of the dipole [Debye] for the requested
-   level of theory and root.
-"""
-}
-
-qcvardefs['CURRENT DIPOLE Z'] = {
-    'units': 'D',
-    'glossary': """
-   The Z component of the dipole [Debye] for the requested
-   level of theory and root.
-"""
-}
-
-
 def define_prop_qcvars(mtd, extra=''):
     mtd = mtd.upper()
 
-    for i in _dip_components:
-        qcvardefs['{} DIPOLE {}'.format(mtd, i)] = {
+    qcvardefs[f'{mtd} DIPOLE'] = {
             'units':
-            'D',
+            'e a0',
+            'dimension': '(3,)',
             'glossary':
             """
-           The {} component of the dipole for the {} level of theory
+           The total dipole for the {} level of theory
            and root *n* (number starts at GS = 0). {}
-    """.format(i, mtd, extra)
-        }
+    """.format(mtd, extra)
+    }
 
-    for i in _quad_components:
-        qcvardefs['{} QUADRUPOLE {}'.format(mtd, i)] = {
+    qcvardefs[f'{mtd} QUADRUPOLE'] = {
             'units':
-            'D A',
+            'e a0^2',
+            'dimension': ('(3,3)'),
             'glossary':
             """
-           The {} component of the quadrupole for the {} level of theory
+           The total quadrupole for the {} level of theory
            and root *n* (number starts at GS = 0). {}
-    """.format(i, mtd, extra)
-        }
+    """.format(mtd, extra)
+    }
 
 
 def define_scf_qcvars(mtd, is_dft=True, extra='', is_dh=False):
@@ -678,25 +653,25 @@ def define_scf_qcvars(mtd, is_dft=True, extra='', is_dh=False):
         """.format(mtd, extra)
         }
 
-    for i in _dip_components:
-        qcvardefs['{} DIPOLE {}'.format(mtd, i)] = {
+    qcvardefs[f'{mtd} DIPOLE'] = {
             'units':
-            'D',
+            'e a0',
+            'dimension': '(3,)',
             'glossary':
             """
-           The {} component of the dipole for the {} level of theory. {}
-    """.format(i, mtd, extra)
-        }
+           The total dipole for the {} level of theory. {}
+    """.format(mtd, extra)
+    }
 
-    for i in _quad_components:
-        qcvardefs['{} QUADRUPOLE {}'.format(mtd, i)] = {
+    qcvardefs[f'{mtd} QUADRUPOLE'] = {
             'units':
-            'D A',
+            'e a0^2',
+            'dimension': ('(3,3)'),
             'glossary':
             """
-           The {} component of the quadrupole for the {} level of theory. {}
-    """.format(i, mtd, extra)
-        }
+           The total quadrupole for the {} level of theory. {}
+    """.format(mtd, extra)
+    }
 
 
 def define_dashd_qcvars(fctl, dashes, extra=''):
@@ -1111,24 +1086,27 @@ qcvardefs['SCS(N)-MP2 TOTAL ENERGY'] = {
 """
 }
 
-qcvardefs['CUSTOM SCS-MP2(N) CORRELATION ENERGY'] = {
+qcvardefs['SCS-MP2-VDW CORRELATION ENERGY'] = {
     'units':
     'Eh',
+    'doi':
+    '10.1080/00268970802641242',
     'glossary':
     r"""
-   Changeable quantity. The MP2-like correlation
-   energy by any reweighting of SAME-SPIN or
-   OPPOSITE-SPIN components. Depending on weights,
-   this may equal any of MP2, SCS-MP2, SCS(N)-MP2,
-   etc. quantities.
+   The MP2-like correlation energy by reweighting
+   MP2 DOUBLES ENERGY by 1.28 opposite-spin
+   and 0.50 same-spin contributions, with any singles
+   carried along.
 """
 }
 
-qcvardefs['CUSTOM SCS-MP2(N) TOTAL ENERGY'] = {
+qcvardefs['SCS-MP2-VDW TOTAL ENERGY'] = {
     'units': 'Eh',
+    'doi':
+    '10.1080/00268970802641242',
     'glossary': r"""
    The total energy built from
-   CUSTOM SCS-MP2 CORRELATION ENERGY and reference.
+   SCS-MP2-VDW CORRELATION ENERGY and reference.
 """
 }
 

@@ -4,7 +4,7 @@ import inspect
 from typing import Any, Dict, Optional
 
 import qcelemental as qcel
-from qcelemental.models import ResultInput
+from qcelemental.models import AtomicInput
 
 import qcengine as qcng
 from qcengine.programs.psi4 import Psi4Harness
@@ -19,7 +19,7 @@ pp = pprint.PrettyPrinter(width=120)
 
 def run_psi4(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -> Dict:
 
-    resi = ResultInput(
+    resi = AtomicInput(
         **{
             'driver': inspect.stack()[1][3],
             'extras': {
@@ -41,14 +41,14 @@ def run_psi4(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -> 
 
 
 class QcdbPsi4Harness(Psi4Harness):
-    def compute(self, input_model: ResultInput, config: 'JobConfig') -> 'Result':
+    def compute(self, input_model: AtomicInput, config: 'JobConfig') -> 'AtomicResult':
         self.found(raise_error=True)
 
         verbose = 1
         print_jobrec(f'[1] {self.name} RESULTINPUT PRE-PLANT', input_model.dict(), verbose >= 3)
 
         input_data = self.qcdb_build_input(input_model, config)
-        input_model = ResultInput(**input_data)
+        input_model = AtomicInput(**input_data)
 
         print_jobrec(f'[2] {self.name} RESULTINPUT PRE-ENGINE', input_model.dict(), verbose >= 4)
 
@@ -74,7 +74,7 @@ class QcdbPsi4Harness(Psi4Harness):
 
         return output_model
 
-    def qcdb_build_input(self, input_model: ResultInput, config: 'JobConfig',
+    def qcdb_build_input(self, input_model: AtomicInput, config: 'JobConfig',
                          template: Optional[str] = None) -> Dict[str, Any]:
         input_data = input_model.dict()
 
@@ -110,7 +110,7 @@ class QcdbPsi4Harness(Psi4Harness):
 
         return input_data
 
-    def qcdb_post_parse_output(self, input_model: ResultInput, output_model: 'Result') -> 'Result':
+    def qcdb_post_parse_output(self, input_model: AtomicInput, output_model: 'AtomicResult') -> 'AtomicResult':
 
         dqcvars = PreservingDict(copy.deepcopy(output_model.extras['qcvars']))
         for k in list(dqcvars.keys()):

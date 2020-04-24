@@ -4,7 +4,7 @@ import inspect
 from typing import Any, Dict, Optional
 
 import qcelemental as qcel
-from qcelemental.models import ResultInput
+from qcelemental.models import AtomicInput
 from qcelemental.util import which
 
 import qcengine as qcng
@@ -23,7 +23,7 @@ pp = pprint.PrettyPrinter(width=120)
 
 def run_gamess(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -> Dict:
 
-    resi = ResultInput(
+    resi = AtomicInput(
         **{
             'driver': inspect.stack()[1][3],
             'extras': {
@@ -44,7 +44,7 @@ def run_gamess(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -
 
 
 class QcdbGAMESSHarness(GAMESSHarness):
-    def compute(self, input_model: ResultInput, config: 'JobConfig') -> 'Result':
+    def compute(self, input_model: AtomicInput, config: 'JobConfig') -> 'AtomicResult':
         self.found(raise_error=True)
 
         verbose = 1
@@ -78,7 +78,7 @@ class QcdbGAMESSHarness(GAMESSHarness):
 
         return output_model
 
-    def qcdb_build_input(self, input_model: ResultInput, config: 'JobConfig',
+    def qcdb_build_input(self, input_model: AtomicInput, config: 'JobConfig',
                          template: Optional[str] = None) -> Dict[str, Any]:
         gamessrec = {
             'infiles': {},
@@ -128,7 +128,7 @@ class QcdbGAMESSHarness(GAMESSHarness):
 
         return gamessrec
 
-    def qcdb_post_parse_output(self, input_model: ResultInput, output_model: 'Result') -> 'Result':
+    def qcdb_post_parse_output(self, input_model: AtomicInput, output_model: 'AtomicResult') -> 'AtomicResult':
 
         dqcvars = PreservingDict(copy.deepcopy(output_model.extras['qcvars']))
         qcvars.build_out(dqcvars)

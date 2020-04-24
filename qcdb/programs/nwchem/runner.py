@@ -5,7 +5,7 @@ from typing import Any, Dict, Optional
 from decimal import Decimal
 
 import qcelemental as qcel
-from qcelemental.models import FailedOperation, ResultInput
+from qcelemental.models import FailedOperation, AtomicInput
 
 import qcengine as qcng
 from qcengine.exceptions import InputError
@@ -24,7 +24,7 @@ pp = pprint.PrettyPrinter(width=120)
 def run_nwchem(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -> Dict:
     """QCDB API to QCEngine connection for NWChem."""
 
-    resi = ResultInput(
+    resi = AtomicInput(
         **{
             'driver': inspect.stack()[1][3],
             'extras': {
@@ -47,7 +47,7 @@ def run_nwchem(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -
 
 
 class QcdbNWChemHarness(NWChemHarness):
-    def compute(self, input_model: ResultInput, config: 'JobConfig') -> 'Result':
+    def compute(self, input_model: AtomicInput, config: 'JobConfig') -> 'AtomicResult':
         self.found(raise_error=True)
 
         verbose = 1
@@ -89,7 +89,7 @@ class QcdbNWChemHarness(NWChemHarness):
 
         return output_model
 
-    def qcdb_build_input(self, input_model: ResultInput, config: 'JobConfig',
+    def qcdb_build_input(self, input_model: AtomicInput, config: 'JobConfig',
                          template: Optional[str] = None) -> Dict[str, Any]:
 
         nwchemrec = {
@@ -162,7 +162,7 @@ class QcdbNWChemHarness(NWChemHarness):
 
         return nwchemrec
 
-    def qcdb_post_parse_output(self, input_model: ResultInput, output_model: 'Result') -> 'Result':
+    def qcdb_post_parse_output(self, input_model: AtomicInput, output_model: 'AtomicResult') -> 'AtomicResult':
 
         progvars = PreservingDict(copy.deepcopy(output_model.extras['qcvars']))
         ropts = input_model.extras['qcdb:options']

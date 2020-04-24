@@ -4,6 +4,7 @@ from typing import Dict
 
 import qcelemental as qcel
 
+from ...util import conv_float2negexp
 
 def muster_molecule(molrec: Dict, ropts: 'Keywords', verbose: int = 1) -> str:
     kwgs = {'accession': uuid.uuid4(), 'verbose': verbose}
@@ -23,8 +24,8 @@ def muster_basisset(molrec: Dict, ropts: 'Keywords', qbs: 'BasisSet', verbose: i
     nwc_puream = {True: 'spherical', False: 'cartesian'}[native_puream]
     #    nwc_puream = 'cartesian'
 
-    bascmd = f"""basis {nwc_puream}\n"""  # nwc wants role, not basis name, I guess: f"""basis "{qbs.name}" {nwc_puream}\n"""
-    bascmd += qbs.print_detail_nwchem()
+    bascmd = f"""basis "ao basis" {nwc_puream} print\n"""  # nwc wants role, not basis name, I guess: f"""basis "{qbs.name}" {nwc_puream}\n"""
+    bascmd += qbs.print_detail_nwchem()  # every unique printed. need labels in geometry, too?
     bascmd += "\nend\n"
 
     #ropts.require('NWCHEM', 'basis__puream', {True: 'spherical', False: 'cartesian'}[native_puream], accession=accession, verbose=verbose)
