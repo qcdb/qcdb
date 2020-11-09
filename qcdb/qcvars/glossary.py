@@ -1271,6 +1271,15 @@ qcvardefs['CCSD TOTAL ENERGY'] = {
 """
 }
 
+qcvardefs['CCSD TOTAL GRADIENT'] = {
+    'units': 'Eh/a0/a0',
+    'dimension': '({nat}, 3)',
+    'glossary': """
+   The total electronic gradient
+    for the coupled cluster singles and doubles level of theory.
+"""
+}
+
 qcvardefs['CCSD CORRELATION ENERGY'] = {
     'units':
     'Eh',
@@ -1775,7 +1784,7 @@ qcvardefs['SCF TOTAL GRADIENT'] = {
     'units': 'Eh/a0/a0',
     'dimension': '({nat}, 3)',
     'glossary': """
-   The total electronic Hessian of the SCF stage of a calculation.
+   The total electronic gradient of the SCF stage of a calculation.
    May be HF or DFT.
 """
 }

@@ -24,9 +24,12 @@ def clsd_open_pmols():
 _q1 = (qcng.exceptions.InputError, "unknown SCFTYPE")  # no rohf reference for nwc mp2
 _q2 = (qcng.exceptions.InputError, "CCTYP IS PROGRAMMED ONLY FOR SCFTYP=RHF OR ROHF")
 _q3 = (qcng.exceptions.InputError, "ccsd: nopen is not zero")
+_q4 = (qcng.exceptions.InputError, "ROHF'S CCTYP MUST BE CCSD OR CR-CCL")  # No (T) w/ rohf in gms
+
 
 _w1 = ("MP2 CORRELATION ENERGY", "nonstandard answer: NWChem TCE MP2 doesn't report singles (affects ROHF)")
 _w2 = ("CCSD CORRELATION ENERGY", "nonstandard answer: GAMESS CCSD ROHF FC energy")
+_w3 = ("(T) CORRECTION ENERGY", "nonstandard answer: NWChem CCSD(T) ROHF AE energy")
 # yapf: enable
 
 
@@ -47,6 +50,18 @@ def _trans_key(qc, bas, key):
             return "qz2p"
 
     sys.exit(1)
+
+
+# http://patorjk.com/software/taag/#p=display&c=bash&f=Soft&t=MP3
+
+
+#
+#  ,--.   ,--.,------.  ,---.     ,------.
+#  |   `.'   ||  .--. ''.-.  \    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  |'.'|  ||  '--' | .-' .'    |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  |  |   |  ||  | --' /   '-.    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#  `--'   `--'`--'     '-----'    `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                                               `---' `---'
 
 
 @pytest.mark.parametrize("dertype", [0,], ids=["ene0"])
