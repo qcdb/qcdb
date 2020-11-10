@@ -137,6 +137,14 @@ def wfn_qcvars() -> List[Dict[str, Any]]:
                 args=['MP{} TOTAL ENERGY'.format(mpn), 'HF TOTAL ENERGY', 'MP{} CORRELATION ENERGY'.format(mpn)],
                 coeff=[-1, 1, 1]))
 
+    # MP2.5
+    pv0.extend(_solve_in_turn(args=['MP2.5 CORRELATION ENERGY', 'MP2 CORRELATION ENERGY', 'MP3 CORRELATION ENERGY'], coeff=[-1, Dm(0.5), Dm(0.5)]))
+    pv0.extend(_solve_in_turn(args=['MP2.5 TOTAL ENERGY', 'HF TOTAL ENERGY', 'MP2.5 CORRELATION ENERGY'], coeff=[-1, 1, 1]))
+    pv0.extend(_solve_in_turn(args=['MP2.5 SAME-SPIN CORRELATION ENERGY', 'MP2 SAME-SPIN CORRELATION ENERGY', 'MP3 SAME-SPIN CORRELATION ENERGY'], coeff=[-1, Dm(0.5), Dm(0.5)]))
+    pv0.extend(_solve_in_turn(args=['MP2.5 OPPOSITE-SPIN CORRELATION ENERGY', 'MP2 OPPOSITE-SPIN CORRELATION ENERGY', 'MP3 OPPOSITE-SPIN CORRELATION ENERGY'], coeff=[-1, Dm(0.5), Dm(0.5)]))
+    pv0.extend(_solve_in_turn(args=['MP2.5 SINGLES ENERGY', 'MP2 SINGLES ENERGY', 'MP3 SINGLES ENERGY'], coeff=[-1, Dm(0.5), Dm(0.5)]))
+    pv0.extend(_solve_in_turn(args=['MP2.5 DOUBLES ENERGY', 'MP2 DOUBLES ENERGY', 'MP3 DOUBLES ENERGY'], coeff=[-1, Dm(0.5), Dm(0.5)]))
+
     # CCSD
     pv0.extend(
         _solve_in_turn(args=['CCSD TOTAL ENERGY', 'HF TOTAL ENERGY', 'CCSD CORRELATION ENERGY'], coeff=[-1, 1, 1]))

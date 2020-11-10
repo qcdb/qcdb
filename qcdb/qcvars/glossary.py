@@ -893,6 +893,14 @@ qcvardefs['HF TOTAL ENERGY'] = {
 """
 }
 
+qcvardefs['HF TOTAL GRADIENT'] = {
+    'units': 'Eh/a0/a0',
+    'dimension': '({nat}, 3)',
+    'glossary': """
+   The total electronic gradient of the Hartree--Fock method.
+"""
+}
+
 qcvardefs['HF DIPOLE GRADIENT'] = {
     'units':
     'Eh a0/u',  # = [(e a0/a0)^2/u]
@@ -1159,6 +1167,52 @@ qcvardefs['MP2.5 CORRELATION ENERGY'] = {
 """
 }
 
+qcvardefs['MP2.5 SINGLES ENERGY'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+   The singles portion of the MP2.5 correlation energy.
+   Zero except in ROHF.
+   :math:`E_{\text{S}}` in Eq. :eq:`MP2p5corl`.
+"""
+}
+
+qcvardefs['MP2.5 DOUBLES ENERGY'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+   The doubles portion of the MP2.5 correlation energy
+   including same-spin and opposite-spin correlations.
+   :math:`E_{\text{D}}` in Eq. :eq:`MP2p5corl`.
+"""
+}
+
+qcvardefs['MP2.5 SAME-SPIN CORRELATION ENERGY'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+   The unscaled portion of the MP2.5 correlation energy
+   from same-spin or triplet doubles correlations.
+
+   canonical_corl(os_scale=1, ss_scale=1) = singles + os_scale * (tot_corl - ss_corl) + ss_scale * ss_corl
+   :math:`E_{\text{SS}}` in Eq. :eq:`MP2p5corl`.
+"""
+}
+
+qcvardefs['MP2.5 OPPOSITE-SPIN CORRELATION ENERGY'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+   The unscaled portion of the MP2.5 correlation energy
+   from opposite-spin or singlet doubles correlations.
+   :math:`E_{\text{OS}}` in Eq. :eq:`MP2p5corl`.
+"""
+}
+
 #.. qcvar:: MP3 TOTAL ENERGY
 #   MP3 CORRELATION ENERGY
 #
@@ -1211,6 +1265,52 @@ qcvardefs['MP3 CORRECTION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    The correlation energy difference between 2nd and 3-order Perturbation theory.
+"""
+}
+
+qcvardefs['MP3 SINGLES ENERGY'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+   The singles portion of the MP3 correlation energy.
+   Zero except in ROHF.
+   :math:`E_{\text{S}}` in Eq. :eq:`MP3corl`.
+"""
+}
+
+qcvardefs['MP3 DOUBLES ENERGY'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+   The doubles portion of the MP3 correlation energy
+   including same-spin and opposite-spin correlations.
+   :math:`E_{\text{D}}` in Eq. :eq:`MP3corl`.
+"""
+}
+
+qcvardefs['MP3 SAME-SPIN CORRELATION ENERGY'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+   The unscaled portion of the MP3 correlation energy
+   from same-spin or triplet doubles correlations.
+
+   canonical_corl(os_scale=1, ss_scale=1) = singles + os_scale * (tot_corl - ss_corl) + ss_scale * ss_corl
+   :math:`E_{\text{SS}}` in Eq. :eq:`MP3corl`.
+"""
+}
+
+qcvardefs['MP3 OPPOSITE-SPIN CORRELATION ENERGY'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+   The unscaled portion of the MP3 correlation energy
+   from opposite-spin or singlet doubles correlations.
+   :math:`E_{\text{OS}}` in Eq. :eq:`MP3corl`.
 """
 }
 

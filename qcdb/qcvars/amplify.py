@@ -76,3 +76,6 @@ def build_out(rawvars: Dict[str, Datum], verbose: int = 1) -> None:
             rawvars.__setitem__(pvar, result, 6)
             if verbose >= 1:
                 print("""{}SUCCESS""".format(buildline))
+
+            if pvar == "CURRENT CORRELATION ENERGY" and abs(float(rawvars[pvar])) < 1.e-16:
+                rawvars.pop(pvar)
