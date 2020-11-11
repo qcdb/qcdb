@@ -31,6 +31,7 @@ _q5 = (qcdb.exceptions.ValidationError, "Derivative method 'name' (gms-ccsd) and
 _w1 = ("MP2 CORRELATION ENERGY", "nonstandard answer: NWChem TCE MP2 doesn't report singles (affects ROHF)")
 _w2 = ("CCSD CORRELATION ENERGY", "nonstandard answer: GAMESS CCSD ROHF FC energy")
 _w3 = ("(T) CORRECTION ENERGY", "nonstandard answer: NWChem CCSD(T) ROHF AE energy")
+_w4 = ("MP2 CORRELATION ENERGY", "nonstandard answer: NWChem TCE MP3 doesn't report singles (affects ROHF), may be off by MP2 singles value")
 # yapf: enable
 
 
@@ -326,22 +327,29 @@ def test_mp2_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, reque
 @pytest.mark.parametrize(
     "inp",
     [
+        # GAMESS doesn't do mp3. Psi4 only does rohf mp3 with detci, which is already non-std for mp2.
         # yapf: disable
         pytest.param({"call": "c4-mp3",  "reference": "rhf",  "fcae": "ae", "keywords": {"basis": "<>", "cfour_scf_conv": 12},                                                                           }, id="mp3  rhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "nwc-mp3", "reference": "rhf",  "fcae": "ae", "keywords": {"basis": "<>", "qc_module": "tce"},                                                                             }, id="mp3  rhf ae: nwchem-tce", marks=using("nwchem")),
         pytest.param({"call": "p4-mp3",  "reference": "rhf",  "fcae": "ae", "keywords": {"basis": "<>", "psi4_mp_type": "conv"},                                                                         }, id="mp3  rhf ae: psi4",       marks=using("psi4")),
 
         pytest.param({"call": "c4-mp3",  "reference": "rhf",  "fcae": "fc", "keywords": {"basis": "<>", "cfour_dropmo": 1, "cfour_scf_conv": 12},                                                        }, id="mp3  rhf fc: cfour",      marks=using("cfour")),
+        pytest.param({"call": "nwc-mp3", "reference": "rhf",  "fcae": "fc", "keywords": {"basis": "<>", "qc_module": "tce", "nwchem_tce__freeze": 1},                                                    }, id="mp3  rhf fc: nwchem-tce", marks=using("nwchem")),
         pytest.param({"call": "p4-mp3",  "reference": "rhf",  "fcae": "fc", "keywords": {"basis": "<>", "psi4_freeze_core": True, "psi4_mp_type": "conv"},                                               }, id="mp3  rhf fc: psi4",       marks=using("psi4")),
 
         pytest.param({"call": "c4-mp3",  "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "cfour_reference": "uhf", "cfour_scf_conv": 12},                                                 }, id="mp3  uhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "nwc-mp3", "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "qc_module": "tce", "nwchem_scf__uhf": True},                                                    }, id="mp3  uhf ae: nwchem-tce", marks=using("nwchem")),
         pytest.param({"call": "p4-mp3",  "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "reference": "uhf", "psi4_mp_type": "conv"},                                                     }, id="mp3  uhf ae: psi4",       marks=using("psi4")),
 
         pytest.param({"call": "c4-mp3",  "reference": "uhf",  "fcae": "fc", "keywords": {"basis": "<>", "cfour_reference": "uhf", "cfour_dropmo": 1, "cfour_scf_conv": 12},                              }, id="mp3  uhf fc: cfour",      marks=using("cfour")),
+        pytest.param({"call": "nwc-mp3", "reference": "uhf",  "fcae": "fc", "keywords": {"basis": "<>", "nwchem_tce__freeze": 1, "qc_module": "tce", "nwchem_scf__uhf": True},                           }, id="mp3  uhf fc: nwchem-tce", marks=using("nwchem")),
         pytest.param({"call": "p4-mp3",  "reference": "uhf",  "fcae": "fc", "keywords": {"basis": "<>", "reference": "uhf", "psi4_freeze_core": True, "psi4_mp_type": "conv"},                           }, id="mp3  uhf fc: psi4",       marks=using("psi4")),
 
         pytest.param({"call": "c4-mp3",  "reference": "rohf", "fcae": "ae", "keywords": {"basis": "<>", "cfour_reference": "rohf", "cfour_scf_conv": 12},                                                }, id="mp3 rohf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "nwc-mp3", "reference": "rohf", "fcae": "ae", "keywords": {"basis": "<>", "qc_module": "tce", "nwchem_scf__rohf": True, "nwchem_scf__thresh": 1.e-8},          "wrong": _w4}, id="mp3 rohf ae: nwchem-tce", marks=using("nwchem")),
 
         pytest.param({"call": "c4-mp3",  "reference": "rohf", "fcae": "fc", "keywords": {"basis": "<>", "cfour_reference": "rohf", "cfour_dropmo": 1, "cfour_scf_conv": 12},                             }, id="mp3 rohf fc: cfour",      marks=using("cfour")),
+        pytest.param({"call": "nwc-mp3", "reference": "rohf", "fcae": "fc", "keywords": {"basis": "<>", "nwchem_tce__freeze": 1, "qc_module": "tce", "nwchem_scf__rohf": True},              "wrong": _w4}, id="mp3 rohf fc: nwchem-tce", marks=using("nwchem")),
         # yapf: enable
     ],
 )

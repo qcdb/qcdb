@@ -1938,6 +1938,14 @@ qcvardefs['N BETA ELECTRONS'] = {
 """
 }
 
+qcvardefs["N BASIS FUNCTIONS"] = {
+    "units": "",
+    "glossary": r"""The number of basis functions"""}
+
+qcvardefs["N MOLECULAR ORBITALS"] = {
+    "units": "",
+    "glossary": r"""The number of molecular orbitals"""}
+
 qcvardefs['HOMO'] = {
     'units':
     'Eh a0/u', 
