@@ -44,3 +44,7 @@ from . import vib
 ## Load items that are useful to access from an input file
 from .vib import compare_vibinfos
 from .testing import *
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
