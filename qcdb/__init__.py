@@ -25,7 +25,10 @@ if not os.path.isdir(data_dir):
     raise KeyError('Unable to read the data folder - check the PSIDATADIR environment variable'
                    '      Current value of PSIDATADIR is {}'.format(data_dir))
 
-from .metadata import __version__, version_formatter
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
+
 from .driver import energy, properties, hessian, gradient, frequency
 from .driver import optking, geometric
 from .driver import vpt2
@@ -46,6 +49,3 @@ from . import vib
 from .vib import compare_vibinfos
 from .testing import *
 
-from ._version import get_versions
-__version__ = get_versions()['version']
-del get_versions

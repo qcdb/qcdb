@@ -1,8 +1,11 @@
 import os
 import re
 import warnings
+from typing import Dict, Union
 
 import numpy as np
+
+import qcelemental as qcel  # for typing
 
 from ..exceptions import ValidationError
 from ..molecule import Molecule
@@ -10,7 +13,7 @@ from ..util import import_ignorecase
 from . import pe
 
 
-def _set_convergence_criterion(ptype, method_name, scf_Ec, pscf_Ec, scf_Dc, pscf_Dc, gen_Ec, verbose=1):
+def _set_convergence_criterion(ptype: str, method_name: str, scf_Ec: Union[int, float], pscf_Ec: Union[int, float], scf_Dc: Union[int, float], pscf_Dc: Union[int, float], gen_Ec, verbose: int = 1):
     r"""
     This function will set local SCF and global energy convergence criterion
     to the defaults listed at:
@@ -21,20 +24,20 @@ def _set_convergence_criterion(ptype, method_name, scf_Ec, pscf_Ec, scf_Dc, pscf
 
     Parameters
     ----------
-    ptype : str
+    ptype
         Procedure type (energy, gradient, etc). Nearly always test on
         procedures['energy'] since that's guaranteed to exist for a method.
-    method_name : str
+    method_name
         Name of the method.
-    scf_Ec : int or float
+    scf_Ec
         E convergence criterion for scf target method.
-    pscf_Ec : int or float
+    pscf_Ec
         E convergence criterion for scf of post-scf target method
-    scf_Dc : int or float
+    scf_Dc
         D convergence criterion for scf target method
-    pscf_Dc : int or float
+    pscf_Dc
         D convergence criterion for scf of post-scf target method
-    gen_Ec : int or float
+    gen_Ec
         E convergence criterion for post-scf target method
 
     """
@@ -255,12 +258,12 @@ def get_active_options():
     return pe.nu_options
 
 
-def print_variables(qcvars=None):
+def print_variables(qcvars: Dict[str, qcel.Datum] = None) -> str:
     """Form a printable representation of qcvariables.
 
     Parameters
     ----------
-    qcvars : dict of Datum, optional
+    qcvars
         Group of Datumobjects to print. If `None`, will use `qcdb.pe.active_qcvars`.
 
     Returns
