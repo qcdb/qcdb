@@ -134,18 +134,18 @@ def load_qcdb_keywords(options: Keywords) -> None:
 
     options.add(
         'qcdb',
-        Keyword(keyword='mp2_ss_scale',
+        Keyword(keyword='ss_scale',
                 default=1.0,
                 validator=lambda x: float(x),
-                glossary="""MP2 same-spin scaling value. Default produces canonical MP2, not canonical SCS-MP2."""))
+                glossary="""Custom same-spin scaling value."""))
 
     options.add(
         'qcdb',
         Keyword(
-            keyword='mp2_os_scale',
+            keyword='os_scale',
             default=1.0,
             validator=lambda x: float(x),
-            glossary="""MP2 opposite-spin scaling value. Default produces canonical MP2, not canonical SCS-MP2."""))
+            glossary="""Custom opposite-spin scaling value."""))
 
     options.add(
         'qcdb',

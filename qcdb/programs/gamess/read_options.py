@@ -15,6 +15,16 @@ def load_gamess_keywords(options: Keywords) -> None:
             """Maximum replicated memory which your job can use, on every core. Units of 1000^2 words (not 1024^2).""")
     )
 
+    options.add(
+        'gamess',
+        Keyword(
+            keyword='system__memddi',
+            default=0,
+            validator=parsers.nonnegative_integer,
+            glossary=
+            """Grand total memory needed for the distributed data interface (DDI) storage, given in units of 1000^2 words.""")
+    )
+
     # $CONTRL
 
     options.add(

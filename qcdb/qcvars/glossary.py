@@ -951,6 +951,14 @@ qcvardefs['MP2 TOTAL ENERGY'] = {
 """
 }
 
+qcvardefs['MP2 TOTAL GRADIENT'] = {
+    'units': 'Eh/a0/a0',
+    'dimension': '({nat}, 3)',
+    'glossary': """
+   The total electronic gradient of the MP2 method.
+"""
+}
+
 qcvardefs['MP2 CORRELATION ENERGY'] = {
     'units':
     'Eh',
