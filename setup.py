@@ -27,7 +27,7 @@ if __name__ == "__main__":
         cmdclass=versioneer.get_cmdclass(),
         packages=setuptools.find_packages(), #exclude=['*checkup*']),
         include_package_data=True,
-#        package_data={'': [os.path.join('qcelemental', 'data', '*.json')]},
+        package_data={'': [os.path.join('qcdb', 'basis', '*.gbs')]},
         setup_requires=[] + pytest_runner,
         python_requires='>=3.6',
         install_requires=["numpy >= 1.12.0", "qcengine >= 0.18.0", "networkx>=2.4.0"],
