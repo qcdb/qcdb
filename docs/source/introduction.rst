@@ -1,15 +1,3 @@
-.. #
-.. # @BEGIN LICENSE
-.. #
-.. # QCDB: quantum chemistry common driver and databases
-.. #
-.. # Copyright (c) 2013-2018 The QCDB Developers.
-.. #
-.. # All rights reserved. Use of this source code is governed by a
-.. # BSD-style license that can be found in the LICENSE file.
-.. #
-.. # @END LICENSE
-.. #
 
 .. # Sphinx docs intro
 
@@ -27,5 +15,7 @@ Welcome to |qcdbs| documentation.
 Install
 =======
 
-At the moment, clone and start adjusting :envvar:`PYTHONPATH` and :envvar:`PATH`.
+To work from source, clone from https://github.com/qcdb/qcdb and ``pip install -e .`` (or place the cloned directory into :envvar:`PYTHONPATH`.
+
+To install a package, ``conda install qcdb -c psi4/label/qcdb``.
 

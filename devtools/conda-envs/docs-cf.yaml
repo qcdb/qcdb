@@ -1,0 +1,15 @@
+name: docs
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python >=3.6
+    # qc
+  - qcengine
+  - qcelemental
+    # docs
+  - python-graphviz
+  - sphinx >=3.5
+  - sphinx-automodapi
+  - psi4/label/dev::sphinx-psi-theme
+

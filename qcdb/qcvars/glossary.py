@@ -17,8 +17,6 @@ qcvardefs['(T) CORRECTION ENERGY'] = {
     'units': 'Eh',
     'glossary': """
    The coupled-cluster perturbative triples correction.
-
-.. qcvar:: (T) CORRECTION ENERGY
 """
 }
 
@@ -26,8 +24,6 @@ qcvardefs['[T] CORRECTION ENERGY'] = {
     'units': 'Eh',
     'glossary': """
    The coupled-cluster bracket perturbative triples correction.
-
-.. qcvar:: [T] CORRECTION ENERGY
 """
 }
 
@@ -525,7 +521,7 @@ qcvardefs['QCISD CORRELATION ENERGY'] = {
 qcvardefs['CURRENT CORRELATION ENERGY'] = {
     'units': 'Eh',
     'glossary': """
-   The correlation energy corresponding to the :qcvar:`CURRENT ENERGY <CURRENTENERGY>` variable.
+   The correlation energy corresponding to the :qcvar:`CURRENT ENERGY` variable.
 """
 }
 
@@ -588,7 +584,7 @@ qcvardefs['CURRENT REFERENCE ENERGY'] = {
     'glossary':
     """
    The total electronic energy of the reference stage corresponding to
-   the :qcvar:`CURRENT ENERGY <CURRENTENERGY>` variable.
+   the :qcvar:`CURRENT ENERGY` variable.
 """
 }
 
@@ -621,7 +617,7 @@ def define_prop_qcvars(mtd, extra=''):
 def define_scf_qcvars(mtd, is_dft=True, extra='', is_dh=False):
     global qcvardefs
 
-    if mtd + 'TOTAL ENERGY' not in qcvardefs:
+    if mtd + ' TOTAL ENERGY' not in qcvardefs:
         qcvardefs['{} TOTAL ENERGY'.format(mtd)] = {
             'units':
             'Eh',
@@ -783,7 +779,7 @@ qcvardefs['DFT FUNCTIONAL TOTAL ENERGY'] = {
    terms in Eq. :eq:`SCFterms` or :eq:`DFTterms`. Quantity
    :math:`E_{\text{FCTL}}` in Eqs.  :eq:`SCFterms` and :eq:`DFTterms`.
    Unless the method includes a dispersion correction, this quantity is
-   equal to :qcvar:`SCF TOTAL ENERGY <SCFTOTALENERGY>`.
+   equal to :qcvar:`SCF TOTAL ENERGY`.
 """
 }
 
@@ -794,21 +790,21 @@ qcvardefs['DFT TOTAL ENERGY'] = {
     r"""
    The total electronic energy for the requested DFT method,
    :math:`E_{\text{DFT}}` in Eq. :eq:`DFTterms`.
-
+???
    .. math::
-      :nowrap:
-      :label: DFTterms
-
-         \begin{align*}
-            E_{\text{DFT}} & = E_{NN} + E_{1e^-} + E_{2e^-} + E_{xc} + E_{\text{-D}} + E_{\text{DH}} \\
-                           & = E_{\text{FCTL}} + E_{\text{-D}} + E_{\text{DH}} \\
-                           & = E_{\text{SCF}} + E_{\text{DH}}
-         \end{align*}
-
+   ???:nowrap:
+   ???:label: DFTterms
+???
+   ???   \begin{align*}
+   ???      E_{\text{DFT}} & = E_{NN} + E_{1e^-} + E_{2e^-} + E_{xc} + E_{\text{-D}} + E_{\text{DH}} \\
+   ???                     & = E_{\text{FCTL}} + E_{\text{-D}} + E_{\text{DH}} \\
+   ???                     & = E_{\text{SCF}} + E_{\text{DH}}
+   ???   \end{align*}
+???
    Unless the method is a DFT double-hybrid, this quantity is equal to
-   :qcvar:`SCF TOTAL ENERGY <SCFTOTALENERGY>`. If the method is neither a
+   :qcvar:`SCF TOTAL ENERGY`. If the method is neither a
    double-hybrid, nor dispersion corrected, this quantity is equal to
-   :qcvar:`DFT FUNCTIONAL TOTAL ENERGY <DFTFUNCTIONALTOTALENERGY>`.
+   :qcvar:`DFT FUNCTIONAL TOTAL ENERGY`.
 """
 }
 
@@ -971,25 +967,25 @@ qcvardefs['MP2 CORRELATION ENERGY'] = {
 
    The MP2 correlation energy for the requested DFT method,
    :math:`E_{\text{MP2corl}}` in Eq. :eq:`MP2corl`.
-
+???
    .. math::
-      :nowrap:
-      :label: MP2corl
-
-         \begin{align*}
-            E_{\text{MP2corl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
-                               & = E_{\text{S}} + E_{\text{D}} \\
+   ???:nowrap:
+   ???:label: MP2corl
+???
+   ???   \begin{align*}
+   ???      E_{\text{MP2corl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
+   ???                         & = E_{\text{S}} + E_{\text{D}}
+   ???   \end{align*}
+???
+"""
 #                               & = E_{NN} + E_{1e^-} + E_{2e^-} + E_{xc} + E_{\text{-D}} + E_{\text{DH}} \\
 #                               & = E_{\text{FCTL}} + E_{\text{-D}} + E_{\text{DH}} \\
 #                               & = E_{\text{SCF}} + E_{\text{DH}}
-         \end{align*}
 
 #   Unless the method is a DFT double-hybrid, this quantity is equal to
-#   :qcvar:`SCF TOTAL ENERGY <SCFTOTALENERGY>`. If the method is neither a
+#   :qcvar:`SCF TOTAL ENERGY`. If the method is neither a
 #   double-hybrid, nor dispersion corrected, this quantity is equal to
-#   :qcvar:`DFT FUNCTIONAL TOTAL ENERGY <DFTFUNCTIONALTOTALENERGY>`.
-
-"""
+#   :qcvar:`DFT FUNCTIONAL TOTAL ENERGY`.
 }
 
 qcvardefs['MP2 SAME-SPIN CORRELATION ENERGY'] = {
@@ -1143,24 +1139,6 @@ qcvardefs['CUSTOM D2 DISPERSION CORRECTION GRADIENT'] = {
 """
 }
 
-qcvardefs[''] = {'units': 'Eh', 'glossary': r"""
-"""}
-
-qcvardefs[''] = {'units': 'Eh', 'glossary': r"""
-"""}
-
-qcvardefs[''] = {'units': 'Eh', 'glossary': r"""
-"""}
-
-qcvardefs[''] = {'units': 'Eh', 'glossary': r"""
-"""}
-
-qcvardefs[''] = {'units': 'Eh', 'glossary': r"""
-"""}
-
-qcvardefs[''] = {'units': 'Eh', 'glossary': r"""
-"""}
-
 qcvardefs['MP2.5 TOTAL ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
@@ -1172,6 +1150,16 @@ qcvardefs['MP2.5 CORRELATION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    The correlation energy component for the MP2.5 level of theory.
+???
+   .. math::
+   ???:nowrap:
+   ???:label: MP2p5corl
+???
+   ???   \begin{align*}
+   ???      E_{\text{MP2.5corl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
+   ???                         & = E_{\text{S}} + E_{\text{D}}
+   ???   \end{align*}
+???
 """
 }
 
@@ -1232,7 +1220,7 @@ qcvardefs['MP2.5 OPPOSITE-SPIN CORRELATION ENERGY'] = {
 #
 #   The total electronic energy [H] and correlation energy component [H]
 #   for the MP4 singles, doubles, quadruples level of theory.  Quantity
-#   :qcvar:`MP4(SDQ) CORRELATION ENERGY <MP4(SDQ)CORRELATIONENERGY>` is
+#   :qcvar:`MP4(SDQ) CORRELATION ENERGY` is
 #   first right-hand term in Eq. :eq:`MP4terms`.
 #
 #.. qcvar:: MP4 TOTAL ENERGY
@@ -1242,8 +1230,8 @@ qcvardefs['MP2.5 OPPOSITE-SPIN CORRELATION ENERGY'] = {
 #
 #   The total electronic energy [H] and correlation energy component [H]
 #   for the full MP4 level of theory. Quantity :qcvar:`MP4 CORRELATION
-#   ENERGY <MP4CORRELATIONENERGY>` / :qcvar:`MP4(SDTQ) CORRELATION ENERGY
-#   <MP4(SDTQ)CORRELATIONENERGY>` is left-hand term in Eq. :eq:`MP4terms`.
+#   ENERGY` / :qcvar:`MP4(SDTQ) CORRELATION ENERGY`
+#   is left-hand term in Eq. :eq:`MP4terms`.
 #
 #   .. math:: E_{\text{MP4}} = E_{\text{MP4(SDQ)}} + E_{\text{MP4(T)}}
 #      :label: MP4terms
@@ -1266,6 +1254,16 @@ qcvardefs['MP3 CORRELATION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    The correlation energy component for 3-order Perturbation theory.
+???
+   .. math::
+   ???:nowrap:
+   ???:label: MP3corl
+???
+   ???   \begin{align*}
+   ???      E_{\text{MP3corl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
+   ???                         & = E_{\text{S}} + E_{\text{D}}
+   ???   \end{align*}
+???
 """
 }
 
@@ -1400,16 +1398,16 @@ qcvardefs['CCSD CORRELATION ENERGY'] = {
 
    The CCSD correlation energy for the requested DFT method,
    :math:`E_{\text{CCSDcorl}}` in Eq. :eq:`CCSDcorl`.
-
+???
    .. math::
-      :nowrap:
-      :label: CCSDcorl
-
-         \begin{align*}
-#            E_{\text{CCSDcorl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
-#                               & = E_{\text{S}} + E_{\text{D}} \\
-         \end{align*}
-
+   ???:nowrap:
+   ???:label: CCSDcorl
+???
+   ???   \begin{align*}
+   ???      E_{\text{CCSDcorl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
+   ???                         & = E_{\text{S}} + E_{\text{D}}
+   ???   \end{align*}
+???
 """
 }
 
@@ -1466,16 +1464,16 @@ qcvardefs['CCSDT (PBE) CORRELATION ENERGY'] = {
 
    The CCSDT correlation energy for the requested DFT method, 
    :math:`E_{\text{CCSDTcorl}}` in Eq. :eq:`CCSDTcorl`.
-
+???
    .. math:: 
-      :nowrap:
-      :label: CCSDTcorl
-
-         \begin{align*}
-#            E_{\text{CCSDTcorl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
-#                               & = E_{\text{S}} + E_{\text{D}} \\
-         \end{align*}
-
+   ???:nowrap:
+   ???:label: CCSDTcorl
+???
+   ???   \begin{align*}
+   ???      E_{\text{CCSDTcorl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
+   ???                         & = E_{\text{S}} + E_{\text{D}}
+   ???   \end{align*}
+???
 """
 }
 
@@ -1503,16 +1501,16 @@ qcvardefs['CCSDTQ CORRELATION ENERGY'] = {
 
    The CCSDTQ correlation energy for the requested DFT method, 
    :math:`E_{\text{CCSDTQcorl}}` in Eq. :eq:`CCSDTQcorl`.
-
+???
    .. math:: 
-      :nowrap:
-      :label: CCSDTQcorl
-
-         \begin{align*}
-#            E_{\text{CCSDTQcorl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
-#                               & = E_{\text{S}} + E_{\text{D}} \\
-         \end{align*}
-
+   ???:nowrap:
+   ???:label: CCSDTQcorl
+???
+   ???   \begin{align*}
+   ???      E_{\text{CCSDTQcorl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
+   ???                         & = E_{\text{S}} + E_{\text{D}}
+   ???   \end{align*}
+???
 """
 }
 
@@ -1728,9 +1726,10 @@ qcvardefs['NUCLEAR REPULSION ENERGY'] = {
     r"""
    The nuclear repulsion energy contribution [H] to the total SCF energy.
    Quantity :math:`E_{NN}` in Eq. :eq:`SCFterms`.
-
-   .. math:: E_{NN} = \sum_{i, j<i}^{N_{atom}}\frac{Z_i Z_j}{|\mathbf{R}_i - \mathbf{R}_j|}
-      :label: ENN
+???
+   .. math:: E_{NN} = \sum_{i, j<i}^{N_{atom}}\frac{Z_i Z_j}{\lvert\mathbf{R}_i - \mathbf{R}_j\rvert}
+   ???:label: ENN
+???
 """
 }  # TODO EFP?
 
@@ -1797,7 +1796,7 @@ qcvardefs['PE ENERGY'] = {'units': 'Eh', 'glossary': r"""
 #   Respectively, the dispersion, electrostatics, exchange, and induction
 #   components of the total electronic interaction energy [H] for the the
 #   requested SAPT level of theory. The sum of these four components yields
-#   :qcvar:`SAPT TOTAL ENERGY <SAPTTOTALENERGY>`.
+#   :qcvar:`SAPT TOTAL ENERGY`.
 #
 #.. qcvar:: SAPT TOTAL ENERGY
 #
@@ -1867,24 +1866,24 @@ qcvardefs['SCF TOTAL ENERGY'] = {
     'glossary':
     r"""
    The total electronic energy of the SCF stage of the calculation.
-   The :qcvar:`CORRELATION ENERGY` variables from subsequent stages of a
-   calculation are often the corresponding :qcvar:`TOTAL ENERGY`
+   The :samp:`{method} CORRELATION ENERGY` variables from subsequent stages of a
+   calculation are often the corresponding :samp:`{method} TOTAL ENERGY`
    variables less this quantity. Constructed from Eq. :eq:`SCFterms`,
    where this quantity is :math:`E_{\text{SCF}}`.
-
+???
    .. math::
-      :nowrap:
-      :label: SCFterms
-
-         \begin{align*}
-            E_{\text{SCF}} & = E_{NN} + E_{1e^-} + E_{2e^-} + E_{xc} + E_{\text{-D}} \\
-                           & = E_{\text{FCTL/HF}} + E_{\text{-D}}
-         \end{align*}
-
-   Unless the method includes a dispersion correction, this quantity is equal to :qcvar:`HF TOTAL ENERGY <HFTOTALENERGY>` (for HF) or
-   :qcvar:`DFT FUNCTIONAL TOTAL ENERGY <DFTFUNCTIONALTOTALENERGY>` (for
+   ???:nowrap:
+   ???:label: SCFterms
+???
+   ???   \begin{align*}
+   ???      E_{\text{SCF}} & = E_{NN} + E_{1e^-} + E_{2e^-} + E_{xc} + E_{\text{-D}} \\
+   ???                     & = E_{\text{FCTL/HF}} + E_{\text{-D}}
+   ???   \end{align*}
+???
+   Unless the method includes a dispersion correction, this quantity is equal to :qcvar:`HF TOTAL ENERGY` (for HF) or
+   :qcvar:`DFT FUNCTIONAL TOTAL ENERGY` (for
    DFT). Unless the method is a DFT double-hybrid, this quantity is equal
-   to :qcvar:`DFT TOTAL ENERGY <DFTTOTALENERGY>`.
+   to :qcvar:`DFT TOTAL ENERGY`.
 """
 }
 
@@ -2059,6 +2058,28 @@ qcvardefs['GROUND-STATE SYMMETRY'] = {
         Ground state symmetry value of an excited state calculation.
         """
 }
+
+qcvardefs["CBS TOTAL ENERGY"] = {
+    'units': 'Eh',
+    "glossary": r"""
+   The total electronic energy for the compound method requested through cbs().
+"""
+}
+
+qcvardefs["CBS CORRELATION ENERGY"] = {
+    'units': 'Eh',
+    "glossary": r"""
+   The correlation correction energy for the compound method requested through cbs().
+"""
+}
+
+qcvardefs["CBS REFERENCE ENERGY"] = {
+    'units': 'Eh',
+    "glossary": r"""
+   The reference total energy for the compound method requested through cbs().
+"""
+}
+
 
 #.. qcvar:: UNCP-CORRECTED 2-BODY INTERACTION ENERGY
 #
