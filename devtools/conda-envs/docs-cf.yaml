@@ -3,13 +3,20 @@ channels:
   - conda-forge
   - nodefaults
 dependencies:
-  - python >=3.6
+  - python
+  - networkx
+
     # qc
   - qcengine
   - qcelemental
+
     # docs
   - python-graphviz
   - sphinx >=3.5
   - sphinx-automodapi
   - psi4/label/dev::sphinx-psi-theme
 
+    # testing
+  - pytest>=4.0.0
+  - pytest-cov
+  - codecov

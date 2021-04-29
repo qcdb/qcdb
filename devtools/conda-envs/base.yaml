@@ -11,16 +11,15 @@ dependencies:
   #- qcengine
   - pint
   - pip
-  - pydantic>=0.32
+  - pydantic>=1.8.1
 
     # Optional depends
   - networkx
 
     # Building
-  - cmake
 
     # Testing
-  - pytest>=3.9.1
+  - pytest>=4.0.0
   - pytest-cov
   - codecov
 
