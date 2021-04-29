@@ -153,7 +153,7 @@ import sphinx_psi_theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {"roottarget": "index",
-                      "barlink_github": "http://github.com/qcdb/qcdb",
+                      "barlink_github": "https://github.com/qcdb/qcdb",
                       "barlink_home": "https://github.com/qcdb/qcdb/blob/master/README.md",
                       "barlink_help": "http://forum.psicode.org",
                       "barlink_docsrc": "docs/sphinx",
