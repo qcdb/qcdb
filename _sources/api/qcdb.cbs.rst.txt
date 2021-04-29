@@ -1,0 +1,6 @@
+cbs
+===
+
+.. currentmodule:: qcdb
+
+.. autofunction:: cbs

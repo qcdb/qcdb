@@ -1,0 +1,6 @@
+compare_matrices
+================
+
+.. currentmodule:: qcdb
+
+.. autofunction:: compare_matrices

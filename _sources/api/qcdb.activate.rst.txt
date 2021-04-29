@@ -1,0 +1,6 @@
+activate
+========
+
+.. currentmodule:: qcdb
+
+.. autofunction:: activate

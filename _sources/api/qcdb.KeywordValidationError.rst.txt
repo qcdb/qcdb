@@ -1,0 +1,6 @@
+KeywordValidationError
+======================
+
+.. currentmodule:: qcdb
+
+.. autoexception:: KeywordValidationError

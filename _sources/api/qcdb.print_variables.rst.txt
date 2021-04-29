@@ -1,0 +1,6 @@
+print_variables
+===============
+
+.. currentmodule:: qcdb
+
+.. autofunction:: print_variables

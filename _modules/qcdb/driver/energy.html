@@ -1,0 +1,640 @@
+<!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>qcdb.driver.energy</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/psi4.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../../../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../../../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../../../_static/cloud.js"></script>
+    
+
+    <link rel="shortcut icon" href="../../../_static/favicon-qcdb.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">Index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../index.html" title="Table Of Contents"
+             accesskey="C"><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/energy.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../../../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">qcdb.driver.energy</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qcdb.driver.energy</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Module with a *procedures* dictionary specifying available quantum</span>
+<span class="sd">chemical methods and functions driving the main quantum chemical</span>
+<span class="sd">functionality, namely single-point energies, geometry optimizations,</span>
+<span class="sd">properties, and vibrational frequency calculations.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+
+<span class="kn">from</span> <span class="nn">..keywords</span> <span class="kn">import</span> <span class="n">register_kwds</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">pe</span>  <span class="c1"># keep this at top of imports</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">cbs_driver</span><span class="p">,</span> <span class="n">driver_helpers</span><span class="p">,</span> <span class="n">driver_util</span>
+<span class="kn">from</span> <span class="nn">.proc_table</span> <span class="kn">import</span> <span class="n">procedures</span>
+
+<span class="n">pp</span> <span class="o">=</span> <span class="n">pprint</span><span class="o">.</span><span class="n">PrettyPrinter</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+
+
+   
+<span class="c1">#def energy(name, molecule, **kwargs):</span>
+<span class="c1">#    r&quot;&quot;&quot;Function to compute the single-point electronic energy.&quot;&quot;&quot;</span>
+
+<span class="c1">#       :returns: *float* |w--w| Total electronic energy in Hartrees. SAPT &amp; EFP return interaction energy.</span>
+<span class="c1">#   </span>
+<span class="c1">#       :returns: (*float*, :py:class:`~psi4.core.Wavefunction`) |w--w| energy and wavefunction when **return_wfn** specified.</span>
+<span class="c1">#   </span>
+<span class="c1">#       :PSI variables:</span>
+<span class="c1">#   </span>
+<span class="c1">#       .. hlist::</span>
+<span class="c1">#          :columns: 1</span>
+<span class="c1">#   </span>
+<span class="c1">#          * :qcvar:`CURRENT ENERGY &lt;CURRENTENERGY&gt;`</span>
+<span class="c1">#          * :qcvar:`CURRENT REFERENCE ENERGY &lt;CURRENTREFERENCEENERGY&gt;`</span>
+<span class="c1">#          * :qcvar:`CURRENT CORRELATION ENERGY &lt;CURRENTCORRELATIONENERGY&gt;`</span>
+<span class="c1">#   </span>
+<span class="c1">#       :type name: string</span>
+<span class="c1">#       :param name: ``&#39;scf&#39;`` || ``&#39;mp2&#39;`` || ``&#39;ci5&#39;`` || etc.</span>
+<span class="c1">#   </span>
+<span class="c1">#           First argument, usually unlabeled. Indicates the computational method</span>
+<span class="c1">#           to be applied to the system.</span>
+<span class="c1">#   </span>
+<span class="c1">#       :type molecule: :ref:`molecule &lt;op_py_molecule&gt;`</span>
+<span class="c1">#       :param molecule: ``h2o`` || etc.</span>
+<span class="c1">#   </span>
+<span class="c1">#           The target molecule, if not the last molecule defined.</span>
+<span class="c1">#   </span>
+<span class="c1">#       :type return_wfn: :ref:`boolean &lt;op_py_boolean&gt;`</span>
+<span class="c1">#       :param return_wfn: ``&#39;on&#39;`` || |dl| ``&#39;off&#39;`` |dr|</span>
+<span class="c1">#   </span>
+<span class="c1">#           Indicate to additionally return the :py:class:`~psi4.core.Wavefunction`</span>
+<span class="c1">#           calculation result as the second element (after *float* energy) of a tuple.</span>
+<span class="c1">#   </span>
+<span class="c1">#       :type restart_file: string</span>
+<span class="c1">#       :param restart_file: ``[&#39;file.1, file.32]`` || ``./file`` || etc.</span>
+<span class="c1">#   </span>
+<span class="c1">#           Binary data files to be renamed for calculation restart.</span>
+<span class="c1">#   </span>
+<span class="c1">#       .. _`table:energy_gen`:</span>
+<span class="c1">#   </span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | name                    | calls method                                                                                                  |</span>
+<span class="c1">#       +=========================+===============================================================================================================+</span>
+<span class="c1">#       | efp                     | effective fragment potential (EFP) :ref:`[manual] &lt;sec:libefp&gt;`                                               |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | scf                     | Hartree--Fock (HF) or density functional theory (DFT) :ref:`[manual] &lt;sec:scf&gt;`                               |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | hf                      | HF self consistent field (SCF) :ref:`[manual] &lt;sec:scf&gt;`                                                      |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | hf3c                    | HF with dispersion, BSSE, and basis set corrections :ref:`[manual] &lt;sec:gcp&gt;`                                 |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | pbeh3c                  | PBEh with dispersion, BSSE, and basis set corrections :ref:`[manual] &lt;sec:gcp&gt;`                               |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | dct                     | density cumulant functional theory :ref:`[manual] &lt;sec:dct&gt;`                                                  |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | mp2                     | 2nd-order |MollerPlesset| perturbation theory (MP2) :ref:`[manual] &lt;sec:dfmp2&gt;` :ref:`[details] &lt;tlmp2&gt;`      |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | mp3                     | 3rd-order |MollerPlesset| perturbation theory (MP3) :ref:`[manual] &lt;sec:occ_nonoo&gt;` :ref:`[details] &lt;tlmp3&gt;`  |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | fno-mp3                 | MP3 with frozen natural orbitals :ref:`[manual] &lt;sec:fnocc&gt;`                                                  |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | mp2.5                   | average of MP2 and MP3 :ref:`[manual] &lt;sec:occ_nonoo&gt;` :ref:`[details] &lt;tlmp25&gt;`                              |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | mp4(sdq)                | 4th-order MP perturbation theory (MP4) less triples :ref:`[manual] &lt;sec:fnompn&gt;`                              |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | fno-mp4(sdq)            | MP4 (less triples) with frozen natural orbitals :ref:`[manual] &lt;sec:fnocc&gt;`                                   |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | mp4                     | full MP4 :ref:`[manual] &lt;sec:fnompn&gt;` :ref:`[details] &lt;tlmp4&gt;`                                                |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | fno-mp4                 | full MP4 with frozen natural orbitals :ref:`[manual] &lt;sec:fnocc&gt;`                                             |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | mp\ *n*                 | *n*\ th-order |MollerPlesset| (MP) perturbation theory :ref:`[manual] &lt;sec:arbpt&gt;`                            |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | zapt\ *n*               | *n*\ th-order z-averaged perturbation theory (ZAPT) :ref:`[manual] &lt;sec:arbpt&gt;`                               |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | omp2                    | orbital-optimized second-order MP perturbation theory :ref:`[manual] &lt;sec:occ_oo&gt;`                            |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | scs-omp2                | spin-component scaled OMP2 :ref:`[manual] &lt;sec:occ_oo&gt;`                                                       |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | scs(n)-omp2             | a special version of SCS-OMP2 for nucleobase interactions :ref:`[manual] &lt;sec:occ_oo&gt;`                        |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | scs-omp2-vdw            | a special version of SCS-OMP2 (from ethene dimers) :ref:`[manual] &lt;sec:occ_oo&gt;`                               |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sos-omp2                | spin-opposite scaled OMP2 :ref:`[manual] &lt;sec:occ_oo&gt;`                                                        |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sos-pi-omp2             | A special version of SOS-OMP2 for pi systems :ref:`[manual] &lt;sec:occ_oo&gt;`                                     |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | omp3                    | orbital-optimized third-order MP perturbation theory :ref:`[manual] &lt;sec:occ_oo&gt;`                             |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | scs-omp3                | spin-component scaled OMP3 :ref:`[manual] &lt;sec:occ_oo&gt;`                                                       |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | scs(n)-omp3             | a special version of SCS-OMP3 for nucleobase interactions :ref:`[manual] &lt;sec:occ_oo&gt;`                        |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | scs-omp3-vdw            | a special version of SCS-OMP3 (from ethene dimers) :ref:`[manual] &lt;sec:occ_oo&gt;`                               |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sos-omp3                | spin-opposite scaled OMP3 :ref:`[manual] &lt;sec:occ_oo&gt;`                                                        |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sos-pi-omp3             | A special version of SOS-OMP3 for pi systems :ref:`[manual] &lt;sec:occ_oo&gt;`                                     |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | omp2.5                  | orbital-optimized MP2.5 :ref:`[manual] &lt;sec:occ_oo&gt;`                                                          |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | lccsd, cepa(0)          | coupled electron pair approximation variant 0 :ref:`[manual] &lt;sec:fnocepa&gt;` :ref:`[details] &lt;tllccsd&gt;`        |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | fno-lccsd, fno-cepa(0)  | CEPA(0) with frozen natural orbitals :ref:`[manual] &lt;sec:fnocc&gt;`                                              |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | cepa(1)                 | coupled electron pair approximation variant 1 :ref:`[manual] &lt;sec:fnocepa&gt;`                                   |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | fno-cepa(1)             | CEPA(1) with frozen natural orbitals :ref:`[manual] &lt;sec:fnocc&gt;`                                              |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | cepa(3)                 | coupled electron pair approximation variant 3 :ref:`[manual] &lt;sec:fnocepa&gt;`                                   |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | fno-cepa(3)             | CEPA(3) with frozen natural orbitals :ref:`[manual] &lt;sec:fnocc&gt;`                                              |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | acpf                    | averaged coupled-pair functional :ref:`[manual] &lt;sec:fnocepa&gt;`                                                |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | fno-acpf                | ACPF with frozen natural orbitals :ref:`[manual] &lt;sec:fnocc&gt;`                                                 |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | aqcc                    | averaged quadratic coupled cluster :ref:`[manual] &lt;sec:fnocepa&gt;`                                              |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | fno-aqcc                | AQCC with frozen natural orbitals :ref:`[manual] &lt;sec:fnocc&gt;`                                                 |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | qcisd                   | quadratic CI singles doubles (QCISD) :ref:`[manual] &lt;sec:fnocc&gt;`                                              |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | fno-qcisd               | QCISD with frozen natural orbitals :ref:`[manual] &lt;sec:fnocc&gt;`                                                |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | lccd                    | Linear CCD :ref:`[manual] &lt;sec:occ_nonoo&gt;` :ref:`[details] &lt;tllccd&gt;`                                          |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | fno-lccd                | LCCD with frozen natural orbitals :ref:`[manual] &lt;sec:fnocc&gt;`                                                 |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | olccd                   | orbital optimized LCCD :ref:`[manual] &lt;sec:occ_oo&gt;`                                                           |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | cc2                     | approximate coupled cluster singles and doubles (CC2) :ref:`[manual] &lt;sec:cc&gt;`                                |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | ccd                     | coupled cluster doubles  (CCD) :ref:`[manual] &lt;sec:occ_nonoo&gt;`                                                |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | ccsd                    | coupled cluster singles and doubles (CCSD) :ref:`[manual] &lt;sec:cc&gt;` :ref:`[details] &lt;tlccsd&gt;`                 |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | bccd                    | Brueckner coupled cluster doubles (BCCD) :ref:`[manual] &lt;sec:cc&gt;`                                             |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | fno-ccsd                | CCSD with frozen natural orbitals :ref:`[manual] &lt;sec:fnocc&gt;`                                                 |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | qcisd(t)                | QCISD with perturbative triples :ref:`[manual] &lt;sec:fnocc&gt;`                                                   |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | fno-qcisd(t)            | QCISD(T) with frozen natural orbitals :ref:`[manual] &lt;sec:fnocc&gt;`                                             |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | ccsd(t)                 | CCSD with perturbative triples (CCSD(T)) :ref:`[manual] &lt;sec:cc&gt;` :ref:`[details] &lt;tlccsdt&gt;`                  |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | ccsd(at)                | CCSD with asymmetric perturbative triples (CCSD(AT)) :ref:`[manual] &lt;sec:cc&gt;` :ref:`[details] &lt;tlccsdat&gt;`     |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | bccd(t)                 | BCCD with perturbative triples :ref:`[manual] &lt;sec:cc&gt;`                                                       |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | fno-ccsd(t)             | CCSD(T) with frozen natural orbitals :ref:`[manual] &lt;sec:fnocc&gt;`                                              |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | cc3                     | approximate CC singles, doubles, and triples (CC3) :ref:`[manual] &lt;sec:cc&gt;`                                   |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | ccenergy                | **expert** full control over ccenergy module                                                                  |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | dfocc                   | **expert** full control over dfocc module                                                                     |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | cisd                    | configuration interaction (CI) singles and doubles (CISD) :ref:`[manual] &lt;sec:ci&gt;` :ref:`[details] &lt;tlcisd&gt;`  |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | fno-cisd                | CISD with frozen natural orbitals :ref:`[manual] &lt;sec:fnocc&gt;`                                                 |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | cisdt                   | CI singles, doubles, and triples (CISDT) :ref:`[manual] &lt;sec:ci&gt;`                                             |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | cisdtq                  | CI singles, doubles, triples, and quadruples (CISDTQ) :ref:`[manual] &lt;sec:ci&gt;`                                |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | ci\ *n*                 | *n*\ th-order CI :ref:`[manual] &lt;sec:ci&gt;`                                                                     |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | fci                     | full configuration interaction (FCI) :ref:`[manual] &lt;sec:ci&gt;`                                                 |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | detci                   | **expert** full control over detci module                                                                     |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | casscf                  | complete active space self consistent field (CASSCF)  :ref:`[manual] &lt;sec:ci&gt;`                                |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | rasscf                  | restricted active space self consistent field (RASSCF)  :ref:`[manual] &lt;sec:ci&gt;`                              |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | mcscf                   | multiconfigurational self consistent field (SCF) :ref:`[manual] &lt;sec:psimrcc&gt;`                                |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | psimrcc                 | Mukherjee multireference coupled cluster (Mk-MRCC) :ref:`[manual] &lt;sec:psimrcc&gt;`                              |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | dmrg-scf                | density matrix renormalization group SCF :ref:`[manual] &lt;sec:chemps2&gt;`                                        |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | dmrg-caspt2             | density matrix renormalization group CASPT2 :ref:`[manual] &lt;sec:chemps2&gt;`                                     |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | dmrg-ci                 | density matrix renormalization group CI :ref:`[manual] &lt;sec:chemps2&gt;`                                         |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt0                   | 0th-order symmetry adapted perturbation theory (SAPT) :ref:`[manual] &lt;sec:sapt&gt;`                              |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | ssapt0                  | 0th-order SAPT with special exchange scaling :ref:`[manual] &lt;sec:sapt&gt;`                                       |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | fisapt0                 | 0th-order functional and/or intramolecular SAPT :ref:`[manual] &lt;sec:fisapt&gt;`                                  |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt2                   | 2nd-order SAPT, traditional definition :ref:`[manual] &lt;sec:sapt&gt;`                                             |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt2+                  | SAPT including all 2nd-order terms :ref:`[manual] &lt;sec:sapt&gt;`                                                 |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt2+(3)               | SAPT including perturbative triples :ref:`[manual] &lt;sec:sapt&gt;`                                                |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt2+3                 | SAPT including all 3rd-order terms :ref:`[manual] &lt;sec:sapt&gt;`                                                 |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt2+(ccd)             | SAPT2+ with CC-based dispersion :ref:`[manual] &lt;sec:sapt&gt;`                                                    |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt2+(3)(ccd)          | SAPT2+(3) with CC-based dispersion :ref:`[manual] &lt;sec:sapt&gt;`                                                 |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt2+3(ccd)            | SAPT2+3 with CC-based dispersion :ref:`[manual] &lt;sec:sapt&gt;`                                                   |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt2+dmp2              | SAPT including all 2nd-order terms and MP2 correction :ref:`[manual] &lt;sec:sapt&gt;`                              |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt2+(3)dmp2           | SAPT including perturbative triples and MP2 correction :ref:`[manual] &lt;sec:sapt&gt;`                             |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt2+3dmp2             | SAPT including all 3rd-order terms and MP2 correction :ref:`[manual] &lt;sec:sapt&gt;`                              |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt2+(ccd)dmp2         | SAPT2+ with CC-based dispersion and MP2 correction :ref:`[manual] &lt;sec:sapt&gt;`                                 |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt2+(3)(ccd)dmp2      | SAPT2+(3) with CC-based dispersion and MP2 correction :ref:`[manual] &lt;sec:sapt&gt;`                              |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt2+3(ccd)dmp2        | SAPT2+3 with CC-based dispersion and MP2 correction :ref:`[manual] &lt;sec:sapt&gt;`                                |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt0-ct                | 0th-order SAPT plus charge transfer (CT) calculation :ref:`[manual] &lt;sec:saptct&gt;`                             |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt2-ct                | SAPT2 plus CT :ref:`[manual] &lt;sec:saptct&gt;`                                                                    |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt2+-ct               | SAPT2+ plus CT :ref:`[manual] &lt;sec:saptct&gt;`                                                                   |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt2+(3)-ct            | SAPT2+(3) plus CT :ref:`[manual] &lt;sec:saptct&gt;`                                                                |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt2+3-ct              | SAPT2+3 plus CT :ref:`[manual] &lt;sec:saptct&gt;`                                                                  |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt2+(ccd)-ct          | SAPT2+(CCD) plus CT :ref:`[manual] &lt;sec:saptct&gt;`                                                              |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt2+(3)(ccd)-ct       | SAPT2+(3)(CCD) plus CT :ref:`[manual] &lt;sec:saptct&gt;`                                                           |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | sapt2+3(ccd)-ct         | SAPT2+3(CCD) plus CT :ref:`[manual] &lt;sec:saptct&gt;`                                                             |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | adc                     | 2nd-order algebraic diagrammatic construction (ADC) :ref:`[manual] &lt;sec:adc&gt;`                                 |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | eom-cc2                 | EOM-CC2 :ref:`[manual] &lt;sec:eomcc&gt;`                                                                           |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | eom-ccsd                | equation of motion (EOM) CCSD :ref:`[manual] &lt;sec:eomcc&gt;`                                                     |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#       | eom-cc3                 | EOM-CC3 :ref:`[manual] &lt;sec:eomcc&gt;`                                                                           |</span>
+<span class="c1">#       +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#   </span>
+<span class="c1">#       .. comment missing and why</span>
+<span class="c1">#       .. comment a certain isapt --- marginally released</span>
+<span class="c1">#       .. comment mrcc --- this is handled in its own table</span>
+<span class="c1">#       .. comment psimrcc_scf --- convenience fn</span>
+<span class="c1">#   </span>
+<span class="c1">#       .. include:: ../autodoc_dft_energy.rst</span>
+<span class="c1">#   </span>
+<span class="c1">#       .. include:: ../mrcc_table_energy.rst</span>
+<span class="c1">#   </span>
+<span class="c1">#       .. include:: ../cfour_table_energy.rst</span>
+<span class="c1">#   </span>
+<span class="c1">#       :examples:</span>
+<span class="c1">#   </span>
+<span class="c1">#       &gt;&gt;&gt; # [1] Coupled-cluster singles and doubles calculation with psi code</span>
+<span class="c1">#       &gt;&gt;&gt; energy(&#39;ccsd&#39;)</span>
+<span class="c1">#   </span>
+<span class="c1">#       &gt;&gt;&gt; # [2] Charge-transfer SAPT calculation with scf projection from small into</span>
+<span class="c1">#       &gt;&gt;&gt; #     requested basis, with specified projection fitting basis</span>
+<span class="c1">#       &gt;&gt;&gt; set basis_guess true</span>
+<span class="c1">#       &gt;&gt;&gt; set df_basis_guess jun-cc-pVDZ-JKFIT</span>
+<span class="c1">#       &gt;&gt;&gt; energy(&#39;sapt0-ct&#39;)</span>
+<span class="c1">#   </span>
+<span class="c1">#       &gt;&gt;&gt; # [3] Arbitrary-order MPn calculation</span>
+<span class="c1">#       &gt;&gt;&gt; energy(&#39;mp7&#39;)</span>
+<span class="c1">#   </span>
+<span class="c1">#       &gt;&gt;&gt; # [4] Converge scf as singlet, then run detci as triplet upon singlet reference</span>
+<span class="c1">#       &gt;&gt;&gt; # Note that the integral transformation is not done automatically when detci is run in a separate step.</span>
+<span class="c1">#       &gt;&gt;&gt; molecule H2 {\n0 1\nH\nH 1 0.74\n}</span>
+<span class="c1">#       &gt;&gt;&gt; set basis cc-pVDZ</span>
+<span class="c1">#       &gt;&gt;&gt; set reference rohf</span>
+<span class="c1">#       &gt;&gt;&gt; scf_e, scf_wfn = energy(&#39;scf&#39;, return_wfn=True)</span>
+<span class="c1">#       &gt;&gt;&gt; H2.set_multiplicity(3)</span>
+<span class="c1">#       &gt;&gt;&gt; core.MintsHelper(scf_wfn.basisset()).integrals()</span>
+<span class="c1">#       &gt;&gt;&gt; energy(&#39;detci&#39;, ref_wfn=scf_wfn)</span>
+<span class="c1">#   </span>
+<span class="c1">#       &gt;&gt;&gt; # [5] Run two CI calculations, keeping the integrals generated in the first one.</span>
+<span class="c1">#       &gt;&gt;&gt; molecule ne {\nNe\n}</span>
+<span class="c1">#       &gt;&gt;&gt; set basis cc-pVDZ</span>
+<span class="c1">#       &gt;&gt;&gt; cisd_e, cisd_wfn = energy(&#39;cisd&#39;, return_wfn=True)</span>
+<span class="c1">#       &gt;&gt;&gt; energy(&#39;fci&#39;, ref_wfn=cisd_wfn)</span>
+<span class="c1">#   </span>
+<span class="c1">#       &gt;&gt;&gt; # [6] Can automatically perform complete basis set extrapolations</span>
+<span class="c1">#       &gt;&gt;&gt; energy(&quot;CCSD/cc-pV[DT]Z&quot;)</span>
+<span class="c1">#   </span>
+<span class="c1">#       &gt;&gt;&gt; # [7] Can automatically perform delta corrections that include extrapolations</span>
+<span class="c1">#       &gt;&gt;&gt; # even with a user-defined extrapolation formula. See sample inputs named</span>
+<span class="c1">#       &gt;&gt;&gt; # cbs-xtpl* for more examples of this input style</span>
+<span class="c1">#       &gt;&gt;&gt; energy(&quot;MP2/aug-cc-pv([d,t]+d)z + d:ccsd(t)/cc-pvdz&quot;, corl_scheme=myxtplfn_2)</span>
+<span class="c1">#   </span>
+<span class="c1">#       &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="energy"><a class="viewcode-back" href="../../../api/qcdb.energy.html#qcdb.energy">[docs]</a><span class="nd">@register_kwds</span><span class="p">(</span><span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">energy</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Function to compute the single-point electronic energy.&quot;&quot;&quot;</span>
+
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">load_proc_table</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="n">driver_util</span><span class="o">.</span><span class="n">kwargs_lower</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;options&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">driver_helpers</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;options&#39;</span><span class="p">))</span>
+
+    <span class="c1"># Bounce if name is function</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;__call__&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">name</span><span class="p">(</span><span class="n">energy</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;custom function&#39;</span><span class="p">),</span> <span class="n">ptype</span><span class="o">=</span><span class="s1">&#39;energy&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="c1"># Allow specification of methods to arbitrary order</span>
+    <span class="n">lowername</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">lowername</span><span class="p">,</span> <span class="n">level</span> <span class="o">=</span> <span class="n">driver_helpers</span><span class="o">.</span><span class="n">_parse_arbitrary_order</span><span class="p">(</span><span class="n">lowername</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">level</span><span class="p">:</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">level</span>
+
+    <span class="c1"># Make sure the molecule the user provided is the active one</span>
+    <span class="n">molecule</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;molecule&#39;</span><span class="p">,</span> <span class="n">driver_helpers</span><span class="o">.</span><span class="n">get_active_molecule</span><span class="p">())</span>
+    <span class="n">molecule</span><span class="o">.</span><span class="n">update_geometry</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="o">.</span><span class="n">scroll</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1">#print(&#39;EMPTY OPT&#39;)</span>
+        <span class="n">pe</span><span class="o">.</span><span class="n">load_options</span><span class="p">()</span>
+
+
+<span class="c1">#    # Bounce to CP if bsse kwarg</span>
+<span class="c1">#    if kwargs.get(&#39;bsse_type&#39;, None) is not None:</span>
+<span class="c1">#        return driver_nbody.nbody_gufunc(energy, name, ptype=&#39;energy&#39;, **kwargs)</span>
+
+    <span class="c1"># Bounce to CBS if &quot;method/basis&quot; name</span>
+    <span class="k">if</span> <span class="s1">&#39;/&#39;</span> <span class="ow">in</span> <span class="n">lowername</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">cbs_driver</span><span class="o">.</span><span class="n">_cbs_gufunc</span><span class="p">(</span><span class="n">energy</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">ptype</span><span class="o">=</span><span class="s1">&#39;energy&#39;</span><span class="p">,</span> <span class="n">molecule</span><span class="o">=</span><span class="n">molecule</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="c1"># Commit to procedures[&#39;energy&#39;] call hereafter</span>
+    <span class="n">return_wfn</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;return_wfn&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">pe</span><span class="o">.</span><span class="n">active_qcvars</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="c1">#    #for precallback in hooks[&#39;energy&#39;][&#39;pre&#39;]:</span>
+<span class="c1">#    #    precallback(lowername, **kwargs)</span>
+<span class="c1">#</span>
+<span class="c1">#    optstash = driver_util._set_convergence_criterion(&#39;energy&#39;, lowername, 6, 8, 6, 8, 6)</span>
+<span class="c1">#</span>
+<span class="c1">#    # Before invoking the procedure, we rename any file that should be read.</span>
+<span class="c1">#    # This is a workaround to do restarts with the current PSI4 capabilities</span>
+<span class="c1">#    # before actual, clean restarts are put in there</span>
+<span class="c1">#    # Restartfile is always converted to a single-element list if</span>
+<span class="c1">#    # it contains a single string</span>
+<span class="c1">#    if &#39;restart_file&#39; in kwargs:</span>
+<span class="c1">#        restartfile = kwargs[&#39;restart_file&#39;]  # Option still available for procedure-specific action</span>
+<span class="c1">#        if restartfile != list(restartfile):</span>
+<span class="c1">#            restartfile = [restartfile]</span>
+<span class="c1">#        # Rename the files to be read to be consistent with psi4&#39;s file system</span>
+<span class="c1">#        for item in restartfile:</span>
+<span class="c1">#            name_split = re.split(r&#39;\.&#39;, item)</span>
+<span class="c1">#            filenum = name_split[len(name_split) - 1]</span>
+<span class="c1">#            try:</span>
+<span class="c1">#                filenum = int(filenum)</span>
+<span class="c1">#            except ValueError:</span>
+<span class="c1">#                filenum = 32  # Default file number is the checkpoint one</span>
+<span class="c1">#            psioh = core.IOManager.shared_object()</span>
+<span class="c1">#            psio = core.IO.shared_object()</span>
+<span class="c1">#            filepath = psioh.get_file_path(filenum)</span>
+<span class="c1">#            namespace = psio.get_default_namespace()</span>
+<span class="c1">#            pid = str(os.getpid())</span>
+<span class="c1">#            prefix = &#39;psi&#39;</span>
+<span class="c1">#            targetfile = filepath + prefix + &#39;.&#39; + pid + &#39;.&#39; + namespace + &#39;.&#39; + str(filenum)</span>
+<span class="c1">#            shutil.copy(item, targetfile)</span>
+
+<span class="c1">#PR    print(&#39;QWER&#39;, pe.nu_options.print_changed())</span>
+    <span class="n">package</span> <span class="o">=</span> <span class="n">driver_util</span><span class="o">.</span><span class="n">get_package</span><span class="p">(</span><span class="n">lowername</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+    <span class="c1">#for k, v in pkgprefix.items():</span>
+    <span class="c1">#    if lowername.startswith(k):</span>
+    <span class="c1">#        package = v</span>
+    <span class="c1">#        break</span>
+    <span class="c1">#else:</span>
+    <span class="c1">#    package = kwargs.get(&#39;package&#39;, &#39;psi4&#39;)</span>
+    <span class="c1">#print(&#39;\nENE calling&#39;, &#39;procedures&#39;, package, lowername, &#39;with&#39;, lowername, molecule, pe.nu_options, kwargs)</span>
+    <span class="c1">#jobrec = procedures[&#39;energy&#39;][package][lowername](lowername, molecule=molecule, options=pe.active_options, **kwargs)</span>
+    <span class="n">jobrec</span> <span class="o">=</span> <span class="n">procedures</span><span class="p">[</span><span class="s1">&#39;energy&#39;</span><span class="p">][</span><span class="n">package</span><span class="p">][</span><span class="n">lowername</span><span class="p">](</span><span class="n">lowername</span><span class="p">,</span> <span class="n">molecule</span><span class="o">=</span><span class="n">molecule</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="p">,</span> <span class="n">ptype</span><span class="o">=</span><span class="s1">&#39;energy&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="c1">#    for postcallback in hooks[&#39;energy&#39;][&#39;post&#39;]:</span>
+<span class="c1">#        postcallback(lowername, wfn=wfn, **kwargs)</span>
+<span class="c1">#</span>
+<span class="c1">#    optstash.restore()</span>
+    <span class="c1">#jobrec.pop(&#39;raw_output&#39;)  # just to moderate printint to screen</span>
+<span class="c1">#PR    pp.pprint(jobrec)</span>
+    <span class="n">pe</span><span class="o">.</span><span class="n">active_qcvars</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">return_wfn</span><span class="p">:</span>  <span class="c1"># TODO current energy safer than wfn.energy() for now, but should be revisited</span>
+
+<span class="c1">#        # TODO place this with the associated call, very awkward to call this in other areas at the moment</span>
+<span class="c1">#        if lowername in [&#39;efp&#39;, &#39;mrcc&#39;, &#39;dmrg&#39;, &#39;psimrcc&#39;]:</span>
+<span class="c1">#            core.print_out(&quot;\n\nWarning! %s does not have an associated derived wavefunction.&quot; % name)</span>
+<span class="c1">#            core.print_out(&quot;The returned wavefunction is the incoming reference wavefunction.\n\n&quot;)</span>
+<span class="c1">#        elif &#39;sapt&#39; in lowername:</span>
+<span class="c1">#            core.print_out(&quot;\n\nWarning! %s does not have an associated derived wavefunction.&quot; % name)</span>
+<span class="c1">#            core.print_out(&quot;The returned wavefunction is the dimer SCF wavefunction.\n\n&quot;)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT ENERGY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">),</span> <span class="n">jobrec</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT ENERGY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">)</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../../index.html" title="index">
+          <img class="logo" src="../../../_static/qcdbsquare.png" alt="Logo"/>
+        </a></p><!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+<div id="searchbox" style="display: none" role="search">
+  <!--<h3>Quick search</h3>-->
+    <form class="search" action="../../../search.html" method="get">
+      <!--<div><input type="text" name="q" placeholder="search docs" /></div>-->
+      <div><input type="text" name="q" placeholder="&#xF002;" style="font-family:FontAwesome, Ariel" /></div>
+      <!--<div><input type="submit" value="Go" /></div>-->
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >Index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../index.html" title="Table Of Contents"
+             ><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/energy.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../../../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">qcdb.driver.energy</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, The QCDB Project.
+      Last updated on Thursday, 29 April 2021 05:29AM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

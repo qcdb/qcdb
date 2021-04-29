@@ -1,0 +1,6 @@
+compare_vibinfos
+================
+
+.. currentmodule:: qcdb
+
+.. autofunction:: compare_vibinfos

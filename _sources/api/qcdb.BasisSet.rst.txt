@@ -1,0 +1,127 @@
+BasisSet
+========
+
+.. currentmodule:: qcdb
+
+.. autoclass:: BasisSet
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~BasisSet.LIBINT_MAX_AM
+      ~BasisSet.exp_ao
+      ~BasisSet.initialized_shared
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~BasisSet.add
+      ~BasisSet.ao_to_shell
+      ~BasisSet.atomic_basis_set
+      ~BasisSet.build
+      ~BasisSet.compute_phi
+      ~BasisSet.concatenate
+      ~BasisSet.construct
+      ~BasisSet.constructor_basisset_center
+      ~BasisSet.constructor_role_mol_shellmap
+      ~BasisSet.constructor_zero_ao_basis
+      ~BasisSet.decontract
+      ~BasisSet.export_for_libmints
+      ~BasisSet.function_to_center
+      ~BasisSet.function_to_shell
+      ~BasisSet.get_ao_sorted_list
+      ~BasisSet.get_ao_sorted_shell
+      ~BasisSet.has_puream
+      ~BasisSet.initialize_singletons
+      ~BasisSet.make_filename
+      ~BasisSet.max_am
+      ~BasisSet.max_function_per_shell
+      ~BasisSet.max_nprimitive
+      ~BasisSet.molecule
+      ~BasisSet.name
+      ~BasisSet.nao
+      ~BasisSet.nbf
+      ~BasisSet.nprimitive
+      ~BasisSet.nshell
+      ~BasisSet.nshell_on_center
+      ~BasisSet.print_by_level
+      ~BasisSet.print_detail
+      ~BasisSet.print_detail_cfour
+      ~BasisSet.print_detail_gamess
+      ~BasisSet.print_detail_nwchem
+      ~BasisSet.print_summary
+      ~BasisSet.pyconstruct
+      ~BasisSet.pyprint
+      ~BasisSet.refresh
+      ~BasisSet.set_name
+      ~BasisSet.shell
+      ~BasisSet.shell_on_center
+      ~BasisSet.shell_sorter_am
+      ~BasisSet.shell_sorter_ncenter
+      ~BasisSet.shell_to_ao_function
+      ~BasisSet.shell_to_basis_function
+      ~BasisSet.shell_to_center
+      ~BasisSet.test_basis_set
+      ~BasisSet.zero_ao_basis_set
+      ~BasisSet.zero_so_basis_set
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: LIBINT_MAX_AM
+   .. autoattribute:: exp_ao
+   .. autoattribute:: initialized_shared
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: add
+   .. automethod:: ao_to_shell
+   .. automethod:: atomic_basis_set
+   .. automethod:: build
+   .. automethod:: compute_phi
+   .. automethod:: concatenate
+   .. automethod:: construct
+   .. automethod:: constructor_basisset_center
+   .. automethod:: constructor_role_mol_shellmap
+   .. automethod:: constructor_zero_ao_basis
+   .. automethod:: decontract
+   .. automethod:: export_for_libmints
+   .. automethod:: function_to_center
+   .. automethod:: function_to_shell
+   .. automethod:: get_ao_sorted_list
+   .. automethod:: get_ao_sorted_shell
+   .. automethod:: has_puream
+   .. automethod:: initialize_singletons
+   .. automethod:: make_filename
+   .. automethod:: max_am
+   .. automethod:: max_function_per_shell
+   .. automethod:: max_nprimitive
+   .. automethod:: molecule
+   .. automethod:: name
+   .. automethod:: nao
+   .. automethod:: nbf
+   .. automethod:: nprimitive
+   .. automethod:: nshell
+   .. automethod:: nshell_on_center
+   .. automethod:: print_by_level
+   .. automethod:: print_detail
+   .. automethod:: print_detail_cfour
+   .. automethod:: print_detail_gamess
+   .. automethod:: print_detail_nwchem
+   .. automethod:: print_summary
+   .. automethod:: pyconstruct
+   .. automethod:: pyprint
+   .. automethod:: refresh
+   .. automethod:: set_name
+   .. automethod:: shell
+   .. automethod:: shell_on_center
+   .. automethod:: shell_sorter_am
+   .. automethod:: shell_sorter_ncenter
+   .. automethod:: shell_to_ao_function
+   .. automethod:: shell_to_basis_function
+   .. automethod:: shell_to_center
+   .. automethod:: test_basis_set
+   .. automethod:: zero_ao_basis_set
+   .. automethod:: zero_so_basis_set

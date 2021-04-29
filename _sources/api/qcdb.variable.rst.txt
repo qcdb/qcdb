@@ -1,0 +1,6 @@
+variable
+========
+
+.. currentmodule:: qcdb
+
+.. autofunction:: variable

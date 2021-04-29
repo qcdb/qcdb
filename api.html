@@ -1,0 +1,443 @@
+<!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QCDB API</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/psi4.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+    
+     
+        <script src="_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="_static/cloud.js"></script>
+    
+
+    <link rel="shortcut icon" href="_static/favicon-qcdb.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="activate" href="api/qcdb.activate.html" />
+    <link rel="prev" title="QCVariables by Alpha" href="autodoc_glossary_qcvars.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">Index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="api/qcdb.activate.html" title="activate"
+             accesskey="N"><i class="fa fa-long-arrow-right fa-lg"></i></a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="autodoc_glossary_qcvars.html" title="QCVariables by Alpha"
+             accesskey="P"><i class="fa fa-long-arrow-left fa-lg"></i></a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="index.html" title="Table Of Contents"
+             accesskey="C"><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/api.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+        <li class="nav-item nav-item-this"><a href=""><span style="font-family: Optima, sans-serif; text-transform: none;">QCDB</span> API</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="qcdb-api">
+<span id="sec-api"></span><h1><span style="font-family: Optima, sans-serif; text-transform: none;">QCDB</span> API<a class="headerlink" href="#qcdb-api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-qcdb">
+<span id="qcdb-package"></span><h2>qcdb Package<a class="headerlink" href="#module-qcdb" title="Permalink to this headline">¶</a></h2>
+<p>Module to facilitate quantum chemical computations on chemical
+databases. Contains Molecule class and physical constants from psi4 suite.</p>
+<p>isort:skip_file</p>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.activate.html#qcdb.activate" title="qcdb.activate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">activate</span></code></a>(mol)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.cbs.html#qcdb.cbs" title="qcdb.cbs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cbs</span></code></a>(func, label, **kwargs)</p></td>
+<td><p>Function to define a multistage energy method from combinations of basis set extrapolations and delta corrections and condense the components into a minimum number of calculations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.compare_dicts.html#qcdb.compare_dicts" title="qcdb.compare_dicts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare_dicts</span></code></a>(expected, computed, *args, …)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.compare_matrices.html#qcdb.compare_matrices" title="qcdb.compare_matrices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare_matrices</span></code></a>(expected, computed, *args, …)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.compare_vibinfos.html#qcdb.compare_vibinfos" title="qcdb.compare_vibinfos"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare_vibinfos</span></code></a>(expected, computed, tol, label)</p></td>
+<td><p>Compare two dictionaries of vibration Datum objects.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.corl_xtpl_helgaker_2.html#qcdb.corl_xtpl_helgaker_2" title="qcdb.corl_xtpl_helgaker_2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">corl_xtpl_helgaker_2</span></code></a>(mtdname, zLO, valueLO, …)</p></td>
+<td><p>Extrapolation scheme for correlation energies with two adjacent zeta-level bases.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.energy.html#qcdb.energy" title="qcdb.energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">energy</span></code></a>(name, **kwargs)</p></td>
+<td><p>Function to compute the single-point electronic energy.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.frequency.html#qcdb.frequency" title="qcdb.frequency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frequency</span></code></a>(name, **kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.geometric.html#qcdb.geometric" title="qcdb.geometric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geometric</span></code></a>(name, **kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.get_active_options.html#qcdb.get_active_options" title="qcdb.get_active_options"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_active_options</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.get_variable.html#qcdb.get_variable" title="qcdb.get_variable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_variable</span></code></a>(key)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.gradient.html#qcdb.gradient" title="qcdb.gradient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gradient</span></code></a>(name, **kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.has_variable.html#qcdb.has_variable" title="qcdb.has_variable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_variable</span></code></a>(key)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.hessian.html#qcdb.hessian" title="qcdb.hessian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hessian</span></code></a>(name, **kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.optking.html#qcdb.optking" title="qcdb.optking"><code class="xref py py-obj docutils literal notranslate"><span class="pre">optking</span></code></a>(name, **kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.print_variables.html#qcdb.print_variables" title="qcdb.print_variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_variables</span></code></a>([qcvars])</p></td>
+<td><p>Form a printable representation of qcvariables.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.properties.html#qcdb.properties" title="qcdb.properties"><code class="xref py py-obj docutils literal notranslate"><span class="pre">properties</span></code></a>(name, **kwargs)</p></td>
+<td><p>Function to compute the single-point electronic properties.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.scf_xtpl_helgaker_2.html#qcdb.scf_xtpl_helgaker_2" title="qcdb.scf_xtpl_helgaker_2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scf_xtpl_helgaker_2</span></code></a>(mtdname, zLO, valueLO, …)</p></td>
+<td><p>Extrapolation scheme for reference energies with two adjacent zeta-level bases.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.scf_xtpl_helgaker_3.html#qcdb.scf_xtpl_helgaker_3" title="qcdb.scf_xtpl_helgaker_3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scf_xtpl_helgaker_3</span></code></a>(mtdname, zLO, valueLO, …)</p></td>
+<td><p>Extrapolation scheme for reference energies with three adjacent zeta-level bases.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.set_molecule.html#qcdb.set_molecule" title="qcdb.set_molecule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_molecule</span></code></a>(molinit[, name])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.set_options.html#qcdb.set_options" title="qcdb.set_options"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_options</span></code></a>(options_dict)</p></td>
+<td><p>Sets Psi4 global options from an input dictionary.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.variable.html#qcdb.variable" title="qcdb.variable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variable</span></code></a>(key)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.vpt2.html#qcdb.vpt2" title="qcdb.vpt2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vpt2</span></code></a>(name, **kwargs)</p></td>
+<td><p>Perform vibrational second-order perturbation computation through Cfour to get anharmonic frequencies.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.xtpl_highest_1.html#qcdb.xtpl_highest_1" title="qcdb.xtpl_highest_1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xtpl_highest_1</span></code></a>(mtdname, zHI, valueHI[, verbose])</p></td>
+<td><p>Scheme for total or correlation energies with a single basis or the highest zeta-level among an array of bases.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.yaml_run.html#qcdb.yaml_run" title="qcdb.yaml_run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">yaml_run</span></code></a>(yamlin)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.AliasKeyword.html#qcdb.AliasKeyword" title="qcdb.AliasKeyword"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AliasKeyword</span></code></a>(alias, target)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.BasisSet.html#qcdb.BasisSet" title="qcdb.BasisSet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BasisSet</span></code></a>(*args)</p></td>
+<td><p>Basis set container class Reads the basis set from a checkpoint file object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.BasisSetFileNotFound.html#qcdb.BasisSetFileNotFound" title="qcdb.BasisSetFileNotFound"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BasisSetFileNotFound</span></code></a>(msg)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.BasisSetNotDefined.html#qcdb.BasisSetNotDefined" title="qcdb.BasisSetNotDefined"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BasisSetNotDefined</span></code></a>(msg)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.BasisSetNotFound.html#qcdb.BasisSetNotFound" title="qcdb.BasisSetNotFound"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BasisSetNotFound</span></code></a>(msg[, silent])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.Dftd3Error.html#qcdb.Dftd3Error" title="qcdb.Dftd3Error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Dftd3Error</span></code></a>(msg)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.FeatureDeprecated.html#qcdb.FeatureDeprecated" title="qcdb.FeatureDeprecated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FeatureDeprecated</span></code></a>(msg)</p></td>
+<td><p>Error called for functions removed but still defined.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.FeatureNotImplemented.html#qcdb.FeatureNotImplemented" title="qcdb.FeatureNotImplemented"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FeatureNotImplemented</span></code></a>(msg)</p></td>
+<td><p>Error called for functions defined but not yet implemented.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.FragmentCountError.html#qcdb.FragmentCountError" title="qcdb.FragmentCountError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FragmentCountError</span></code></a>(msg)</p></td>
+<td><p>Error called molecule has wrong number of fragments for method.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.IncompleteAtomError.html#qcdb.IncompleteAtomError" title="qcdb.IncompleteAtomError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IncompleteAtomError</span></code></a>(msg)</p></td>
+<td><p>Error raised when not all variables in an atom specification have been defined at compute time.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.Keyword.html#qcdb.Keyword" title="qcdb.Keyword"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Keyword</span></code></a>(keyword, default, validator[, …])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.KeywordReconciliationError.html#qcdb.KeywordReconciliationError" title="qcdb.KeywordReconciliationError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KeywordReconciliationError</span></code></a>([msg])</p></td>
+<td><p>Error called when conflicting values given with equal priority for a keyword.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.KeywordValidationError.html#qcdb.KeywordValidationError" title="qcdb.KeywordValidationError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KeywordValidationError</span></code></a>([msg])</p></td>
+<td><p>Error called when try to set illegitimate value for a keyword.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.Keywords.html#qcdb.Keywords" title="qcdb.Keywords"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Keywords</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.Molecule.html#qcdb.Molecule" title="qcdb.Molecule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Molecule</span></code></a>([molinit, dtype, geom, elea, elez, …])</p></td>
+<td><p>Class to store the elements, coordinates, fragmentation pattern, charge, multiplicity of a molecule.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.MoleculeFormatError.html#qcdb.MoleculeFormatError" title="qcdb.MoleculeFormatError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MoleculeFormatError</span></code></a>(msg)</p></td>
+<td><p>Error called when a Molecule.from_string contains unparsable lines.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.ParsingValidationError.html#qcdb.ParsingValidationError" title="qcdb.ParsingValidationError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParsingValidationError</span></code></a>(msg)</p></td>
+<td><p>Error called for problems with syntax from a QC output file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.QcdbException.html#qcdb.QcdbException" title="qcdb.QcdbException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QcdbException</span></code></a></p></td>
+<td><p>Error class for QCDB.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.TestComparisonError.html#qcdb.TestComparisonError" title="qcdb.TestComparisonError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TestComparisonError</span></code></a>(msg)</p></td>
+<td><p>Error called when a test case fails due to a failed compare_values() call.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.UpgradeHelper.html#qcdb.UpgradeHelper" title="qcdb.UpgradeHelper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UpgradeHelper</span></code></a>(old, new, version, elaboration)</p></td>
+<td><p>Error called on previously valid syntax that now isn’t and a simple syntax transition is possible.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.ValidationError.html#qcdb.ValidationError" title="qcdb.ValidationError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ValidationError</span></code></a>(msg)</p></td>
+<td><p>Error called for problems with syntax input file.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="class-inheritance-diagram">
+<h3>Class Inheritance Diagram<a class="headerlink" href="#class-inheritance-diagram" title="Permalink to this headline">¶</a></h3>
+<div class="graphviz"><img src="_images/inheritance-6b38df88ce1906d26ce7a44ff3e09ceed6aca7fb.png" alt="Inheritance diagram of qcdb.keywords.keywords.AliasKeyword, qcdb.basisset.libmintsbasisset.BasisSet, qcdb.exceptions.BasisSetFileNotFound, qcdb.exceptions.BasisSetNotDefined, qcdb.exceptions.BasisSetNotFound, qcdb.exceptions.Dftd3Error, qcdb.exceptions.FeatureDeprecated, qcdb.exceptions.FeatureNotImplemented, qcdb.exceptions.FragmentCountError, qcdb.exceptions.IncompleteAtomError, qcdb.keywords.keywords.Keyword, qcdb.exceptions.KeywordReconciliationError, qcdb.exceptions.KeywordValidationError, qcdb.keywords.keywords.Keywords, qcdb.molecule.molecule.Molecule, qcdb.exceptions.MoleculeFormatError, qcdb.exceptions.ParsingValidationError, qcdb.exceptions.QcdbException, qcdb.exceptions.TestComparisonError, qcdb.exceptions.UpgradeHelper, qcdb.exceptions.ValidationError" usemap="#inheritanceb048907585" class="inheritance graphviz" /></div>
+<map id="inheritanceb048907585" name="inheritanceb048907585">
+<area shape="rect" id="node1" href="api/qcdb.AliasKeyword.html#qcdb.AliasKeyword" target="_top" title="AliasKeyword" alt="" coords="18,499,129,524"/>
+<area shape="rect" id="node2" href="api/qcdb.BasisSet.html#qcdb.BasisSet" target="_top" title="Basis set container class" alt="" coords="34,449,113,475"/>
+<area shape="rect" id="node3" href="api/qcdb.BasisSetFileNotFound.html#qcdb.BasisSetFileNotFound" target="_top" title="BasisSetFileNotFound" alt="" coords="208,55,371,80"/>
+<area shape="rect" id="node4" href="api/qcdb.QcdbException.html#qcdb.QcdbException" target="_top" title="Error class for QCDB." alt="" coords="14,400,133,425"/>
+<area shape="rect" id="node5" href="api/qcdb.BasisSetNotDefined.html#qcdb.BasisSetNotDefined" target="_top" title="BasisSetNotDefined" alt="" coords="214,104,365,129"/>
+<area shape="rect" id="node6" href="api/qcdb.BasisSetNotFound.html#qcdb.BasisSetNotFound" target="_top" title="BasisSetNotFound" alt="" coords="219,153,359,179"/>
+<area shape="rect" id="node7" href="api/qcdb.Dftd3Error.html#qcdb.Dftd3Error" target="_top" title="Dftd3Error" alt="" coords="245,203,334,228"/>
+<area shape="rect" id="node8" href="api/qcdb.FeatureDeprecated.html#qcdb.FeatureDeprecated" target="_top" title="Error called for functions removed but still defined." alt="" coords="217,252,362,277"/>
+<area shape="rect" id="node9" href="api/qcdb.FeatureNotImplemented.html#qcdb.FeatureNotImplemented" target="_top" title="Error called for functions defined but not yet implemented." alt="" coords="199,301,379,327"/>
+<area shape="rect" id="node10" href="api/qcdb.FragmentCountError.html#qcdb.FragmentCountError" target="_top" title="Error called molecule has wrong number of fragments for method." alt="" coords="213,351,365,376"/>
+<area shape="rect" id="node11" href="api/qcdb.IncompleteAtomError.html#qcdb.IncompleteAtomError" target="_top" title="Error raised when not all variables in an atom specification" alt="" coords="209,400,370,425"/>
+<area shape="rect" id="node13" href="api/qcdb.KeywordReconciliationError.html#qcdb.KeywordReconciliationError" target="_top" title="Error called when conflicting values given with equal priority for a keyword." alt="" coords="189,449,389,475"/>
+<area shape="rect" id="node14" href="api/qcdb.KeywordValidationError.html#qcdb.KeywordValidationError" target="_top" title="Error called when try to set illegitimate value for a keyword." alt="" coords="202,499,377,524"/>
+<area shape="rect" id="node18" href="api/qcdb.MoleculeFormatError.html#qcdb.MoleculeFormatError" target="_top" title="Error called when a Molecule.from_string contains unparsable lines." alt="" coords="211,548,368,573"/>
+<area shape="rect" id="node19" href="api/qcdb.ParsingValidationError.html#qcdb.ParsingValidationError" target="_top" title="Error called for problems with syntax from a QC output file. Prints" alt="" coords="207,597,372,623"/>
+<area shape="rect" id="node20" href="api/qcdb.TestComparisonError.html#qcdb.TestComparisonError" target="_top" title="Error called when a test case fails due to a failed" alt="" coords="211,647,368,672"/>
+<area shape="rect" id="node21" href="api/qcdb.UpgradeHelper.html#qcdb.UpgradeHelper" target="_top" title="Error called on previously valid syntax that now isn&#39;t and a" alt="" coords="229,696,349,721"/>
+<area shape="rect" id="node22" href="api/qcdb.ValidationError.html#qcdb.ValidationError" target="_top" title="Error called for problems with syntax input file. Prints" alt="" coords="230,745,349,771"/>
+<area shape="rect" id="node12" href="api/qcdb.Keyword.html#qcdb.Keyword" target="_top" title="Keyword" alt="" coords="34,289,113,315"/>
+<area shape="rect" id="node15" href="api/qcdb.Keywords.html#qcdb.Keywords" target="_top" title="Keywords" alt="" coords="31,117,116,143"/>
+<area shape="rect" id="node17" href="api/qcdb.Molecule.html#qcdb.Molecule" target="_top" title="Class to store the elements, coordinates, fragmentation pattern," alt="" coords="249,5,329,31"/>
+</map></div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="index.html" title="index">
+          <img class="logo" src="_static/qcdbsquare.png" alt="Logo"/>
+        </a></p><!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+<div id="searchbox" style="display: none" role="search">
+  <!--<h3>Quick search</h3>-->
+    <form class="search" action="search.html" method="get">
+      <!--<div><input type="text" name="q" placeholder="search docs" /></div>-->
+      <div><input type="text" name="q" placeholder="&#xF002;" style="font-family:FontAwesome, Ariel" /></div>
+      <!--<div><input type="submit" value="Go" /></div>-->
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script><div class="sphinx-toc sphinxlocaltoc">
+    <h3><a href="index.html">table of contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#"><span style="font-family: Optima, sans-serif; text-transform: none;">QCDB</span> API</a><ul>
+<li><a class="reference internal" href="#module-qcdb">qcdb Package</a><ul>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#class-inheritance-diagram">Class Inheritance Diagram</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >Index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="api/qcdb.activate.html" title="activate"
+             ><i class="fa fa-long-arrow-right fa-lg"></i></a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="autodoc_glossary_qcvars.html" title="QCVariables by Alpha"
+             ><i class="fa fa-long-arrow-left fa-lg"></i></a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="index.html" title="Table Of Contents"
+             ><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/api.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+        <li class="nav-item nav-item-this"><a href=""><span style="font-family: Optima, sans-serif; text-transform: none;">QCDB</span> API</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, The QCDB Project.
+      Last updated on Thursday, 29 April 2021 05:29AM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

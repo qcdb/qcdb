@@ -1,0 +1,6 @@
+set_molecule
+============
+
+.. currentmodule:: qcdb
+
+.. autofunction:: set_molecule

@@ -1,0 +1,6 @@
+BasisSetFileNotFound
+====================
+
+.. currentmodule:: qcdb
+
+.. autoexception:: BasisSetFileNotFound

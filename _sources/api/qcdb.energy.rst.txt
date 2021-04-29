@@ -1,0 +1,6 @@
+energy
+======
+
+.. currentmodule:: qcdb
+
+.. autofunction:: energy

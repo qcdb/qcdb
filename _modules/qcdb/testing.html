@@ -1,0 +1,392 @@
+<!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>qcdb.testing</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/psi4.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../../_static/cloud.js"></script>
+    
+
+    <link rel="shortcut icon" href="../../_static/favicon-qcdb.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">Index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../index.html" title="Table Of Contents"
+             accesskey="C"><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/testing.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">qcdb.testing</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qcdb.testing</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">qcelemental</span> <span class="k">as</span> <span class="nn">qcel</span>
+
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">TestComparisonError</span><span class="p">,</span> <span class="n">UpgradeHelper</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;compare&#39;</span><span class="p">,</span> <span class="s1">&#39;compare_integers&#39;</span><span class="p">,</span> <span class="s1">&#39;compare_strings&#39;</span><span class="p">,</span> <span class="s1">&#39;compare_values&#39;</span><span class="p">,</span> <span class="s1">&#39;compare_arrays&#39;</span><span class="p">,</span> <span class="s1">&#39;compare_recursive&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;compare_molrecs&#39;</span><span class="p">,</span> <span class="s1">&#39;compare_matrices&#39;</span><span class="p">,</span> <span class="s1">&#39;compare_dicts&#39;</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_merge_psi4_qcel_apis</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Outer shim to allow both Psi4-style and QCA-style testing interfaces through the same function.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    `kwargs` modified (and returned) in-place</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">process_digits</span><span class="p">(</span><span class="n">digits</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">digits</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">10</span><span class="o">**-</span><span class="n">digits</span>
+        <span class="k">return</span> <span class="n">digits</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">_getframe</span><span class="p">()</span><span class="o">.</span><span class="n">f_back</span><span class="o">.</span><span class="n">f_back</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_name</span>
+
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;atol&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">process_digits</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">_getframe</span><span class="p">()</span><span class="o">.</span><span class="n">f_back</span><span class="o">.</span><span class="n">f_back</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_name</span>
+            <span class="k">if</span> <span class="s1">&#39;verbose&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;quiet&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;verbose&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;atol&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">process_digits</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;verbose&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;quiet&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;verbose&#39;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;Not following either Psi4 or QCElemental API pattern for comparison.&quot;&quot;&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_psi4_compare_integers</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">computed</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                           <span class="n">return_handler</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Shim between Psi4-style and QCA-style testing interfaces for scalar ints, strings.&quot;&quot;&quot;</span>
+
+    <span class="c1"># uncomment to ferret out old function name</span>
+    <span class="c1">#raise UpgradeHelper(&#39;qcdb.compare_integers&#39;, &#39;qcdb.compare&#39;, &#39;someday&#39;, &#39; Same API, just rename the function and convert `verbose` to `quiet`.&#39;)</span>
+
+    <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">_getframe</span><span class="p">()</span><span class="o">.</span><span class="n">f_back</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_name</span>
+
+    <span class="k">return</span> <span class="n">qcel</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span>
+                                <span class="n">computed</span><span class="p">,</span>
+                                <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span>
+                                <span class="n">quiet</span><span class="o">=</span><span class="p">(</span><span class="n">verbose</span> <span class="o">==</span> <span class="mi">0</span><span class="p">),</span>
+                                <span class="n">return_message</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                <span class="n">return_handler</span><span class="o">=</span><span class="n">return_handler</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_mergedapis_compare_values</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">computed</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Outer shim to allow both Psi4-style and QCA-style testing interfaces through the same function.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Shim between Psi4-style and QCA-style testing interfaces for scalar and array floats.&quot;&quot;&quot;</span>
+
+    <span class="n">_merge_psi4_qcel_apis</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">qcel</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">compare_values</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">computed</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_mergedapis_compare_recursive</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">computed</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">UpgradeHelper</span><span class="p">(</span>
+            <span class="s1">&#39;qcdb.compare_recursive&#39;</span><span class="p">,</span> <span class="s1">&#39;qcdb.compare_recursive&#39;</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">,</span>
+            <span class="s1">&#39; Use the new `qcel.testing.compare_recursive` API, being sure to convert positional arg `digits` decimal places to keyword arg `atol` literal absolute tolerance.&#39;</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">qcel</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">compare_molrecs</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">computed</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_mergedapis_compare_molrecs</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">computed</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">UpgradeHelper</span><span class="p">(</span>
+            <span class="s1">&#39;qcdb.compare_molrecs&#39;</span><span class="p">,</span> <span class="s1">&#39;qcdb.compare_molrecs&#39;</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">,</span>
+            <span class="s1">&#39; Use the new `qcel.testing.compare_molrecs` API, being sure to convert positional arg `digits` decimal places to keyword arg `atol` literal absolute tolerance.&#39;</span>
+        <span class="p">)</span>
+
+    <span class="n">_merge_psi4_qcel_apis</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">qcel</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">compare_molrecs</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">computed</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="compare_matrices"><a class="viewcode-back" href="../../api/qcdb.compare_matrices.html#qcdb.compare_matrices">[docs]</a><span class="k">def</span> <span class="nf">compare_matrices</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">computed</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="n">UpgradeHelper</span><span class="p">(</span>
+        <span class="s1">&#39;qcdb.compare_matrices&#39;</span><span class="p">,</span> <span class="s1">&#39;qcdb.compare_values&#39;</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">,</span>
+        <span class="s1">&#39; Use the new qcel.testing.compare_values` API, being sure to convert `digits` decimal places to `atol` literal absolute tolerance.&#39;</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="compare_dicts"><a class="viewcode-back" href="../../api/qcdb.compare_dicts.html#qcdb.compare_dicts">[docs]</a><span class="k">def</span> <span class="nf">compare_dicts</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">computed</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+    <span class="k">raise</span> <span class="n">UpgradeHelper</span><span class="p">(</span>
+        <span class="s1">&#39;qcdb.compare_dicts&#39;</span><span class="p">,</span> <span class="s1">&#39;qcdb.compare_recursive&#39;</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">,</span>
+        <span class="s1">&#39; Use the new `qcel.testing.compare_recursive` API, being sure to convert `tol` decimal places to `atol` literal absolute tolerance.&#39;</span>
+    <span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_qcdb_true_raise_handler</span><span class="p">(</span><span class="n">passfail</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">return_message</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Handle comparison result by printing to screen and raising qcdb.TestComparisonError or returning True.&quot;&quot;&quot;</span>
+
+    <span class="n">width</span> <span class="o">=</span> <span class="mi">66</span>
+    <span class="k">if</span> <span class="n">passfail</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">quiet</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">label</span><span class="si">:</span><span class="s1">.&lt;</span><span class="si">{</span><span class="n">width</span><span class="si">}}</span><span class="s1">PASSED&#39;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">label</span><span class="si">:</span><span class="s1">.&lt;</span><span class="si">{</span><span class="n">width</span><span class="si">}}</span><span class="s1">FAILED&#39;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="n">TestComparisonError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">passfail</span>
+
+
+<span class="n">compare</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">qcel</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">compare</span><span class="p">,</span> <span class="n">return_handler</span><span class="o">=</span><span class="n">_qcdb_true_raise_handler</span><span class="p">)</span>
+<span class="n">compare_integers</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_psi4_compare_integers</span><span class="p">,</span> <span class="n">return_handler</span><span class="o">=</span><span class="n">_qcdb_true_raise_handler</span><span class="p">)</span>
+<span class="n">compare_strings</span> <span class="o">=</span> <span class="n">compare_integers</span>
+<span class="n">compare_values</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_mergedapis_compare_values</span><span class="p">,</span> <span class="n">return_handler</span><span class="o">=</span><span class="n">_qcdb_true_raise_handler</span><span class="p">)</span>
+<span class="n">compare_arrays</span> <span class="o">=</span> <span class="n">compare_values</span>
+
+<span class="n">compare_recursive</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_mergedapis_compare_recursive</span><span class="p">,</span> <span class="n">return_handler</span><span class="o">=</span><span class="n">_qcdb_true_raise_handler</span><span class="p">)</span>
+<span class="n">compare_molrecs</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_mergedapis_compare_molrecs</span><span class="p">,</span> <span class="n">return_handler</span><span class="o">=</span><span class="n">_qcdb_true_raise_handler</span><span class="p">)</span>
+
+<span class="c1"># Notes on testing fns migration</span>
+<span class="c1"># PSI4</span>
+<span class="c1">#   ADDED               def compare                                                                                         SINGLE</span>
+<span class="c1">#   MERGED-APIs         def compare_integers(expected, computed, label, verbose=1):                                         SINGLE</span>
+<span class="c1">#   MERGED-APIs         def compare_strings(expected, computed, label, verbose=1):                                          SINGLE</span>
+<span class="c1">#   MERGED-APIs         def compare_values(expected, computed, digits, label, *, rtol=1.e-16, passnone=False, verbose=1):   SINGLE</span>
+<span class="c1">#   MERGED-APIs         def compare_arrays(expected, computed, digits, label, rtol=1.e-16, verbose=1):                      SINGLE</span>
+<span class="c1">#</span>
+<span class="c1">#   ADDED-NEW-API       def compare_recursive                                                                               SINGLE</span>
+<span class="c1">#   ADDED-NEW-API       def compare_molrecs                                                                                 SINGLE</span>
+<span class="c1">#</span>
+<span class="c1">#   MERGED-APIs         def compare_cubes(expected, computed, label, verbose=1):                                            SINGLE</span>
+<span class="c1">#   MERGED-APIs         def compare_vectors(expected, computed, digits, label, *, rtol=1.e-16, verbose=1):                  MULTI</span>
+<span class="c1">#   MERGED-APIs         def compare_matrices(expected, computed, digits, label, *, rtol=1.e-16, verbose=1):                 MULTI</span>
+<span class="c1">#   MERGED-APIs         def compare_wavefunctions(expected, computed, digits=9, label=&#39;Wavefunctions equal&#39;):               MULTI</span>
+<span class="c1">#   def compare_fcidumps(expected, computed, label):                                                                        MULTI</span>
+
+<span class="c1"># QCDB</span>
+<span class="c1">#   ADDED               def compare                                                                                         SINGLE</span>
+<span class="c1">#   MERGED-APIs-TRIVIAL def compare_integers(expected, computed, label, verbose=1):                                         SINGLE</span>
+<span class="c1">#   MERGED-APIs-TRIVIAL def compare_strings(expected, computed, label, verbose=1):                                          SINGLE</span>
+<span class="c1">#   MERGED-APIs         def compare_values(expected, computed, digits, label, passnone=False, verbose=1):                   SINGLE</span>
+<span class="c1">#   MERGED-APIs         def compare_arrays(expected, computed, digits, label, verbose=1):                                   SINGLE</span>
+<span class="c1">#</span>
+<span class="c1">#   ADDED-NEW-API       def compare_recursive                                                                               SINGLE</span>
+<span class="c1">#   STOPCONVERT/NEW-API def compare_molrecs(expected, computed, tol, label, forgive=None, verbose=1, relative_geoms=&#39;exact&#39; SINGLE</span>
+<span class="c1">#</span>
+<span class="c1">#   STOPCONVERT/NEW-FN  def compare_matrices(expected, computed, digits, label, verbose=1):                                 ---</span>
+<span class="c1">#   STOPCONVERT/NEW-FN  def compare_dicts(expected, computed, tol, label, forgive=None, verbose=1):                         ---</span>
+<span class="c1">#   vib.py:def compare_vibinfos(expected, computed, tol, label, verbose=1, forgive=None, required=None, toldict=None):      SINGLE</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../index.html" title="index">
+          <img class="logo" src="../../_static/qcdbsquare.png" alt="Logo"/>
+        </a></p><!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+<div id="searchbox" style="display: none" role="search">
+  <!--<h3>Quick search</h3>-->
+    <form class="search" action="../../search.html" method="get">
+      <!--<div><input type="text" name="q" placeholder="search docs" /></div>-->
+      <div><input type="text" name="q" placeholder="&#xF002;" style="font-family:FontAwesome, Ariel" /></div>
+      <!--<div><input type="submit" value="Go" /></div>-->
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >Index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../index.html" title="Table Of Contents"
+             ><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/testing.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">qcdb.testing</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, The QCDB Project.
+      Last updated on Thursday, 29 April 2021 05:29AM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

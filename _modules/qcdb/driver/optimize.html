@@ -1,0 +1,749 @@
+<!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>qcdb.driver.optimize</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/psi4.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../../../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../../../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../../../_static/cloud.js"></script>
+    
+
+    <link rel="shortcut icon" href="../../../_static/favicon-qcdb.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">Index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../index.html" title="Table Of Contents"
+             accesskey="C"><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/optimize.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../../../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">qcdb.driver.optimize</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qcdb.driver.optimize</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Module with a *procedures* dictionary specifying available quantum</span>
+<span class="sd">chemical methods and functions driving the main quantum chemical</span>
+<span class="sd">functionality, namely single-point energies, geometry optimizations,</span>
+<span class="sd">properties, and vibrational frequency calculations.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+
+<span class="kn">from</span> <span class="nn">..molecule</span> <span class="kn">import</span> <span class="n">Molecule</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">driver_helpers</span><span class="p">,</span> <span class="n">driver_util</span><span class="p">,</span> <span class="n">pe</span>
+<span class="kn">from</span> <span class="nn">.gradient</span> <span class="kn">import</span> <span class="n">gradient</span>
+
+<span class="n">pp</span> <span class="o">=</span> <span class="n">pprint</span><span class="o">.</span><span class="n">PrettyPrinter</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+
+<span class="c1">#   import numpy as np</span>
+
+
+
+<span class="c1">#def optimize(name, **kwargs):</span>
+<span class="c1">#    r&quot;&quot;&quot;Function to perform a geometry optimization.</span>
+<span class="c1">#</span>
+<span class="c1">#    :aliases: opt()</span>
+<span class="c1">#</span>
+<span class="c1">#    :returns: *float* |w--w| Total electronic energy of optimized structure in Hartrees.</span>
+<span class="c1">#</span>
+<span class="c1">#    :returns: (*float*, :py:class:`~psi4.core.Wavefunction`) |w--w| energy and wavefunction when **return_wfn** specified.</span>
+<span class="c1">#</span>
+<span class="c1">#    :raises: psi4.OptimizationConvergenceError if |optking__geom_maxiter| exceeded without reaching geometry convergence.</span>
+<span class="c1">#</span>
+<span class="c1">#    :PSI variables:</span>
+<span class="c1">#</span>
+<span class="c1">#    .. hlist::</span>
+<span class="c1">#       :columns: 1</span>
+<span class="c1">#</span>
+<span class="c1">#       * :qcvar:`CURRENT ENERGY &lt;CURRENTENERGY&gt;`</span>
+<span class="c1">#</span>
+<span class="c1">#    :type name: string</span>
+<span class="c1">#    :param name: ``&#39;scf&#39;`` || ``&#39;mp2&#39;`` || ``&#39;ci5&#39;`` || etc.</span>
+<span class="c1">#</span>
+<span class="c1">#        First argument, usually unlabeled. Indicates the computational method</span>
+<span class="c1">#        to be applied to the database. May be any valid argument to</span>
+<span class="c1">#        :py:func:`~driver.energy`.</span>
+<span class="c1">#</span>
+<span class="c1">#    :type molecule: :ref:`molecule &lt;op_py_molecule&gt;`</span>
+<span class="c1">#    :param molecule: ``h2o`` || etc.</span>
+<span class="c1">#</span>
+<span class="c1">#        The target molecule, if not the last molecule defined.</span>
+<span class="c1">#</span>
+<span class="c1">#    :type return_wfn: :ref:`boolean &lt;op_py_boolean&gt;`</span>
+<span class="c1">#    :param return_wfn: ``&#39;on&#39;`` || |dl| ``&#39;off&#39;`` |dr|</span>
+<span class="c1">#</span>
+<span class="c1">#        Indicate to additionally return the :py:class:`~psi4.core.Wavefunction`</span>
+<span class="c1">#        calculation result as the second element (after *float* energy) of a tuple.</span>
+<span class="c1">#</span>
+<span class="c1">#    :type return_history: :ref:`boolean &lt;op_py_boolean&gt;`</span>
+<span class="c1">#    :param return_history: ``&#39;on&#39;`` || |dl| ``&#39;off&#39;`` |dr|</span>
+<span class="c1">#</span>
+<span class="c1">#        Indicate to additionally return dictionary of lists of geometries,</span>
+<span class="c1">#        energies, and gradients at each step in the optimization.</span>
+<span class="c1">#</span>
+<span class="c1">#    :type func: :ref:`function &lt;op_py_function&gt;`</span>
+<span class="c1">#    :param func: |dl| ``gradient`` |dr| || ``energy`` || ``cbs``</span>
+<span class="c1">#</span>
+<span class="c1">#        Indicates the type of calculation to be performed on the molecule.</span>
+<span class="c1">#        The default dertype accesses ``&#39;gradient&#39;`` or ``&#39;energy&#39;``, while</span>
+<span class="c1">#        ``&#39;cbs&#39;`` performs a multistage finite difference calculation.</span>
+<span class="c1">#        If a nested series of python functions is intended (see :ref:`sec:intercalls`),</span>
+<span class="c1">#        use keyword ``opt_func`` instead of ``func``.</span>
+<span class="c1">#</span>
+<span class="c1">#    :type mode: string</span>
+<span class="c1">#    :param mode: |dl| ``&#39;continuous&#39;`` |dr| || ``&#39;sow&#39;`` || ``&#39;reap&#39;``</span>
+<span class="c1">#</span>
+<span class="c1">#        For a finite difference of energies optimization, indicates whether</span>
+<span class="c1">#        the calculations required to complete the</span>
+<span class="c1">#        optimization are to be run in one file (``&#39;continuous&#39;``) or are to be</span>
+<span class="c1">#        farmed out in an embarrassingly parallel fashion</span>
+<span class="c1">#        (``&#39;sow&#39;``/``&#39;reap&#39;``). For the latter, run an initial job with</span>
+<span class="c1">#        ``&#39;sow&#39;`` and follow instructions in its output file. For maximum</span>
+<span class="c1">#        flexibility, ``return_wfn`` is always on in ``&#39;reap&#39;`` mode.</span>
+<span class="c1">#</span>
+<span class="c1">#    :type dertype: :ref:`dertype &lt;op_py_dertype&gt;`</span>
+<span class="c1">#    :param dertype: ``&#39;gradient&#39;`` || ``&#39;energy&#39;``</span>
+<span class="c1">#</span>
+<span class="c1">#        Indicates whether analytic (if available) or finite difference</span>
+<span class="c1">#        optimization is to be performed.</span>
+<span class="c1">#</span>
+<span class="c1">#    :type hessian_with: string</span>
+<span class="c1">#    :param hessian_with: ``&#39;scf&#39;`` || ``&#39;mp2&#39;`` || etc.</span>
+<span class="c1">#</span>
+<span class="c1">#        Indicates the computational method with which to perform a hessian</span>
+<span class="c1">#        analysis to guide the geometry optimization.</span>
+<span class="c1">#</span>
+<span class="c1">#    .. warning:: Optimizations where the molecule is specified in Z-matrix format</span>
+<span class="c1">#       with dummy atoms will result in the geometry being converted to a Cartesian representation.</span>
+<span class="c1">#</span>
+<span class="c1">#    .. note:: Analytic gradients area available for all methods in the table</span>
+<span class="c1">#        below. Optimizations with other methods in the energy table proceed</span>
+<span class="c1">#        by finite differences.</span>
+<span class="c1">#</span>
+<span class="c1">#    .. _`table:grad_gen`:</span>
+<span class="c1">#</span>
+<span class="c1">#    +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#    | name                    | calls method                                                                                                  |</span>
+<span class="c1">#    +=========================+===============================================================================================================+</span>
+<span class="c1">#    | efp                     | efp-only optimizations                                                                                        |</span>
+<span class="c1">#    +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#    | scf                     | Hartree--Fock (HF) or density functional theory (DFT) :ref:`[manual] &lt;sec:scf&gt;`                               |</span>
+<span class="c1">#    +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#    | hf                      | HF self consistent field (SCF) :ref:`[manual] &lt;sec:scf&gt;`                                                      |</span>
+<span class="c1">#    +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#    | dct                     | density cumulant functional theory :ref:`[manual] &lt;sec:dct&gt;`                                                  |</span>
+<span class="c1">#    +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#    | mp2                     | 2nd-order |MollerPlesset| perturbation theory (MP2) :ref:`[manual] &lt;sec:dfmp2&gt;` :ref:`[details] &lt;tlmp2&gt;`      |</span>
+<span class="c1">#    +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#    | mp3                     | 3rd-order |MollerPlesset| perturbation theory (MP3) :ref:`[manual] &lt;sec:occ_nonoo&gt;` :ref:`[details] &lt;tlmp3&gt;`  |</span>
+<span class="c1">#    +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#    | mp2.5                   | average of MP2 and MP3 :ref:`[manual] &lt;sec:occ_nonoo&gt;` :ref:`[details] &lt;tlmp25&gt;`                              |</span>
+<span class="c1">#    +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#    | omp2                    | orbital-optimized second-order MP perturbation theory :ref:`[manual] &lt;sec:occ_oo&gt;`                            |</span>
+<span class="c1">#    +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#    | omp3                    | orbital-optimized third-order MP perturbation theory :ref:`[manual] &lt;sec:occ_oo&gt;`                             |</span>
+<span class="c1">#    +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#    | omp2.5                  | orbital-optimized MP2.5 :ref:`[manual] &lt;sec:occ_oo&gt;`                                                          |</span>
+<span class="c1">#    +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#    | lccd                    | Linear CCD :ref:`[manual] &lt;sec:occ_nonoo&gt;` :ref:`[details] &lt;tllccd&gt;`                                          |</span>
+<span class="c1">#    +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#    | olccd                   | orbital optimized LCCD :ref:`[manual] &lt;sec:occ_oo&gt;`                                                           |</span>
+<span class="c1">#    +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#    | ccd                     | coupled cluster doubles  (CCD) :ref:`[manual] &lt;sec:occ_nonoo&gt;`                                                |</span>
+<span class="c1">#    +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#    | ccsd                    | coupled cluster singles and doubles (CCSD) :ref:`[manual] &lt;sec:cc&gt;` :ref:`[details] &lt;tlccsd&gt;`                 |</span>
+<span class="c1">#    +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#    | ccsd(t)                 | CCSD with perturbative triples (CCSD(T)) :ref:`[manual] &lt;sec:cc&gt;` :ref:`[details] &lt;tlccsdt&gt;`                  |</span>
+<span class="c1">#    +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#    | eom-ccsd                | equation of motion (EOM) CCSD :ref:`[manual] &lt;sec:eomcc&gt;`                                                     |</span>
+<span class="c1">#    +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+<span class="c1">#</span>
+<span class="c1">#    .. _`table:grad_scf`:</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1">#    .. include:: ../autodoc_dft_opt.rst</span>
+<span class="c1">#</span>
+<span class="c1">#    .. include:: ../cfour_table_grad.rst</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1">#    :examples:</span>
+<span class="c1">#</span>
+<span class="c1">#    &gt;&gt;&gt; # [1] Analytic hf optimization</span>
+<span class="c1">#    &gt;&gt;&gt; optimize(&#39;hf&#39;)</span>
+<span class="c1">#</span>
+<span class="c1">#    &gt;&gt;&gt; # [2] Finite difference mp5 optimization with gradient</span>
+<span class="c1">#    &gt;&gt;&gt; #     printed to output file</span>
+<span class="c1">#    &gt;&gt;&gt; e, wfn = opt(&#39;mp5&#39;, return_wfn=&#39;yes&#39;)</span>
+<span class="c1">#    &gt;&gt;&gt; wfn.gradient().print_out()</span>
+<span class="c1">#</span>
+<span class="c1">#    &gt;&gt;&gt; # [3] Forced finite difference hf optimization run in</span>
+<span class="c1">#    &gt;&gt;&gt; #     embarrassingly parallel fashion</span>
+<span class="c1">#    &gt;&gt;&gt; optimize(&#39;hf&#39;, dertype=&#39;energy&#39;, mode=&#39;sow&#39;)</span>
+<span class="c1">#</span>
+<span class="c1">#    &gt;&gt;&gt; # [4] Can automatically perform complete basis set extrapolations</span>
+<span class="c1">#    &gt;&gt;&gt; optimize(&#39;MP2/cc-pV([D,T]+d)Z&#39;)</span>
+<span class="c1">#</span>
+<span class="c1">#    &gt;&gt;&gt; # [5] Can automatically perform delta corrections that include extrapolations</span>
+<span class="c1">#    &gt;&gt;&gt; # even with a user-defined extrapolation formula. See sample inputs named</span>
+<span class="c1">#    &gt;&gt;&gt; # cbs-xtpl* for more examples of this input style</span>
+<span class="c1">#    &gt;&gt;&gt; optimize(&quot;MP2/aug-cc-pv([d,t]+d)z + d:ccsd(t)/cc-pvdz&quot;, corl_scheme=myxtplfn_2)</span>
+<span class="c1">#</span>
+<span class="c1">#    &gt;&gt;&gt; # [6] Get info like geometry, gradient, energy back after an</span>
+<span class="c1">#    &gt;&gt;&gt; #     optimization fails. Note that the energy and gradient</span>
+<span class="c1">#    &gt;&gt;&gt; #     correspond to the last optimization cycle, whereas the</span>
+<span class="c1">#    &gt;&gt;&gt; #     geometry (by default) is the anticipated *next* optimization step.</span>
+<span class="c1">#    &gt;&gt;&gt; try:</span>
+<span class="c1">#    &gt;&gt;&gt;     optimize(&#39;hf/cc-pvtz&#39;)</span>
+<span class="c1">#    &gt;&gt;&gt; except psi4.OptimizationConvergenceError as ex:</span>
+<span class="c1">#    &gt;&gt;&gt;     next_geom_coords_as_numpy_array = np.asarray(ex.wfn.molecule().geometry())</span>
+<span class="c1">#</span>
+<span class="c1">#    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="optking"><a class="viewcode-back" href="../../../api/qcdb.optking.html#qcdb.optking">[docs]</a><span class="k">def</span> <span class="nf">optking</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">load_proc_table</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="n">driver_util</span><span class="o">.</span><span class="n">kwargs_lower</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;__call__&#39;</span><span class="p">):</span>
+        <span class="n">lowername</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="n">custom_gradient</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">lowername</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">custom_gradient</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">return_wfn</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;return_wfn&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+    <span class="kn">import</span> <span class="nn">psi4</span>
+    <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
+    <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">clean_options</span><span class="p">()</span>
+    <span class="c1">#psi4.set_output_file(&quot;pytest_output.dat&quot;, True)</span>
+
+<span class="c1">#    return_history = kwargs.pop(&#39;return_history&#39;, False)</span>
+<span class="c1">#    if return_history:</span>
+<span class="c1">#        # Add wfn once the deep copy issues are worked out</span>
+<span class="c1">#        step_energies      = []</span>
+<span class="c1">#        step_gradients     = []</span>
+<span class="c1">#        step_coordinates   = []</span>
+<span class="c1">#</span>
+    <span class="c1"># For CBS wrapper, need to set retention on INTCO file</span>
+    <span class="k">if</span> <span class="n">custom_gradient</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;/&#39;</span> <span class="ow">in</span> <span class="n">lowername</span><span class="p">):</span>
+        <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">IOManager</span><span class="o">.</span><span class="n">shared_object</span><span class="p">()</span><span class="o">.</span><span class="n">set_specific_retention</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="c1">#    if kwargs.get(&#39;bsse_type&#39;, None) is not None:</span>
+<span class="c1">#        raise ValidationError(&quot;Optimize: Does not currently support &#39;bsse_type&#39; arguements&quot;)</span>
+<span class="c1">#</span>
+<span class="c1">#    full_hess_every = core.get_option(&#39;OPTKING&#39;, &#39;FULL_HESS_EVERY&#39;)</span>
+<span class="c1">#    steps_since_last_hessian = 0</span>
+<span class="c1">#</span>
+<span class="c1">#    if custom_gradient and core.has_option_changed(&#39;OPTKING&#39;, &#39;FULL_HESS_EVERY&#39;):</span>
+<span class="c1">#        raise ValidationError(&quot;Optimize: Does not support custom Hessian&#39;s yet.&quot;)</span>
+<span class="c1">#    else:</span>
+<span class="c1">#        hessian_with_method = kwargs.get(&#39;hessian_with&#39;, lowername)</span>
+<span class="c1">#</span>
+<span class="c1">#    # are we in sow/reap mode?</span>
+<span class="c1">#    opt_mode = kwargs.get(&#39;mode&#39;, &#39;continuous&#39;).lower()</span>
+<span class="c1">#    if opt_mode not in [&#39;continuous&#39;, &#39;sow&#39;, &#39;reap&#39;]:</span>
+<span class="c1">#        raise ValidationError(&quot;&quot;&quot;Optimize execution mode &#39;%s&#39; not valid.&quot;&quot;&quot; % (opt_mode))</span>
+<span class="c1">#</span>
+<span class="c1">#    optstash = p4util.OptionsState(</span>
+<span class="c1">#        [&#39;OPTKING&#39;, &#39;INTRAFRAG_STEP_LIMIT&#39;],</span>
+<span class="c1">#        [&#39;FINDIF&#39;, &#39;HESSIAN_WRITE&#39;],</span>
+<span class="c1">#        [&#39;OPTKING&#39;, &#39;CART_HESS_READ&#39;],</span>
+<span class="c1">#        [&#39;SCF&#39;, &#39;GUESS_PERSIST&#39;],  # handle on behalf of cbs()</span>
+<span class="c1">#        [&#39;SCF&#39;, &#39;GUESS&#39;])</span>
+
+    <span class="n">iopt</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;opt_iter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Make sure the molecule the user provided is the active one</span>
+    <span class="n">molecule</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;molecule&#39;</span><span class="p">,</span> <span class="n">driver_helpers</span><span class="o">.</span><span class="n">get_active_molecule</span><span class="p">())</span>
+    <span class="n">molecule</span><span class="o">.</span><span class="n">update_geometry</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="o">.</span><span class="n">scroll</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;EMPTY OPT&#39;</span><span class="p">)</span>
+        <span class="n">pe</span><span class="o">.</span><span class="n">load_options</span><span class="p">()</span>
+
+<span class="c1">#    # If we are freezing cartesian, do not orient or COM</span>
+<span class="c1">#    if core.get_local_option(&quot;OPTKING&quot;, &quot;FROZEN_CARTESIAN&quot;):</span>
+<span class="c1">#        molecule.fix_orientation(True)</span>
+<span class="c1">#        molecule.fix_com(True)</span>
+<span class="c1">#    molecule.update_geometry()</span>
+<span class="c1">#</span>
+<span class="c1">#    # Shifting the geometry so need to copy the active molecule</span>
+    <span class="n">moleculeclone</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+<span class="c1">#</span>
+<span class="c1">#    initial_sym = moleculeclone.schoenflies_symbol()</span>
+<span class="c1">#    while iopt &lt;= core.get_option(&#39;OPTKING&#39;, &#39;GEOM_MAXITER&#39;):</span>
+
+    <span class="k">while</span> <span class="n">iopt</span> <span class="o">&lt;=</span> <span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="o">.</span><span class="n">scroll</span><span class="p">[</span><span class="s1">&#39;QCDB&#39;</span><span class="p">][</span><span class="s1">&#39;GEOM_MAXITER&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+<span class="c1">#        current_sym = moleculeclone.schoenflies_symbol()</span>
+<span class="c1">#        if initial_sym != current_sym:</span>
+<span class="c1">#            raise ValidationError(&quot;&quot;&quot;Point group changed! (%s &lt;-- %s) You should restart &quot;&quot;&quot;</span>
+<span class="c1">#                                  &quot;&quot;&quot;using the last geometry in the output, after &quot;&quot;&quot;</span>
+<span class="c1">#                                  &quot;&quot;&quot;carefully making sure all symmetry-dependent &quot;&quot;&quot;</span>
+<span class="c1">#                                  &quot;&quot;&quot;input, such as DOCC, is correct.&quot;&quot;&quot; %</span>
+<span class="c1">#                                  (current_sym, initial_sym))</span>
+<span class="c1">#        kwargs[&#39;opt_iter&#39;] = iopt</span>
+<span class="c1">#</span>
+<span class="c1">#        # Use orbitals from previous iteration as a guess</span>
+<span class="c1">#        #   set within loop so that can be influenced by fns to optimize (e.g., cbs)</span>
+<span class="c1">#        if (iopt &gt; 1) and (opt_mode == &#39;continuous&#39;) and (not core.get_option(&#39;SCF&#39;, &#39;GUESS_PERSIST&#39;)):</span>
+<span class="c1">#            core.set_local_option(&#39;SCF&#39;, &#39;GUESS&#39;, &#39;READ&#39;)</span>
+<span class="c1">#</span>
+<span class="c1">#        # Before computing gradient, save previous molecule and wavefunction if this is an IRC optimization</span>
+<span class="c1">#        if (iopt &gt; 1) and (core.get_option(&#39;OPTKING&#39;, &#39;OPT_TYPE&#39;) == &#39;IRC&#39;):</span>
+<span class="c1">#            old_thisenergy = core.get_variable(&#39;CURRENT ENERGY&#39;)</span>
+
+        <span class="c1"># Compute the gradient</span>
+        <span class="n">G</span><span class="p">,</span> <span class="n">jobrec</span> <span class="o">=</span> <span class="n">gradient</span><span class="p">(</span><span class="n">lowername</span><span class="p">,</span> <span class="n">return_wfn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">molecule</span><span class="o">=</span><span class="n">moleculeclone</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">thisenergy</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT ENERGY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1">#        # above, used to be getting energy as last of energy list from gradient()</span>
+<span class="c1">#        # thisenergy below should ultimately be testing on wfn.energy()</span>
+<span class="c1">#</span>
+<span class="c1">#        # Record optimization steps</span>
+<span class="c1">#        # Add wavefunctions later</span>
+<span class="c1">#        if return_history:</span>
+<span class="c1">#            step_energies.append(thisenergy)</span>
+<span class="c1">#            step_coordinates.append(moleculeclone.geometry())</span>
+<span class="c1">#            step_gradients.append(G.clone())</span>
+<span class="c1">#</span>
+<span class="c1">#        # S/R: Quit after getting new displacements or if forming gradient fails</span>
+<span class="c1">#        if opt_mode == &#39;sow&#39;:</span>
+<span class="c1">#            return (0.0, None)</span>
+<span class="c1">#        elif opt_mode == &#39;reap&#39; and thisenergy == 0.0:</span>
+<span class="c1">#            return (0.0, None)</span>
+
+        <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">set_variable</span><span class="p">(</span><span class="s1">&#39;CURRENT ENERGY&#39;</span><span class="p">,</span> <span class="n">thisenergy</span><span class="p">)</span>
+        <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">set_gradient</span><span class="p">(</span><span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Matrix</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">G</span><span class="p">))</span>
+
+<span class="c1">#        # S/R: Move opt data file from last pass into namespace for this pass</span>
+<span class="c1">#        if opt_mode == &#39;reap&#39; and iopt != 0:</span>
+<span class="c1">#            core.IOManager.shared_object().set_specific_retention(1, True)</span>
+<span class="c1">#            core.IOManager.shared_object().set_specific_path(1, &#39;./&#39;)</span>
+<span class="c1">#            if &#39;opt_datafile&#39; in kwargs:</span>
+<span class="c1">#                restartfile = kwargs.pop(&#39;opt_datafile&#39;)</span>
+<span class="c1">#                shutil.copy(restartfile, p4util.get_psifile(1))</span>
+<span class="c1">#</span>
+<span class="c1">#        # opt_func = kwargs.get(&#39;opt_func&#39;, kwargs.get(&#39;func&#39;, energy))</span>
+<span class="c1">#        # if opt_func.__name__ == &#39;complete_basis_set&#39;:</span>
+<span class="c1">#        #     core.IOManager.shared_object().set_specific_retention(1, True)</span>
+<span class="c1">#</span>
+<span class="c1">#        if full_hess_every &gt; -1:</span>
+<span class="c1">#            core.set_global_option(&#39;HESSIAN_WRITE&#39;, True)</span>
+<span class="c1">#</span>
+<span class="c1">#        # compute Hessian as requested; frequency wipes out gradient so stash it</span>
+<span class="c1">#        if ((full_hess_every &gt; -1) and (iopt == 1)) or (steps_since_last_hessian + 1 == full_hess_every):</span>
+<span class="c1">#            G = core.get_gradient()  # TODO</span>
+<span class="c1">#            core.IOManager.shared_object().set_specific_retention(1, True)</span>
+<span class="c1">#            core.IOManager.shared_object().set_specific_path(1, &#39;./&#39;)</span>
+<span class="c1">#            frequencies(hessian_with_method, **kwargs)</span>
+<span class="c1">#            steps_since_last_hessian = 0</span>
+<span class="c1">#            core.set_gradient(G)</span>
+<span class="c1">#            core.set_global_option(&#39;CART_HESS_READ&#39;, True)</span>
+<span class="c1">#        elif (full_hess_every == -1) and core.get_global_option(&#39;CART_HESS_READ&#39;) and (iopt == 1):</span>
+<span class="c1">#            pass</span>
+<span class="c1">#            # Do nothing; user said to read existing hessian once</span>
+<span class="c1">#        else:</span>
+<span class="c1">#            core.set_global_option(&#39;CART_HESS_READ&#39;, False)</span>
+<span class="c1">#            steps_since_last_hessian += 1</span>
+
+        <span class="n">popts</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="o">.</span><span class="n">scroll</span><span class="p">[</span><span class="s1">&#39;QCDB&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">disputed</span><span class="p">()</span> <span class="ow">and</span> <span class="n">k</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;G_CONVERGENCE&#39;</span><span class="p">):</span>
+                <span class="n">popts</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">value</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="o">.</span><span class="n">scroll</span><span class="p">[</span><span class="s1">&#39;PSI4&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">disputed</span><span class="p">()</span> <span class="ow">and</span> <span class="n">k</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;G_CONVERGENCE&#39;</span><span class="p">):</span>
+                <span class="n">popts</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">psi4</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">p4util</span><span class="o">.</span><span class="n">python_helpers</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">popts</span><span class="p">)</span>
+
+        <span class="c1"># Take step. communicate to/from/within optking through legacy_molecule</span>
+        <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">set_legacy_molecule</span><span class="p">(</span><span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">moleculeclone</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()))</span>
+        <span class="n">optking_rval</span> <span class="o">=</span> <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">optking</span><span class="p">()</span>
+        <span class="n">moleculeclone</span> <span class="o">=</span> <span class="n">Molecule</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">get_legacy_molecule</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+        <span class="n">moleculeclone</span><span class="o">.</span><span class="n">update_geometry</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">optking_rval</span> <span class="o">==</span> <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">PsiReturnType</span><span class="o">.</span><span class="n">EndLoop</span><span class="p">:</span>
+<span class="c1">#            # if this is the end of an IRC run, set wfn, energy, and molecule to that</span>
+<span class="c1">#            # of the last optimized IRC point</span>
+<span class="c1">#            if core.get_option(&#39;OPTKING&#39;, &#39;OPT_TYPE&#39;) == &#39;IRC&#39;:</span>
+<span class="c1">#                thisenergy = old_thisenergy</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Optimizer: Optimization complete!&#39;</span><span class="p">)</span>
+<span class="c1">#            core.print_out(&#39;\n    Final optimized geometry and variables:\n&#39;)</span>
+<span class="c1">#            moleculeclone.print_in_input_format()</span>
+<span class="c1">#            # Check if user wants to see the intcos; if so, don&#39;t delete them.</span>
+<span class="c1">#            if core.get_option(&#39;OPTKING&#39;, &#39;INTCOS_GENERATE_EXIT&#39;) == False:</span>
+<span class="c1">#                if core.get_option(&#39;OPTKING&#39;, &#39;KEEP_INTCOS&#39;) == False:</span>
+            <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">opt_clean</span><span class="p">()</span>
+<span class="c1">#                    core.opt_clean()</span>
+            <span class="c1"># Changing environment to optimized geometry as expected by user</span>
+            <span class="n">molecule</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span><span class="n">moleculeclone</span><span class="o">.</span><span class="n">geometry</span><span class="p">())</span>
+<span class="c1">#            for postcallback in hooks[&#39;optimize&#39;][&#39;post&#39;]:</span>
+<span class="c1">#                postcallback(lowername, wfn=wfn, **kwargs)</span>
+<span class="c1">#            core.clean()</span>
+            <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
+
+<span class="c1">#            # S/R: Clean up opt input file</span>
+<span class="c1">#            if opt_mode == &#39;reap&#39;:</span>
+<span class="c1">#                with open(&#39;OPT-master.in&#39;, &#39;wb&#39;) as fmaster:</span>
+<span class="c1">#                    fmaster.write(&#39;# This is a psi4 input file auto-generated from the gradient() wrapper.\n\n&#39;.encode(&#39;utf-8&#39;))</span>
+<span class="c1">#                    fmaster.write(&#39;# Optimization complete!\n\n&#39;.encode(&#39;utf-8&#39;))</span>
+<span class="c1">#</span>
+<span class="c1">#            # Cleanup binary file 1</span>
+<span class="c1">#            if custom_gradient or (&#39;/&#39; in lowername):</span>
+<span class="c1">#                core.IOManager.shared_object().set_specific_retention(1, False)</span>
+<span class="c1">#</span>
+<span class="c1">#            optstash.restore()</span>
+<span class="c1">#</span>
+<span class="c1">#            if return_history:</span>
+<span class="c1">#                history = { &#39;energy&#39;        : step_energies ,</span>
+<span class="c1">#                            &#39;gradient&#39;      : step_gradients ,</span>
+<span class="c1">#                            &#39;coordinates&#39;   : step_coordinates,</span>
+<span class="c1">#                          }</span>
+
+<span class="c1">#            if return_wfn and return_history:</span>
+<span class="c1">#                return (thisenergy, wfn, history)</span>
+<span class="c1">#            elif return_wfn and not return_history:</span>
+<span class="c1">#                return (thisenergy, wfn)</span>
+<span class="c1">#            elif return_history and not return_wfn:</span>
+<span class="c1">#                return (thisenergy, history)</span>
+            <span class="k">if</span> <span class="n">return_wfn</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">thisenergy</span><span class="p">,</span> <span class="n">jobrec</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">thisenergy</span>
+
+        <span class="k">elif</span> <span class="n">optking_rval</span> <span class="o">==</span> <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">PsiReturnType</span><span class="o">.</span><span class="n">Failure</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Optimizer: Optimization failed!&#39;</span><span class="p">)</span>
+<span class="c1">#            if (core.get_option(&#39;OPTKING&#39;, &#39;KEEP_INTCOS&#39;) == False):</span>
+<span class="c1">#                core.opt_clean()</span>
+            <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">opt_clean</span><span class="p">()</span>
+            <span class="n">molecule</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span><span class="n">moleculeclone</span><span class="o">.</span><span class="n">geometry</span><span class="p">())</span>
+            <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
+<span class="c1">#            optstash.restore()</span>
+<span class="c1">#            raise OptimizationConvergenceError(&quot;&quot;&quot;geometry optimization&quot;&quot;&quot;, iopt - 1, wfn)</span>
+            <span class="k">return</span> <span class="n">thisenergy</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">    Structure for next step:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">moleculeclone</span><span class="p">)</span>
+<span class="c1">#        moleculeclone.print_in_input_format()</span>
+
+<span class="c1">#        # S/R: Preserve opt data file for next pass and switch modes to get new displacements</span>
+<span class="c1">#        if opt_mode == &#39;reap&#39;:</span>
+<span class="c1">#            kwargs[&#39;opt_datafile&#39;] = p4util.get_psifile(1)</span>
+<span class="c1">#            kwargs[&#39;mode&#39;] = &#39;sow&#39;</span>
+
+        <span class="n">iopt</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="c1">#    if core.get_option(&#39;OPTKING&#39;, &#39;INTCOS_GENERATE_EXIT&#39;) == False:</span>
+<span class="c1">#        if core.get_option(&#39;OPTKING&#39;, &#39;KEEP_INTCOS&#39;) == False:</span>
+<span class="c1">#            core.opt_clean()</span>
+    <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">opt_clean</span><span class="p">()</span></div>
+
+<span class="c1">#    optstash.restore()</span>
+<span class="c1">#    raise OptimizationConvergenceError(&quot;&quot;&quot;geometry optimization&quot;&quot;&quot;, iopt - 1, wfn)</span>
+
+
+<div class="viewcode-block" id="geometric"><a class="viewcode-back" href="../../../api/qcdb.geometric.html#qcdb.geometric">[docs]</a><span class="k">def</span> <span class="nf">geometric</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">load_proc_table</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="n">driver_util</span><span class="o">.</span><span class="n">kwargs_lower</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;__call__&#39;</span><span class="p">):</span>
+        <span class="n">lowername</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="n">custom_gradient</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">lowername</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">custom_gradient</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">return_wfn</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;return_wfn&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Make sure the molecule the user provided is the active one</span>
+    <span class="n">molecule</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;molecule&#39;</span><span class="p">,</span> <span class="n">driver_helpers</span><span class="o">.</span><span class="n">get_active_molecule</span><span class="p">())</span>
+    <span class="n">molecule</span><span class="o">.</span><span class="n">update_geometry</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="o">.</span><span class="n">scroll</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;EMPTY OPT&#39;</span><span class="p">)</span>
+        <span class="n">pe</span><span class="o">.</span><span class="n">load_options</span><span class="p">()</span>
+
+    <span class="kn">import</span> <span class="nn">yaml</span>
+    <span class="n">tricin</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">tricin</span><span class="p">[</span><span class="s1">&#39;molecule&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">np_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_units</span><span class="o">=</span><span class="s1">&#39;Angstrom&#39;</span><span class="p">)</span>
+    <span class="n">cereal</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">cereal</span><span class="p">[</span><span class="s1">&#39;driver&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gradient</span>
+    <span class="n">cereal</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+    <span class="n">cereal</span><span class="p">[</span><span class="s1">&#39;options&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># outrageous</span>
+    <span class="n">qwer</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;template&#39;</span><span class="p">:</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">cereal</span><span class="p">),</span>
+            <span class="s1">&#39;molecule&#39;</span><span class="p">:</span> <span class="n">molecule</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">np_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_units</span><span class="o">=</span><span class="s1">&#39;Angstrom&#39;</span><span class="p">)}</span>
+    <span class="n">tricin</span><span class="p">[</span><span class="s1">&#39;template&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">qwer</span><span class="p">)</span>
+    <span class="n">tricin</span><span class="p">[</span><span class="s1">&#39;argparse&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="p">[</span><span class="s1">&#39;--qcdb&#39;</span><span class="p">,</span> <span class="s1">&#39;tmp_tricin.yaml&#39;</span><span class="p">]</span> <span class="c1">#prepare_options_for_geometric({&#39;qcdb&#39;: True}).split()</span>
+    
+    <span class="kn">import</span> <span class="nn">geometric</span>
+    <span class="n">otricrec</span> <span class="o">=</span> <span class="n">geometric</span><span class="o">.</span><span class="n">json_run</span><span class="p">(</span><span class="n">tricin</span><span class="p">)</span>
+    <span class="c1">#pp.pprint(otricrec)</span>
+
+    <span class="n">ngeom</span> <span class="o">=</span> <span class="n">otricrec</span><span class="p">[</span><span class="s1">&#39;coords&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">molecule</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span><span class="n">ngeom</span><span class="p">)</span>
+
+    <span class="c1"># going to do an extra grad to get E, G, wfn until better tric comm</span>
+    <span class="n">G</span><span class="p">,</span> <span class="n">jobrec</span> <span class="o">=</span> <span class="n">gradient</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">return_wfn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">E</span> <span class="o">=</span> <span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT ENERGY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="c1">#jobrec[&#39;qcvars&#39;] = {info.lbl: info for info in calcinfo}</span>
+    <span class="n">pp</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">jobrec</span><span class="p">)</span>
+    <span class="n">pe</span><span class="o">.</span><span class="n">active_qcvars</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">return_wfn</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">jobrec</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">E</span></div>
+
+
+<span class="k">def</span> <span class="nf">prepare_options_for_geometric</span><span class="p">(</span><span class="n">dicary</span><span class="p">):</span>
+
+    <span class="n">sysargv</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;--&#39;</span> <span class="o">+</span> <span class="n">k</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dicary</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+    <span class="n">sysargv</span> <span class="o">+=</span> <span class="s1">&#39; tmp_tricin.yaml&#39;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;sysargv&#39;</span><span class="p">,</span> <span class="n">sysargv</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">sysargv</span>
+
+<span class="c1">#    jrec = {}</span>
+<span class="c1">#    jrec[&#39;molecule&#39;] = mymol.to_dict(np_out=False)</span>
+<span class="c1">#    jrec[&#39;template&#39;] = tricin</span>
+<span class="c1">#</span>
+<span class="c1">#    pp.pprint(jrec)</span>
+<span class="c1">#</span>
+<span class="c1">#    with open(&#39;trictest2.json&#39;, &#39;w&#39;) as handle:</span>
+<span class="c1">#        json.dump(jrec, handle)</span>
+<span class="c1">#</span>
+<span class="c1">#    #jrec.pop(&#39;template&#39;)</span>
+<span class="c1">#</span>
+<span class="c1">#    import yaml</span>
+<span class="c1">#    with open(&#39;trictest3.yaml&#39;, &#39;w&#39;) as handle:</span>
+<span class="c1">#        yaml.dump(jrec, handle)</span>
+
+
+<span class="c1">#molecule:</span>
+<span class="c1">#  elbl: [&#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;]</span>
+<span class="c1">#  elea: [16, 1, 1, 16, 1, 1, 16, 1, 1]</span>
+<span class="c1">#  elem: [O, H, H, O, H, H, O, H, H]</span>
+<span class="c1">#  elez: [8, 1, 1, 8, 1, 1, 8, 1, 1]</span>
+<span class="c1">#  fix_com: false</span>
+<span class="c1">#  fix_orientation: false</span>
+<span class="c1">#  fragment_charges: [0.0]</span>
+<span class="c1">#  fragment_multiplicities: [1]</span>
+<span class="c1">#  fragment_separators: []</span>
+<span class="c1">#  geom: [0.2647072205488637, -1.064967384509428, -0.932720644153007, 1.0840372205488638,</span>
+<span class="c1">#    -1.5303473845094284, -0.764380644153007, 0.5264072205488637, -0.15103738450942847,</span>
+<span class="c1">#    -1.0444306441530071, -1.6898327794511359, -0.5409773845094284, 0.9230093558469931,</span>
+<span class="c1">#    -0.9943027794511362, -0.8286873845094284, 0.33165935584699274, -1.6763127794511363,</span>
+<span class="c1">#    0.4142226154905714, 0.8626393558469929, 1.2732772205488636, 1.5375726154905711,</span>
+<span class="c1">#    0.08292935584699303, 1.419267220548864, 2.2003126154905708, -0.5921206441530071,</span>
+<span class="c1">#    2.0508472205488633, 0.9806526154905715, 0.044609355846992965]</span>
+<span class="c1">#  mass: [15.99491461956, 1.00782503207, 1.00782503207, 15.99491461956, 1.00782503207,</span>
+<span class="c1">#    1.00782503207, 15.99491461956, 1.00782503207, 1.00782503207]</span>
+<span class="c1">#  molecular_charge: 0.0</span>
+<span class="c1">#  molecular_multiplicity: 1</span>
+<span class="c1">#  real: [true, true, true, true, true, true, true, true, true]</span>
+<span class="c1">#  units: Angstrom</span>
+<span class="c1">#template: &quot;\ndriver: !!python/name:qcdb.gradient\nmethod: hf\noptions:\n  basis: cc-pvdz\n&quot;</span>
+
+
+
+
+<span class="c1">#PYTHONPATH=/home/psilocaluser/miniconda3/envs/idp35p4/lib/python3.5/site-packages:/home/psilocaluser/gits/geomeTRIC:/home/psilocaluser/miniconda3/envs/tric35/lib/python3.5/site-packages/:$PYTHONPATH /home/psilocaluser/gits/geomeTRIC/geometric/optimize.py --qcdb trictest3.yaml</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../../index.html" title="index">
+          <img class="logo" src="../../../_static/qcdbsquare.png" alt="Logo"/>
+        </a></p><!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+<div id="searchbox" style="display: none" role="search">
+  <!--<h3>Quick search</h3>-->
+    <form class="search" action="../../../search.html" method="get">
+      <!--<div><input type="text" name="q" placeholder="search docs" /></div>-->
+      <div><input type="text" name="q" placeholder="&#xF002;" style="font-family:FontAwesome, Ariel" /></div>
+      <!--<div><input type="submit" value="Go" /></div>-->
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >Index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../index.html" title="Table Of Contents"
+             ><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/optimize.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../../../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">qcdb.driver.optimize</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, The QCDB Project.
+      Last updated on Thursday, 29 April 2021 05:29AM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

@@ -1,0 +1,6 @@
+optking
+=======
+
+.. currentmodule:: qcdb
+
+.. autofunction:: optking

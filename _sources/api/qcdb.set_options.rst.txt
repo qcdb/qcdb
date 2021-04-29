@@ -1,0 +1,6 @@
+set_options
+===========
+
+.. currentmodule:: qcdb
+
+.. autofunction:: set_options

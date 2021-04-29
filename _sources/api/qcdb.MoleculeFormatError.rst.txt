@@ -1,0 +1,6 @@
+MoleculeFormatError
+===================
+
+.. currentmodule:: qcdb
+
+.. autoexception:: MoleculeFormatError

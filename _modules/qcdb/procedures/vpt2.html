@@ -1,0 +1,1213 @@
+<!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>qcdb.procedures.vpt2</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/psi4.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../../../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../../../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../../../_static/cloud.js"></script>
+    
+
+    <link rel="shortcut icon" href="../../../_static/favicon-qcdb.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">Index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../index.html" title="Table Of Contents"
+             accesskey="C"><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/procedures/vpt2.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../../../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">qcdb.procedures.vpt2</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qcdb.procedures.vpt2</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Module with functions for Psi4/Cfour interface. Portions that require</span>
+<span class="sd">calls to Boost Python psi4 module are here, otherwise in qcdb module.</span>
+<span class="sd">Also calls to qcdb module are here and not elsewhere in driver.</span>
+<span class="sd">Organizationally, this module isolates qcdb code from psi4 code.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+<span class="kn">import</span> <span class="nn">shelve</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span> <span class="nn">qcelemental</span> <span class="k">as</span> <span class="nn">qcel</span>
+<span class="kn">from</span> <span class="nn">qcelemental.models</span> <span class="kn">import</span> <span class="n">AtomicInput</span>
+
+<span class="kn">import</span> <span class="nn">qcengine</span> <span class="k">as</span> <span class="nn">qcng</span>
+
+<span class="kn">from</span> <span class="nn">..driver</span> <span class="kn">import</span> <span class="n">pe</span>
+<span class="kn">from</span> <span class="nn">..driver.driver_helpers</span> <span class="kn">import</span> <span class="n">get_active_molecule</span>
+<span class="kn">from</span> <span class="nn">..driver.driver_util</span> <span class="kn">import</span> <span class="n">get_package</span><span class="p">,</span> <span class="n">kwargs_lower</span>
+<span class="kn">from</span> <span class="nn">..keywords</span> <span class="kn">import</span> <span class="n">Keywords</span><span class="p">,</span> <span class="n">register_kwds</span>
+<span class="kn">from</span> <span class="nn">..programs.cfour.harvester</span> <span class="kn">import</span> <span class="n">backtransform</span><span class="p">,</span> <span class="n">format_fjobarc</span><span class="p">,</span> <span class="n">harvest_zmat</span><span class="p">,</span> <span class="n">jajo2mol</span>
+<span class="kn">from</span> <span class="nn">..programs.cfour.jajo</span> <span class="kn">import</span> <span class="n">getrec</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">provenance_stamp</span>
+
+<span class="n">pp</span> <span class="o">=</span> <span class="n">pprint</span><span class="o">.</span><span class="n">PrettyPrinter</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+
+<span class="c1">#from psi4.driver.p4util.exceptions import *</span>
+
+
+
+
+<span class="k">def</span> <span class="nf">run_cfour_module</span><span class="p">(</span><span class="n">xmod</span><span class="p">):</span>
+    <span class="c1"># Find environment by merging PSIPATH and PATH environment variables</span>
+    <span class="n">lenv</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;PATH&#39;</span><span class="p">:</span> <span class="s1">&#39;:&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;PSIPATH&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">])</span> <span class="o">+</span> \
+                <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;PATH&#39;</span><span class="p">)</span> <span class="o">+</span> \
+                <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="n">core</span><span class="o">.</span><span class="n">get_datadir</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;/basis&#39;</span> <span class="o">+</span> \
+                <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="n">core</span><span class="o">.</span><span class="n">psi_top_srcdir</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;/share/basis&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CFOUR_NUM_CORES&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CFOUR_NUM_CORES&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;LD_LIBRARY_PATH&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;LD_LIBRARY_PATH&#39;</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="c1">#   Filter out None values as subprocess will fault on them</span>
+    <span class="n">lenv</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">lenv</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">}</span>
+
+    <span class="c1"># Call executable xcfour, directing cfour output to the psi4 output file</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">retcode</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="n">xmod</span><span class="p">],</span> <span class="n">bufsize</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">lenv</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Program </span><span class="si">%s</span><span class="s1"> not found in path or execution failed: </span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">cfour_executable</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">strerror</span><span class="p">))</span>
+        <span class="c1">#p4out.write(&#39;Program %s not found in path or execution failed: %s\n&#39; % (cfour_executable, e.strerror))</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Program </span><span class="si">%s</span><span class="s1"> not found in path or execution failed: </span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">cfour_executable</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">strerror</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>        
+
+    <span class="n">c4out</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">retcode</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="c1">#if core.outfile_name() == &#39;stdout&#39;:</span>
+        <span class="c1">#    sys.stdout.write(data)</span>
+        <span class="c1">#else:</span>
+        <span class="c1">#    p4out.write(data)</span>
+        <span class="c1">#    p4out.flush()</span>
+        <span class="n">c4out</span> <span class="o">+=</span> <span class="n">data</span>
+    <span class="c1">#internal_p4c4_info[&#39;output&#39;] = c4out</span>
+    <span class="k">return</span> <span class="n">c4out</span>
+
+
+<div class="viewcode-block" id="vpt2"><a class="viewcode-back" href="../../../api/qcdb.vpt2.html#qcdb.vpt2">[docs]</a><span class="nd">@register_kwds</span><span class="p">(</span><span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">vpt2</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Perform vibrational second-order perturbation computation through</span>
+<span class="sd">    Cfour to get anharmonic frequencies. This version uses c4 for the disp</span>
+<span class="sd">    and pt2 but gets gradients from p4.</span>
+
+<span class="sd">    :type c4full: :ref:`boolean &lt;op_py_boolean&gt;`</span>
+<span class="sd">    :param c4full: ``&#39;on&#39;`` || |dl| ``&#39;off&#39;`` |dr|</span>
+
+<span class="sd">        Indicates whether when *name* indicates a Cfour method and *mode*</span>
+<span class="sd">        indicates a sow/reap approach, sown files are direct ZMAT files</span>
+<span class="sd">        and FJOBARC files are expected to reap, so that Cfour only, not</span>
+<span class="sd">        Cfour-through-Psi4, is needed for distributed jobs.</span>
+
+<span class="sd">    .. caution:: Some features are not yet implemented. Buy a developer a coffee.</span>
+
+<span class="sd">       - Presently uses all gradients. Could mix in analytic 2nd-derivs.</span>
+
+<span class="sd">       - Collect resutls.</span>
+
+<span class="sd">       - Manage scratch / subdir better.</span>
+
+<span class="sd">       - Allow CFOUR_BASIS</span>
+
+<span class="sd">       - Consider forcing some tighter convcrit, c4 and p4</span>
+
+<span class="sd">       - mixed ang/bohr signals</span>
+
+<span class="sd">       - error by converting to ang in psi?</span>
+
+<span class="sd">       - Expand CURRENT DIPOLE XYZ beyond SCF</span>
+
+<span class="sd">       - Remember additional FJOBARC record TOTENER2 if EXCITE .ne. NONE</span>
+
+<span class="sd">       - switch C --&gt; S/R with recovery using shelf</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">..driver</span> <span class="kn">import</span> <span class="n">endorsed_plugins</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs_lower</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="c1">#    if &#39;options&#39; in kwargs:</span>
+<span class="c1">#        driver_helpers.set_options(kwargs.pop(&#39;options&#39;))</span>
+<span class="c1">#</span>
+<span class="c1">#    # Bounce if name is function</span>
+<span class="c1">#    if hasattr(name, &#39;__call__&#39;):</span>
+<span class="c1">#        return name(energy, kwargs.pop(&#39;label&#39;, &#39;custom function&#39;), ptype=&#39;energy&#39;, **kwargs)</span>
+<span class="c1">#</span>
+<span class="c1">#    # Allow specification of methods to arbitrary order</span>
+    <span class="n">lowername</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">package</span> <span class="o">=</span> <span class="n">get_package</span><span class="p">(</span><span class="n">lowername</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+<span class="c1">#    lowername, level = driver_helpers._parse_arbitrary_order(lowername)</span>
+<span class="c1">#    if level:</span>
+<span class="c1">#        kwargs[&#39;level&#39;] = level</span>
+
+    <span class="c1"># Make sure the molecule the user provided is the active one</span>
+    <span class="n">molecule</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;molecule&#39;</span><span class="p">,</span> <span class="n">get_active_molecule</span><span class="p">())</span>
+    <span class="n">molecule</span><span class="o">.</span><span class="n">update_geometry</span><span class="p">()</span>
+
+<span class="c1">#    if len(pe.nu_options.scroll) == 0:</span>
+<span class="c1">#        #print(&#39;EMPTY OPT&#39;)</span>
+<span class="c1">#        pe.load_nu_options()</span>
+
+<span class="c1"># -----</span>
+    <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;verbose&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">scratch_messy</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;scratch_messy&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>  <span class="c1"># TODO</span>
+
+    <span class="n">kwgs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;accession&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;accession&#39;</span><span class="p">],</span> <span class="s1">&#39;verbose&#39;</span><span class="p">:</span> <span class="n">verbose</span><span class="p">}</span>
+
+<span class="c1">#    optstash = p4util.OptionsState(</span>
+<span class="c1">#        [&#39;BASIS&#39;])</span>
+
+    <span class="c1"># Option mode of operation- whether vpt2 run in one job or files farmed out</span>
+    <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="s1">&#39;vpt2_mode&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;mode&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;vpt2_mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;vpt2_mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;continuous&#39;</span>
+
+    <span class="c1"># Switches for route through code- S/R or continuous &amp; Psi4 or Cfour gradients</span>
+    <span class="n">isSowReap</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;vpt2_mode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;sowreap&#39;</span> <span class="k">else</span> <span class="kc">False</span>
+<span class="c1">#!BR#    isC4notP4 = bool(re.match(&#39;cfour&#39;, lowername)) or bool(re.match(&#39;c4-&#39;, lowername))</span>
+    <span class="n">isC4notP4</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># TODO until intf_psi4 hooked up to qcng</span>
+    <span class="n">isC4fully</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;c4full&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="n">yes</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;c4full&#39;</span><span class="p">]))</span> <span class="ow">and</span> <span class="n">isC4notP4</span> <span class="ow">and</span> <span class="n">isSowReap</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;isSowReap=&#39;</span><span class="p">,</span> <span class="n">isSowReap</span><span class="p">,</span> <span class="s1">&#39;isC4notP4=&#39;</span><span class="p">,</span> <span class="n">isC4notP4</span><span class="p">,</span> <span class="s1">&#39;isC4fully=&#39;</span><span class="p">,</span> <span class="n">isC4fully</span><span class="p">)</span>
+
+    <span class="n">cfourharness</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">get_program</span><span class="p">(</span><span class="s1">&#39;qcdb-cfour&#39;</span><span class="p">)</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">local_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ncores&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+
+    <span class="c1"># Save submission directory and basis set</span>
+    <span class="n">current_directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+<span class="c1">#    user_basis = core.get_global_option(&#39;BASIS&#39;)</span>
+
+    <span class="c1"># Open data persistence shelf- vital for sowreap, checkpoint for continuouw</span>
+<span class="c1">#    shelf = shelve.open(current_directory + &#39;/&#39; + os.path.splitext(core.outfile_name())[0] + &#39;.shelf&#39;, writeback=True)</span>
+    <span class="n">shelf</span> <span class="o">=</span> <span class="n">shelve</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">current_directory</span> <span class="o">+</span> <span class="s1">&#39;/vpt2scratch.shelf&#39;</span><span class="p">,</span> <span class="n">writeback</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Cfour keywords to request vpt2 analysis through findif gradients</span>
+    <span class="n">c000_opts</span> <span class="o">=</span> <span class="n">Keywords</span><span class="p">()</span>
+    <span class="n">pe</span><span class="o">.</span><span class="n">load_program_options</span><span class="p">(</span><span class="n">c000_opts</span><span class="p">)</span>
+    <span class="n">c000_opts</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="s1">&#39;CFOUR&#39;</span><span class="p">,</span> <span class="s1">&#39;VIBRATION&#39;</span><span class="p">,</span> <span class="s1">&#39;FINDIF&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwgs</span><span class="p">)</span>
+    <span class="n">c000_opts</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="s1">&#39;CFOUR&#39;</span><span class="p">,</span> <span class="s1">&#39;FREQ_ALGORITHM&#39;</span><span class="p">,</span> <span class="s1">&#39;PARALLEL&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwgs</span><span class="p">)</span>
+    <span class="n">c000_opts</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="s1">&#39;CFOUR&#39;</span><span class="p">,</span> <span class="s1">&#39;ANH_ALGORITHM&#39;</span><span class="p">,</span> <span class="s1">&#39;PARALLEL&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwgs</span><span class="p">)</span>
+    <span class="n">c000_opts</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="s1">&#39;CFOUR&#39;</span><span class="p">,</span> <span class="s1">&#39;ANHARMONIC&#39;</span><span class="p">,</span> <span class="s1">&#39;VPT2&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwgs</span><span class="p">)</span>
+    <span class="n">c000_opts</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="s1">&#39;CFOUR&#39;</span><span class="p">,</span> <span class="s1">&#39;FD_PROJECT&#39;</span><span class="p">,</span> <span class="s1">&#39;OFF&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwgs</span><span class="p">)</span>
+
+
+    <span class="c1"># When a Psi4 method is requested for vpt2, a skeleton of</span>
+    <span class="c1">#   computations in Cfour is still required to hang the gradients</span>
+    <span class="c1">#   upon. The skeleton is as cheap as possible (integrals only</span>
+    <span class="c1">#   &amp; sto-3g) and set up here.</span>
+<span class="c1">#!BR#    if isC4notP4:</span>
+<span class="c1">#!BR#        skelname = lowername</span>
+<span class="c1">#!BR#    else:</span>
+    <span class="k">if</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">skelname</span> <span class="o">=</span> <span class="s1">&#39;c4-scf&#39;</span>
+<span class="c1">#        core.set_global_option(&#39;BASIS&#39;, &#39;STO-3G&#39;)</span>
+    <span class="c1">#    P4  &#39;c4-scf&#39;/&#39;cfour&#39;CALC_LEVEL      lowername  # temporary</span>
+    <span class="c1">#    C4  lowername                       cfour{}  # temporary</span>
+
+    <span class="k">if</span> <span class="s1">&#39;status&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">shelf</span><span class="p">:</span>
+        <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;initialized&#39;</span>
+        <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;linkage&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span>
+        <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># Cfour-generated ZMAT files with finite difference geometries</span>
+        <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;fjobarc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># Cfour- or Psi4-generated ascii files with packaged gradient results</span>
+        <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># models.AtomicResult</span>
+        <span class="n">shelf</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">pass</span>
+        <span class="c1"># how decide whether to use. keep precedent of intco.dat in mind</span>
+
+<span class="c1">#    # Construct and move into directory job scratch / cfour scratch / harm</span>
+<span class="c1">#    psioh = core.IOManager.shared_object()</span>
+<span class="c1">#    psio = core.IO.shared_object()</span>
+<span class="c1">#    os.chdir(psioh.get_default_path())  # psi_scratch</span>
+<span class="c1">#    cfour_tmpdir = kwargs[&#39;path&#39;] if &#39;path&#39; in kwargs else \</span>
+<span class="c1">#        &#39;psi.&#39; + str(os.getpid()) + &#39;.&#39; + psio.get_default_namespace() + \</span>
+<span class="c1">#        &#39;.cfour.&#39; + str(uuid.uuid4())[:8]</span>
+<span class="c1">#    if not os.path.exists(cfour_tmpdir):</span>
+<span class="c1">#        os.mkdir(cfour_tmpdir)</span>
+<span class="c1">#    os.chdir(cfour_tmpdir)  # psi_scratch/cfour</span>
+<span class="c1">#    if not os.path.exists(&#39;harm&#39;):</span>
+<span class="c1">#        os.mkdir(&#39;harm&#39;)</span>
+<span class="c1">#    os.chdir(&#39;harm&#39;)  # psi_scratch/cfour/harm</span>
+
+<span class="c1">#    psioh.set_specific_retention(32, True)  # temporary, to track p4 scratch</span>
+    <span class="c1">#shelf[&#39;status&#39;] = &#39;anharm_jobs_sown&#39;  # temporary to force backtrack</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;STAT&#39;</span><span class="p">,</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">])</span>  <span class="c1"># temporary</span>
+
+    <span class="n">resi</span> <span class="o">=</span> <span class="n">AtomicInput</span><span class="p">(</span>
+        <span class="o">**</span><span class="p">{</span>
+            <span class="s1">&#39;driver&#39;</span><span class="p">:</span> <span class="s1">&#39;energy&#39;</span><span class="p">,</span>  <span class="c1"># to prevent qcdb imposition of analytic hessian</span>
+            <span class="s1">&#39;extras&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;qcdb:options&#39;</span><span class="p">:</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">c000_opts</span><span class="p">),</span> <span class="c1">#pe.nu_options),</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;c4-scf&#39;</span><span class="p">,</span> <span class="c1">#&#39;hf&#39;,</span>
+                <span class="c1">#&#39;basis&#39;: &#39;6-31g&#39;,</span>
+                <span class="s1">&#39;basis&#39;</span><span class="p">:</span> <span class="s1">&#39;sto-3g&#39;</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s1">&#39;molecule&#39;</span><span class="p">:</span> <span class="n">molecule</span><span class="o">.</span><span class="n">to_schema</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+            <span class="s1">&#39;provenance&#39;</span><span class="p">:</span> <span class="n">provenance_stamp</span><span class="p">(</span><span class="vm">__name__</span><span class="p">),</span>
+        <span class="p">})</span>
+
+    <span class="c1"># Generate the ZMAT input file in scratch</span>
+    <span class="n">cfourrec</span> <span class="o">=</span> <span class="n">cfourharness</span><span class="o">.</span><span class="n">qcdb_build_input</span><span class="p">(</span><span class="n">resi</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+    <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;genbas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cfourrec</span><span class="p">[</span><span class="s1">&#39;infiles&#39;</span><span class="p">][</span><span class="s1">&#39;GENBAS&#39;</span><span class="p">]</span>
+    <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">][</span><span class="s1">&#39;000-000&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cfourrec</span><span class="p">[</span><span class="s1">&#39;infiles&#39;</span><span class="p">][</span><span class="s1">&#39;ZMAT&#39;</span><span class="p">]</span>
+    <span class="n">shelf</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span>
+
+<span class="c1">#    with open(&#39;ZMAT&#39;, &#39;w&#39;) as handle:</span>
+<span class="c1">#        cfour_infile = write_zmat(skelname, 1)</span>
+<span class="c1">#        handle.write(cfour_infile)</span>
+<span class="c1">#    print(&#39;\n====== Begin ZMAT input for CFOUR ======&#39;)</span>
+<span class="c1">#    print(open(&#39;ZMAT&#39;, &#39;r&#39;).read())</span>
+<span class="c1">#    print(&#39;======= End ZMAT input for CFOUR =======\n&#39;)</span>
+
+    <span class="c1"># Check existing shelf consistent with generated ZMAT, store</span>
+<span class="c1">#    if (&#39;000-000&#39; in shelf[&#39;zmat&#39;]) and (shelf[&#39;zmat&#39;][&#39;000-000&#39;] != cfour_infile):</span>
+<span class="c1">#        diff = difflib.Differ().compare(shelf[&#39;zmat&#39;][&#39;000-000&#39;].splitlines(), cfour_infile.splitlines())</span>
+<span class="c1">#        raise ValidationError(&quot;&quot;&quot;Input file translated to Cfour ZMAT does not match ZMAT stored in shelf.\n\n&quot;&quot;&quot; +</span>
+<span class="c1">#            &#39;\n&#39;.join(list(diff)))</span>
+
+    <span class="c1"># Reset basis after Cfour skeleton seeded</span>
+<span class="c1">#    core.set_global_option(&#39;BASIS&#39;, user_basis)</span>
+
+    <span class="k">if</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;initialized&#39;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:_^45}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;  VPT2 Setup: Harmonic  &#39;</span><span class="p">))</span>
+
+        <span class="c1"># Generate the displacements that will form the harmonic freq</span>
+        <span class="n">scrkwgs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;scratch_directory&#39;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">scratch_directory</span><span class="p">,</span> <span class="s1">&#39;scratch_messy&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;scratch_suffix&#39;</span><span class="p">:</span> <span class="s1">&#39;_000&#39;</span><span class="p">}</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xjoda&#39;</span><span class="p">],</span> <span class="n">cfourrec</span><span class="p">[</span><span class="s1">&#39;infiles&#39;</span><span class="p">],</span> <span class="p">[],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+        <span class="n">partial</span> <span class="o">=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+
+        <span class="n">scrkwgs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;scratch_name&#39;</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;scratch_directory&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;scratch_exist_ok&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+        <span class="n">scrkwgs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;scratch_messy&#39;</span><span class="p">:</span> <span class="n">scratch_messy</span><span class="p">})</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xsymcor&#39;</span><span class="p">],</span> <span class="p">{},</span> <span class="p">[</span><span class="s1">&#39;zmat*&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+        <span class="n">partial</span> <span class="o">+=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+    
+        <span class="nb">print</span><span class="p">(</span><span class="n">partial</span><span class="p">)</span>  <span class="c1"># partial.out</span>
+
+        <span class="c1"># Read the displacements that will form the harmonic freq</span>
+        <span class="n">zmats0N</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;000-&#39;</span> <span class="o">+</span> <span class="n">item</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;outfiles&#39;</span><span class="p">][</span><span class="s1">&#39;zmat*&#39;</span><span class="p">]]</span>
+        <span class="k">for</span> <span class="n">zm_2</span> <span class="ow">in</span> <span class="n">zmats0N</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">zm2</span> <span class="o">=</span> <span class="n">zm_2</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+            <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">][</span><span class="n">zm_2</span><span class="p">]</span> <span class="o">=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;outfiles&#39;</span><span class="p">][</span><span class="s1">&#39;zmat*&#39;</span><span class="p">][</span><span class="s1">&#39;zmat&#39;</span> <span class="o">+</span> <span class="n">zm2</span><span class="p">]</span>
+            <span class="n">shelf</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  CFOUR scratch file zmat</span><span class="si">{</span><span class="n">zm2</span><span class="si">}</span><span class="s1"> for </span><span class="si">{</span><span class="n">zm_2</span><span class="si">}</span><span class="s1"> has been read</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="c1">#print(&#39;%s\n&#39; % shelf[&#39;zmat&#39;][zm_2])</span>
+
+        <span class="c1"># S/R: Write distributed input files for harmonic freq</span>
+        <span class="k">if</span> <span class="n">isSowReap</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">current_directory</span><span class="p">)</span>
+            <span class="n">inputSansMol</span> <span class="o">=</span> <span class="n">p4util</span><span class="o">.</span><span class="n">format_currentstate_for_input</span><span class="p">(</span><span class="n">gradient</span><span class="p">,</span> <span class="n">lowername</span><span class="p">,</span> <span class="n">allButMol</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">zm12</span> <span class="ow">in</span> <span class="n">zmats0N</span><span class="p">:</span>
+                <span class="n">zm1</span><span class="p">,</span> <span class="n">zm2</span> <span class="o">=</span> <span class="n">zm12</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+
+                <span class="n">ifile</span> <span class="o">=</span> <span class="n">vpt2_sow_files</span><span class="p">(</span><span class="n">zm12</span><span class="p">,</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;linkage&#39;</span><span class="p">],</span> <span class="n">isC4notP4</span><span class="p">,</span> <span class="n">isC4fully</span><span class="p">,</span>
+                    <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">][</span><span class="n">zm12</span><span class="p">],</span> <span class="n">inputSansMol</span><span class="p">,</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;genbas&#39;</span><span class="p">])</span>
+
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;VPT2-&#39;</span> <span class="o">+</span> <span class="n">zm12</span> <span class="o">+</span> <span class="s1">&#39;.in&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
+                    <span class="n">handle</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ifile</span><span class="p">)</span>
+
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">vpt2_instructions</span><span class="p">(</span><span class="s1">&#39;harmonic&#39;</span><span class="p">,</span> <span class="n">current_directory</span><span class="p">,</span> <span class="n">zmats0N</span><span class="p">)</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">print_out</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;harm_jobs_sown&#39;</span>
+
+        <span class="c1"># S/R: Pause for distributed calculations</span>
+        <span class="k">if</span> <span class="n">isSowReap</span><span class="p">:</span>
+            <span class="n">shelf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+
+    <span class="k">if</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;harm_jobs_sown&#39;</span><span class="p">:</span>
+        <span class="n">zmats0N</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="p">(</span><span class="n">item</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;000&#39;</span> <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">!=</span> <span class="s1">&#39;000&#39;</span><span class="p">)]</span>
+
+        <span class="c1"># S/R: Check that distributed calcs all completed correctly</span>
+        <span class="k">if</span> <span class="n">isSowReap</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">vpt2_instructions</span><span class="p">(</span><span class="s1">&#39;harmonic&#39;</span><span class="p">,</span> <span class="n">current_directory</span><span class="p">,</span> <span class="n">zmats0N</span><span class="p">)</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">print_out</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">isOk</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">sown_jobs_status</span><span class="p">(</span><span class="n">current_directory</span><span class="p">,</span> <span class="s1">&#39;VPT2&#39;</span><span class="p">,</span> <span class="n">zmats0N</span><span class="p">,</span> <span class="n">reap_job_validate</span><span class="p">,</span>
+                <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;linkage&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;CURRENT ENERGY&#39;</span><span class="p">,</span> <span class="s1">&#39;CURRENT DIPOLE&#39;</span><span class="p">,</span> <span class="s1">&#39;CURRENT GRADIENT&#39;</span><span class="p">])</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">print_out</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">isOk</span><span class="p">:</span>
+                <span class="n">shelf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">return</span> <span class="mf">0.0</span>
+
+        <span class="c1"># Collect all results from gradients forming the harmonic freq</span>
+        <span class="k">for</span> <span class="n">zm12</span> <span class="ow">in</span> <span class="n">zmats0N</span><span class="p">:</span>
+            <span class="n">zm1</span><span class="p">,</span> <span class="n">zm2</span> <span class="o">=</span> <span class="n">zm12</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">zm12</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;fjobarc&#39;</span><span class="p">]:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:_^45}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  VPT2 Computation: </span><span class="si">{</span><span class="n">zm12</span><span class="si">}</span><span class="s1">  &#39;</span><span class="p">))</span>
+
+                <span class="n">fjobarc</span> <span class="o">=</span> <span class="n">vpt2_reaprun_files</span><span class="p">(</span><span class="n">zm12</span><span class="p">,</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;linkage&#39;</span><span class="p">],</span> <span class="n">isSowReap</span><span class="p">,</span> <span class="n">isC4notP4</span><span class="p">,</span> <span class="n">isC4fully</span><span class="p">,</span>
+                    <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">][</span><span class="n">zm12</span><span class="p">],</span> <span class="c1">#current_directory, psioh.get_default_path(), cfour_tmpdir,</span>
+                    <span class="n">lowername</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;genbas&#39;</span><span class="p">],</span> <span class="n">config</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">scratch_messy</span><span class="o">=</span><span class="n">scratch_messy</span><span class="p">)</span>
+                <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;fjobarc&#39;</span><span class="p">][</span><span class="n">zm12</span><span class="p">]</span> <span class="o">=</span> <span class="n">fjobarc</span>
+                <span class="n">shelf</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span>
+        <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;harm_jobs_reaped&#39;</span>
+
+    <span class="k">if</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;harm_jobs_reaped&#39;</span><span class="p">:</span>
+        <span class="n">zmats0N</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="p">(</span><span class="n">item</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;000&#39;</span> <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">!=</span> <span class="s1">&#39;000&#39;</span><span class="p">)]</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:_^45}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;  VPT2 Results: Harmonic  &#39;</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">shelf</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   </span><span class="si">{:_^20}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
+            <span class="c1">#pp.pprint(v)</span>
+
+        <span class="c1">#scrkwgs = {&#39;scratch_directory&#39;: config.scratch_directory, &#39;scratch_messy&#39;: True, &#39;scratch_suffix&#39;: &#39;_000&#39;}</span>
+        <span class="c1">#scrkwgs.update({&#39;scratch_name&#39;: Path(dexe[&#39;scratch_directory&#39;]).name, &#39;scratch_exist_ok&#39;: True})</span>
+        <span class="c1">#scrkwgs.update({&#39;scratch_messy&#39;: scratch_messy})</span>
+
+        <span class="c1"># Process the gradients into harmonic freq</span>
+        <span class="n">scrkwgs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;scratch_directory&#39;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">scratch_directory</span><span class="p">,</span> <span class="s1">&#39;scratch_messy&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;scratch_suffix&#39;</span><span class="p">:</span> <span class="s1">&#39;_000med&#39;</span><span class="p">}</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xjoda&#39;</span><span class="p">],</span> <span class="p">{</span><span class="s1">&#39;ZMAT&#39;</span><span class="p">:</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">][</span><span class="s1">&#39;000-000&#39;</span><span class="p">],</span> <span class="s1">&#39;GENBAS&#39;</span><span class="p">:</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;genbas&#39;</span><span class="p">]},</span> <span class="p">[],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+        <span class="n">harmout</span> <span class="o">=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+
+        <span class="n">scrkwgs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;scratch_name&#39;</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;scratch_directory&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;scratch_exist_ok&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xsymcor&#39;</span><span class="p">],</span> <span class="p">{},</span> <span class="p">[],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;xsymcor&#39;</span><span class="p">,</span> <span class="n">success</span><span class="p">)</span>
+        <span class="n">harmout</span> <span class="o">+=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">zm12</span> <span class="ow">in</span> <span class="n">zmats0N</span><span class="p">:</span>
+            <span class="n">zm1</span><span class="p">,</span> <span class="n">zm2</span> <span class="o">=</span> <span class="n">zm12</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+            <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xja2fja&#39;</span><span class="p">],</span> <span class="p">{</span><span class="s1">&#39;FJOBARC&#39;</span><span class="p">:</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;fjobarc&#39;</span><span class="p">][</span><span class="n">zm12</span><span class="p">]},</span> <span class="p">[],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">zm12</span><span class="p">,</span> <span class="s1">&#39;xja2fja&#39;</span><span class="p">,</span> <span class="n">success</span><span class="p">)</span>
+            <span class="n">harmout</span> <span class="o">+=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+
+            <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xsymcor&#39;</span><span class="p">],</span> <span class="p">{},</span> <span class="p">[],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">zm12</span><span class="p">,</span> <span class="s1">&#39;xsymcor&#39;</span><span class="p">,</span> <span class="n">success</span><span class="p">)</span>
+            <span class="n">harmout</span> <span class="o">+=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+
+        <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xjoda&#39;</span><span class="p">],</span> <span class="p">{},</span> <span class="p">[],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;xjoda&#39;</span><span class="p">,</span> <span class="n">success</span><span class="p">)</span>
+        <span class="n">harmout</span> <span class="o">+=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">zm</span> <span class="ow">in</span> <span class="n">Path</span><span class="p">(</span><span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;scratch_directory&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;zmat*&#39;</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Removing&#39;</span><span class="p">,</span> <span class="n">zm</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">zm</span><span class="p">)</span>
+
+        <span class="n">scrkwgs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;scratch_messy&#39;</span><span class="p">:</span> <span class="n">scratch_messy</span><span class="p">})</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xcubic&#39;</span><span class="p">],</span> <span class="p">{},</span> <span class="p">[</span><span class="s1">&#39;zmat*&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;xcubic&#39;</span><span class="p">,</span> <span class="n">success</span><span class="p">)</span>
+        <span class="n">harmout</span> <span class="o">+=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+        <span class="c1">#print(&#39;HARMOUT&#39;)</span>
+        <span class="c1">#print(harmout)</span>
+
+        <span class="n">pp</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>    
+        <span class="n">pp</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;fjobarc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>    
+
+
+
+<span class="c1">#        os.chdir(psioh.get_default_path() + cfour_tmpdir + &#39;/harm&#39;)  # psi_scratch/cfour/harm</span>
+<span class="c1">#        harmout = run_cfour_module(&#39;xjoda&#39;)</span>
+<span class="c1">#        harmout += run_cfour_module(&#39;xsymcor&#39;)</span>
+<span class="c1">#        for zm12 in zmats0N:</span>
+<span class="c1">#            zm1, zm2 = zm12.split(&#39;-&#39;)</span>
+<span class="c1">#            with open(&#39;FJOBARC&#39;, &#39;w&#39;) as handle:</span>
+<span class="c1">#                handle.write(shelf[&#39;fjobarc&#39;][zm12])</span>
+<span class="c1">#            harmout += run_cfour_module(&#39;xja2fja&#39;)</span>
+<span class="c1">#            harmout += run_cfour_module(&#39;xsymcor&#39;)</span>
+<span class="c1">#            shutil.move(&#39;FJOBARC&#39;, &#39;fja.&#39; + zm12)</span>
+<span class="c1">#            try:</span>
+<span class="c1">#                os.remove(&#39;zmat&#39; + zm2)</span>
+<span class="c1">#            except OSError:</span>
+<span class="c1">#                pass</span>
+<span class="c1">#        harmout += run_cfour_module(&#39;xjoda&#39;)</span>
+<span class="c1">#        harmout += run_cfour_module(&#39;xcubic&#39;)</span>
+<span class="c1">#        core.print_out(harmout)</span>
+<span class="c1">#        with open(&#39;harm.out&#39;, &#39;w&#39;) as handle:</span>
+<span class="c1">#            handle.write(harmout)</span>
+
+        <span class="c1"># Generate displacements along harmonic normal modes</span>
+        <span class="c1">#zmatsN0 = [item[-3:] for item in sorted(shelf[&#39;zmat&#39;].keys()) if (item[:3] == &#39;000&#39; and item[-3:] != &#39;000&#39;)]</span>
+        <span class="k">for</span> <span class="n">fl</span><span class="p">,</span> <span class="n">contents</span> <span class="ow">in</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;outfiles&#39;</span><span class="p">][</span><span class="s1">&#39;zmat*&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">zmN_</span> <span class="o">=</span> <span class="n">fl</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">+</span> <span class="s1">&#39;-000&#39;</span>
+            <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">][</span><span class="n">zmN_</span><span class="p">]</span> <span class="o">=</span> <span class="n">contents</span>
+            <span class="n">shelf</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  CFOUR scratch file </span><span class="si">{</span><span class="n">fl</span><span class="si">}</span><span class="s1"> for </span><span class="si">{</span><span class="n">zmN_</span><span class="si">}</span><span class="s1"> has been read</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="c1">#print(&#39;%s\n&#39; % shelf[&#39;zmat&#39;][zm12])</span>
+
+        <span class="n">zmatsN0</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="p">(</span><span class="n">item</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;000&#39;</span> <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">==</span> <span class="s1">&#39;000&#39;</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">zmN0</span> <span class="ow">in</span> <span class="n">zmatsN0</span><span class="p">:</span>
+            <span class="n">zm1</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">zmN0</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Collect displacements along the normal coordinates generated by the harmonic freq.</span>
+            <span class="c1">#   Further harmonic freqs are to be run at each of these to produce quartic force field.</span>
+            <span class="c1">#   To carry these out, generate displacements for findif by gradient at each displacement.</span>
+
+            <span class="n">scrkwgs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;scratch_directory&#39;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">scratch_directory</span><span class="p">,</span> <span class="s1">&#39;scratch_messy&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;scratch_suffix&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;_</span><span class="si">{</span><span class="n">zmN0</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">}</span>
+            <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xjoda&#39;</span><span class="p">],</span> <span class="p">{</span><span class="s1">&#39;ZMAT&#39;</span><span class="p">:</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">][</span><span class="n">zmN0</span><span class="p">],</span> <span class="s1">&#39;GENBAS&#39;</span><span class="p">:</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;genbas&#39;</span><span class="p">]},</span> <span class="p">[],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+
+            <span class="n">scrkwgs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;scratch_name&#39;</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;scratch_directory&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;scratch_exist_ok&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+            <span class="n">scrkwgs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;scratch_messy&#39;</span><span class="p">:</span> <span class="n">scratch_messy</span><span class="p">})</span>
+            <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xsymcor&#39;</span><span class="p">],</span> <span class="p">{},</span> <span class="p">[</span><span class="s1">&#39;zmat*&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">fl</span><span class="p">,</span> <span class="n">contents</span> <span class="ow">in</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;outfiles&#39;</span><span class="p">][</span><span class="s1">&#39;zmat*&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">zm12</span> <span class="o">=</span> <span class="n">zm1</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">fl</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span>
+                <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">][</span><span class="n">zm12</span><span class="p">]</span> <span class="o">=</span> <span class="n">contents</span>
+                <span class="n">shelf</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  CFOUR scratch file </span><span class="si">%s</span><span class="s1"> for </span><span class="si">%s</span><span class="s1"> has been read</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fl</span><span class="p">,</span> <span class="n">zm12</span><span class="p">))</span>
+                <span class="c1">#print(&#39;%s\n&#39; % shelf[&#39;zmat&#39;][zm12])</span>
+
+<span class="c1">#        zmatsN0 = [item[-3:] for item in sorted(glob.glob(&#39;zmat*&#39;))]</span>
+<span class="c1">#        os.chdir(&#39;..&#39;)  # psi_scratch/cfour</span>
+<span class="c1">#        for zm1 in zmatsN0:</span>
+<span class="c1">#            zm12 = zm1 + &#39;-000&#39;</span>
+<span class="c1">#            with open(psioh.get_default_path() + cfour_tmpdir + &#39;/harm/zmat&#39; + zm1, &#39;r&#39;) as handle:</span>
+<span class="c1">#                shelf[&#39;zmat&#39;][zm12] = handle.read()</span>
+<span class="c1">#                shelf.sync()</span>
+<span class="c1">#                core.print_out(&#39;  CFOUR scratch file %s for %s has been read\n&#39; % (&#39;zmat&#39; + zm1, zm12))</span>
+<span class="c1">#                core.print_out(&#39;%s\n&#39; % shelf[&#39;zmat&#39;][zm12])</span>
+<span class="c1">#</span>
+<span class="c1">#            # Collect displacements along the normal coordinates generated by the harmonic freq.</span>
+<span class="c1">#            #   Further harmonic freqs are to be run at each of these to produce quartic force field.</span>
+<span class="c1">#            #   To carry these out, generate displacements for findif by gradient at each displacement.</span>
+<span class="c1">#            if os.path.exists(zm1):</span>
+<span class="c1">#                shutil.rmtree(zm1)</span>
+<span class="c1">#            os.mkdir(zm1)</span>
+<span class="c1">#            os.chdir(zm1)  # psi_scratch/cfour/004</span>
+<span class="c1">#            with open(&#39;ZMAT&#39;, &#39;w&#39;) as handle:</span>
+<span class="c1">#                handle.write(shelf[&#39;zmat&#39;][zm12])</span>
+<span class="c1">#            shutil.copy2(&#39;../harm/GENBAS&#39;, &#39;GENBAS&#39;)  # ln -s $ecpdir/ECPDATA $j/ECPDATA</span>
+<span class="c1">#            with open(&#39;partial.out&#39;, &#39;w&#39;) as handle:</span>
+<span class="c1">#                handle.write(run_cfour_module(&#39;xjoda&#39;))</span>
+<span class="c1">#                handle.write(run_cfour_module(&#39;xsymcor&#39;))</span>
+<span class="c1">#</span>
+<span class="c1">#            # Read the displacements that will form the anharmonic freq</span>
+<span class="c1">#            zmatsNN = [item[-3:] for item in sorted(glob.glob(&#39;zmat*&#39;))]</span>
+<span class="c1">#            for zm2 in zmatsNN:</span>
+<span class="c1">#                zm12 = zm1 + &#39;-&#39; + zm2</span>
+<span class="c1">#                with open(psioh.get_default_path() + cfour_tmpdir + &#39;/&#39; + zm1 + &#39;/zmat&#39; + zm2, &#39;r&#39;) as handle:</span>
+<span class="c1">#                    shelf[&#39;zmat&#39;][zm12] = handle.read()</span>
+<span class="c1">#                    shelf.sync()</span>
+<span class="c1">#                    core.print_out(&#39;  CFOUR scratch file %s for %s has been read\n&#39; % (&#39;zmat&#39; + zm2, zm12))</span>
+<span class="c1">#                    core.print_out(&#39;%s\n&#39; % shelf[&#39;zmat&#39;][zm12])</span>
+<span class="c1">#            os.chdir(&#39;..&#39;)  # psi_scratch/cfour</span>
+
+        <span class="n">zmatsNN</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="p">(</span><span class="n">item</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;000&#39;</span> <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">!=</span> <span class="s1">&#39;000&#39;</span><span class="p">)]</span>
+
+        <span class="c1"># S/R: Write distributed input files for anharmonic freq</span>
+        <span class="k">if</span> <span class="n">isSowReap</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">current_directory</span><span class="p">)</span>
+            <span class="n">inputSansMol</span> <span class="o">=</span> <span class="n">p4util</span><span class="o">.</span><span class="n">format_currentstate_for_input</span><span class="p">(</span><span class="n">gradient</span><span class="p">,</span> <span class="n">lowername</span><span class="p">,</span> <span class="n">allButMol</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">zm12</span> <span class="ow">in</span> <span class="n">zmatsNN</span><span class="p">:</span>
+                <span class="n">zm1</span><span class="p">,</span> <span class="n">zm2</span> <span class="o">=</span> <span class="n">zm12</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+
+                <span class="n">ifile</span> <span class="o">=</span> <span class="n">vpt2_sow_files</span><span class="p">(</span><span class="n">zm12</span><span class="p">,</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;linkage&#39;</span><span class="p">],</span> <span class="n">isC4notP4</span><span class="p">,</span> <span class="n">isC4fully</span><span class="p">,</span>
+                    <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">][</span><span class="n">zm12</span><span class="p">],</span> <span class="n">inputSansMol</span><span class="p">,</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;genbas&#39;</span><span class="p">])</span>
+                <span class="c1"># GENBAS needed here</span>
+
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;VPT2-&#39;</span> <span class="o">+</span> <span class="n">zm12</span> <span class="o">+</span> <span class="s1">&#39;.in&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
+                    <span class="n">handle</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ifile</span><span class="p">)</span>
+
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">vpt2_instructions</span><span class="p">(</span><span class="s1">&#39;anharmonic&#39;</span><span class="p">,</span> <span class="n">current_directory</span><span class="p">,</span> <span class="n">zmatsNN</span><span class="p">)</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">print_out</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;anharm_jobs_sown&#39;</span>
+
+        <span class="c1"># S/R: Pause for distributed calculations</span>
+        <span class="k">if</span> <span class="n">isSowReap</span><span class="p">:</span>
+            <span class="n">shelf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+
+    <span class="k">if</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;anharm_jobs_sown&#39;</span><span class="p">:</span>
+        <span class="n">zmatsNN</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="p">(</span><span class="n">item</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;000&#39;</span> <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">!=</span> <span class="s1">&#39;000&#39;</span><span class="p">)]</span>
+
+        <span class="c1"># S/R: Check that distributed calcs all completed correctly</span>
+        <span class="k">if</span> <span class="n">isSowReap</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">vpt2_instructions</span><span class="p">(</span><span class="s1">&#39;anharmonic&#39;</span><span class="p">,</span> <span class="n">current_directory</span><span class="p">,</span> <span class="n">zmatsNN</span><span class="p">)</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">print_out</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">isOk</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">sown_jobs_status</span><span class="p">(</span><span class="n">current_directory</span><span class="p">,</span> <span class="s1">&#39;VPT2&#39;</span><span class="p">,</span> <span class="n">zmatsNN</span><span class="p">,</span> 
+                <span class="n">reap_job_validate</span><span class="p">,</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;linkage&#39;</span><span class="p">],</span> 
+                <span class="p">[</span><span class="s1">&#39;CURRENT ENERGY&#39;</span><span class="p">,</span> <span class="s1">&#39;CURRENT DIPOLE&#39;</span><span class="p">,</span> <span class="s1">&#39;CURRENT GRADIENT&#39;</span><span class="p">])</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">print_out</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">isOk</span><span class="p">:</span>
+                <span class="n">shelf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">return</span> <span class="mf">0.0</span>
+
+        <span class="c1"># Collect all results from gradients forming the anharmonic freq</span>
+        <span class="k">for</span> <span class="n">zmNN</span> <span class="ow">in</span> <span class="n">zmatsNN</span><span class="p">:</span>
+            <span class="n">zm1</span><span class="p">,</span> <span class="n">zm2</span> <span class="o">=</span> <span class="n">zmNN</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">zmNN</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;fjobarc&#39;</span><span class="p">]:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:_^45}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  VPT2 Computation: </span><span class="si">{</span><span class="n">zmNN</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">))</span>
+
+                <span class="n">fjobarc</span> <span class="o">=</span> <span class="n">vpt2_reaprun_files</span><span class="p">(</span><span class="n">zmNN</span><span class="p">,</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;linkage&#39;</span><span class="p">],</span> <span class="n">isSowReap</span><span class="p">,</span> <span class="n">isC4notP4</span><span class="p">,</span> <span class="n">isC4fully</span><span class="p">,</span>
+                    <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">][</span><span class="n">zmNN</span><span class="p">],</span>
+                    <span class="n">lowername</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;genbas&#39;</span><span class="p">],</span> <span class="n">config</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">scratch_messy</span><span class="o">=</span><span class="n">scratch_messy</span><span class="p">)</span>
+                <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;fjobarc&#39;</span><span class="p">][</span><span class="n">zmNN</span><span class="p">]</span> <span class="o">=</span> <span class="n">fjobarc</span>
+                <span class="n">shelf</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span>
+        <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;anharm_jobs_reaped&#39;</span>
+
+    <span class="k">if</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;anharm_jobs_reaped&#39;</span><span class="p">:</span>
+        <span class="n">zmats0N</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="p">(</span><span class="n">item</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;000&#39;</span> <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">!=</span> <span class="s1">&#39;000&#39;</span><span class="p">)]</span>
+        <span class="n">zmatsN0</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="p">(</span><span class="n">item</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;000&#39;</span> <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">==</span> <span class="s1">&#39;000&#39;</span><span class="p">)]</span>
+        <span class="n">zmatsNN</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="p">(</span><span class="n">item</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;000&#39;</span> <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">!=</span> <span class="s1">&#39;000&#39;</span><span class="p">)]</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:_^45}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;  VPT2 Results: Harmonic  &#39;</span><span class="p">))</span>
+
+        <span class="c1"># Process the gradients into harmonic freq</span>
+        <span class="n">scrkwgs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;scratch_directory&#39;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">scratch_directory</span><span class="p">,</span> <span class="s1">&#39;scratch_messy&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;scratch_suffix&#39;</span><span class="p">:</span> <span class="s1">&#39;_000final&#39;</span><span class="p">}</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xjoda&#39;</span><span class="p">],</span> <span class="p">{</span><span class="s1">&#39;ZMAT&#39;</span><span class="p">:</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">][</span><span class="s1">&#39;000-000&#39;</span><span class="p">],</span> <span class="s1">&#39;GENBAS&#39;</span><span class="p">:</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;genbas&#39;</span><span class="p">]},</span> <span class="p">[],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+        <span class="n">anharmout</span> <span class="o">=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+
+        <span class="n">scrkwgs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;scratch_name&#39;</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;scratch_directory&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;scratch_exist_ok&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xsymcor&#39;</span><span class="p">],</span> <span class="p">{},</span> <span class="p">[],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+        <span class="n">anharmout</span> <span class="o">+=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">zm12</span> <span class="ow">in</span> <span class="n">zmats0N</span><span class="p">:</span>
+            <span class="n">zm1</span><span class="p">,</span> <span class="n">zm2</span> <span class="o">=</span> <span class="n">zm12</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+            <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xja2fja&#39;</span><span class="p">],</span> <span class="p">{</span><span class="s1">&#39;FJOBARC&#39;</span><span class="p">:</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;fjobarc&#39;</span><span class="p">][</span><span class="n">zm12</span><span class="p">]},</span> <span class="p">[],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+            <span class="n">anharmout</span> <span class="o">+=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+            <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xsymcor&#39;</span><span class="p">],</span> <span class="p">{},</span> <span class="p">[],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+            <span class="n">anharmout</span> <span class="o">+=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+
+        <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xjoda&#39;</span><span class="p">],</span> <span class="p">{},</span> <span class="p">[],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+        <span class="n">anharmout</span> <span class="o">+=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+        <span class="n">scrkwgs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;scratch_messy&#39;</span><span class="p">:</span> <span class="n">scratch_messy</span><span class="p">})</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xcubic&#39;</span><span class="p">],</span> <span class="p">{},</span> <span class="p">[</span><span class="s1">&#39;zmat*&#39;</span><span class="p">,</span> <span class="s1">&#39;JOBARC&#39;</span><span class="p">,</span> <span class="s1">&#39;JAINDX&#39;</span><span class="p">],</span> <span class="n">as_binary</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;JOBARC&#39;</span><span class="p">,</span> <span class="s1">&#39;JAINDX&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+        <span class="n">anharmout</span> <span class="o">+=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+
+        <span class="n">jobarc0</span> <span class="o">=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;outfiles&#39;</span><span class="p">][</span><span class="s1">&#39;JOBARC&#39;</span><span class="p">]</span>
+        <span class="n">jaindx0</span> <span class="o">=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;outfiles&#39;</span><span class="p">][</span><span class="s1">&#39;JAINDX&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Process the gradients into harmonic freq at each normco displaced point</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">)</span>  <span class="c1"># psi_scratch/cfour</span>
+        <span class="k">for</span> <span class="n">zm1_</span> <span class="ow">in</span> <span class="n">zmatsN0</span><span class="p">:</span>
+            <span class="n">zm1</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">zm1_</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+
+            <span class="n">scrkwgs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;scratch_directory&#39;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">scratch_directory</span><span class="p">,</span> <span class="s1">&#39;scratch_messy&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;scratch_suffix&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;_</span><span class="si">{</span><span class="n">zm1</span><span class="si">}</span><span class="s1">final&#39;</span><span class="p">}</span>
+            <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xjoda&#39;</span><span class="p">],</span> <span class="p">{</span><span class="s1">&#39;ZMAT&#39;</span><span class="p">:</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">][</span><span class="n">zm1_</span><span class="p">],</span> <span class="s1">&#39;GENBAS&#39;</span><span class="p">:</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;genbas&#39;</span><span class="p">]},</span> <span class="p">[],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+            <span class="n">anharmout</span> <span class="o">=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+
+            <span class="n">scrkwgs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;scratch_name&#39;</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;scratch_directory&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;scratch_exist_ok&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+            <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xsymcor&#39;</span><span class="p">],</span> <span class="p">{},</span> <span class="p">[],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+            <span class="n">anharmout</span> <span class="o">+=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">zm12</span> <span class="ow">in</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">zmatsNN</span> <span class="k">if</span> <span class="p">(</span><span class="n">item</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="n">zm1</span> <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">!=</span> <span class="s1">&#39;000&#39;</span><span class="p">)]:</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">zm2</span> <span class="o">=</span> <span class="n">zm12</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">zm12</span><span class="p">,</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;fjobarc&#39;</span><span class="p">][</span><span class="n">zm12</span><span class="p">])</span>
+
+                <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xja2fja&#39;</span><span class="p">],</span> <span class="p">{</span><span class="s1">&#39;FJOBARC&#39;</span><span class="p">:</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;fjobarc&#39;</span><span class="p">][</span><span class="n">zm12</span><span class="p">]},</span> <span class="p">[],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+                <span class="n">anharmout</span> <span class="o">+=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+
+                <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xsymcor&#39;</span><span class="p">],</span> <span class="p">{},</span> <span class="p">[],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+                <span class="n">anharmout</span> <span class="o">+=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;scratch_directory&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="s1">&#39;FJOBARC&#39;</span><span class="p">)</span>
+
+            <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xjoda&#39;</span><span class="p">],</span> <span class="p">{},</span> <span class="p">[],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+            <span class="n">anharmout</span> <span class="o">+=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+
+            <span class="n">scrkwgs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;scratch_messy&#39;</span><span class="p">:</span> <span class="n">scratch_messy</span><span class="p">})</span>
+            <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xja2fja&#39;</span><span class="p">],</span> <span class="p">{},</span> <span class="p">[</span><span class="s1">&#39;FJOBARC&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+            <span class="n">anharmout</span> <span class="o">+=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+            <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;fjobarc&#39;</span><span class="p">][</span><span class="n">zm1_</span><span class="p">]</span> <span class="o">=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;outfiles&#39;</span><span class="p">][</span><span class="s1">&#39;FJOBARC&#39;</span><span class="p">]</span>
+            <span class="n">shelf</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;PARTIAL&#39;</span><span class="p">,</span> <span class="n">zm1_</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">anharmout</span><span class="p">)</span>
+
+
+        <span class="c1"># Process the harmonic freqs at normco displacements into anharmonic freq</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:_^45}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;  VPT2 Results: Anharmonic  &#39;</span><span class="p">))</span>
+
+        <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;zmat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;fjobarc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="n">scrkwgs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;scratch_directory&#39;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">scratch_directory</span><span class="p">,</span> <span class="s1">&#39;scratch_messy&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;scratch_suffix&#39;</span><span class="p">:</span> <span class="s1">&#39;_000anharm&#39;</span><span class="p">}</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;ls&#39;</span><span class="p">],</span> <span class="p">{</span><span class="s1">&#39;JOBARC&#39;</span><span class="p">:</span> <span class="n">jobarc0</span><span class="p">,</span> <span class="s1">&#39;JAINDX&#39;</span><span class="p">:</span> <span class="n">jaindx0</span><span class="p">},</span> <span class="p">[],</span> <span class="n">as_binary</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;JOBARC&#39;</span><span class="p">,</span> <span class="s1">&#39;JAINDX&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+        <span class="n">anharmout</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">scrkwgs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;scratch_name&#39;</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;scratch_directory&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;scratch_exist_ok&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+
+        <span class="k">for</span> <span class="n">zm1_</span> <span class="ow">in</span> <span class="n">zmatsN0</span><span class="p">:</span>
+            <span class="n">zm1</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">zm1_</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+            <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xja2fja&#39;</span><span class="p">],</span> <span class="p">{</span><span class="s1">&#39;FJOBARC&#39;</span><span class="p">:</span> <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;fjobarc&#39;</span><span class="p">][</span><span class="n">zm1_</span><span class="p">]},</span> <span class="p">[],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">zm1_</span><span class="p">,</span> <span class="s1">&#39;xja2fja&#39;</span><span class="p">,</span> <span class="n">success</span><span class="p">)</span>
+            <span class="n">anharmout</span> <span class="o">+=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+
+            <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xcubic&#39;</span><span class="p">],</span> <span class="p">{},</span> <span class="p">[],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">zm1_</span><span class="p">,</span> <span class="s1">&#39;xcubic&#39;</span><span class="p">,</span> <span class="n">success</span><span class="p">)</span>
+            <span class="n">anharmout</span> <span class="o">+=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="n">anharmout</span><span class="p">)</span>  <span class="c1"># anharm.out</span>
+
+        <span class="n">shelf</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;vpt2_completed&#39;</span>
+
+    <span class="c1"># Finish up</span>
+    <span class="n">shelf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<span class="k">def</span> <span class="nf">vpt2_sow_files</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">linkage</span><span class="p">,</span> <span class="n">isC4notP4</span><span class="p">,</span> <span class="n">isC4fully</span><span class="p">,</span> <span class="n">zmat</span><span class="p">,</span> <span class="n">inputSansMol</span><span class="p">,</span> <span class="n">inputGenbas</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Provided with the particular displacement number *item* and the</span>
+<span class="sd">    associated *zmat* file contents and *linkage*, and common contents</span>
+<span class="sd">    *inputSansMol*, returns contents of input file to be sown.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">inputReapOrders</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">print_variables()</span>
+
+<span class="s2">print_out(&#39;VPT2 RESULT: linkage </span><span class="si">{0}</span><span class="s2"> for item </span><span class="si">{1}</span><span class="s2"> yields CURRENT ENERGY being </span><span class="si">%r</span><span class="s2">\n&#39; % (variable(&#39;CURRENT ENERGY&#39;)))</span>
+<span class="s2">print_out(&#39;VPT2 RESULT: linkage </span><span class="si">{0}</span><span class="s2"> for item </span><span class="si">{1}</span><span class="s2"> yields CURRENT GRADIENT being </span><span class="si">%r</span><span class="s2">\n&#39; % (p4util.mat2arr(core.get_gradient())))</span>
+<span class="s2">print_out(&#39;VPT2 RESULT: linkage </span><span class="si">{0}</span><span class="s2"> for item </span><span class="si">{1}</span><span class="s2"> yields CURRENT DIPOLE being [</span><span class="si">%r</span><span class="s2">, </span><span class="si">%r</span><span class="s2">, </span><span class="si">%r</span><span class="s2">]\n&#39; % (variable(&#39;CURRENT DIPOLE X&#39;), variable(&#39;CURRENT DIPOLE Y&#39;), variable(&#39;CURRENT DIPOLE Z&#39;)))</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+
+    <span class="c1"># Direct Cfour for gradients</span>
+    <span class="k">if</span> <span class="n">isC4fully</span><span class="p">:</span>
+        <span class="n">inputString</span> <span class="o">=</span> <span class="n">zmat</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;VPT2-GENBAS&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
+            <span class="n">handle</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">inputGenbas</span><span class="p">)</span>
+
+<span class="c1">#!BR#    # Cfour for gradients</span>
+<span class="c1">#!BR#    elif isC4notP4:</span>
+<span class="c1">#!BR#        # GENBAS needed here</span>
+<span class="c1">#!BR#        inputString = &#39;extracted_genbas = &quot;&quot;&quot;\n&#39; + inputGenbas.replace(&#39;\n\n&#39;, &#39;\nblankline\n&#39;) + &#39;\n&quot;&quot;&quot;\n\n&#39;</span>
+<span class="c1">#!BR#        inputString += &quot;&quot;&quot;cfour {\n%s\n}\n\nenergy(&#39;cfour&#39;, genbas=extracted_genbas)\n\n&quot;&quot;&quot; % (zmat)</span>
+<span class="c1">#!BR#        inputString += inputReapOrders</span>
+<span class="c1">#!BR#        inputString += r&quot;&quot;&quot;</span>
+<span class="c1">#!BR#print_out(&#39;VPT2 RESULT: linkage {0} for item {1} yields CURRENT MOLECULE being %r\n&#39; % (get_active_molecule().create_psi4_string_from_molecule()))</span>
+<span class="c1">#!BR#&quot;&quot;&quot;.format(linkage, item)</span>
+
+    <span class="c1"># Psi4 for gradients</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">inputString</span> <span class="o">=</span> <span class="n">p4util</span><span class="o">.</span><span class="n">format_molecule_for_input</span><span class="p">(</span>
+            <span class="n">qcdb</span><span class="o">.</span><span class="n">cfour</span><span class="o">.</span><span class="n">harvest_zmat</span><span class="p">(</span><span class="n">zmat</span><span class="p">)</span><span class="o">.</span><span class="n">create_psi4_string_from_molecule</span><span class="p">(),</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;disp&#39;</span> <span class="o">+</span> <span class="n">item</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">item</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:])</span>
+        <span class="n">inputString</span> <span class="o">+=</span> <span class="n">inputSansMol</span>
+        <span class="n">inputString</span> <span class="o">+=</span> <span class="n">inputReapOrders</span>
+
+    <span class="k">return</span> <span class="n">inputString</span>
+
+
+<span class="c1">#def vpt2_reaprun_files(item, linkage, isSowReap, isC4notP4, isC4fully, zmat, outdir, scrdir, c4scrdir, lowername, kwargs):</span>
+<span class="k">def</span> <span class="nf">vpt2_reaprun_files</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">linkage</span><span class="p">,</span> <span class="n">isSowReap</span><span class="p">,</span> <span class="n">isC4notP4</span><span class="p">,</span> <span class="n">isC4fully</span><span class="p">,</span> <span class="n">zmat</span><span class="p">,</span> <span class="n">lowername</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">genbas</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">scratch_messy</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Provided with the particular displacement number *item* and the</span>
+<span class="sd">    associated *zmat* file with geometry and *linkage*, returns the</span>
+<span class="sd">    FJOBARC contents. Depending on the mode settings of *isC4notP4*,</span>
+<span class="sd">    *isSowReap*, and *isC4fully*, either runs (using *lowername* and</span>
+<span class="sd">    *kwargs*) or reaps contents. *outdir* is where psi4 was invoked,</span>
+<span class="sd">    *scrdir* is the psi4 scratch directory, and *c4scrdir* is Cfour</span>
+<span class="sd">    scratch directory within.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Extract qcel.models.Molecule at findif orientation</span>
+    <span class="n">zmmol</span> <span class="o">=</span> <span class="n">harvest_zmat</span><span class="p">(</span><span class="n">zmat</span><span class="p">)</span>
+
+    <span class="c1"># Cfour S/R Direct for gradients</span>
+    <span class="k">if</span> <span class="n">isC4fully</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;VPT2-&#39;</span> <span class="o">+</span> <span class="n">item</span> <span class="o">+</span> <span class="s1">&#39;.fja&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
+            <span class="n">fjobarc</span> <span class="o">=</span> <span class="n">handle</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="c1">#!BR#    # Cfour for gradients</span>
+<span class="c1">#!BR#    elif isC4notP4:</span>
+<span class="c1">#!BR#</span>
+<span class="c1">#!BR#        # S/R: Reap results from output file</span>
+<span class="c1">#!BR#        if isSowReap:</span>
+<span class="c1">#!BR#            isOk, msg, results = reap_job_validate(outdir, &#39;VPT2&#39;, item, linkage,</span>
+<span class="c1">#!BR#                [&#39;CURRENT ENERGY&#39;, &#39;CURRENT DIPOLE&#39;, &#39;CURRENT GRADIENT&#39;, &#39;CURRENT MOLECULE&#39;])</span>
+<span class="c1">#!BR#            if not isOk:</span>
+<span class="c1">#!BR#                raise ValidationError(msg)</span>
+<span class="c1">#!BR#</span>
+<span class="c1">#!BR#            fje = results[&#39;CURRENT ENERGY&#39;]</span>
+<span class="c1">#!BR#            fjgrd = results[&#39;CURRENT GRADIENT&#39;]</span>
+<span class="c1">#!BR#            fjdip = [item / constants.dipmom_au2debye for item in results[&#39;CURRENT DIPOLE&#39;]]</span>
+<span class="c1">#!BR#            c4mol = qcdb.Molecule(results[&#39;CURRENT MOLECULE&#39;])</span>
+<span class="c1">#!BR#            c4mol.update_geometry()</span>
+<span class="c1">#!BR#</span>
+<span class="c1">#!BR#        # C: Run the job and collect results</span>
+<span class="c1">#!BR#        else:</span>
+<span class="c1">#!BR#            # Prepare Cfour skeleton calc directory</span>
+<span class="c1">#!BR#            {&#39;ZMAT&#39;: zmat, &#39;GENBAS&#39;: shelf[&#39;genbas&#39;]}, </span>
+<span class="c1">#!BR#            os.chdir(scrdir + c4scrdir)  # psi_scratch/cfour</span>
+<span class="c1">#!BR#            if os.path.exists(&#39;scr.&#39; + item):</span>
+<span class="c1">#!BR#                shutil.rmtree(&#39;scr.&#39; + item)</span>
+<span class="c1">#!BR#            os.mkdir(&#39;scr.&#39; + item)</span>
+<span class="c1">#!BR#            os.chdir(&#39;scr.&#39; + item)  # psi_scratch/cfour/scr.000-004</span>
+<span class="c1">#!BR#            with open(&#39;ZMAT&#39;, &#39;w&#39;) as handle:</span>
+<span class="c1">#!BR#                handle.write(zmat)</span>
+<span class="c1">#!BR#            shutil.copy2(&#39;../harm/GENBAS&#39;, &#39;GENBAS&#39;)</span>
+<span class="c1">#!BR#</span>
+<span class="c1">#!BR#            #os.chdir(scrdir + &#39;/scr.&#39; + item)</span>
+<span class="c1">#!BR#            #run_cfour_module(&#39;xja2fja&#39;)</span>
+<span class="c1">#!BR#            #with open(&#39;FJOBARC&#39;, &#39;r&#39;) as handle:</span>
+<span class="c1">#!BR#            #    fjobarc = handle.read()</span>
+<span class="c1">#!BR#</span>
+<span class="c1">#!BR#            # Run Cfour calc using ZMAT &amp; GENBAS in scratch, outdir redirects to outfile</span>
+<span class="c1">#!BR#            os.chdir(outdir)  # current_directory</span>
+<span class="c1">#!BR#            core.get_active_molecule().set_name(&#39;blank_molecule_psi4_yo&#39;)</span>
+<span class="c1">#!BR#            energy(&#39;cfour&#39;, path=c4scrdir + &#39;/scr.&#39; + item)</span>
+<span class="c1">#!BR##            os.chdir(scrdir + &#39;/scr.&#39; + item)</span>
+<span class="c1">#!BR#</span>
+<span class="c1">#!BR#            fje = core.variable(&#39;CURRENT ENERGY&#39;)</span>
+<span class="c1">#!BR#            fjgrd = p4util.mat2arr(core.get_gradient())</span>
+<span class="c1">#!BR#            fjdip = [core.variable(&#39;CURRENT DIPOLE X&#39;) / constants.dipmom_au2debye,</span>
+<span class="c1">#!BR#                     core.variable(&#39;CURRENT DIPOLE Y&#39;) / constants.dipmom_au2debye,</span>
+<span class="c1">#!BR#                     core.variable(&#39;CURRENT DIPOLE Z&#39;) / constants.dipmom_au2debye]</span>
+<span class="c1">#!BR#            # TODO switch DIPOLE to vector</span>
+<span class="c1">#!BR#            c4mol = qcdb.Molecule(core.get_active_molecule().create_psi4_string_from_molecule())</span>
+<span class="c1">#!BR#            c4mol.update_geometry()</span>
+<span class="c1">#!BR#</span>
+<span class="c1">#!BR#        # Get map btwn ZMAT and C4 orientation, then use it, grad and dipole to forge FJOBARC file</span>
+<span class="c1">#!BR#        fjobarc = format_fjobarc(fje,</span>
+<span class="c1">#!BR#            *backtransform(chgeMol=zmmol, permMol=c4mol), gradient=fjgrd, dipole=fjdip)</span>
+
+    <span class="c1"># Psi4 for gradients</span>
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="c1"># Run Cfour skeleton calc and extract qcdb.Molecule at needed C4 orientation</span>
+        <span class="n">scrkwgs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;scratch_directory&#39;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">scratch_directory</span><span class="p">,</span> <span class="s1">&#39;scratch_messy&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;scratch_suffix&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;_</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s1">skel&#39;</span><span class="p">}</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xjoda&#39;</span><span class="p">],</span> <span class="p">{</span><span class="s1">&#39;ZMAT&#39;</span><span class="p">:</span> <span class="n">zmat</span><span class="p">,</span> <span class="s1">&#39;GENBAS&#39;</span><span class="p">:</span> <span class="n">genbas</span><span class="p">},</span>  <span class="p">[],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+        <span class="n">skel</span> <span class="o">=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+
+        <span class="n">scrkwgs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;scratch_name&#39;</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;scratch_directory&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;scratch_exist_ok&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xvmol&#39;</span><span class="p">],</span> <span class="p">{},</span> <span class="p">[],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+        <span class="n">skel</span> <span class="o">+=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+
+        <span class="n">scrkwgs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;scratch_messy&#39;</span><span class="p">:</span> <span class="n">scratch_messy</span><span class="p">})</span>
+        <span class="n">success</span><span class="p">,</span> <span class="n">dexe</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="s1">&#39;xvmol2ja&#39;</span><span class="p">],</span> <span class="p">{},</span> <span class="p">[</span><span class="s1">&#39;JOBARC&#39;</span><span class="p">,</span> <span class="s1">&#39;JAINDX&#39;</span><span class="p">],</span> <span class="n">as_binary</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;JOBARC&#39;</span><span class="p">,</span> <span class="s1">&#39;JAINDX&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">scrkwgs</span><span class="p">)</span>
+        <span class="n">skel</span> <span class="o">+=</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">]</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="n">skel</span><span class="p">)</span>  <span class="c1"># partial.out</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;  CFOUR scratch file &#39;JOBARC (binary)&#39; for </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2"> has been read&quot;&quot;&quot;</span><span class="p">)</span>
+        <span class="n">c4mol</span> <span class="o">=</span> <span class="n">jajo2mol</span><span class="p">(</span><span class="n">getrec</span><span class="p">([</span><span class="sa">b</span><span class="s1">&#39;COORD   &#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;ATOMCHRG&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;MAP2ZMAT&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;IFLAGS  &#39;</span><span class="p">],</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;outfiles&#39;</span><span class="p">][</span><span class="s1">&#39;JOBARC&#39;</span><span class="p">],</span> <span class="n">dexe</span><span class="p">[</span><span class="s1">&#39;outfiles&#39;</span><span class="p">][</span><span class="s1">&#39;JAINDX&#39;</span><span class="p">]))</span>
+
+        <span class="c1"># S/R: Reap results from output file</span>
+        <span class="k">if</span> <span class="n">isSowReap</span><span class="p">:</span>
+            <span class="n">isOk</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">results</span> <span class="o">=</span> <span class="n">reap_job_validate</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s1">&#39;VPT2&#39;</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">linkage</span><span class="p">,</span>
+                <span class="p">[</span><span class="s1">&#39;CURRENT ENERGY&#39;</span><span class="p">,</span> <span class="s1">&#39;CURRENT DIPOLE&#39;</span><span class="p">,</span> <span class="s1">&#39;CURRENT GRADIENT&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">isOk</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+            <span class="n">fje</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;CURRENT ENERGY&#39;</span><span class="p">]</span>
+            <span class="n">fjgrd</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;CURRENT GRADIENT&#39;</span><span class="p">]</span>
+            <span class="n">fjdip</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="o">/</span> <span class="n">constants</span><span class="o">.</span><span class="n">dipmom_au2debye</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;CURRENT DIPOLE&#39;</span><span class="p">]]</span>
+
+        <span class="c1"># C: Run the job and collect results</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="n">resi</span> <span class="o">=</span> <span class="n">AtomicInput</span><span class="p">(</span>
+                <span class="o">**</span><span class="p">{</span>
+                    <span class="s1">&#39;driver&#39;</span><span class="p">:</span> <span class="s1">&#39;gradient&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;extras&#39;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s1">&#39;qcdb:options&#39;</span><span class="p">:</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="p">),</span>
+                    <span class="p">},</span>
+                    <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="n">lowername</span><span class="p">,</span>
+                        <span class="s1">&#39;basis&#39;</span><span class="p">:</span> <span class="s1">&#39;(auto)&#39;</span><span class="p">,</span>
+                    <span class="p">},</span>
+                    <span class="s1">&#39;molecule&#39;</span><span class="p">:</span> <span class="n">zmmol</span><span class="p">,</span>
+                    <span class="s1">&#39;provenance&#39;</span><span class="p">:</span> <span class="n">provenance_stamp</span><span class="p">(</span><span class="vm">__name__</span><span class="p">),</span>
+                <span class="p">})</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">resi</span><span class="p">,</span> <span class="s1">&#39;qcdb-&#39;</span> <span class="o">+</span> <span class="n">package</span><span class="p">,</span> <span class="n">raise_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="c1">#pp.pprint(res.dict())</span>
+
+            <span class="n">fje</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">extras</span><span class="p">[</span><span class="s1">&#39;qcdb:qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT ENERGY&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+            <span class="n">fjgrd</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">extras</span><span class="p">[</span><span class="s1">&#39;qcdb:qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT GRADIENT&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+            <span class="c1">#au2debye = qcel.constants.get(&#39;dipmom_au2debye&#39;, return_tuple=True).data</span>
+            <span class="c1"># TODO switch DIPOLE to vector</span>
+            <span class="n">fjdip</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">extras</span><span class="p">[</span><span class="s1">&#39;qcdb:qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT DIPOLE X&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">qcel</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">dipmom_au2debye</span><span class="p">,</span>
+                     <span class="nb">float</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">extras</span><span class="p">[</span><span class="s1">&#39;qcdb:qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT DIPOLE Y&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">qcel</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">dipmom_au2debye</span><span class="p">,</span>
+                     <span class="nb">float</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">extras</span><span class="p">[</span><span class="s1">&#39;qcdb:qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT DIPOLE Z&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">qcel</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">dipmom_au2debye</span><span class="p">]</span>
+
+        <span class="c1"># Transform results into C4 orientation (defined by c4mol) &amp; forge FJOBARC file</span>
+        <span class="n">fjobarc</span> <span class="o">=</span> <span class="n">format_fjobarc</span><span class="p">(</span><span class="n">fje</span><span class="p">,</span> <span class="o">*</span><span class="n">backtransform</span><span class="p">(</span><span class="n">chgeMol</span><span class="o">=</span><span class="n">zmmol</span><span class="p">,</span> <span class="n">permMol</span><span class="o">=</span><span class="n">c4mol</span><span class="p">,</span> <span class="n">chgeGrad</span><span class="o">=</span><span class="n">fjgrd</span><span class="p">,</span> <span class="n">chgeDip</span><span class="o">=</span><span class="n">fjdip</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">fjobarc</span>
+
+
+<span class="k">def</span> <span class="nf">vpt2_instructions</span><span class="p">(</span><span class="n">stage</span><span class="p">,</span> <span class="nb">dir</span><span class="p">,</span> <span class="n">zmats</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Stores all the instructions to the user for running</span>
+<span class="sd">    :py:func:`~wrappers_cfour.vpt2` in sowreap mode. Depending on the</span>
+<span class="sd">    *stage*, Pieces together instruction strings for the appropriate</span>
+<span class="sd">    *stage* individualized by working directory *dir* and sown inputs</span>
+<span class="sd">    *zmats* information.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stepFiles</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">zm12</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">zmats</span><span class="p">):</span>
+        <span class="n">stepFiles</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;             psi4 </span><span class="si">%-27s</span><span class="s2"> </span><span class="si">%-27s</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s1">&#39;VPT2-&#39;</span> <span class="o">+</span> <span class="n">zm12</span> <span class="o">+</span> <span class="s1">&#39;.in&#39;</span><span class="p">,</span> <span class="s1">&#39;VPT2-&#39;</span> <span class="o">+</span> <span class="n">zm12</span> <span class="o">+</span> <span class="s1">&#39;.out&#39;</span><span class="p">)</span>
+
+    <span class="n">step0</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    The vpt2 sow/reap procedure has been selected through mode=&#39;sowreap&#39;. This</span>
+<span class="s2">    output file, the corresponding input file, and the data persistence file</span>
+<span class="s2">    must not be edited by the user over the course of the sow/reap procedure.</span>
+<span class="s2">    Throughout, psi4 can be invoked to move to the next stage of the procedure</span>
+<span class="s2">    or to tally up the &#39;sown&#39; jobs. This output file is overwritten each time</span>
+<span class="s2">    psi4 is invoked, but all results and instructions accumulate.</span>
+
+<span class="s2">    This procedure involves two stages of distributed calculations, harmonic and</span>
+<span class="s2">    anharmonic, and a mimimum of three invokations of psi4 on the original input</span>
+<span class="s2">    file (including the one that initially generated this text). From the input</span>
+<span class="s2">    geometry (0), displacements are generated for which gradients are required.</span>
+<span class="s2">    Input files for these are &#39;sown&#39; in the current directory (1). Upon</span>
+<span class="s2">    completion, their output files are &#39;reaped&#39; into a harmonic force field (2).</span>
+<span class="s2">    At displacements along the normal coordinates, further displacements are</span>
+<span class="s2">    generated for which gradients are required. Input files for these are again</span>
+<span class="s2">    &#39;sown&#39; in the current directory (3). Upon completion, their output files are</span>
+<span class="s2">    &#39;reaped&#39; into an anharmonic force field (4), terminating the vpt2 procedure.</span>
+<span class="s2">    Follow the instructions below to continue.</span>
+
+<span class="s2">    (0)  Read Only</span>
+<span class="s2">    --------------</span>
+<span class="s2">       </span><span class="si">%s</span><span class="s2"></span>
+<span class="s2">       </span><span class="si">%s</span><span class="s2"></span>
+<span class="s2">       </span><span class="si">%s</span><span class="s2"></span>
+
+<span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">outfile_name</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.in&#39;</span><span class="p">,</span>
+       <span class="nb">dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">core</span><span class="o">.</span><span class="n">outfile_name</span><span class="p">(),</span>
+       <span class="nb">dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">outfile_name</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.shelf&#39;</span><span class="p">)</span>
+    <span class="n">step1</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    (1)  Sow</span>
+<span class="s2">    --------</span>
+<span class="s2">       Run all of the VPT2-000-*.in input files on any variety of computer</span>
+<span class="s2">       architecture. The output file names must be as given below (default).</span>
+
+<span class="s2">&quot;&quot;&quot;</span>
+    <span class="n">step2</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    (2)  Reap</span>
+<span class="s2">    ---------</span>
+<span class="s2">       Gather all the resulting output files in this directory along with the</span>
+<span class="s2">       three read-only files from (0). Invoke psi4 again. The job will be</span>
+<span class="s2">       trivial in length (unless sto-3g integrals on the molecule are costly)</span>
+<span class="s2">       and give results for the harmonic frequency stage in this output file. It</span>
+<span class="s2">       will also supply the next set of instructions.</span>
+
+<span class="s2">             psi4 </span><span class="si">%-27s</span><span class="s2"> </span><span class="si">%-27s</span><span class="s2"></span>
+
+<span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">outfile_name</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.in&#39;</span><span class="p">,</span> <span class="n">core</span><span class="o">.</span><span class="n">outfile_name</span><span class="p">())</span>
+    <span class="n">step3</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    (3)  Sow</span>
+<span class="s2">    --------</span>
+<span class="s2">       Run all of the VPT2-*-*.in input files on any variety of computer</span>
+<span class="s2">       architecture. The output file names must be as given below (default).</span>
+
+<span class="s2">&quot;&quot;&quot;</span>
+    <span class="n">step4</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    (4)  Reap</span>
+<span class="s2">    ---------</span>
+<span class="s2">       Gather all the resulting output files in this directory along with the</span>
+<span class="s2">       three read-only files from (0). Invoke psi4 again. The job will be</span>
+<span class="s2">       trivial in length (unless sto-3g integrals on the molecule are costly)</span>
+<span class="s2">       and give results for the harmonic and anharmonic frequency stages in this</span>
+<span class="s2">       output file.</span>
+
+<span class="s2">             psi4 </span><span class="si">%-27s</span><span class="s2"> </span><span class="si">%-27s</span><span class="s2"></span>
+
+<span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">outfile_name</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.in&#39;</span><span class="p">,</span> <span class="n">core</span><span class="o">.</span><span class="n">outfile_name</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="n">stage</span> <span class="o">==</span> <span class="s1">&#39;harmonic&#39;</span><span class="p">:</span>
+        <span class="n">instructions</span> <span class="o">=</span> <span class="n">step0</span> <span class="o">+</span> <span class="n">step1</span> <span class="o">+</span> <span class="n">stepFiles</span> <span class="o">+</span> <span class="n">step2</span>
+    <span class="k">elif</span> <span class="n">stage</span> <span class="o">==</span> <span class="s1">&#39;anharmonic&#39;</span><span class="p">:</span>
+        <span class="n">instructions</span> <span class="o">=</span> <span class="n">step0</span> <span class="o">+</span> <span class="n">step3</span> <span class="o">+</span> <span class="n">stepFiles</span> <span class="o">+</span> <span class="n">step4</span>
+
+    <span class="k">return</span> <span class="n">instructions</span>
+
+
+<span class="k">def</span> <span class="nf">sown_jobs_status</span><span class="p">(</span><span class="nb">dir</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">zmats</span><span class="p">,</span> <span class="n">validate_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linkage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Evaluate the output file status of jobs in *zmats* which should</span>
+<span class="sd">    exist at *dir* + &#39;/&#39; + prefix + &#39;-&#39; + job + &#39;.out&#39;. Returns string with</span>
+<span class="sd">    formatted summary of job status and boolean of whether all complete.</span>
+<span class="sd">    Return boolean *isOk* signals whether all *zmats* have completed and,</span>
+<span class="sd">    if *validate_func* present, are validated.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">isOk</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">msgError</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">instructions</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="n">instructions</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{:_^45}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39; Status: &#39;</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M&quot;</span><span class="p">))</span>
+    <span class="n">instructions</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="n">instructions</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">zmats</span><span class="p">):</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="nb">dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">job</span> <span class="o">+</span> <span class="s1">&#39;.out&#39;</span>
+        <span class="n">fjafile</span> <span class="o">=</span> <span class="nb">dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">job</span> <span class="o">+</span> <span class="s1">&#39;.fja&#39;</span>
+        <span class="n">formatArgs</span> <span class="o">=</span> <span class="p">[</span><span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">job</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">outfile</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">handle</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;Buy a developer a beer!&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                        <span class="n">formatArgs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Completed&#39;</span>
+                        <span class="k">if</span> <span class="n">reap_job_validate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">isOkJob</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">temp</span> <span class="o">=</span> <span class="n">reap_job_validate</span><span class="p">(</span><span class="nb">dir</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="n">linkage</span><span class="p">,</span> <span class="n">keys</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">isOkJob</span><span class="p">:</span>
+                                <span class="n">formatArgs</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&amp; Validated&#39;</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">isOk</span> <span class="o">=</span> <span class="kc">False</span>
+                                <span class="n">msgError</span> <span class="o">+=</span> <span class="n">msg</span>
+                                <span class="n">formatArgs</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;INVALID&#39;</span>
+                        <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">isOk</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">formatArgs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Running&#39;</span>
+        <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fjafile</span><span class="p">):</span>
+            <span class="n">formatArgs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Completed&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">isOk</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">formatArgs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Waiting&#39;</span>
+        <span class="n">instructions</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;             </span><span class="si">{0:&lt;27}</span><span class="s2"> </span><span class="si">{1:^10}</span><span class="s2"> </span><span class="si">{2:^10}</span><span class="s2"> </span><span class="si">{3:^10}</span><span class="s2"> </span><span class="si">{4:^10}</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">formatArgs</span><span class="p">)</span>
+    <span class="n">instructions</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">msgError</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+
+    <span class="k">return</span> <span class="n">isOk</span><span class="p">,</span> <span class="n">instructions</span>
+
+
+<span class="k">def</span> <span class="nf">reap_job_validate</span><span class="p">(</span><span class="nb">dir</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">linkage</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;For a given output file whose path is constructed with</span>
+<span class="sd">    *dir* + &#39;/&#39; + *prefix* + &#39;-&#39; + *item* + &#39;.out&#39;, tests that the file</span>
+<span class="sd">    exists and has *prefix* RESULTS lines for each piece of information</span>
+<span class="sd">    requested in list *keys* and that those lines correspond to the</span>
+<span class="sd">    appropriate *linkage* and *item*. Returns *keys* along with their</span>
+<span class="sd">    scanned values in dict *reapings*, along with error and success</span>
+<span class="sd">    messages in *instructions* and a boolean *isOk* indicating whether</span>
+<span class="sd">    all *keys* reaped sucessfully.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">isOk</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">instructions</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">reapings</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">outfile</span> <span class="o">=</span> <span class="nb">dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">item</span> <span class="o">+</span> <span class="s1">&#39;.out&#39;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">handle</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s1">&#39; RESULT:&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">sline</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">sline</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;linkage&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">linkage</span><span class="p">),</span> <span class="s1">&#39;for&#39;</span><span class="p">,</span> <span class="s1">&#39;item&#39;</span><span class="p">,</span> <span class="n">item</span><span class="p">]:</span>
+                        <span class="n">yieldsAt</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;yields&#39;</span><span class="p">)</span>
+                        <span class="n">beingAt</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;being&#39;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">beingAt</span> <span class="o">&gt;</span> <span class="n">yieldsAt</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                            <span class="n">key</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">yieldsAt</span> <span class="o">+</span> <span class="mi">6</span><span class="p">:</span><span class="n">beingAt</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                            <span class="n">val</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">beingAt</span> <span class="o">+</span> <span class="mi">5</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                                <span class="n">reapings</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                                <span class="c1">#core.print_out(&#39;  CFOUR scratch file %s for %s has been read\n&#39; % (&#39;JOBARC&#39;, zm12))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">isOk</span> <span class="o">=</span> <span class="kc">False</span>
+                            <span class="n">instructions</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;Outfile file </span><span class="si">%s</span><span class="s2"></span>
+<span class="s2">    has corrupted sowreap result line:</span><span class="se">\n</span><span class="si">%s</span><span class="se">\n\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">isOk</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="n">instructions</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;Outfile file </span><span class="si">%s</span><span class="s2"></span>
+<span class="s2">    has sowreap result of either incompatible linkage (observed: </span><span class="si">%s</span><span class="s2">, expected: </span><span class="si">%s</span><span class="s2">)</span>
+<span class="s2">    or incompatible job affiliation (observed: </span><span class="si">%s</span><span class="s2">, expected: </span><span class="si">%s</span><span class="s2">).</span><span class="se">\n\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> \
+                            <span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">sline</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">linkage</span><span class="p">,</span> <span class="n">sline</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">item</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reapings</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
+                    <span class="n">isOk</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">instructions</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;Output file </span><span class="si">%s</span><span class="s2"></span>
+<span class="s2">    has missing results (observed: </span><span class="si">%s</span><span class="s2">, expected: </span><span class="si">%s</span><span class="s2">).</span><span class="se">\n\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> \
+                        <span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">reapings</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">keys</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+        <span class="n">isOk</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">instructions</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;Output file </span><span class="si">%s</span><span class="s2"></span>
+<span class="s2">    that was judged present and complete at the beginning of this</span>
+<span class="s2">    job is now missing. Replace it and invoke psi4 again.</span><span class="se">\n\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">outfile</span><span class="p">)</span>
+
+    <span class="c1"># return file contents in instructions</span>
+    <span class="k">return</span> <span class="n">isOk</span><span class="p">,</span> <span class="n">instructions</span><span class="p">,</span> <span class="n">reapings</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../../index.html" title="index">
+          <img class="logo" src="../../../_static/qcdbsquare.png" alt="Logo"/>
+        </a></p><!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+<div id="searchbox" style="display: none" role="search">
+  <!--<h3>Quick search</h3>-->
+    <form class="search" action="../../../search.html" method="get">
+      <!--<div><input type="text" name="q" placeholder="search docs" /></div>-->
+      <div><input type="text" name="q" placeholder="&#xF002;" style="font-family:FontAwesome, Ariel" /></div>
+      <!--<div><input type="submit" value="Go" /></div>-->
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >Index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../index.html" title="Table Of Contents"
+             ><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/procedures/vpt2.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../../../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">qcdb.procedures.vpt2</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, The QCDB Project.
+      Last updated on Thursday, 29 April 2021 05:29AM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

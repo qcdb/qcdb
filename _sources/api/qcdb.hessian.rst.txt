@@ -1,0 +1,6 @@
+hessian
+=======
+
+.. currentmodule:: qcdb
+
+.. autofunction:: hessian

@@ -1,0 +1,6 @@
+vpt2
+====
+
+.. currentmodule:: qcdb
+
+.. autofunction:: vpt2

@@ -1,0 +1,6 @@
+corl_xtpl_helgaker_2
+====================
+
+.. currentmodule:: qcdb
+
+.. autofunction:: corl_xtpl_helgaker_2

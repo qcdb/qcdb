@@ -1,0 +1,79 @@
+Molecule
+========
+
+.. currentmodule:: qcdb
+
+.. autoclass:: Molecule
+   :show-inheritance:
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~Molecule.B787
+      ~Molecule.BFS
+      ~Molecule.axis_representation
+      ~Molecule.center_of_charge
+      ~Molecule.format_basis_for_cfour
+      ~Molecule.format_basis_for_nwchem
+      ~Molecule.format_basis_for_nwchem_puream
+      ~Molecule.format_molecule_for_mol
+      ~Molecule.format_molecule_for_psi4
+      ~Molecule.from_arrays
+      ~Molecule.from_dict
+      ~Molecule.from_schema
+      ~Molecule.from_string
+      ~Molecule.inertia_tensor
+      ~Molecule.inertia_tensor_partial
+      ~Molecule.inertial_system
+      ~Molecule.inertial_system_partial
+      ~Molecule.init_with_mol2
+      ~Molecule.init_with_xyz
+      ~Molecule.move_to_coc
+      ~Molecule.print_ring_planes
+      ~Molecule.rotational_symmetry_number
+      ~Molecule.rotor_type
+      ~Molecule.run_dftd3
+      ~Molecule.save_string_xyz
+      ~Molecule.save_xyz
+      ~Molecule.scramble
+      ~Molecule.set_fragment_pattern
+      ~Molecule.to_arrays
+      ~Molecule.to_dict
+      ~Molecule.to_schema
+      ~Molecule.to_string
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: B787
+   .. automethod:: BFS
+   .. automethod:: axis_representation
+   .. automethod:: center_of_charge
+   .. automethod:: format_basis_for_cfour
+   .. automethod:: format_basis_for_nwchem
+   .. automethod:: format_basis_for_nwchem_puream
+   .. automethod:: format_molecule_for_mol
+   .. automethod:: format_molecule_for_psi4
+   .. automethod:: from_arrays
+   .. automethod:: from_dict
+   .. automethod:: from_schema
+   .. automethod:: from_string
+   .. automethod:: inertia_tensor
+   .. automethod:: inertia_tensor_partial
+   .. automethod:: inertial_system
+   .. automethod:: inertial_system_partial
+   .. automethod:: init_with_mol2
+   .. automethod:: init_with_xyz
+   .. automethod:: move_to_coc
+   .. automethod:: print_ring_planes
+   .. automethod:: rotational_symmetry_number
+   .. automethod:: rotor_type
+   .. automethod:: run_dftd3
+   .. automethod:: save_string_xyz
+   .. automethod:: save_xyz
+   .. automethod:: scramble
+   .. automethod:: set_fragment_pattern
+   .. automethod:: to_arrays
+   .. automethod:: to_dict
+   .. automethod:: to_schema
+   .. automethod:: to_string

@@ -1,0 +1,6 @@
+ValidationError
+===============
+
+.. currentmodule:: qcdb
+
+.. autoexception:: ValidationError

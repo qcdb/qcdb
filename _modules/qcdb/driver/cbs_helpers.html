@@ -1,0 +1,577 @@
+<!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>qcdb.driver.cbs_helpers</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/psi4.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../../../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../../../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../../../_static/cloud.js"></script>
+    
+
+    <link rel="shortcut icon" href="../../../_static/favicon-qcdb.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">Index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../index.html" title="Table Of Contents"
+             accesskey="C"><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/cbs_helpers.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../../../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">qcdb.driver.cbs_helpers</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qcdb.driver.cbs_helpers</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">ValidationError</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;xtpl_highest_1&#39;</span><span class="p">,</span> <span class="s1">&#39;scf_xtpl_helgaker_2&#39;</span><span class="p">,</span> <span class="s1">&#39;scf_xtpl_helgaker_3&#39;</span><span class="p">,</span> <span class="s1">&#39;corl_xtpl_helgaker_2&#39;</span><span class="p">,]</span>
+
+
+<span class="c1">#_zeta_values = [&#39;d&#39;, &#39;t&#39;, &#39;q&#39;, &#39;5&#39;, &#39;6&#39;, &#39;7&#39;, &#39;8&#39;]</span>
+<span class="c1">#_zeta_val2sym = {k + 2: v for k, v in zip(range(7), _zeta_values)}</span>
+<span class="c1">#_zeta_sym2val = {v: k for k, v in _zeta_val2sym.items()}</span>
+<span class="n">_zeta_values</span> <span class="o">=</span> <span class="s1">&#39;dtq5678&#39;</span>
+<span class="n">_zeta_val2sym</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span> <span class="o">+</span> <span class="mi">2</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">_zeta_values</span><span class="p">)}</span>
+<span class="n">_zeta_sym2val</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">_zeta_val2sym</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+
+<div class="viewcode-block" id="xtpl_highest_1"><a class="viewcode-back" href="../../../api/qcdb.xtpl_highest_1.html#qcdb.xtpl_highest_1">[docs]</a><span class="k">def</span> <span class="nf">xtpl_highest_1</span><span class="p">(</span><span class="n">mtdname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">zHI</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">valueHI</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Scheme for total or correlation energies with a single basis or the highest</span>
+<span class="sd">    zeta-level among an array of bases. Used by :py:func:`qcdb.cbs`.</span>
+
+<span class="sd">    .. math:: E_{\textrm{total}}^X = E_{\textrm{total}}^X</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mtdname</span>
+<span class="sd">        Method name (e.g., &#39;mp2&#39;) used in summary printing.</span>
+<span class="sd">    zHI</span>
+<span class="sd">        Zeta number of the basis set.</span>
+<span class="sd">    valueHI</span>
+<span class="sd">        Energy, gradient, or Hessian value at the basis set.</span>
+<span class="sd">    verbose</span>
+<span class="sd">        Controls volume of printing.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float or numpy.ndarray</span>
+<span class="sd">        Eponymous function applied to input zetas and values; type from `valueHI`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; # [1] Fancy way to get HF/cc-pCVQZ</span>
+<span class="sd">    &gt;&gt;&gt; qcdb.energy(qcdb.cbs, scf_wfn=&#39;hf&#39;, scf_basis=&#39;cc-pcvqz&#39;, scf_scheme=qcdb.xtpl_highest_1)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">valueHI</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="c1"># Output string with extrapolation parameters</span>
+            <span class="n">cbsscheme</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\n</span><span class="s2">   ==&gt; </span><span class="si">{}</span><span class="s2"> &lt;==</span><span class="se">\n\n</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mtdname</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;   HI-zeta (</span><span class="si">{}</span><span class="s2">) Energy:               </span><span class="si">{:16.12f}</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">zHI</span><span class="p">,</span> <span class="n">valueHI</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="n">cbsscheme</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">valueHI</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">valueHI</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">print_out</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;   HI-zeta (</span><span class="si">%s</span><span class="s2">) Total Energy:</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">zHI</span><span class="p">)))</span>
+            <span class="n">valueHI</span><span class="o">.</span><span class="n">print_out</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">valueHI</span></div>
+
+
+<div class="viewcode-block" id="scf_xtpl_helgaker_2"><a class="viewcode-back" href="../../../api/qcdb.scf_xtpl_helgaker_2.html#qcdb.scf_xtpl_helgaker_2">[docs]</a><span class="k">def</span> <span class="nf">scf_xtpl_helgaker_2</span><span class="p">(</span><span class="n">mtdname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">zLO</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">valueLO</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">zHI</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">valueHI</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.63</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Extrapolation scheme for reference energies with two adjacent zeta-level bases.</span>
+<span class="sd">    Used by :py:func:`qcdb.cbs`.</span>
+<span class="sd">    `Halkier, Helgaker, Jorgensen, Klopper, &amp; Olsen, Chem. Phys. Lett. 302 (1999) 437-446</span>
+<span class="sd">    &lt;https://doi.org/10.1016/S0009-2614(99)00179-7&gt;`_</span>
+
+<span class="sd">    .. math:: E_{\textrm{total}}^X = E_{\textrm{total}}^{\infty} + \beta e^{-\alpha X}, \alpha = 1.63</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mtdname</span>
+<span class="sd">        Method name (e.g., &#39;HF&#39;) used in summary printing.</span>
+<span class="sd">    zLO</span>
+<span class="sd">        Zeta number of the smaller basis set in 2-point extrapolation.</span>
+<span class="sd">    valueLO</span>
+<span class="sd">        Energy, gradient, or Hessian value at the smaller basis set in 2-point</span>
+<span class="sd">        extrapolation.</span>
+<span class="sd">    zHI</span>
+<span class="sd">        Zeta number of the larger basis set in 2-point extrapolation.</span>
+<span class="sd">        Must be `zLO + 1`.</span>
+<span class="sd">    valueHI</span>
+<span class="sd">        Energy, gradient, or Hessian value at the larger basis set in 2-point</span>
+<span class="sd">        extrapolation.</span>
+<span class="sd">    verbose</span>
+<span class="sd">        Controls volume of printing.</span>
+<span class="sd">    alpha</span>
+<span class="sd">        Fitted 2-point parameter.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float or numpy.ndarray</span>
+<span class="sd">        Eponymous function applied to input zetas and values; type from `valueLO`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; # [1] Hartree-Fock extrapolation</span>
+<span class="sd">    &gt;&gt;&gt; qcdb.energy(qcdb.cbs, scf_wfn=&#39;hf&#39;, scf_basis=&#39;cc-pV[DT]Z&#39;, scf_scheme=qcdb.scf_xtpl_helgaker_2)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">valueLO</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">(</span><span class="n">valueHI</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;scf_xtpl_helgaker_2: Inputs must be of the same datatype! (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">)&quot;</span>
+                              <span class="o">%</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">valueLO</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">valueHI</span><span class="p">)))</span>
+
+    <span class="n">beta_division</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">zLO</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">beta_mult</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">zHI</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">valueLO</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="p">(</span><span class="n">valueHI</span> <span class="o">-</span> <span class="n">valueLO</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">zLO</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">valueHI</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">zHI</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="c1"># Output string with extrapolation parameters</span>
+            <span class="n">cbsscheme</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\n</span><span class="s2">   ==&gt; Helgaker 2-point SCF extrapolation for method: </span><span class="si">%s</span><span class="s2"> &lt;==</span><span class="se">\n\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mtdname</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;   LO-zeta (</span><span class="si">%s</span><span class="s2">) Energy:               </span><span class="si">% 16.12f</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">zLO</span><span class="p">),</span> <span class="n">valueLO</span><span class="p">)</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;   HI-zeta (</span><span class="si">%s</span><span class="s2">) Energy:               </span><span class="si">% 16.12f</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">zHI</span><span class="p">),</span> <span class="n">valueHI</span><span class="p">)</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;   Alpha (exponent) Value:           </span><span class="si">% 16.12f</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;   Beta (coefficient) Value:         </span><span class="si">% 16.12f</span><span class="se">\n\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">beta</span><span class="p">)</span>
+
+            <span class="n">name_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/(</span><span class="si">%s</span><span class="s2">,</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mtdname</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">_zeta_val2sym</span><span class="p">[</span><span class="n">zLO</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">_zeta_val2sym</span><span class="p">[</span><span class="n">zHI</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;   @Extrapolated &quot;&quot;&quot;</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="n">name_str</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="p">(</span><span class="mi">18</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">name_str</span><span class="p">))</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span><span class="si">% 16.12f</span><span class="se">\n\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="n">value</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">cbsscheme</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">valueLO</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="p">(</span><span class="n">valueHI</span> <span class="o">-</span> <span class="n">valueLO</span><span class="p">)</span> <span class="o">*</span> <span class="n">beta_division</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">valueHI</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">beta_mult</span>
+        <span class="c1">#beta.name = &#39;Helgaker SCF (%s, %s) beta&#39; % (zLO, zHI)</span>
+        <span class="c1">#value.name = &#39;Helgaker SCF (%s, %s) data&#39; % (zLO, zHI)</span>
+
+        <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">print_out</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\n</span><span class="s2">   ==&gt; Helgaker 2-point SCF extrapolation for method: </span><span class="si">%s</span><span class="s2"> &lt;==</span><span class="se">\n\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mtdname</span><span class="o">.</span><span class="n">upper</span><span class="p">()))</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">print_out</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;   LO-zeta (</span><span class="si">{}</span><span class="s2">)&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">zLO</span><span class="p">))</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">print_out</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;   LO-zeta Data&quot;&quot;&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">valueLO</span><span class="p">)</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">print_out</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;   HI-zeta (</span><span class="si">%s</span><span class="s2">)&quot;&quot;&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">zHI</span><span class="p">))</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">print_out</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;   HI-zeta Data&quot;&quot;&quot;</span><span class="p">)</span>
+            <span class="n">valueHI</span><span class="o">.</span><span class="n">print_out</span><span class="p">()</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">print_out</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;   Extrapolated Data:</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+            <span class="n">value</span><span class="o">.</span><span class="n">print_out</span><span class="p">()</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">print_out</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;   Alpha (exponent) Value:          </span><span class="si">%16.8f</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">alpha</span><span class="p">))</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">print_out</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;   Beta Data:</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+            <span class="n">beta</span><span class="o">.</span><span class="n">print_out</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;scf_xtpl_helgaker_2: datatype is not recognized &#39;</span><span class="si">%s</span><span class="s2">&#39;.&quot;</span> <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="n">valueLO</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="scf_xtpl_helgaker_3"><a class="viewcode-back" href="../../../api/qcdb.scf_xtpl_helgaker_3.html#qcdb.scf_xtpl_helgaker_3">[docs]</a><span class="k">def</span> <span class="nf">scf_xtpl_helgaker_3</span><span class="p">(</span><span class="n">mtdname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">zLO</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">valueLO</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">zMD</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">valueMD</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">zHI</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">valueHI</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Extrapolation scheme for reference energies with three adjacent zeta-level bases.</span>
+<span class="sd">    Used by :py:func:`qcdb.cbs`.</span>
+<span class="sd">    `Halkier, Helgaker, Jorgensen, Klopper, &amp; Olsen, Chem. Phys. Lett. 302 (1999) 437-446</span>
+<span class="sd">    &lt;https://doi.org/10.1016/S0009-2614(99)00179-7&gt;`_</span>
+
+<span class="sd">    .. math:: E_{\textrm{total}}^X = E_{\textrm{total}}^{\infty} + \beta e^{-\alpha X}</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mtdname</span>
+<span class="sd">        Method name (e.g., &#39;HF&#39;) used in summary printing.</span>
+<span class="sd">    zLO</span>
+<span class="sd">        Zeta number of the smaller basis set in 3-point extrapolation.</span>
+<span class="sd">    valueLO</span>
+<span class="sd">        Energy, gradient, or Hessian value at the smaller basis set in 3-point</span>
+<span class="sd">        extrapolation.</span>
+<span class="sd">    zMD</span>
+<span class="sd">        Zeta number of the medium basis set in 3-point extrapolation.</span>
+<span class="sd">        Must be `zLO + 1`.</span>
+<span class="sd">    valueMD</span>
+<span class="sd">        Energy, gradient, or Hessian value at the medium basis set in 3-point</span>
+<span class="sd">        extrapolation.</span>
+<span class="sd">    zHI</span>
+<span class="sd">        Zeta number of the larger basis set in 3-point extrapolation.</span>
+<span class="sd">        Must be `zLO + 2`.</span>
+<span class="sd">    valueHI</span>
+<span class="sd">        Energy, gradient, or Hessian value at the larger basis set in 3-point</span>
+<span class="sd">        extrapolation.</span>
+<span class="sd">    verbose</span>
+<span class="sd">        Controls volume of printing.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float or numpy.ndarray</span>
+<span class="sd">        Eponymous function applied to input zetas and values; type from `valueLO`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; # [1] Hartree-Fock extrapolation</span>
+<span class="sd">    &gt;&gt;&gt; qcdb.energy(qcdb.cbs, scf_wfn=&#39;hf&#39;, scf_basis=&#39;cc-pV[DTQ]Z&#39;, scf_scheme=qcdb.scf_xtpl_helgaker_3)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">valueLO</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">(</span><span class="n">valueMD</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">valueMD</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">(</span><span class="n">valueHI</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;scf_xtpl_helgaker_3: Inputs must be of the same datatype! (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">)&quot;</span>
+                              <span class="o">%</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">valueLO</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">valueMD</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">valueHI</span><span class="p">)))</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">valueLO</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+
+        <span class="n">ratio</span> <span class="o">=</span> <span class="p">(</span><span class="n">valueHI</span> <span class="o">-</span> <span class="n">valueMD</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">valueMD</span> <span class="o">-</span> <span class="n">valueLO</span><span class="p">)</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">ratio</span><span class="p">)</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="p">(</span><span class="n">valueHI</span> <span class="o">-</span> <span class="n">valueMD</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">zMD</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">ratio</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">valueHI</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">zHI</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="c1"># Output string with extrapolation parameters</span>
+            <span class="n">cbsscheme</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\n</span><span class="s2">   ==&gt; Helgaker 3-point SCF extrapolation for method: </span><span class="si">%s</span><span class="s2"> &lt;==</span><span class="se">\n\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mtdname</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;   LO-zeta (</span><span class="si">%s</span><span class="s2">) Energy:               </span><span class="si">% 16.12f</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">zLO</span><span class="p">),</span> <span class="n">valueLO</span><span class="p">)</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;   MD-zeta (</span><span class="si">%s</span><span class="s2">) Energy:               </span><span class="si">% 16.12f</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">zMD</span><span class="p">),</span> <span class="n">valueMD</span><span class="p">)</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;   HI-zeta (</span><span class="si">%s</span><span class="s2">) Energy:               </span><span class="si">% 16.12f</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">zHI</span><span class="p">),</span> <span class="n">valueHI</span><span class="p">)</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;   Alpha (exponent) Value:           </span><span class="si">% 16.12f</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;   Beta (coefficient) Value:         </span><span class="si">% 16.12f</span><span class="se">\n\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">beta</span><span class="p">)</span>
+
+            <span class="n">name_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/(</span><span class="si">%s</span><span class="s2">,</span><span class="si">%s</span><span class="s2">,</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mtdname</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">_zeta_val2sym</span><span class="p">[</span><span class="n">zLO</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">_zeta_val2sym</span><span class="p">[</span><span class="n">zMD</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+                                                             <span class="n">_zeta_val2sym</span><span class="p">[</span><span class="n">zHI</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;   @Extrapolated &quot;&quot;&quot;</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="n">name_str</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="p">(</span><span class="mi">18</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">name_str</span><span class="p">))</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span><span class="si">% 16.12f</span><span class="se">\n\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="n">value</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">cbsscheme</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">valueLO</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">valueLO</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">valueLO</span><span class="p">)</span>
+        <span class="n">valueMD</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">valueMD</span><span class="p">)</span>
+        <span class="n">valueHI</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">valueHI</span><span class="p">)</span>
+
+        <span class="n">nonzero_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">valueHI</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1.e-14</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="p">(</span><span class="n">valueHI</span> <span class="o">-</span> <span class="n">valueMD</span><span class="p">)[</span><span class="n">nonzero_mask</span><span class="p">]</span>
+        <span class="n">bot</span> <span class="o">=</span> <span class="p">(</span><span class="n">valueMD</span> <span class="o">-</span> <span class="n">valueLO</span><span class="p">)[</span><span class="n">nonzero_mask</span><span class="p">]</span>
+
+        <span class="n">ratio</span> <span class="o">=</span> <span class="n">top</span> <span class="o">/</span> <span class="n">bot</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ratio</span><span class="p">))</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="n">top</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">zMD</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">ratio</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">np_value</span> <span class="o">=</span> <span class="n">valueHI</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">np_value</span><span class="p">[</span><span class="n">nonzero_mask</span><span class="p">]</span> <span class="o">-=</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">zHI</span><span class="p">)</span>
+        <span class="n">np_value</span><span class="p">[</span><span class="o">~</span><span class="n">nonzero_mask</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">return</span> <span class="n">np_value</span>
+
+        <span class="c1">## Build and set from numpy routines</span>
+        <span class="c1">#value = core.Matrix(*valueHI.shape)</span>
+        <span class="c1">#value_view = np.asarray(value)</span>
+        <span class="c1">#value_view[:] = np_value</span>
+        <span class="c1">#return value</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;scf_xtpl_helgaker_3: datatype is not recognized &#39;</span><span class="si">%s</span><span class="s2">&#39;.&quot;</span> <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="n">valueLO</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="corl_xtpl_helgaker_2"><a class="viewcode-back" href="../../../api/qcdb.corl_xtpl_helgaker_2.html#qcdb.corl_xtpl_helgaker_2">[docs]</a><span class="k">def</span> <span class="nf">corl_xtpl_helgaker_2</span><span class="p">(</span><span class="n">mtdname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">zLO</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">valueLO</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">zHI</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">valueHI</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Extrapolation scheme for correlation energies with two adjacent zeta-level bases.</span>
+<span class="sd">    Used by :py:func:`qcdb.cbs`.</span>
+<span class="sd">    `Halkier, Helgaker, Jorgensen, Klopper, Koch, Olsen, &amp; Wilson, Chem. Phys. Lett. 286 (1998) 243-252</span>
+<span class="sd">    &lt;https://doi.org/10.1016/S0009-2614(98)00111-0&gt;`_</span>
+
+<span class="sd">    .. math:: E_{\textrm{corl}}^X = E_{\textrm{corl}}^{\infty} + \beta X^{-3}</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mtdname</span>
+<span class="sd">        Method name (e.g., &#39;MP2&#39;) used in summary printing.</span>
+<span class="sd">    zLO</span>
+<span class="sd">        Zeta number of the smaller basis set in 2-point extrapolation.</span>
+<span class="sd">    valueLO</span>
+<span class="sd">        Energy, gradient, or Hessian value at the smaller basis set in 2-point</span>
+<span class="sd">        extrapolation.</span>
+<span class="sd">    zHI</span>
+<span class="sd">        Zeta number of the larger basis set in 2-point extrapolation.</span>
+<span class="sd">        Must be `zLO + 1`.</span>
+<span class="sd">    valueHI</span>
+<span class="sd">        Energy, gradient, or Hessian value at the larger basis set in 2-point</span>
+<span class="sd">        extrapolation.</span>
+<span class="sd">    verbose</span>
+<span class="sd">        Controls volume of printing.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float or numpy.ndarray</span>
+<span class="sd">        Eponymous function applied to input zetas and values; type from `valueLO`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; # [1] CISD extrapolation</span>
+<span class="sd">    &gt;&gt;&gt; qcdb.energy(qcdb.cbs, corl_wfn=&#39;cisd&#39;, corl_basis=&#39;cc-pV[DT]Z&#39;, corl_scheme=qcdb.corl_xtpl_helgaker_2)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">valueLO</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">(</span><span class="n">valueHI</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;corl_xtpl_helgaker_2: Inputs must be of the same datatype! (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">)&quot;</span>
+                              <span class="o">%</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">valueLO</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">valueHI</span><span class="p">)))</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">valueLO</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">valueHI</span> <span class="o">*</span> <span class="n">zHI</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">-</span> <span class="n">valueLO</span> <span class="o">*</span> <span class="n">zLO</span> <span class="o">**</span> <span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">zHI</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">-</span> <span class="n">zLO</span> <span class="o">**</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="p">(</span><span class="n">valueHI</span> <span class="o">-</span> <span class="n">valueLO</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">zHI</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="n">zLO</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">))</span>
+
+<span class="c1">#        final = valueSCF + value</span>
+        <span class="n">final</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="c1"># Output string with extrapolation parameters</span>
+            <span class="n">cbsscheme</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\n\n</span><span class="s2">   ==&gt; Helgaker 2-point correlated extrapolation for method: </span><span class="si">%s</span><span class="s2"> &lt;==</span><span class="se">\n\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mtdname</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+<span class="c1">#            cbsscheme += &quot;&quot;&quot;   HI-zeta (%1s) SCF Energy:           % 16.12f\n&quot;&quot;&quot; % (str(zHI), valueSCF)</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;   LO-zeta (</span><span class="si">%s</span><span class="s2">) Energy:               </span><span class="si">% 16.12f</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">zLO</span><span class="p">),</span> <span class="n">valueLO</span><span class="p">)</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;   HI-zeta (</span><span class="si">%s</span><span class="s2">) Energy:               </span><span class="si">% 16.12f</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">zHI</span><span class="p">),</span> <span class="n">valueHI</span><span class="p">)</span>
+<span class="c1">#            cbsscheme += &quot;&quot;&quot;   Beta (coefficient) Value:         % 16.12f\n&quot;&quot;&quot; % beta</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;   Extrapolated Energy:              </span><span class="si">% 16.12f</span><span class="se">\n\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="n">value</span>
+            <span class="c1">#cbsscheme += &quot;&quot;&quot;   LO-zeta (%s) Correlation Energy:   % 16.12f\n&quot;&quot;&quot; % (str(zLO), valueLO)</span>
+            <span class="c1">#cbsscheme += &quot;&quot;&quot;   HI-zeta (%s) Correlation Energy:   % 16.12f\n&quot;&quot;&quot; % (str(zHI), valueHI)</span>
+            <span class="c1">#cbsscheme += &quot;&quot;&quot;   Beta (coefficient) Value:         % 16.12f\n&quot;&quot;&quot; % beta</span>
+            <span class="c1">#cbsscheme += &quot;&quot;&quot;   Extrapolated Correlation Energy:  % 16.12f\n\n&quot;&quot;&quot; % value</span>
+
+            <span class="n">name_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/(</span><span class="si">%s</span><span class="s2">,</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mtdname</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">_zeta_val2sym</span><span class="p">[</span><span class="n">zLO</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">_zeta_val2sym</span><span class="p">[</span><span class="n">zHI</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;   @Extrapolated &quot;&quot;&quot;</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="n">name_str</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="p">(</span><span class="mi">19</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">name_str</span><span class="p">))</span>
+            <span class="n">cbsscheme</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span><span class="si">% 16.12f</span><span class="se">\n\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="n">final</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">cbsscheme</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">final</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">valueLO</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="p">(</span><span class="n">valueHI</span> <span class="o">-</span> <span class="n">valueLO</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">zHI</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="n">zLO</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">))</span>
+        <span class="c1">#beta.name = &#39;Helgaker Corl (%s, %s) beta&#39; % (zLO, zHI)</span>
+
+        <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">valueHI</span> <span class="o">*</span> <span class="n">zHI</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">-</span> <span class="n">valueLO</span> <span class="o">*</span> <span class="n">zLO</span> <span class="o">**</span> <span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">zHI</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">-</span> <span class="n">zLO</span> <span class="o">**</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="c1">#value.name = &#39;Helgaker Corr (%s, %s) data&#39; % (zLO, zHI)</span>
+
+        <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">print_out</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\n</span><span class="s2">   ==&gt; Helgaker 2-point correlated extrapolation for &quot;&quot;&quot;</span>
+                           <span class="sd">&quot;&quot;&quot;method: %s &lt;==\n\n&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mtdname</span><span class="o">.</span><span class="n">upper</span><span class="p">()))</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">print_out</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;   LO-zeta (</span><span class="si">%s</span><span class="s2">) Data</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">zLO</span><span class="p">)))</span>
+            <span class="n">valueLO</span><span class="o">.</span><span class="n">print_out</span><span class="p">()</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">print_out</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;   HI-zeta (</span><span class="si">%s</span><span class="s2">) Data</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">zHI</span><span class="p">)))</span>
+            <span class="n">valueHI</span><span class="o">.</span><span class="n">print_out</span><span class="p">()</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">print_out</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;   Extrapolated Data:</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+            <span class="n">value</span><span class="o">.</span><span class="n">print_out</span><span class="p">()</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">print_out</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;   Beta Data:</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+            <span class="n">beta</span><span class="o">.</span><span class="n">print_out</span><span class="p">()</span>
+
+<span class="c1">#        value.add(valueSCF)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;corl_xtpl_helgaker_2: datatype is not recognized &#39;</span><span class="si">%s</span><span class="s2">&#39;.&quot;</span> <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="n">valueLO</span><span class="p">))</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../../index.html" title="index">
+          <img class="logo" src="../../../_static/qcdbsquare.png" alt="Logo"/>
+        </a></p><!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+<div id="searchbox" style="display: none" role="search">
+  <!--<h3>Quick search</h3>-->
+    <form class="search" action="../../../search.html" method="get">
+      <!--<div><input type="text" name="q" placeholder="search docs" /></div>-->
+      <div><input type="text" name="q" placeholder="&#xF002;" style="font-family:FontAwesome, Ariel" /></div>
+      <!--<div><input type="submit" value="Go" /></div>-->
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >Index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../index.html" title="Table Of Contents"
+             ><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/cbs_helpers.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../../../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">qcdb.driver.cbs_helpers</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, The QCDB Project.
+      Last updated on Thursday, 29 April 2021 05:29AM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

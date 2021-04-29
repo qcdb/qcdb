@@ -1,0 +1,6 @@
+UpgradeHelper
+=============
+
+.. currentmodule:: qcdb
+
+.. autoexception:: UpgradeHelper

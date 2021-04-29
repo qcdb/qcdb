@@ -1,0 +1,7 @@
+AliasKeyword
+============
+
+.. currentmodule:: qcdb
+
+.. autoclass:: AliasKeyword
+   :show-inheritance:

@@ -1,0 +1,6 @@
+Dftd3Error
+==========
+
+.. currentmodule:: qcdb
+
+.. autoexception:: Dftd3Error

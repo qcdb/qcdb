@@ -1,0 +1,6 @@
+get_variable
+============
+
+.. currentmodule:: qcdb
+
+.. autofunction:: get_variable

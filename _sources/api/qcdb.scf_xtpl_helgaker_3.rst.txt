@@ -1,0 +1,6 @@
+scf_xtpl_helgaker_3
+===================
+
+.. currentmodule:: qcdb
+
+.. autofunction:: scf_xtpl_helgaker_3

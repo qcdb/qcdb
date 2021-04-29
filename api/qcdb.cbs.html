@@ -1,0 +1,542 @@
+<!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cbs</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/psi4.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="shortcut icon" href="../_static/favicon-qcdb.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="compare_dicts" href="qcdb.compare_dicts.html" />
+    <link rel="prev" title="activate" href="qcdb.activate.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">Index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="qcdb.compare_dicts.html" title="compare_dicts"
+             accesskey="N"><i class="fa fa-long-arrow-right fa-lg"></i></a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="qcdb.activate.html" title="activate"
+             accesskey="P"><i class="fa fa-long-arrow-left fa-lg"></i></a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../index.html" title="Table Of Contents"
+             accesskey="C"><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.cbs.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../api.html" accesskey="U"><span style="font-family: Optima, sans-serif; text-transform: none;">QCDB</span> API</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">cbs</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="cbs">
+<h1>cbs<a class="headerlink" href="#cbs" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="qcdb.cbs">
+<code class="sig-prename descclassname"><span class="pre">qcdb.</span></code><code class="sig-name descname"><span class="pre">cbs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/driver/cbs_driver.html#cbs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.cbs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to define a multistage energy method from combinations of
+basis set extrapolations and delta corrections and condense the
+components into a minimum number of calculations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Aliases</dt>
+<dd class="field-odd"><p>complete_basis_set()</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(<em>float</em>) – Total electronic energy in Hartrees</p>
+</dd>
+<dt class="field-odd">PSI variables</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<table class="hlist"><tr><td><ul class="simple">
+<li><p><a class="reference internal" href="../autodoc_glossary_qcvars.html#qcvar-CBS-TOTAL-ENERGY"><code class="xref std std-qcvar docutils literal notranslate"><span class="pre">CBS</span> <span class="pre">TOTAL</span> <span class="pre">ENERGY</span></code></a></p></li>
+<li><p><a class="reference internal" href="../autodoc_glossary_qcvars.html#qcvar-CBS-REFERENCE-ENERGY"><code class="xref std std-qcvar docutils literal notranslate"><span class="pre">CBS</span> <span class="pre">REFERENCE</span> <span class="pre">ENERGY</span></code></a></p></li>
+<li><p><a class="reference internal" href="../autodoc_glossary_qcvars.html#qcvar-CBS-CORRELATION-ENERGY"><code class="xref std std-qcvar docutils literal notranslate"><span class="pre">CBS</span> <span class="pre">CORRELATION</span> <span class="pre">ENERGY</span></code></a></p></li>
+<li><p><a class="reference internal" href="../autodoc_glossary_qcvars.html#qcvar-CURRENT-ENERGY"><code class="xref std std-qcvar docutils literal notranslate"><span class="pre">CURRENT</span> <span class="pre">ENERGY</span></code></a></p></li>
+<li><p><a class="reference internal" href="../autodoc_glossary_qcvars.html#qcvar-CURRENT-REFERENCE-ENERGY"><code class="xref std std-qcvar docutils literal notranslate"><span class="pre">CURRENT</span> <span class="pre">REFERENCE</span> <span class="pre">ENERGY</span></code></a></p></li>
+<li><p><a class="reference internal" href="../autodoc_glossary_qcvars.html#qcvar-CURRENT-CORRELATION-ENERGY"><code class="xref std std-qcvar docutils literal notranslate"><span class="pre">CURRENT</span> <span class="pre">CORRELATION</span> <span class="pre">ENERGY</span></code></a></p></li>
+</ul>
+</td></tr></table>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Some features are not yet implemented. Buy a developer a coffee.</p>
+<ul class="simple">
+<li><p>No way to tell function to boost fitting basis size for all calculations.</p></li>
+<li><p>No way to extrapolate def2 family basis sets</p></li>
+<li><p>Need to add more extrapolation schemes</p></li>
+</ul>
+</div>
+<p>As represented in the equation below, a CBS energy method is defined in several
+sequential stages (scf, corl, delta, delta2, delta3, delta4, delta5) covering treatment
+of the reference total energy, the correlation energy, a delta correction to the
+correlation energy, and a second delta correction, etc.. Each is activated by its
+stage_wfn keyword and is only allowed if all preceding stages are active.</p>
+<ul>
+<li><dl>
+<dt>Energy Methods</dt><dd><p>The presence of a stage_wfn keyword is the indicator to incorporate
+(and check for stage_basis and stage_scheme keywords) and compute
+that stage in defining the CBS energy.</p>
+<p>The cbs() function requires, at a minimum, <code class="docutils literal notranslate"><span class="pre">name='scf'</span></code> and <code class="docutils literal notranslate"><span class="pre">scf_basis</span></code>
+keywords to be specified for reference-step only jobs and <code class="docutils literal notranslate"><span class="pre">name</span></code> and
+<code class="docutils literal notranslate"><span class="pre">corl_basis</span></code> keywords for correlated jobs.</p>
+<p>The following energy methods have been set up for cbs().</p>
+<table class="hlist"><tr><td><ul class="simple">
+<li><p>scf</p></li>
+<li><p>hf</p></li>
+<li><p>mp2</p></li>
+<li><p>mp2.5</p></li>
+<li><p>mp3</p></li>
+<li><p>mp4(sdq)</p></li>
+<li><p>mp4</p></li>
+<li><p>mp<em>n</em></p></li>
+</ul>
+</td><td><ul class="simple">
+<li><p>omp2</p></li>
+<li><p>omp2.5</p></li>
+<li><p>omp3</p></li>
+<li><p>olccd</p></li>
+<li><p>lccd</p></li>
+<li><p>lccsd</p></li>
+<li><p>cepa(0)</p></li>
+<li><p>cepa(1)</p></li>
+</ul>
+</td><td><ul class="simple">
+<li><p>cepa(3)</p></li>
+<li><p>acpf</p></li>
+<li><p>aqcc</p></li>
+<li><p>qcisd</p></li>
+<li><p>cc2</p></li>
+<li><p>ccsd</p></li>
+<li><p>fno-ccsd</p></li>
+<li><p>bccd</p></li>
+</ul>
+</td><td><ul class="simple">
+<li><p>cc3</p></li>
+<li><p>qcisd(t)</p></li>
+<li><p>ccsd(t)</p></li>
+<li><p>fno-ccsd(t)</p></li>
+<li><p>bccd(t)</p></li>
+<li><p>cisd</p></li>
+<li><p>cisdt</p></li>
+</ul>
+</td><td><ul class="simple">
+<li><p>cisdtq</p></li>
+<li><p>ci<em>n</em></p></li>
+<li><p>fci</p></li>
+<li><p>mrccsd</p></li>
+<li><p>mrccsd(t)</p></li>
+<li><p>mrccsdt</p></li>
+<li><p>mrccsdt(q)</p></li>
+</ul>
+</td></tr></table>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – <p><code class="docutils literal notranslate"><span class="pre">'scf'</span></code> || <code class="docutils literal notranslate"><span class="pre">'ccsd'</span></code> || etc.</p>
+<p>First argument, usually unlabeled. Indicates the computational method
+for the correlation energy, unless only reference step to be performed,
+in which case should be <code class="docutils literal notranslate"><span class="pre">'scf'</span></code>. Overruled if stage_wfn keywords supplied.</p>
+</p></li>
+<li><p><strong>scf_wfn</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – <p><span class="math notranslate nohighlight">\(\Rightarrow\)</span> <code class="docutils literal notranslate"><span class="pre">'scf'</span></code> <span class="math notranslate nohighlight">\(\Leftarrow\)</span> || <code class="docutils literal notranslate"><span class="pre">'c4-scf'</span></code> || etc.</p>
+<p>Indicates the energy method for which the reference energy is to be
+obtained. Generally unnecessary, as ‘scf’ is <em>the</em> scf in <span style="font-family: Optima, sans-serif; text-transform: none;">P<span style="font-size: 82%;">SI</span>4</span> but
+can be used to direct lone scf components to run in <span style="font-family: Optima, sans-serif; text-transform: none;">P<span style="font-size: 82%;">SI</span>4</span> or Cfour
+in a mixed-program composite method.</p>
+</p></li>
+<li><p><strong>corl_wfn</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – <p><code class="docutils literal notranslate"><span class="pre">'mp2'</span></code> || <code class="docutils literal notranslate"><span class="pre">'ccsd(t)'</span></code> || etc.</p>
+<p>Indicates the energy method for which the correlation energy is to be
+obtained. Can also be specified with <code class="docutils literal notranslate"><span class="pre">name</span></code> or as the unlabeled
+first argument to the function.</p>
+</p></li>
+<li><p><strong>delta_wfn</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – <p><code class="docutils literal notranslate"><span class="pre">'ccsd'</span></code> || <code class="docutils literal notranslate"><span class="pre">'ccsd(t)'</span></code> || etc.</p>
+<p>Indicates the (superior) energy method for which a delta correction
+to the correlation energy is to be obtained.</p>
+</p></li>
+<li><p><strong>delta_wfn_lesser</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – <p><span class="math notranslate nohighlight">\(\Rightarrow\)</span> <code class="docutils literal notranslate"><span class="pre">corl_wfn</span></code> <span class="math notranslate nohighlight">\(\Leftarrow\)</span> || <code class="docutils literal notranslate"><span class="pre">'mp2'</span></code> || etc.</p>
+<p>Indicates the inferior energy method for which a delta correction
+to the correlation energy is to be obtained.</p>
+</p></li>
+<li><p><strong>delta2_wfn</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – <p><code class="docutils literal notranslate"><span class="pre">'ccsd'</span></code> || <code class="docutils literal notranslate"><span class="pre">'ccsd(t)'</span></code> || etc.</p>
+<p>Indicates the (superior) energy method for which a second delta correction
+to the correlation energy is to be obtained.</p>
+</p></li>
+<li><p><strong>delta2_wfn_lesser</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – <p><span class="math notranslate nohighlight">\(\Rightarrow\)</span> <code class="docutils literal notranslate"><span class="pre">delta_wfn</span></code> <span class="math notranslate nohighlight">\(\Leftarrow\)</span> || <code class="docutils literal notranslate"><span class="pre">'ccsd(t)'</span></code> || etc.</p>
+<p>Indicates the inferior energy method for which a second delta correction
+to the correlation energy is to be obtained.</p>
+</p></li>
+<li><p><strong>delta3_wfn</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – <p><code class="docutils literal notranslate"><span class="pre">'ccsd'</span></code> || <code class="docutils literal notranslate"><span class="pre">'ccsd(t)'</span></code> || etc.</p>
+<p>Indicates the (superior) energy method for which a third delta correction
+to the correlation energy is to be obtained.</p>
+</p></li>
+<li><p><strong>delta3_wfn_lesser</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – <p><span class="math notranslate nohighlight">\(\Rightarrow\)</span> <code class="docutils literal notranslate"><span class="pre">delta2_wfn</span></code> <span class="math notranslate nohighlight">\(\Leftarrow\)</span> || <code class="docutils literal notranslate"><span class="pre">'ccsd(t)'</span></code> || etc.</p>
+<p>Indicates the inferior energy method for which a third delta correction
+to the correlation energy is to be obtained.</p>
+</p></li>
+<li><p><strong>delta4_wfn</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – <p><code class="docutils literal notranslate"><span class="pre">'ccsd'</span></code> || <code class="docutils literal notranslate"><span class="pre">'ccsd(t)'</span></code> || etc.</p>
+<p>Indicates the (superior) energy method for which a fourth delta correction
+to the correlation energy is to be obtained.</p>
+</p></li>
+<li><p><strong>delta4_wfn_lesser</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – <p><span class="math notranslate nohighlight">\(\Rightarrow\)</span> <code class="docutils literal notranslate"><span class="pre">delta3_wfn</span></code> <span class="math notranslate nohighlight">\(\Leftarrow\)</span> || <code class="docutils literal notranslate"><span class="pre">'ccsd(t)'</span></code> || etc.</p>
+<p>Indicates the inferior energy method for which a fourth delta correction
+to the correlation energy is to be obtained.</p>
+</p></li>
+<li><p><strong>delta5_wfn</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – <p><code class="docutils literal notranslate"><span class="pre">'ccsd'</span></code> || <code class="docutils literal notranslate"><span class="pre">'ccsd(t)'</span></code> || etc.</p>
+<p>Indicates the (superior) energy method for which a fifth delta correction
+to the correlation energy is to be obtained.</p>
+</p></li>
+<li><p><strong>delta5_wfn_lesser</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – <p><span class="math notranslate nohighlight">\(\Rightarrow\)</span> <code class="docutils literal notranslate"><span class="pre">delta4_wfn</span></code> <span class="math notranslate nohighlight">\(\Leftarrow\)</span> || <code class="docutils literal notranslate"><span class="pre">'ccsd(t)'</span></code> || etc.</p>
+<p>Indicates the inferior energy method for which a fifth delta correction
+to the correlation energy is to be obtained.</p>
+</p></li>
+</ul>
+</dd>
+</dl>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Basis Sets</dt><dd><p>Currently, the basis set set through <code class="docutils literal notranslate"><span class="pre">set</span></code> commands have no influence
+on a cbs calculation.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scf_basis</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/basissets_byelement.html#apdx-basiselement" title="(in Psi4 v1.4rc2.dev30)"><span class="xref std std-ref">basis string</span></a>) – <p><span class="math notranslate nohighlight">\(\Rightarrow\)</span> <code class="docutils literal notranslate"><span class="pre">corl_basis</span></code> <span class="math notranslate nohighlight">\(\Leftarrow\)</span> || <code class="docutils literal notranslate"><span class="pre">'cc-pV[TQ]Z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'jun-cc-pv[tq5]z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'6-31G*'</span></code> || etc.</p>
+<p>Indicates the sequence of basis sets employed for the reference energy.
+If any correlation method is specified, <code class="docutils literal notranslate"><span class="pre">scf_basis</span></code> can default
+to <code class="docutils literal notranslate"><span class="pre">corl_basis</span></code>.</p>
+</p></li>
+<li><p><strong>corl_basis</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/basissets_byelement.html#apdx-basiselement" title="(in Psi4 v1.4rc2.dev30)"><span class="xref std std-ref">basis string</span></a>) – <p><code class="docutils literal notranslate"><span class="pre">'cc-pV[TQ]Z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'jun-cc-pv[tq5]z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'6-31G*'</span></code> || etc.</p>
+<p>Indicates the sequence of basis sets employed for the correlation energy.</p>
+</p></li>
+<li><p><strong>delta_basis</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/basissets_byelement.html#apdx-basiselement" title="(in Psi4 v1.4rc2.dev30)"><span class="xref std std-ref">basis string</span></a>) – <p><code class="docutils literal notranslate"><span class="pre">'cc-pV[TQ]Z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'jun-cc-pv[tq5]z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'6-31G*'</span></code> || etc.</p>
+<p>Indicates the sequence of basis sets employed for the delta correction
+to the correlation energy.</p>
+</p></li>
+<li><p><strong>delta2_basis</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/basissets_byelement.html#apdx-basiselement" title="(in Psi4 v1.4rc2.dev30)"><span class="xref std std-ref">basis string</span></a>) – <p><code class="docutils literal notranslate"><span class="pre">'cc-pV[TQ]Z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'jun-cc-pv[tq5]z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'6-31G*'</span></code> || etc.</p>
+<p>Indicates the sequence of basis sets employed for the second delta correction
+to the correlation energy.</p>
+</p></li>
+<li><p><strong>delta3_basis</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/basissets_byelement.html#apdx-basiselement" title="(in Psi4 v1.4rc2.dev30)"><span class="xref std std-ref">basis string</span></a>) – <p><code class="docutils literal notranslate"><span class="pre">'cc-pV[TQ]Z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'jun-cc-pv[tq5]z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'6-31G*'</span></code> || etc.</p>
+<p>Indicates the sequence of basis sets employed for the third delta correction
+to the correlation energy.</p>
+</p></li>
+<li><p><strong>delta4_basis</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/basissets_byelement.html#apdx-basiselement" title="(in Psi4 v1.4rc2.dev30)"><span class="xref std std-ref">basis string</span></a>) – <p><code class="docutils literal notranslate"><span class="pre">'cc-pV[TQ]Z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'jun-cc-pv[tq5]z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'6-31G*'</span></code> || etc.</p>
+<p>Indicates the sequence of basis sets employed for the fourth delta correction
+to the correlation energy.</p>
+</p></li>
+<li><p><strong>delta5_basis</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/basissets_byelement.html#apdx-basiselement" title="(in Psi4 v1.4rc2.dev30)"><span class="xref std std-ref">basis string</span></a>) – <p><code class="docutils literal notranslate"><span class="pre">'cc-pV[TQ]Z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'jun-cc-pv[tq5]z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'6-31G*'</span></code> || etc.</p>
+<p>Indicates the sequence of basis sets employed for the fifth delta correction
+to the correlation energy.</p>
+</p></li>
+</ul>
+</dd>
+</dl>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Schemes</dt><dd><p>Transformations of the energy through basis set extrapolation for each
+stage of the CBS definition. A complaint is generated if number of basis
+sets in stage_basis does not exactly satisfy requirements of stage_scheme.
+An exception is the default, <code class="docutils literal notranslate"><span class="pre">'xtpl_highest_1'</span></code>, which uses the best basis
+set available. See <a class="reference external" href="https://psicode.org/psi4manual/master/cbs.html#sec-cbs-xtpl" title="(in Psi4 v1.4rc2.dev30)"><span>Extrapolation Schemes</span></a> for all available schemes.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scf_scheme</strong> (<em>Callable</em>) – <p><span class="math notranslate nohighlight">\(\Rightarrow\)</span> <code class="docutils literal notranslate"><span class="pre">xtpl_highest_1</span></code> <span class="math notranslate nohighlight">\(\Leftarrow\)</span> || <code class="docutils literal notranslate"><span class="pre">scf_xtpl_helgaker_3</span></code> || etc.</p>
+<p>Indicates the basis set extrapolation scheme to be applied to the reference energy.
+Defaults to <a class="reference internal" href="qcdb.scf_xtpl_helgaker_3.html#qcdb.scf_xtpl_helgaker_3" title="qcdb.scf_xtpl_helgaker_3"><code class="xref py py-func docutils literal notranslate"><span class="pre">scf_xtpl_helgaker_3()</span></code></a> if three valid basis sets
+present in <code class="docutils literal notranslate"><span class="pre">scf_basis</span></code>, <a class="reference internal" href="qcdb.scf_xtpl_helgaker_2.html#qcdb.scf_xtpl_helgaker_2" title="qcdb.scf_xtpl_helgaker_2"><code class="xref py py-func docutils literal notranslate"><span class="pre">scf_xtpl_helgaker_2()</span></code></a> if two valid basis
+sets present in <code class="docutils literal notranslate"><span class="pre">scf_basis</span></code>, and <a class="reference internal" href="qcdb.xtpl_highest_1.html#qcdb.xtpl_highest_1" title="qcdb.xtpl_highest_1"><code class="xref py py-func docutils literal notranslate"><span class="pre">xtpl_highest_1()</span></code></a> otherwise.</p>
+</p></li>
+<li><p><strong>corl_scheme</strong> (<em>Callable</em>) – <p><span class="math notranslate nohighlight">\(\Rightarrow\)</span> <code class="docutils literal notranslate"><span class="pre">xtpl_highest_1</span></code> <span class="math notranslate nohighlight">\(\Leftarrow\)</span> || <code class="docutils literal notranslate"><span class="pre">corl_xtpl_helgaker_2</span></code> || etc.</p>
+<p>Indicates the basis set extrapolation scheme to be applied to the correlation energy.
+Defaults to <a class="reference internal" href="qcdb.corl_xtpl_helgaker_2.html#qcdb.corl_xtpl_helgaker_2" title="qcdb.corl_xtpl_helgaker_2"><code class="xref py py-func docutils literal notranslate"><span class="pre">corl_xtpl_helgaker_2()</span></code></a> if two valid basis sets
+present in <code class="docutils literal notranslate"><span class="pre">corl_basis</span></code> and <a class="reference internal" href="qcdb.xtpl_highest_1.html#qcdb.xtpl_highest_1" title="qcdb.xtpl_highest_1"><code class="xref py py-func docutils literal notranslate"><span class="pre">xtpl_highest_1()</span></code></a> otherwise.</p>
+</p></li>
+<li><p><strong>delta_scheme</strong> (<em>Callable</em>) – <p><span class="math notranslate nohighlight">\(\Rightarrow\)</span> <code class="docutils literal notranslate"><span class="pre">xtpl_highest_1</span></code> <span class="math notranslate nohighlight">\(\Leftarrow\)</span> || <code class="docutils literal notranslate"><span class="pre">corl_xtpl_helgaker_2</span></code> || etc.</p>
+<p>Indicates the basis set extrapolation scheme to be applied to the delta correction
+to the correlation energy.
+Defaults to <a class="reference internal" href="qcdb.corl_xtpl_helgaker_2.html#qcdb.corl_xtpl_helgaker_2" title="qcdb.corl_xtpl_helgaker_2"><code class="xref py py-func docutils literal notranslate"><span class="pre">corl_xtpl_helgaker_2()</span></code></a> if two valid basis sets
+present in <code class="docutils literal notranslate"><span class="pre">delta_basis</span></code> and <a class="reference internal" href="qcdb.xtpl_highest_1.html#qcdb.xtpl_highest_1" title="qcdb.xtpl_highest_1"><code class="xref py py-func docutils literal notranslate"><span class="pre">xtpl_highest_1()</span></code></a> otherwise.</p>
+</p></li>
+<li><p><strong>delta2_scheme</strong> (<em>Callable</em>) – <p><span class="math notranslate nohighlight">\(\Rightarrow\)</span> <code class="docutils literal notranslate"><span class="pre">xtpl_highest_1</span></code> <span class="math notranslate nohighlight">\(\Leftarrow\)</span> || <code class="docutils literal notranslate"><span class="pre">corl_xtpl_helgaker_2</span></code> || etc.</p>
+<p>Indicates the basis set extrapolation scheme to be applied to the second delta correction
+to the correlation energy.
+Defaults to <a class="reference internal" href="qcdb.corl_xtpl_helgaker_2.html#qcdb.corl_xtpl_helgaker_2" title="qcdb.corl_xtpl_helgaker_2"><code class="xref py py-func docutils literal notranslate"><span class="pre">corl_xtpl_helgaker_2()</span></code></a> if two valid basis sets
+present in <code class="docutils literal notranslate"><span class="pre">delta2_basis</span></code> and <a class="reference internal" href="qcdb.xtpl_highest_1.html#qcdb.xtpl_highest_1" title="qcdb.xtpl_highest_1"><code class="xref py py-func docutils literal notranslate"><span class="pre">xtpl_highest_1()</span></code></a> otherwise.</p>
+</p></li>
+<li><p><strong>delta3_scheme</strong> (<em>Callable</em>) – <p><span class="math notranslate nohighlight">\(\Rightarrow\)</span> <code class="docutils literal notranslate"><span class="pre">xtpl_highest_1</span></code> <span class="math notranslate nohighlight">\(\Leftarrow\)</span> || <code class="docutils literal notranslate"><span class="pre">corl_xtpl_helgaker_2</span></code> || etc.</p>
+<p>Indicates the basis set extrapolation scheme to be applied to the third delta correction
+to the correlation energy.
+Defaults to <a class="reference internal" href="qcdb.corl_xtpl_helgaker_2.html#qcdb.corl_xtpl_helgaker_2" title="qcdb.corl_xtpl_helgaker_2"><code class="xref py py-func docutils literal notranslate"><span class="pre">corl_xtpl_helgaker_2()</span></code></a> if two valid basis sets
+present in <code class="docutils literal notranslate"><span class="pre">delta3_basis</span></code> and <a class="reference internal" href="qcdb.xtpl_highest_1.html#qcdb.xtpl_highest_1" title="qcdb.xtpl_highest_1"><code class="xref py py-func docutils literal notranslate"><span class="pre">xtpl_highest_1()</span></code></a> otherwise.</p>
+</p></li>
+<li><p><strong>delta4_scheme</strong> (<em>Callable</em>) – <p><span class="math notranslate nohighlight">\(\Rightarrow\)</span> <code class="docutils literal notranslate"><span class="pre">xtpl_highest_1</span></code> <span class="math notranslate nohighlight">\(\Leftarrow\)</span> || <code class="docutils literal notranslate"><span class="pre">corl_xtpl_helgaker_2</span></code> || etc.</p>
+<p>Indicates the basis set extrapolation scheme to be applied to the fourth delta correction
+to the correlation energy.
+Defaults to <a class="reference internal" href="qcdb.corl_xtpl_helgaker_2.html#qcdb.corl_xtpl_helgaker_2" title="qcdb.corl_xtpl_helgaker_2"><code class="xref py py-func docutils literal notranslate"><span class="pre">corl_xtpl_helgaker_2()</span></code></a> if two valid basis sets
+present in <code class="docutils literal notranslate"><span class="pre">delta4_basis</span></code> and <a class="reference internal" href="qcdb.xtpl_highest_1.html#qcdb.xtpl_highest_1" title="qcdb.xtpl_highest_1"><code class="xref py py-func docutils literal notranslate"><span class="pre">xtpl_highest_1()</span></code></a> otherwise.</p>
+</p></li>
+<li><p><strong>delta5_scheme</strong> (<em>Callable</em>) – <p><span class="math notranslate nohighlight">\(\Rightarrow\)</span> <code class="docutils literal notranslate"><span class="pre">xtpl_highest_1</span></code> <span class="math notranslate nohighlight">\(\Leftarrow\)</span> || <code class="docutils literal notranslate"><span class="pre">corl_xtpl_helgaker_2</span></code> || etc.</p>
+<p>Indicates the basis set extrapolation scheme to be applied to the fifth delta correction
+to the correlation energy.
+Defaults to <a class="reference internal" href="qcdb.corl_xtpl_helgaker_2.html#qcdb.corl_xtpl_helgaker_2" title="qcdb.corl_xtpl_helgaker_2"><code class="xref py py-func docutils literal notranslate"><span class="pre">corl_xtpl_helgaker_2()</span></code></a> if two valid basis sets
+present in <code class="docutils literal notranslate"><span class="pre">delta5_basis</span></code> and <a class="reference internal" href="qcdb.xtpl_highest_1.html#qcdb.xtpl_highest_1" title="qcdb.xtpl_highest_1"><code class="xref py py-func docutils literal notranslate"><span class="pre">xtpl_highest_1()</span></code></a> otherwise.</p>
+</p></li>
+<li><p><strong>molecule</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/notes_py.html#op-py-molecule" title="(in Psi4 v1.4rc2.dev30)"><span class="xref std std-ref">molecule</span></a>) – <p><code class="docutils literal notranslate"><span class="pre">h2o</span></code> || etc.</p>
+<p>The target molecule, if not the last molecule defined.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Examples</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># [1] replicates with cbs() the simple model chemistry scf/cc-pVDZ: set basis cc-pVDZ energy(&#39;scf&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cbs</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;scf&#39;</span><span class="p">,</span> <span class="n">scf_basis</span><span class="o">=</span><span class="s1">&#39;cc-pVDZ&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># [2] replicates with cbs() the simple model chemistry mp2/jun-cc-pVDZ: set basis jun-cc-pVDZ energy(&#39;mp2&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cbs</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;mp2&#39;</span><span class="p">,</span> <span class="n">corl_basis</span><span class="o">=</span><span class="s1">&#39;jun-cc-pVDZ&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># [3] DTQ-zeta extrapolated scf reference energy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cbs</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;scf&#39;</span><span class="p">,</span> <span class="n">scf_basis</span><span class="o">=</span><span class="s1">&#39;cc-pV[DTQ]Z&#39;</span><span class="p">,</span> <span class="n">scf_scheme</span><span class="o">=</span><span class="n">scf_xtpl_helgaker_3</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># [4] DT-zeta extrapolated mp2 correlation energy atop a T-zeta reference</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cbs</span><span class="p">(</span><span class="n">corl_wfn</span><span class="o">=</span><span class="s1">&#39;mp2&#39;</span><span class="p">,</span> <span class="n">corl_basis</span><span class="o">=</span><span class="s1">&#39;cc-pv[dt]z&#39;</span><span class="p">,</span> <span class="n">corl_scheme</span><span class="o">=</span><span class="n">corl_xtpl_helgaker_2</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># [5] a DT-zeta extrapolated coupled-cluster correction atop a TQ-zeta extrapolated mp2 correlation energy atop a Q-zeta reference (both equivalent)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cbs</span><span class="p">(</span><span class="n">corl_wfn</span><span class="o">=</span><span class="s1">&#39;mp2&#39;</span><span class="p">,</span> <span class="n">corl_basis</span><span class="o">=</span><span class="s1">&#39;aug-cc-pv[tq]z&#39;</span><span class="p">,</span> <span class="n">delta_wfn</span><span class="o">=</span><span class="s1">&#39;ccsd(t)&#39;</span><span class="p">,</span> <span class="n">delta_basis</span><span class="o">=</span><span class="s1">&#39;aug-cc-pv[dt]z&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cbs</span><span class="p">(</span><span class="n">energy</span><span class="p">,</span> <span class="n">wfn</span><span class="o">=</span><span class="s1">&#39;mp2&#39;</span><span class="p">,</span> <span class="n">corl_basis</span><span class="o">=</span><span class="s1">&#39;aug-cc-pv[tq]z&#39;</span><span class="p">,</span> <span class="n">corl_scheme</span><span class="o">=</span><span class="n">corl_xtpl_helgaker_2</span><span class="p">,</span> <span class="n">delta_wfn</span><span class="o">=</span><span class="s1">&#39;ccsd(t)&#39;</span><span class="p">,</span> <span class="n">delta_basis</span><span class="o">=</span><span class="s1">&#39;aug-cc-pv[dt]z&#39;</span><span class="p">,</span> <span class="n">delta_scheme</span><span class="o">=</span><span class="n">corl_xtpl_helgaker_2</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># [6] a D-zeta ccsd(t) correction atop a DT-zeta extrapolated ccsd cluster correction atop a TQ-zeta extrapolated mp2 correlation energy atop a Q-zeta reference</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cbs</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;mp2&#39;</span><span class="p">,</span> <span class="n">corl_basis</span><span class="o">=</span><span class="s1">&#39;aug-cc-pv[tq]z&#39;</span><span class="p">,</span> <span class="n">corl_scheme</span><span class="o">=</span><span class="n">corl_xtpl_helgaker_2</span><span class="p">,</span> <span class="n">delta_wfn</span><span class="o">=</span><span class="s1">&#39;ccsd&#39;</span><span class="p">,</span> <span class="n">delta_basis</span><span class="o">=</span><span class="s1">&#39;aug-cc-pv[dt]z&#39;</span><span class="p">,</span> <span class="n">delta_scheme</span><span class="o">=</span><span class="n">corl_xtpl_helgaker_2</span><span class="p">,</span> <span class="n">delta2_wfn</span><span class="o">=</span><span class="s1">&#39;ccsd(t)&#39;</span><span class="p">,</span> <span class="n">delta2_wfn_lesser</span><span class="o">=</span><span class="s1">&#39;ccsd&#39;</span><span class="p">,</span> <span class="n">delta2_basis</span><span class="o">=</span><span class="s1">&#39;aug-cc-pvdz&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># [7] cbs() coupled with database()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">TODO</span> <span class="n">database</span><span class="p">(</span><span class="s1">&#39;mp2&#39;</span><span class="p">,</span> <span class="s1">&#39;BASIC&#39;</span><span class="p">,</span> <span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;h2o&#39;</span><span class="p">,</span><span class="s1">&#39;nh3&#39;</span><span class="p">],</span> <span class="n">symm</span><span class="o">=</span><span class="s1">&#39;on&#39;</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">cbs</span><span class="p">,</span> <span class="n">corl_basis</span><span class="o">=</span><span class="s1">&#39;cc-pV[tq]z&#39;</span><span class="p">,</span> <span class="n">corl_scheme</span><span class="o">=</span><span class="n">corl_xtpl_helgaker_2</span><span class="p">,</span> <span class="n">delta_wfn</span><span class="o">=</span><span class="s1">&#39;ccsd(t)&#39;</span><span class="p">,</span> <span class="n">delta_basis</span><span class="o">=</span><span class="s1">&#39;sto-3g&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># [8] cbs() coupled with optimize()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">TODO</span> <span class="n">optimize</span><span class="p">(</span><span class="s1">&#39;mp2&#39;</span><span class="p">,</span> <span class="n">corl_basis</span><span class="o">=</span><span class="s1">&#39;cc-pV[DT]Z&#39;</span><span class="p">,</span> <span class="n">corl_scheme</span><span class="o">=</span><span class="n">corl_xtpl_helgaker_2</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">cbs</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/qcdbsquare.png" alt="Logo"/>
+        </a></p><!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+<div id="searchbox" style="display: none" role="search">
+  <!--<h3>Quick search</h3>-->
+    <form class="search" action="../search.html" method="get">
+      <!--<div><input type="text" name="q" placeholder="search docs" /></div>-->
+      <div><input type="text" name="q" placeholder="&#xF002;" style="font-family:FontAwesome, Ariel" /></div>
+      <!--<div><input type="submit" value="Go" /></div>-->
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >Index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="qcdb.compare_dicts.html" title="compare_dicts"
+             ><i class="fa fa-long-arrow-right fa-lg"></i></a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="qcdb.activate.html" title="activate"
+             ><i class="fa fa-long-arrow-left fa-lg"></i></a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../index.html" title="Table Of Contents"
+             ><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.cbs.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../api.html" ><span style="font-family: Optima, sans-serif; text-transform: none;">QCDB</span> API</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">cbs</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, The QCDB Project.
+      Last updated on Thursday, 29 April 2021 05:29AM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

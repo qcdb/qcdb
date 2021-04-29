@@ -1,0 +1,529 @@
+<!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>qcdb.driver.gradient</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/psi4.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../../../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../../../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../../../_static/cloud.js"></script>
+    
+
+    <link rel="shortcut icon" href="../../../_static/favicon-qcdb.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">Index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../index.html" title="Table Of Contents"
+             accesskey="C"><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/gradient.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../../../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">qcdb.driver.gradient</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qcdb.driver.gradient</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Module with a *procedures* dictionary specifying available quantum</span>
+<span class="sd">chemical methods and functions driving the main quantum chemical</span>
+<span class="sd">functionality, namely single-point energies, geometry optimizations,</span>
+<span class="sd">properties, and vibrational frequency calculations.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">FeatureNotImplemented</span>
+<span class="kn">from</span> <span class="nn">..keywords</span> <span class="kn">import</span> <span class="n">register_kwds</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">cbs_driver</span><span class="p">,</span> <span class="n">driver_helpers</span><span class="p">,</span> <span class="n">driver_util</span><span class="p">,</span> <span class="n">pe</span>
+<span class="kn">from</span> <span class="nn">.proc_table</span> <span class="kn">import</span> <span class="n">procedures</span>
+
+<span class="n">pp</span> <span class="o">=</span> <span class="n">pprint</span><span class="o">.</span><span class="n">PrettyPrinter</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+
+
+
+<div class="viewcode-block" id="gradient"><a class="viewcode-back" href="../../../api/qcdb.gradient.html#qcdb.gradient">[docs]</a><span class="nd">@register_kwds</span><span class="p">(</span><span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">gradient</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="c1">#       r&quot;&quot;&quot;Function complementary to :py:func:~driver.optimize(). Carries out one gradient pass,</span>
+<span class="c1">#       deciding analytic or finite difference.</span>
+<span class="c1">#   </span>
+<span class="c1">#       :returns: :py:class:`~psi4.core.Matrix` |w--w| Total electronic gradient in Hartrees/Bohr.</span>
+<span class="c1">#   </span>
+<span class="c1">#       :returns: (:py:class:`~psi4.core.Matrix`, :py:class:`~psi4.core.Wavefunction`) |w--w| gradient and wavefunction when **return_wfn** specified.</span>
+<span class="c1">#   </span>
+<span class="c1">#       :examples:</span>
+<span class="c1">#   </span>
+<span class="c1">#       &gt;&gt;&gt; # [1] Single-point dft gradient getting the gradient</span>
+<span class="c1">#       &gt;&gt;&gt; #     in file, core.Matrix, and np.array forms</span>
+<span class="c1">#       &gt;&gt;&gt; set gradient_write on</span>
+<span class="c1">#       &gt;&gt;&gt; G, wfn = gradient(&#39;b3lyp-d&#39;, return_wfn=True)</span>
+<span class="c1">#       &gt;&gt;&gt; wfn.gradient().print_out()</span>
+<span class="c1">#       &gt;&gt;&gt; np.array(G)</span>
+<span class="c1">#   </span>
+<span class="c1">#       &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">load_proc_table</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="n">driver_util</span><span class="o">.</span><span class="n">kwargs_lower</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+   
+    <span class="k">if</span> <span class="s1">&#39;options&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">driver_helpers</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;options&#39;</span><span class="p">))</span>
+
+<span class="c1">#       # Bounce to CP if bsse kwarg (someday)</span>
+<span class="c1">#       if kwargs.get(&#39;bsse_type&#39;, None) is not None:</span>
+<span class="c1">#           raise ValidationError(&quot;Gradient: Cannot specify bsse_type for gradient yet.&quot;)</span>
+   
+    <span class="c1"># Figure out what kind of gradient this is</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;__call__&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;cbs&#39;</span><span class="p">,</span> <span class="s1">&#39;complete_basis_set&#39;</span><span class="p">]:</span>
+            <span class="n">gradient_type</span> <span class="o">=</span> <span class="s1">&#39;cbs_wrapper&#39;</span>
+<span class="c1">#       else:</span>
+<span class="c1">#           # Bounce to name if name is non-CBS function</span>
+<span class="c1">#           gradient_type = &#39;custom_function&#39;</span>
+    <span class="k">elif</span> <span class="s1">&#39;/&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+        <span class="n">gradient_type</span> <span class="o">=</span> <span class="s1">&#39;cbs_gufunc&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">gradient_type</span> <span class="o">=</span> <span class="s1">&#39;conventional&#39;</span>
+   
+<span class="c1">##    lowername = name.lower()</span>
+<span class="c1">##    package = driver_util.get_package(lowername, kwargs)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="o">.</span><span class="n">scroll</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;EMPTY OPT&#39;</span><span class="p">)</span>
+        <span class="n">pe</span><span class="o">.</span><span class="n">load_options</span><span class="p">()</span>
+
+
+    <span class="c1"># Figure out lowername, dertype, and func</span>
+    <span class="c1"># If we have analytical gradients we want to pass to our wrappers, otherwise we want to run</span>
+    <span class="c1"># finite-diference energy or cbs energies</span>
+<span class="c1">#       # TODO MP5/cc-pv[DT]Z behavior unkown due to &quot;levels&quot;</span>
+    <span class="n">user_dertype</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;dertype&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">gradient_type</span> <span class="o">==</span> <span class="s1">&#39;custom_function&#39;</span><span class="p">:</span>
+        <span class="k">pass</span>
+<span class="c1">#        if user_dertype is None:</span>
+<span class="c1">#            dertype = 0</span>
+<span class="c1">#            core.print_out(&quot;\nGradient: Custom function passed in without a defined dertype, assuming fd-energy based gradient.\n&quot;)</span>
+<span class="c1">#        else:</span>
+<span class="c1">#            core.print_out(&quot;\nGradient: Custom function passed in with a dertype of %d\n&quot; % user_dertype)</span>
+<span class="c1">#            dertype = user_dertype</span>
+<span class="c1">#</span>
+<span class="c1">#        if dertype == 1:</span>
+<span class="c1">#            return name(gradient, kwargs.pop(&#39;label&#39;, &#39;custom function&#39;), ptype=&#39;gradient&#39;, **kwargs)</span>
+<span class="c1">#        else:</span>
+<span class="c1">#            optstash = driver_util._set_convergence_criterion(&#39;energy&#39;, &#39;scf&#39;, 8, 10, 8, 10, 8)</span>
+<span class="c1">#            lowername = name</span>
+
+<span class="c1">#    elif gradient_type == &#39;cbs_wrapper&#39;:</span>
+<span class="c1">#        cbs_methods = driver_cbs._cbs_wrapper_methods(**kwargs)</span>
+<span class="c1">#        dertype = min([_find_derivative_type(&#39;gradient&#39;, method, user_dertype) for method in cbs_methods])</span>
+<span class="c1">#        if dertype == 1:</span>
+<span class="c1">#            # Bounce to CBS (directly) in pure-gradient mode if name is CBS and all parts have analytic grad. avail.</span>
+<span class="c1">#            return name(gradient, kwargs.pop(&#39;label&#39;, &#39;custom function&#39;), ptype=&#39;gradient&#39;, **kwargs)</span>
+<span class="c1">#        else:</span>
+<span class="c1">#            optstash = driver_util._set_convergence_criterion(&#39;energy&#39;, cbs_methods[0], 8, 10, 8, 10, 8)</span>
+<span class="c1">#            lowername = name</span>
+<span class="c1">#            # Pass through to G by E</span>
+
+    <span class="k">elif</span> <span class="n">gradient_type</span> <span class="o">==</span> <span class="s1">&#39;cbs_gufunc&#39;</span><span class="p">:</span>
+        <span class="n">cbs_methods</span> <span class="o">=</span> <span class="n">cbs_driver</span><span class="o">.</span><span class="n">_parse_cbs_gufunc_string</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">dertype</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">driver_util</span><span class="o">.</span><span class="n">find_derivative_type</span><span class="p">(</span><span class="s1">&#39;gradient&#39;</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">user_dertype</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;package&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">cbs_methods</span><span class="p">)</span>
+        <span class="n">lowername</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">molecule</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;molecule&#39;</span><span class="p">,</span> <span class="n">driver_helpers</span><span class="o">.</span><span class="n">get_active_molecule</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">dertype</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Bounce to CBS in pure-gradient mode if &quot;method/basis&quot; name and all parts have analytic grad. avail.</span>
+            <span class="k">return</span> <span class="n">cbs_driver</span><span class="o">.</span><span class="n">_cbs_gufunc</span><span class="p">(</span><span class="n">gradient</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">ptype</span><span class="o">=</span><span class="s1">&#39;gradient&#39;</span><span class="p">,</span> <span class="n">molecule</span><span class="o">=</span><span class="n">molecule</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="c1">#        else:</span>
+<span class="c1">#            # Set method-dependent scf convergence criteria (test on procedures[&#39;energy&#39;] since that&#39;s guaranteed)</span>
+<span class="c1">#            optstash = driver_util._set_convergence_criterion(&#39;energy&#39;, cbs_methods[0], 8, 10, 8, 10, 8)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Allow specification of methods to arbitrary order</span>
+        <span class="n">lowername</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+<span class="c1">#        lowername, level = driver_util._parse_arbitrary_order(lowername)</span>
+<span class="c1">#        if level:</span>
+<span class="c1">#            kwargs[&#39;level&#39;] = level</span>
+
+<span class="c1">#        # Prevent methods that do not have associated gradients</span>
+<span class="c1">#        if lowername in energy_only_methods:</span>
+<span class="c1">#            raise ValidationError(&quot;gradient(&#39;%s&#39;) does not have an associated gradient&quot; % name)</span>
+
+        <span class="n">dertype</span> <span class="o">=</span> <span class="n">driver_util</span><span class="o">.</span><span class="n">find_derivative_type</span><span class="p">(</span><span class="s1">&#39;gradient&#39;</span><span class="p">,</span> <span class="n">lowername</span><span class="p">,</span> <span class="n">user_dertype</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;package&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+
+<span class="c1">#        # Set method-dependent scf convergence criteria (test on procedures[&#39;energy&#39;] since that&#39;s guaranteed)</span>
+<span class="c1">#        optstash = driver_util._set_convergence_criterion(&#39;energy&#39;, lowername, 8, 10, 8, 10, 8)</span>
+
+    <span class="c1"># Commit to procedures[] call hereafter</span>
+  <span class="c1">#  lowername = name.lower()</span>
+    <span class="n">return_wfn</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;return_wfn&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">package</span> <span class="o">=</span> <span class="n">driver_util</span><span class="o">.</span><span class="n">get_package2</span><span class="p">(</span><span class="n">lowername</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;package&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+<span class="c1">#    core.clean_variables()</span>
+<span class="c1">#</span>
+<span class="c1">#    # no analytic derivatives for scf_type cd</span>
+<span class="c1">#    if core.get_option(&#39;SCF&#39;, &#39;SCF_TYPE&#39;) == &#39;CD&#39;:</span>
+<span class="c1">#        if (dertype == 1):</span>
+<span class="c1">#            raise ValidationError(&quot;&quot;&quot;No analytic derivatives for SCF_TYPE CD.&quot;&quot;&quot;)</span>
+
+    <span class="c1"># Make sure the molecule the user provided is the active one</span>
+    <span class="n">molecule</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;molecule&#39;</span><span class="p">,</span> <span class="n">driver_helpers</span><span class="o">.</span><span class="n">get_active_molecule</span><span class="p">())</span>
+    <span class="n">molecule</span><span class="o">.</span><span class="n">update_geometry</span><span class="p">()</span>
+
+<span class="c1">#    # S/R: Mode of operation- whether finite difference opt run in one job or files farmed out</span>
+<span class="c1">#    opt_mode = kwargs.get(&#39;mode&#39;, &#39;continuous&#39;).lower()</span>
+<span class="c1">#    if opt_mode == &#39;continuous&#39;:</span>
+<span class="c1">#        pass</span>
+<span class="c1">#    elif opt_mode == &#39;sow&#39;:</span>
+<span class="c1">#        if dertype == 1:</span>
+<span class="c1">#            raise ValidationError(&quot;&quot;&quot;Optimize execution mode &#39;sow&#39; not valid for analytic gradient calculation.&quot;&quot;&quot;)</span>
+<span class="c1">#    elif opt_mode == &#39;reap&#39;:</span>
+<span class="c1">#        opt_linkage = kwargs.get(&#39;linkage&#39;, None)</span>
+<span class="c1">#        if opt_linkage is None:</span>
+<span class="c1">#            raise ValidationError(&quot;&quot;&quot;Optimize execution mode &#39;reap&#39; requires a linkage option.&quot;&quot;&quot;)</span>
+<span class="c1">#    else:</span>
+<span class="c1">#        raise ValidationError(&quot;&quot;&quot;Optimize execution mode &#39;%s&#39; not valid.&quot;&quot;&quot; % (opt_mode))</span>
+
+    <span class="c1"># Does dertype indicate an analytic procedure both exists and is wanted?</span>
+    <span class="k">if</span> <span class="n">dertype</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;qcdb.gradient() will perform analytic gradient computation.</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span>
+
+        <span class="c1"># Perform the gradient calculation</span>
+        <span class="n">jobrec</span> <span class="o">=</span> <span class="n">procedures</span><span class="p">[</span><span class="s1">&#39;gradient&#39;</span><span class="p">][</span><span class="n">package</span><span class="p">][</span><span class="n">lowername</span><span class="p">](</span><span class="n">lowername</span><span class="p">,</span> <span class="n">molecule</span><span class="o">=</span><span class="n">molecule</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="p">,</span> <span class="n">ptype</span><span class="o">=</span><span class="s1">&#39;gradient&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1">#print(&#39;GRADIENT() JOBREC (j@io) &lt;&lt;&lt;&#39;)</span>
+        <span class="c1">#pp.pprint(jobrec)</span>
+        <span class="c1">#print(&#39;&gt;&gt;&gt;&#39;)</span>
+
+        <span class="n">pe</span><span class="o">.</span><span class="n">active_qcvars</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">])</span>
+
+<span class="c1">#        optstash.restore()</span>
+        <span class="k">if</span> <span class="n">return_wfn</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT GRADIENT&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">jobrec</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT GRADIENT&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">FeatureNotImplemented</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;gradient(dertype=0)&quot;&quot;&quot;</span> <span class="o">+</span> <span class="n">package</span> <span class="o">+</span> <span class="n">lowername</span><span class="p">)</span></div>
+<span class="c1">#        core.print_out(&quot;&quot;&quot;gradient() will perform gradient computation by finite difference of analytic energies.\n&quot;&quot;&quot;)</span>
+<span class="c1">#</span>
+<span class="c1">#        opt_iter = kwargs.get(&#39;opt_iter&#39;, 1)</span>
+<span class="c1">#        if opt_iter is True:</span>
+<span class="c1">#            opt_iter = 1</span>
+<span class="c1">#</span>
+<span class="c1">#        if opt_iter == 1:</span>
+<span class="c1">#            print(&#39;Performing finite difference calculations&#39;)</span>
+<span class="c1">#</span>
+<span class="c1">#        # Shifting the geometry so need to copy the active molecule</span>
+<span class="c1">#        moleculeclone = molecule.clone()</span>
+<span class="c1">#</span>
+<span class="c1">#        # Obtain list of displacements</span>
+<span class="c1">#        # print(&quot;about to generate displacements&quot;)</span>
+<span class="c1">#        displacements = core.fd_geoms_1_0(moleculeclone)</span>
+<span class="c1">#        # print(displacements)</span>
+<span class="c1">#        ndisp = len(displacements)</span>
+<span class="c1">#        # print(&quot;generated displacments&quot;)</span>
+<span class="c1">#</span>
+<span class="c1">#        # This version is pretty dependent on the reference geometry being last (as it is now)</span>
+<span class="c1">#        print(&quot;&quot;&quot; %d displacements needed ...&quot;&quot;&quot; % (ndisp), end=&#39;&#39;)</span>
+<span class="c1">#        energies = []</span>
+<span class="c1">#</span>
+<span class="c1">#        # S/R: Write instructions for sow/reap procedure to output file and reap input file</span>
+<span class="c1">#        if opt_mode == &#39;sow&#39;:</span>
+<span class="c1">#            instructionsO = &quot;&quot;&quot;\n    The optimization sow/reap procedure has been selected through mode=&#39;sow&#39;. In addition\n&quot;&quot;&quot;</span>
+<span class="c1">#            instructionsO += &quot;&quot;&quot;    to this output file (which contains no quantum chemical calculations), this job\n&quot;&quot;&quot;</span>
+<span class="c1">#            instructionsO += &quot;&quot;&quot;    has produced a number of input files (OPT-%s-*.in) for individual components\n&quot;&quot;&quot; % (str(opt_iter))</span>
+<span class="c1">#            instructionsO += &quot;&quot;&quot;    and a single input file (OPT-master.in) with an optimize(mode=&#39;reap&#39;) command.\n&quot;&quot;&quot;</span>
+<span class="c1">#            instructionsO += &quot;&quot;&quot;    These files may look very peculiar since they contain processed and pickled python\n&quot;&quot;&quot;</span>
+<span class="c1">#            instructionsO += &quot;&quot;&quot;    rather than normal input. Follow the instructions in OPT-master.in to continue.\n\n&quot;&quot;&quot;</span>
+<span class="c1">#            instructionsO += &quot;&quot;&quot;    Alternatively, a single-job execution of the gradient may be accessed through\n&quot;&quot;&quot;</span>
+<span class="c1">#            instructionsO += &quot;&quot;&quot;    the optimization wrapper option mode=&#39;continuous&#39;.\n\n&quot;&quot;&quot;</span>
+<span class="c1">#            core.print_out(instructionsO)</span>
+<span class="c1">#</span>
+<span class="c1">#            instructionsM = &quot;&quot;&quot;\n#    Follow the instructions below to carry out this optimization cycle.\n#\n&quot;&quot;&quot;</span>
+<span class="c1">#            instructionsM += &quot;&quot;&quot;#    (1)  Run all of the OPT-%s-*.in input files on any variety of computer architecture.\n&quot;&quot;&quot; % (str(opt_iter))</span>
+<span class="c1">#            instructionsM += &quot;&quot;&quot;#       The output file names must be as given below.\n#\n&quot;&quot;&quot;</span>
+<span class="c1">#            for rgt in range(ndisp):</span>
+<span class="c1">#                pre = &#39;OPT-&#39; + str(opt_iter) + &#39;-&#39; + str(rgt + 1)</span>
+<span class="c1">#                instructionsM += &quot;&quot;&quot;#             psi4 -i %-27s -o %-27s\n&quot;&quot;&quot; % (pre + &#39;.in&#39;, pre + &#39;.out&#39;)</span>
+<span class="c1">#            instructionsM += &quot;&quot;&quot;#\n#    (2)  Gather all the resulting output files in a directory. Place input file\n&quot;&quot;&quot;</span>
+<span class="c1">#            instructionsM += &quot;&quot;&quot;#         OPT-master.in into that directory and run it. The job will be minimal in\n&quot;&quot;&quot;</span>
+<span class="c1">#            instructionsM += &quot;&quot;&quot;#         length and give summary results for the gradient step in its output file.\n#\n&quot;&quot;&quot;</span>
+<span class="c1">#            if opt_iter == 1:</span>
+<span class="c1">#                instructionsM += &quot;&quot;&quot;#             psi4 -i %-27s -o %-27s\n#\n&quot;&quot;&quot; % (&#39;OPT-master.in&#39;, &#39;OPT-master.out&#39;)</span>
+<span class="c1">#            else:</span>
+<span class="c1">#                instructionsM += &quot;&quot;&quot;#             psi4 -a -i %-27s -o %-27s\n#\n&quot;&quot;&quot; % (&#39;OPT-master.in&#39;, &#39;OPT-master.out&#39;)</span>
+<span class="c1">#            instructionsM += &quot;&quot;&quot;#    After each optimization iteration, the OPT-master.in file is overwritten so return here\n&quot;&quot;&quot;</span>
+<span class="c1">#            instructionsM += &quot;&quot;&quot;#    for new instructions. With the use of the psi4 -a flag, OPT-master.out is not\n&quot;&quot;&quot;</span>
+<span class="c1">#            instructionsM += &quot;&quot;&quot;#    overwritten and so maintains a history of the job. To use the (binary) optimizer\n&quot;&quot;&quot;</span>
+<span class="c1">#            instructionsM += &quot;&quot;&quot;#    data file to accelerate convergence, the OPT-master jobs must run on the same computer.\n\n&quot;&quot;&quot;</span>
+<span class="c1">#</span>
+<span class="c1">#            with open(&#39;OPT-master.in&#39;, &#39;wb&#39;) as fmaster:</span>
+<span class="c1">#                fmaster.write(&#39;# This is a psi4 input file auto-generated from the gradient() wrapper.\n\n&#39;.encode(&#39;utf-8&#39;))</span>
+<span class="c1">#                fmaster.write(p4util.format_molecule_for_input(moleculeclone).encode(&#39;utf-8&#39;))</span>
+<span class="c1">#                fmaster.write(p4util.format_options_for_input().encode(&#39;utf-8&#39;))</span>
+<span class="c1">#                p4util.format_kwargs_for_input(fmaster, lmode=2, return_wfn=True, dertype=dertype, **kwargs)</span>
+<span class="c1">#                fmaster.write((&quot;&quot;&quot;retE, retwfn = optimize(&#39;%s&#39;, **kwargs)\n\n&quot;&quot;&quot; % (lowername)).encode(&#39;utf-8&#39;))</span>
+<span class="c1">#                fmaster.write(instructionsM.encode(&#39;utf-8&#39;))</span>
+<span class="c1">#</span>
+<span class="c1">#        for n, displacement in enumerate(displacements):</span>
+<span class="c1">#            rfile = &#39;OPT-%s-%s&#39; % (opt_iter, n + 1)</span>
+<span class="c1">#</span>
+<span class="c1">#            # Build string of title banner</span>
+<span class="c1">#            banners = &#39;&#39;</span>
+<span class="c1">#            banners += &quot;&quot;&quot;core.print_out(&#39;\\n&#39;)\n&quot;&quot;&quot;</span>
+<span class="c1">#            banners += &quot;&quot;&quot;p4util.banner(&#39; Gradient %d Computation: Displacement %d &#39;)\n&quot;&quot;&quot; % (opt_iter, n + 1)</span>
+<span class="c1">#            banners += &quot;&quot;&quot;core.print_out(&#39;\\n&#39;)\n\n&quot;&quot;&quot;</span>
+<span class="c1">#</span>
+<span class="c1">#            if opt_mode == &#39;continuous&#39;:</span>
+<span class="c1">#</span>
+<span class="c1">#                # print progress to file and screen</span>
+<span class="c1">#                core.print_out(&#39;\n&#39;)</span>
+<span class="c1">#                p4util.banner(&#39;Loading displacement %d of %d&#39; % (n + 1, ndisp))</span>
+<span class="c1">#                print(&quot;&quot;&quot; %d&quot;&quot;&quot; % (n + 1), end=(&#39;\n&#39; if (n + 1 == ndisp) else &#39;&#39;))</span>
+<span class="c1">#                sys.stdout.flush()</span>
+<span class="c1">#</span>
+<span class="c1">#                # Load in displacement into the active molecule</span>
+<span class="c1">#                moleculeclone.set_geometry(displacement)</span>
+<span class="c1">#</span>
+<span class="c1">#                # Perform the energy calculation</span>
+<span class="c1">#                E, wfn = energy(lowername, return_wfn=True, molecule=moleculeclone, **kwargs)</span>
+<span class="c1">#                energies.append(core.get_variable(&#39;CURRENT ENERGY&#39;))</span>
+<span class="c1">#</span>
+<span class="c1">#            # S/R: Write each displaced geometry to an input file</span>
+<span class="c1">#            elif opt_mode == &#39;sow&#39;:</span>
+<span class="c1">#                moleculeclone.set_geometry(displacement)</span>
+<span class="c1">#</span>
+<span class="c1">#                # S/R: Prepare molecule, options, and kwargs</span>
+<span class="c1">#                with open(&#39;%s.in&#39; % (rfile), &#39;wb&#39;) as freagent:</span>
+<span class="c1">#                    freagent.write(&#39;# This is a psi4 input file auto-generated from the gradient() wrapper.\n\n&#39;.encode(&#39;utf-8&#39;))</span>
+<span class="c1">#                    freagent.write(p4util.format_molecule_for_input(moleculeclone).encode(&#39;utf-8&#39;))</span>
+<span class="c1">#                    freagent.write(p4util.format_options_for_input().encode(&#39;utf-8&#39;))</span>
+<span class="c1">#                    p4util.format_kwargs_for_input(freagent, **kwargs)</span>
+<span class="c1">#</span>
+<span class="c1">#                    # S/R: Prepare function call and energy save</span>
+<span class="c1">#                    freagent.write((&quot;&quot;&quot;electronic_energy = energy(&#39;%s&#39;, **kwargs)\n\n&quot;&quot;&quot; % (lowername)).encode(&#39;utf-8&#39;))</span>
+<span class="c1">#                    freagent.write((&quot;&quot;&quot;core.print_out(&#39;\\nGRADIENT RESULT: computation %d for item %d &quot;&quot;&quot; % (os.getpid(), n + 1)).encode(&#39;utf-8&#39;))</span>
+<span class="c1">#                    freagent.write(&quot;&quot;&quot;yields electronic energy %20.12f\\n&#39; % (electronic_energy))\n\n&quot;&quot;&quot;.encode(&#39;utf-8&#39;))</span>
+<span class="c1">#</span>
+<span class="c1">#            # S/R: Read energy from each displaced geometry output file and save in energies array</span>
+<span class="c1">#            elif opt_mode == &#39;reap&#39;:</span>
+<span class="c1">#                exec(banners)</span>
+<span class="c1">#                core.set_variable(&#39;NUCLEAR REPULSION ENERGY&#39;, moleculeclone.nuclear_repulsion_energy())</span>
+<span class="c1">#                energies.append(p4util.extract_sowreap_from_output(rfile, &#39;GRADIENT&#39;, n, opt_linkage, True))</span>
+<span class="c1">#</span>
+<span class="c1">#        # S/R: Quit sow after writing files. Initialize skeleton wfn to receive grad for reap</span>
+<span class="c1">#        if opt_mode == &#39;sow&#39;:</span>
+<span class="c1">#            optstash.restore()</span>
+<span class="c1">#            if return_wfn:</span>
+<span class="c1">#                return (None, None)  # any point to building a dummy wfn here?</span>
+<span class="c1">#            else:</span>
+<span class="c1">#                return None</span>
+<span class="c1">#        elif opt_mode == &#39;reap&#39;:</span>
+<span class="c1">#            core.set_variable(&#39;CURRENT ENERGY&#39;, energies[-1])</span>
+<span class="c1">#            wfn = core.Wavefunction.build(molecule, core.get_global_option(&#39;BASIS&#39;))</span>
+<span class="c1">#</span>
+<span class="c1">#        # Compute the gradient; last item in &#39;energies&#39; is undisplaced</span>
+<span class="c1">#        core.set_local_option(&#39;FINDIF&#39;, &#39;GRADIENT_WRITE&#39;, True)</span>
+<span class="c1">#        G = core.fd_1_0(molecule, energies)</span>
+<span class="c1">#        G.print_out()</span>
+<span class="c1">#        wfn.set_gradient(G)</span>
+<span class="c1">#</span>
+<span class="c1">#        optstash.restore()</span>
+<span class="c1">#</span>
+<span class="c1">#        if return_wfn:</span>
+<span class="c1">#            return (wfn.gradient(), wfn)</span>
+<span class="c1">#        else:</span>
+<span class="c1">#            return wfn.gradient()</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../../index.html" title="index">
+          <img class="logo" src="../../../_static/qcdbsquare.png" alt="Logo"/>
+        </a></p><!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+<div id="searchbox" style="display: none" role="search">
+  <!--<h3>Quick search</h3>-->
+    <form class="search" action="../../../search.html" method="get">
+      <!--<div><input type="text" name="q" placeholder="search docs" /></div>-->
+      <div><input type="text" name="q" placeholder="&#xF002;" style="font-family:FontAwesome, Ariel" /></div>
+      <!--<div><input type="submit" value="Go" /></div>-->
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >Index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../index.html" title="Table Of Contents"
+             ><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/gradient.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../../../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">qcdb.driver.gradient</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, The QCDB Project.
+      Last updated on Thursday, 29 April 2021 05:29AM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

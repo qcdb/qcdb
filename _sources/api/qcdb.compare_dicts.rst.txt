@@ -1,0 +1,6 @@
+compare_dicts
+=============
+
+.. currentmodule:: qcdb
+
+.. autofunction:: compare_dicts

@@ -1,0 +1,531 @@
+<!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>qcdb.driver.driver_helpers</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/psi4.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../../../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../../../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../../../_static/cloud.js"></script>
+    
+
+    <link rel="shortcut icon" href="../../../_static/favicon-qcdb.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">Index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../index.html" title="Table Of Contents"
+             accesskey="C"><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/driver_helpers.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../../../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">qcdb.driver.driver_helpers</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qcdb.driver.driver_helpers</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">qcelemental</span> <span class="k">as</span> <span class="nn">qcel</span>  <span class="c1"># for typing</span>
+
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">ValidationError</span>
+<span class="kn">from</span> <span class="nn">..molecule</span> <span class="kn">import</span> <span class="n">Molecule</span>
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">import_ignorecase</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">pe</span>
+
+
+<span class="k">def</span> <span class="nf">_set_convergence_criterion</span><span class="p">(</span><span class="n">ptype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">method_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">scf_Ec</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">pscf_Ec</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">scf_Dc</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">pscf_Dc</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">gen_Ec</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function will set local SCF and global energy convergence criterion</span>
+<span class="sd">    to the defaults listed at:</span>
+<span class="sd">    http://www.psicode.org/psi4manual/master/scf.html#convergence-and-</span>
+<span class="sd">    algorithm-defaults. SCF will be converged more tightly if a post-SCF</span>
+<span class="sd">    method is select (pscf_Ec, and pscf_Dc) else the looser (scf_Ec, and</span>
+<span class="sd">    scf_Dc convergence criterion will be used).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ptype</span>
+<span class="sd">        Procedure type (energy, gradient, etc). Nearly always test on</span>
+<span class="sd">        procedures[&#39;energy&#39;] since that&#39;s guaranteed to exist for a method.</span>
+<span class="sd">    method_name</span>
+<span class="sd">        Name of the method.</span>
+<span class="sd">    scf_Ec</span>
+<span class="sd">        E convergence criterion for scf target method.</span>
+<span class="sd">    pscf_Ec</span>
+<span class="sd">        E convergence criterion for scf of post-scf target method</span>
+<span class="sd">    scf_Dc</span>
+<span class="sd">        D convergence criterion for scf target method</span>
+<span class="sd">    pscf_Dc</span>
+<span class="sd">        D convergence criterion for scf of post-scf target method</span>
+<span class="sd">    gen_Ec</span>
+<span class="sd">        E convergence criterion for post-scf target method</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">optstash</span> <span class="o">=</span> <span class="n">p4util</span><span class="o">.</span><span class="n">OptionsState</span><span class="p">([</span><span class="s1">&#39;SCF&#39;</span><span class="p">,</span> <span class="s1">&#39;E_CONVERGENCE&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;SCF&#39;</span><span class="p">,</span> <span class="s1">&#39;D_CONVERGENCE&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;E_CONVERGENCE&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Kind of want to move this out of here</span>
+    <span class="n">_method_exists</span><span class="p">(</span><span class="n">ptype</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;      Setting convergence&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="c1"># Set method-dependent scf convergence criteria, check against energy routines</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">core</span><span class="o">.</span><span class="n">has_option_changed</span><span class="p">(</span><span class="s1">&#39;SCF&#39;</span><span class="p">,</span> <span class="s1">&#39;E_CONVERGENCE&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">procedures</span><span class="p">[</span><span class="s1">&#39;energy&#39;</span><span class="p">][</span><span class="n">method_name</span><span class="p">]</span> <span class="o">==</span> <span class="n">proc</span><span class="o">.</span><span class="n">run_scf</span><span class="p">:</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">set_local_option</span><span class="p">(</span><span class="s1">&#39;SCF&#39;</span><span class="p">,</span> <span class="s1">&#39;E_CONVERGENCE&#39;</span><span class="p">,</span> <span class="n">scf_Ec</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">scf_Ec</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">set_local_option</span><span class="p">(</span><span class="s1">&#39;SCF&#39;</span><span class="p">,</span> <span class="s1">&#39;E_CONVERGENCE&#39;</span><span class="p">,</span> <span class="n">pscf_Ec</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">pscf_Ec</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;CUSTOM&#39;</span><span class="p">,</span> <span class="n">core</span><span class="o">.</span><span class="n">get_option</span><span class="p">(</span><span class="s1">&#39;SCF&#39;</span><span class="p">,</span> <span class="s1">&#39;E_CONVERGENCE&#39;</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">core</span><span class="o">.</span><span class="n">has_option_changed</span><span class="p">(</span><span class="s1">&#39;SCF&#39;</span><span class="p">,</span> <span class="s1">&#39;D_CONVERGENCE&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">procedures</span><span class="p">[</span><span class="s1">&#39;energy&#39;</span><span class="p">][</span><span class="n">method_name</span><span class="p">]</span> <span class="o">==</span> <span class="n">proc</span><span class="o">.</span><span class="n">run_scf</span><span class="p">:</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">set_local_option</span><span class="p">(</span><span class="s1">&#39;SCF&#39;</span><span class="p">,</span> <span class="s1">&#39;D_CONVERGENCE&#39;</span><span class="p">,</span> <span class="n">scf_Dc</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">scf_Dc</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">set_local_option</span><span class="p">(</span><span class="s1">&#39;SCF&#39;</span><span class="p">,</span> <span class="s1">&#39;D_CONVERGENCE&#39;</span><span class="p">,</span> <span class="n">pscf_Dc</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">pscf_Dc</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;CUSTOM&#39;</span><span class="p">,</span> <span class="n">core</span><span class="o">.</span><span class="n">get_option</span><span class="p">(</span><span class="s1">&#39;SCF&#39;</span><span class="p">,</span> <span class="s1">&#39;D_CONVERGENCE&#39;</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="c1"># Set post-scf convergence criteria (global will cover all correlated modules)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">core</span><span class="o">.</span><span class="n">has_global_option_changed</span><span class="p">(</span><span class="s1">&#39;E_CONVERGENCE&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">procedures</span><span class="p">[</span><span class="s1">&#39;energy&#39;</span><span class="p">][</span><span class="n">method_name</span><span class="p">]</span> <span class="o">!=</span> <span class="n">proc</span><span class="o">.</span><span class="n">run_scf</span><span class="p">:</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">set_global_option</span><span class="p">(</span><span class="s1">&#39;E_CONVERGENCE&#39;</span><span class="p">,</span> <span class="n">gen_Ec</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">gen_Ec</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">procedures</span><span class="p">[</span><span class="s1">&#39;energy&#39;</span><span class="p">][</span><span class="n">method_name</span><span class="p">]</span> <span class="o">!=</span> <span class="n">proc</span><span class="o">.</span><span class="n">run_scf</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;CUSTOM&#39;</span><span class="p">,</span> <span class="n">core</span><span class="o">.</span><span class="n">get_global_option</span><span class="p">(</span><span class="s1">&#39;E_CONVERGENCE&#39;</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">optstash</span>
+
+
+<span class="k">def</span> <span class="nf">_parse_arbitrary_order</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Function to parse name string into a method family like CI or MRCC and specific</span>
+<span class="sd">    level information like 4 for CISDTQ or MRCCSDTQ.</span>
+
+<span class="sd">    Separates `name` into (name, None) mostly, but into (&#39;mp&#39;, 3) for `name=&#39;mp3&#39;` and `(&#39;mrcc&#39;, dict)` for `name=&#39;mrccsd&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">mtdlvl_mobj</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&quot;&quot;\A(?P&lt;method&gt;[a-z]+)(?P&lt;level&gt;\d+)\Z&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+    <span class="c1"># matches &#39;mrccsdt(q)&#39;</span>
+    <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;mrcc&#39;</span><span class="p">):</span>
+
+        <span class="c1"># avoid undoing fn&#39;s good work when called twice</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;mrcc&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">name</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="c1"># grabs &#39;sdt(q)&#39;</span>
+        <span class="n">ccfullname</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
+
+        <span class="c1"># A negative order indicates perturbative method</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;sd&#39;</span>          <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSD&#39;</span>         <span class="p">},</span>
+            <span class="s1">&#39;sdt&#39;</span>         <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDT&#39;</span>        <span class="p">},</span>
+            <span class="s1">&#39;sdtq&#39;</span>        <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDTQ&#39;</span>       <span class="p">},</span>
+            <span class="s1">&#39;sdtqp&#39;</span>       <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDTQP&#39;</span>      <span class="p">},</span>
+            <span class="s1">&#39;sdtqph&#39;</span>      <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDTQPH&#39;</span>     <span class="p">},</span>
+            <span class="s1">&#39;sd(t)&#39;</span>       <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSD(T)&#39;</span>      <span class="p">},</span>
+            <span class="s1">&#39;sdt(q)&#39;</span>      <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDT(Q)&#39;</span>     <span class="p">},</span>
+            <span class="s1">&#39;sdtq(p)&#39;</span>     <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDTQ(P)&#39;</span>    <span class="p">},</span>
+            <span class="s1">&#39;sdtqp(h)&#39;</span>    <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDTQP(H)&#39;</span>   <span class="p">},</span>
+            <span class="s1">&#39;sd(t)_l&#39;</span>     <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSD(T)_L&#39;</span>    <span class="p">},</span>
+            <span class="s1">&#39;sdt(q)_l&#39;</span>    <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDT(Q)_L&#39;</span>   <span class="p">},</span>
+            <span class="s1">&#39;sdtq(p)_l&#39;</span>   <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDTQ(P)_L&#39;</span>  <span class="p">},</span>
+            <span class="s1">&#39;sdtqp(h)_l&#39;</span>  <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDTQP(H)_L&#39;</span> <span class="p">},</span>
+            <span class="s1">&#39;sdt-1a&#39;</span>      <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDT-1a&#39;</span>     <span class="p">},</span>
+            <span class="s1">&#39;sdtq-1a&#39;</span>     <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDTQ-1a&#39;</span>    <span class="p">},</span>
+            <span class="s1">&#39;sdtqp-1a&#39;</span>    <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDTQP-1a&#39;</span>   <span class="p">},</span>
+            <span class="s1">&#39;sdtqph-1a&#39;</span>   <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDTQPH-1a&#39;</span>  <span class="p">},</span>
+            <span class="s1">&#39;sdt-1b&#39;</span>      <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDT-1b&#39;</span>     <span class="p">},</span>
+            <span class="s1">&#39;sdtq-1b&#39;</span>     <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDTQ-1b&#39;</span>    <span class="p">},</span>
+            <span class="s1">&#39;sdtqp-1b&#39;</span>    <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDTQP-1b&#39;</span>   <span class="p">},</span>
+            <span class="s1">&#39;sdtqph-1b&#39;</span>   <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDTQPH-1b&#39;</span>  <span class="p">},</span>
+            <span class="s1">&#39;2&#39;</span>           <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CC2&#39;</span>          <span class="p">},</span>
+            <span class="s1">&#39;3&#39;</span>           <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CC3&#39;</span>          <span class="p">},</span>
+            <span class="s1">&#39;4&#39;</span>           <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CC4&#39;</span>          <span class="p">},</span>
+            <span class="s1">&#39;5&#39;</span>           <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CC5&#39;</span>          <span class="p">},</span>
+            <span class="s1">&#39;6&#39;</span>           <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CC6&#39;</span>          <span class="p">},</span>
+            <span class="s1">&#39;sdt-3&#39;</span>       <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDT-3&#39;</span>      <span class="p">},</span>
+            <span class="s1">&#39;sdtq-3&#39;</span>      <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDTQ-3&#39;</span>     <span class="p">},</span>
+            <span class="s1">&#39;sdtqp-3&#39;</span>     <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDTQP-3&#39;</span>    <span class="p">},</span>
+            <span class="s1">&#39;sdtqph-3&#39;</span>    <span class="p">:</span> <span class="p">{</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span>  <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;fullname&#39;</span><span class="p">:</span> <span class="s1">&#39;CCSDTQPH-3&#39;</span>   <span class="p">}</span>
+        <span class="p">}</span>  <span class="c1"># yapf: disable</span>
+
+        <span class="c1"># looks for &#39;sdt(q)&#39; in dictionary</span>
+        <span class="k">if</span> <span class="n">ccfullname</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;mrcc&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="p">[</span><span class="n">ccfullname</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s1">&#39;Invalid MRCC method (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+    <span class="k">elif</span> <span class="n">mtdlvl_mobj</span><span class="p">:</span>
+        <span class="n">namestump</span> <span class="o">=</span> <span class="n">mtdlvl_mobj</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;method&#39;</span><span class="p">)</span>
+        <span class="n">namelevel</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">mtdlvl_mobj</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;level&#39;</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">namestump</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;mp&#39;</span><span class="p">,</span> <span class="s1">&#39;zapt&#39;</span><span class="p">,</span> <span class="s1">&#39;ci&#39;</span><span class="p">]:</span>
+            <span class="c1"># let mp2, mp3, mp4 pass through to select functions</span>
+            <span class="k">if</span> <span class="n">namestump</span> <span class="o">==</span> <span class="s1">&#39;mp&#39;</span> <span class="ow">and</span> <span class="n">namelevel</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="n">name</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="c1"># otherwise return method and order</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">namestump</span><span class="p">,</span> <span class="n">namelevel</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">name</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">name</span><span class="p">,</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="set_molecule"><a class="viewcode-back" href="../../../api/qcdb.set_molecule.html#qcdb.set_molecule">[docs]</a><span class="k">def</span> <span class="nf">set_molecule</span><span class="p">(</span><span class="n">molinit</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">molinit</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;db:&#39;</span><span class="p">):</span>
+        <span class="n">db</span><span class="p">,</span> <span class="n">rxn</span> <span class="o">=</span> <span class="n">molinit</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">libraryPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">pe</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span> <span class="s1">&#39;databases&#39;</span><span class="p">])</span>
+        <span class="n">dbPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="o">+</span> \
+                 <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;PSIPATH&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)])</span> <span class="o">+</span> \
+                 <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="n">libraryPath</span>
+
+        <span class="n">dbmod</span> <span class="o">=</span> <span class="n">import_ignorecase</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">lenv</span><span class="o">=</span><span class="n">dbPath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">dbmod</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s1">&#39;Python module loading problem for database (</span><span class="si">{}</span><span class="s1">): </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">dbPath</span><span class="p">))</span>
+
+        <span class="n">molecule</span> <span class="o">=</span> <span class="n">dbmod</span><span class="o">.</span><span class="n">GEOS</span><span class="p">[</span><span class="n">dbmod</span><span class="o">.</span><span class="n">dbse</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">rxn</span><span class="p">]</span>
+        <span class="c1"># let KeyError on fail</span>
+
+        <span class="n">molecule</span><span class="o">.</span><span class="n">update_geometry</span><span class="p">()</span>
+        <span class="n">pe</span><span class="o">.</span><span class="n">active_molecule</span> <span class="o">=</span> <span class="n">molecule</span>
+        <span class="k">return</span> <span class="n">molecule</span>
+
+    <span class="n">molecule</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">molinit</span><span class="p">)</span>
+    <span class="n">pe</span><span class="o">.</span><span class="n">active_molecule</span> <span class="o">=</span> <span class="n">molecule</span>
+    <span class="k">return</span> <span class="n">molecule</span></div>
+
+
+<div class="viewcode-block" id="activate"><a class="viewcode-back" href="../../../api/qcdb.activate.html#qcdb.activate">[docs]</a><span class="k">def</span> <span class="nf">activate</span><span class="p">(</span><span class="n">mol</span><span class="p">):</span>
+    <span class="n">pe</span><span class="o">.</span><span class="n">active_molecule</span> <span class="o">=</span> <span class="n">mol</span></div>
+
+
+<div class="viewcode-block" id="set_options"><a class="viewcode-back" href="../../../api/qcdb.set_options.html#qcdb.set_options">[docs]</a><span class="k">def</span> <span class="nf">set_options</span><span class="p">(</span><span class="n">options_dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets Psi4 global options from an input dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">optionre</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s1">&#39;\A((?P&lt;silo&gt;(cfour|psi4|nwchem|gamess|dftd3|resp))_)?(?P&lt;module&gt;\w+__)?(?P&lt;option&gt;[\w\(\)]+)\Z&#39;</span><span class="p">,</span>
+        <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="o">.</span><span class="n">scroll</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1">#print(&#39;EMPTY OPT&#39;)</span>
+        <span class="n">pe</span><span class="o">.</span><span class="n">load_options</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="ow">in</span> <span class="n">options_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">mobj</span> <span class="o">=</span> <span class="n">optionre</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="n">mobj</span><span class="p">:</span>
+            <span class="n">silo</span> <span class="o">=</span> <span class="n">mobj</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;silo&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="k">if</span> <span class="n">mobj</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;silo&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;QCDB&#39;</span>
+            <span class="n">module</span> <span class="o">=</span> <span class="n">mobj</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;module&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="k">if</span> <span class="n">mobj</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;module&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">option</span> <span class="o">=</span> <span class="n">mobj</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;option&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;SET_OPTIONS: [</span><span class="si">{</span><span class="n">silo</span><span class="si">}</span><span class="s1">][</span><span class="si">{</span><span class="n">module</span> <span class="o">+</span> <span class="n">option</span><span class="si">}</span><span class="s1">] = </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="n">silo</span><span class="p">,</span> <span class="n">module</span> <span class="o">+</span> <span class="n">option</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">accession</span><span class="o">=</span><span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="o">.</span><span class="n">mark_of_the_user</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Keyword not in </span><span class="se">{{</span><span class="s1">space</span><span class="se">}}</span><span class="s1">?_</span><span class="se">{{</span><span class="s1">module</span><span class="se">}}</span><span class="s1">?__</span><span class="se">{{</span><span class="s1">option</span><span class="se">}}</span><span class="s1"> format: </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="has_variable"><a class="viewcode-back" href="../../../api/qcdb.has_variable.html#qcdb.has_variable">[docs]</a><span class="k">def</span> <span class="nf">has_variable</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">key</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">active_qcvars</span></div>
+
+
+<div class="viewcode-block" id="variable"><a class="viewcode-back" href="../../../api/qcdb.variable.html#qcdb.variable">[docs]</a><span class="k">def</span> <span class="nf">variable</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+    <span class="n">ukey</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">ukey</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">active_qcvars</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pe</span><span class="o">.</span><span class="n">active_qcvars</span><span class="p">[</span><span class="n">ukey</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># TODO this matches psi, as None confuses compare_values, but is it right soln?</span>
+        <span class="c1">#return 0.</span>
+        <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No such var as </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_variable"><a class="viewcode-back" href="../../../api/qcdb.get_variable.html#qcdb.get_variable">[docs]</a><span class="k">def</span> <span class="nf">get_variable</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="s2">&quot;Using `qcdb.get_variable` instead of `qcdb.variable` is deprecated, and at any time it will stop working</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">category</span><span class="o">=</span><span class="ne">FutureWarning</span><span class="p">,</span>
+        <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">variable</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">get_active_molecule</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">pe</span><span class="o">.</span><span class="n">active_molecule</span>
+
+
+<div class="viewcode-block" id="get_active_options"><a class="viewcode-back" href="../../../api/qcdb.get_active_options.html#qcdb.get_active_options">[docs]</a><span class="k">def</span> <span class="nf">get_active_options</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span></div>
+
+
+<div class="viewcode-block" id="print_variables"><a class="viewcode-back" href="../../../api/qcdb.print_variables.html#qcdb.print_variables">[docs]</a><span class="k">def</span> <span class="nf">print_variables</span><span class="p">(</span><span class="n">qcvars</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">qcel</span><span class="o">.</span><span class="n">Datum</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Form a printable representation of qcvariables.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    qcvars</span>
+<span class="sd">        Group of Datumobjects to print. If `None`, will use `qcdb.pe.active_qcvars`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        Printable string representation of label, data, and unit in Datum-s.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">  Variable Map:&#39;</span><span class="p">)</span>
+    <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;  ----------------------------------------------------------------------------&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">qcvars</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">qcvars</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">active_qcvars</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">qcvars</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;  (none)&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="n">largest_key</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">qcvars</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span>  <span class="c1"># for quotation marks</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">qca</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">qcvars</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="n">qca</span><span class="o">.</span><span class="n">label</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Huh? </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1"> != </span><span class="si">{</span><span class="n">qca</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">qca</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_str</span><span class="p">(</span><span class="n">qca</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">max_line_width</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">suppress_small</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;        &#39;</span> <span class="o">+</span> <span class="n">ln</span> <span class="k">for</span> <span class="n">ln</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span>
+            <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;  {:</span><span class="si">{keywidth}</span><span class="s2">} =&gt; {:</span><span class="si">{width}</span><span class="s2">} [</span><span class="si">{}</span><span class="s2">]&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span> <span class="o">+</span> <span class="n">k</span> <span class="o">+</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">,</span>
+                                                                        <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                                                        <span class="n">qca</span><span class="o">.</span><span class="n">units</span><span class="p">,</span>
+                                                                        <span class="n">keywidth</span><span class="o">=</span><span class="n">largest_key</span><span class="p">,</span>
+                                                                        <span class="n">width</span><span class="o">=</span><span class="mi">20</span><span class="p">))</span>
+            <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;  {:</span><span class="si">{keywidth}</span><span class="s2">} =&gt; {:</span><span class="si">{width}</span><span class="s2">.</span><span class="si">{prec}</span><span class="s2">f} [</span><span class="si">{}</span><span class="s2">]&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span> <span class="o">+</span> <span class="n">k</span> <span class="o">+</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">,</span>
+                                                                                <span class="n">qca</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                                                                                <span class="n">qca</span><span class="o">.</span><span class="n">units</span><span class="p">,</span>
+                                                                                <span class="n">keywidth</span><span class="o">=</span><span class="n">largest_key</span><span class="p">,</span>
+                                                                                <span class="n">width</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+                                                                                <span class="n">prec</span><span class="o">=</span><span class="mi">12</span><span class="p">))</span>
+
+    <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../../index.html" title="index">
+          <img class="logo" src="../../../_static/qcdbsquare.png" alt="Logo"/>
+        </a></p><!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+<div id="searchbox" style="display: none" role="search">
+  <!--<h3>Quick search</h3>-->
+    <form class="search" action="../../../search.html" method="get">
+      <!--<div><input type="text" name="q" placeholder="search docs" /></div>-->
+      <div><input type="text" name="q" placeholder="&#xF002;" style="font-family:FontAwesome, Ariel" /></div>
+      <!--<div><input type="submit" value="Go" /></div>-->
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >Index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../index.html" title="Table Of Contents"
+             ><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/driver_helpers.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../../../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">qcdb.driver.driver_helpers</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, The QCDB Project.
+      Last updated on Thursday, 29 April 2021 05:29AM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

@@ -1,0 +1,6 @@
+FragmentCountError
+==================
+
+.. currentmodule:: qcdb
+
+.. autoexception:: FragmentCountError

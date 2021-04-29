@@ -1,0 +1,43 @@
+Keyword
+=======
+
+.. currentmodule:: qcdb
+
+.. autoclass:: Keyword
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~Keyword.mark_of_the_default
+      ~Keyword.mark_of_the_user
+      ~Keyword.value
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~Keyword.disputed
+      ~Keyword.inherit
+      ~Keyword.is_default
+      ~Keyword.is_required
+      ~Keyword.require
+      ~Keyword.shortstr
+      ~Keyword.suggest
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: mark_of_the_default
+   .. autoattribute:: mark_of_the_user
+   .. autoattribute:: value
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: disputed
+   .. automethod:: inherit
+   .. automethod:: is_default
+   .. automethod:: is_required
+   .. automethod:: require
+   .. automethod:: shortstr
+   .. automethod:: suggest

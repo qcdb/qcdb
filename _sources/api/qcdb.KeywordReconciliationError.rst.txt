@@ -1,0 +1,6 @@
+KeywordReconciliationError
+==========================
+
+.. currentmodule:: qcdb
+
+.. autoexception:: KeywordReconciliationError

@@ -1,0 +1,6 @@
+ParsingValidationError
+======================
+
+.. currentmodule:: qcdb
+
+.. autoexception:: ParsingValidationError

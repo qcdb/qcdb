@@ -1,0 +1,6 @@
+QcdbException
+=============
+
+.. currentmodule:: qcdb
+
+.. autoexception:: QcdbException

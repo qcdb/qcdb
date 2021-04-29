@@ -1,0 +1,6 @@
+frequency
+=========
+
+.. currentmodule:: qcdb
+
+.. autofunction:: frequency

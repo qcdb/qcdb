@@ -1,0 +1,6 @@
+get_active_options
+==================
+
+.. currentmodule:: qcdb
+
+.. autofunction:: get_active_options

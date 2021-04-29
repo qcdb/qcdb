@@ -1,0 +1,6 @@
+FeatureNotImplemented
+=====================
+
+.. currentmodule:: qcdb
+
+.. autoexception:: FeatureNotImplemented

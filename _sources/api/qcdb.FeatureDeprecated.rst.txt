@@ -1,0 +1,6 @@
+FeatureDeprecated
+=================
+
+.. currentmodule:: qcdb
+
+.. autoexception:: FeatureDeprecated

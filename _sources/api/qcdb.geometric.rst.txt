@@ -1,0 +1,6 @@
+geometric
+=========
+
+.. currentmodule:: qcdb
+
+.. autofunction:: geometric

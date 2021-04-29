@@ -1,0 +1,814 @@
+<!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Molecule</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/psi4.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="shortcut icon" href="../_static/favicon-qcdb.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="MoleculeFormatError" href="qcdb.MoleculeFormatError.html" />
+    <link rel="prev" title="Keywords" href="qcdb.Keywords.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">Index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="qcdb.MoleculeFormatError.html" title="MoleculeFormatError"
+             accesskey="N"><i class="fa fa-long-arrow-right fa-lg"></i></a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="qcdb.Keywords.html" title="Keywords"
+             accesskey="P"><i class="fa fa-long-arrow-left fa-lg"></i></a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../index.html" title="Table Of Contents"
+             accesskey="C"><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.Molecule.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../api.html" accesskey="U"><span style="font-family: Optima, sans-serif; text-transform: none;">QCDB</span> API</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">Molecule</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="molecule">
+<h1>Molecule<a class="headerlink" href="#molecule" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="qcdb.Molecule">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">qcdb.</span></code><code class="sig-name descname"><span class="pre">Molecule</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molinit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elea</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elez</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">real</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elbl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Angstrom'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_units_to_au</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fix_com</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fix_orientation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fix_symmetry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fragment_separators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fragment_charges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fragment_multiplicities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">molecular_charge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">molecular_multiplicity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">provenance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connectivity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_qm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_efp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">missing_enabled_return_qm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">missing_enabled_return_efp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">missing_enabled_return</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'error'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tooclose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zero_ghost_fragments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nonphysical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">qcdb.molecule.libmintsmolecule.LibmintsMolecule</span></code></p>
+<p>Class to store the elements, coordinates, fragmentation pattern,
+charge, multiplicity of a molecule. Largely replicates psi4’s libmints
+Molecule class, developed by Justin M. Turney and Andy M. Simmonett
+with incremental improvements by other psi4 developers. Major</p>
+<p>This class extends LibmintsMolecule and occasionally
+<a class="reference external" href="https://psicode.org/psi4manual/master/api/psi4.core.Molecule.html#psi4.core.Molecule" title="(in Psi4 v1.4rc2.dev30)"><code class="xref py py-class docutils literal notranslate"><span class="pre">psi4.core.Molecule</span></code></a> itself.</p>
+<p class="rubric">Methods Summary</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.Molecule.B787" title="qcdb.Molecule.B787"><code class="xref py py-obj docutils literal notranslate"><span class="pre">B787</span></code></a>(ref_mol[, do_plot, verbose, atoms_map, …])</p></td>
+<td><p>Finds shift, rotation, and atom reordering of <cite>concern_mol</cite> that best aligns with <cite>ref_mol</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.Molecule.BFS" title="qcdb.Molecule.BFS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BFS</span></code></a>([seed_atoms, bond_threshold, …])</p></td>
+<td><p>Detect fragments among real atoms through a breadth-first search (BFS) algorithm.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.Molecule.axis_representation" title="qcdb.Molecule.axis_representation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">axis_representation</span></code></a>([zero])</p></td>
+<td><p>Molecule vs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.Molecule.center_of_charge" title="qcdb.Molecule.center_of_charge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">center_of_charge</span></code></a>()</p></td>
+<td><p>Computes center of charge of molecule (does not translate molecule).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.Molecule.format_basis_for_cfour" title="qcdb.Molecule.format_basis_for_cfour"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_basis_for_cfour</span></code></a>(puream)</p></td>
+<td><p>Function to print the BASIS=SPECIAL block for Cfour according to the active atoms in Molecule.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.Molecule.format_basis_for_nwchem" title="qcdb.Molecule.format_basis_for_nwchem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_basis_for_nwchem</span></code></a>(basopt)</p></td>
+<td><p>Function to print NWChem-style basis sets into [basis block] according to the active atoms in Molecule.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.Molecule.format_basis_for_nwchem_puream" title="qcdb.Molecule.format_basis_for_nwchem_puream"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_basis_for_nwchem_puream</span></code></a>(puream)</p></td>
+<td><p>Function to recognize puream for NWChem</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.Molecule.format_molecule_for_mol" title="qcdb.Molecule.format_molecule_for_mol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_molecule_for_mol</span></code></a>()</p></td>
+<td><p>Returns a string of Molecule formatted for mol2.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.Molecule.format_molecule_for_psi4" title="qcdb.Molecule.format_molecule_for_psi4"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_molecule_for_psi4</span></code></a>()</p></td>
+<td><p>Returns string of molecule definition block.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.Molecule.from_arrays" title="qcdb.Molecule.from_arrays"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_arrays</span></code></a>([geom, elea, elez, elem, mass, …])</p></td>
+<td><p>Construct Molecule from unvalidated arrays and variables.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.Molecule.from_dict" title="qcdb.Molecule.from_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_dict</span></code></a>(molrec[, verbose])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.Molecule.from_schema" title="qcdb.Molecule.from_schema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_schema</span></code></a>(molschema[, return_dict, verbose])</p></td>
+<td><p>Construct Molecule from non-Psi4 schema.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.Molecule.from_string" title="qcdb.Molecule.from_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_string</span></code></a>(molstr[, dtype, name, fix_com, …])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.Molecule.inertia_tensor" title="qcdb.Molecule.inertia_tensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inertia_tensor</span></code></a>([masswt, zero])</p></td>
+<td><p>Compute inertia tensor.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.Molecule.inertia_tensor_partial" title="qcdb.Molecule.inertia_tensor_partial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inertia_tensor_partial</span></code></a>(part[, masswt, zero])</p></td>
+<td><p>Compute inertia tensor based on atoms in <em>part</em>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.Molecule.inertial_system" title="qcdb.Molecule.inertial_system"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inertial_system</span></code></a>([masswt, zero])</p></td>
+<td><p>Solve inertial system</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.Molecule.inertial_system_partial" title="qcdb.Molecule.inertial_system_partial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inertial_system_partial</span></code></a>(part[, masswt, zero])</p></td>
+<td><p>Solve inertial system based on atoms in <em>part</em></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.Molecule.init_with_mol2" title="qcdb.Molecule.init_with_mol2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_with_mol2</span></code></a>(xyzfilename[, no_com, …])</p></td>
+<td><p>Pull information from a MOl2 file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.Molecule.init_with_xyz" title="qcdb.Molecule.init_with_xyz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_with_xyz</span></code></a>(xyzfilename[, no_com, …])</p></td>
+<td><p>Pull information from an XYZ file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.Molecule.move_to_coc" title="qcdb.Molecule.move_to_coc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move_to_coc</span></code></a>()</p></td>
+<td><p>Moves molecule to center of charge</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.Molecule.print_ring_planes" title="qcdb.Molecule.print_ring_planes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_ring_planes</span></code></a>(entity1, entity2[, …])</p></td>
+<td><p>(reals only, 1-indexed)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.Molecule.rotational_symmetry_number" title="qcdb.Molecule.rotational_symmetry_number"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotational_symmetry_number</span></code></a>()</p></td>
+<td><p>Number of unique orientations of the rigid molecule that only interchange identical atoms.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.Molecule.rotor_type" title="qcdb.Molecule.rotor_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotor_type</span></code></a>([tol])</p></td>
+<td><p>Returns the rotor type.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.Molecule.run_dftd3" title="qcdb.Molecule.run_dftd3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_dftd3</span></code></a>([func, dashlvl, dashparam, …])</p></td>
+<td><p>Compute dispersion correction via Grimme’s DFTD3 program.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.Molecule.save_string_xyz" title="qcdb.Molecule.save_string_xyz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_string_xyz</span></code></a>([save_ghosts, save_natom])</p></td>
+<td><p>Save a string for a XYZ-style file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.Molecule.save_xyz" title="qcdb.Molecule.save_xyz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_xyz</span></code></a>(filename[, save_ghosts, save_natom])</p></td>
+<td><p>Save an XYZ file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.Molecule.scramble" title="qcdb.Molecule.scramble"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scramble</span></code></a>([do_shift, do_rotate, do_resort, …])</p></td>
+<td><p>Tester for B787 by shifting, rotating, and atom shuffling <cite>ref_mol</cite> and checking that the aligner returns the opposite transformation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.Molecule.set_fragment_pattern" title="qcdb.Molecule.set_fragment_pattern"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_fragment_pattern</span></code></a>(frl, frt, frc, frm)</p></td>
+<td><p>Set fragment member data through public method analogous to psi4.core.Molecule</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.Molecule.to_arrays" title="qcdb.Molecule.to_arrays"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_arrays</span></code></a>([dummy, ghost_as_dummy])</p></td>
+<td><p>Exports coordinate info into NumPy arrays.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.Molecule.to_dict" title="qcdb.Molecule.to_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_dict</span></code></a>([force_c1, force_units, np_out])</p></td>
+<td><p>Serializes instance into Molecule dictionary.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.Molecule.to_schema" title="qcdb.Molecule.to_schema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_schema</span></code></a>(dtype[, units])</p></td>
+<td><p>Serializes instance into dictionary according to schema <cite>dtype</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.Molecule.to_string" title="qcdb.Molecule.to_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_string</span></code></a>(dtype[, units, atom_format, …])</p></td>
+<td><p>Format a string representation of QM molecule.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods Documentation</p>
+<dl class="py method">
+<dt id="qcdb.Molecule.B787">
+<code class="sig-name descname"><span class="pre">B787</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref_mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_resorting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mols_align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_to_completion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uno_cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_mirror</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.B787"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.B787" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds shift, rotation, and atom reordering of <cite>concern_mol</cite> that best
+aligns with <cite>ref_mol</cite>.</p>
+<p>Wraps <code class="xref py py-func docutils literal notranslate"><span class="pre">qcelemental.molutil.align.B787()</span></code> for <a class="reference internal" href="#qcdb.Molecule" title="qcdb.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">qcdb.Molecule</span></code></a> or
+<a class="reference external" href="https://psicode.org/psi4manual/master/api/psi4.core.Molecule.html#psi4.core.Molecule" title="(in Psi4 v1.4rc2.dev30)"><code class="xref py py-class docutils literal notranslate"><span class="pre">psi4.core.Molecule</span></code></a>. Employs the Kabsch, Hungarian, and
+Uno algorithms to exhaustively locate the best alignment for
+non-oriented, non-ordered structures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>concern_mol</strong> (<a class="reference internal" href="#qcdb.Molecule" title="qcdb.molecule.molecule.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a>) – Molecule of concern, to be shifted, rotated, and reordered into
+best coincidence with <cite>ref_mol</cite>.</p></li>
+<li><p><strong>ref_mol</strong> (<a class="reference internal" href="#qcdb.Molecule" title="qcdb.molecule.molecule.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a>) – Molecule to match.</p></li>
+<li><p><strong>atoms_map</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether atom1 of <cite>ref_mol</cite> corresponds to atom1 of <cite>concern_mol</cite>, etc.
+If true, specifying <cite>True</cite> can save much time.</p></li>
+<li><p><strong>mols_align</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether <cite>ref_mol</cite> and <cite>concern_mol</cite> have identical geometries by eye
+(barring orientation or atom mapping) and expected final RMSD = 0.
+If <cite>True</cite>, procedure is truncated when RMSD condition met, saving time.</p></li>
+<li><p><strong>do_plot</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Pops up a mpl plot showing before, after, and ref geometries.</p></li>
+<li><p><strong>run_to_completion</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Run reorderings to completion (past RMSD = 0) even if unnecessary because
+<cite>mols_align=True</cite>. Used to test worst-case timings.</p></li>
+<li><p><strong>run_resorting</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Run the resorting machinery even if unnecessary because <cite>atoms_map=True</cite>.</p></li>
+<li><p><strong>uno_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – TODO</p></li>
+<li><p><strong>run_mirror</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Run alternate geometries potentially allowing best match to <cite>ref_mol</cite>
+from mirror image of <cite>concern_mol</cite>. Only run if system confirmed to
+be nonsuperimposable upon mirror reflection.</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>First item is RMSD [A] between <cite>ref_mol</cite> and the optimally aligned
+geometry computed.
+Second item is a AlignmentMill namedtuple with fields
+(shift, rotation, atommap, mirror) that prescribe the transformation
+from <cite>concern_mol</cite> and the optimally aligned geometry.
+Third item is a crude charge-, multiplicity-, fragment-less Molecule
+at optimally aligned (and atom-ordered) geometry. Return type
+determined by <cite>concern_mol</cite> type.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)">float</a>, <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#tuple" title="(in Python v3.6)">tuple</a>, <a class="reference internal" href="#qcdb.Molecule" title="qcdb.Molecule">qcdb.Molecule</a> or <a class="reference external" href="https://psicode.org/psi4manual/master/api/psi4.core.Molecule.html#psi4.core.Molecule" title="(in Psi4 v1.4rc2.dev30)">psi4.core.Molecule</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.BFS">
+<code class="sig-name descname"><span class="pre">BFS</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bond_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_arrays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_molecules</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_molecule</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.BFS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.BFS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detect fragments among real atoms through a breadth-first search (BFS) algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed_atoms</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>]) – List of lists of atoms (0-indexed) belonging to independent fragments.
+Useful to prompt algorithm or to define intramolecular fragments through
+border atoms. Example: <cite>[[1, 0], [2]]</cite></p></li>
+<li><p><strong>bond_threshold</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Factor beyond average of covalent radii to determine bond cutoff.</p></li>
+<li><p><strong>return_arrays</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – If <cite>True</cite>, also return fragments as list of arrays.</p></li>
+<li><p><strong>return_molecules</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – If True, also return fragments as list of Molecules.</p></li>
+<li><p><strong>return_molecule</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – If True, also return one big Molecule with fragmentation encoded.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>bfs_map</strong> (<em>list of lists</em>) – Array of atom indices (0-indexed) of detected fragments.</p></li>
+<li><p><strong>bfs_arrays</strong> (<em>tuple of lists of ndarray, optional</em>) – geom, mass, elem info per-fragment.
+Only provided if <cite>return_arrays</cite> is True.</p></li>
+<li><p><strong>bfs_molecules</strong> (<em>list of qcdb.Molecule or psi4.core.Molecule, optional</em>) – List of molecules, each built from one fragment. Center and
+orientation of fragments is fixed so orientation info from <cite>self</cite> is
+not lost. Loses chgmult and ghost/dummy info from <cite>self</cite> and contains
+default chgmult.
+Only provided if <cite>return_molecules</cite> is True.
+Returned are of same type as <cite>self</cite>.</p></li>
+<li><p><strong>bfs_molecule</strong> (<em>qcdb.Molecule or psi4.core.Molecule, optional</em>) – Single molecule with same number of real atoms as <cite>self</cite> with atoms
+reordered into adjacent fragments and fragment markers inserted.
+Loses ghost/dummy info from <cite>self</cite>; keeps total charge but not total mult.
+Only provided if <cite>return_molecule</cite> is True.
+Returned is of same type as <cite>self</cite>.</p></li>
+<li><p><em>Authors</em></p></li>
+<li><p><em>——-</em></p></li>
+<li><p><em>Original code from Michael S. Marshall, linear-scaling algorithm from</em></p></li>
+<li><p><em>Trent M. Parker, revamped by Lori A. Burns</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Relies upon van der Waals radii and so faulty for close (especially hydrogen-bonded) fragments. See <cite>seed_atoms</cite>.</p></li>
+<li><p>Any existing fragmentation info/chgmult encoded in <cite>self</cite> is lost.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.axis_representation">
+<code class="sig-name descname"><span class="pre">axis_representation</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zero</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.axis_representation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.axis_representation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Molecule vs. laboratory frame representation (e.g., IR or IIIL).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>zero</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Screen for inertial tensor elements</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Representation code IR, IIR, IIIR, IL, IIL, IIIL. When
+molecule not in inertial frame, string is prefixed by “~”.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Not carefully handling degenerate inertial elements.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.center_of_charge">
+<code class="sig-name descname"><span class="pre">center_of_charge</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.center_of_charge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.center_of_charge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes center of charge of molecule (does not translate molecule).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H2OH2O</span><span class="o">.</span><span class="n">center_of_charge</span><span class="p">()</span>
+<span class="go">[-0.073339893272065401, 0.002959783555632145, 0.0]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.format_basis_for_cfour">
+<code class="sig-name descname"><span class="pre">format_basis_for_cfour</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">puream</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.format_basis_for_cfour"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.format_basis_for_cfour" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to print the BASIS=SPECIAL block for Cfour according
+to the active atoms in Molecule. Special short basis names
+are used by Psi4 libmints GENBAS-writer in accordance with
+Cfour constraints.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.format_basis_for_nwchem">
+<code class="sig-name descname"><span class="pre">format_basis_for_nwchem</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basopt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.format_basis_for_nwchem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.format_basis_for_nwchem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to print NWChem-style basis sets into [basis block] according
+to the active atoms in Molecule. Basis sets are loaded from Psi4 basis sets library.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.format_basis_for_nwchem_puream">
+<code class="sig-name descname"><span class="pre">format_basis_for_nwchem_puream</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">puream</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.format_basis_for_nwchem_puream"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.format_basis_for_nwchem_puream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to recognize puream for NWChem</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.format_molecule_for_mol">
+<code class="sig-name descname"><span class="pre">format_molecule_for_mol</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qcdb.Molecule.format_molecule_for_mol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a string of Molecule formatted for mol2.</p>
+<p>Written by Trent M. Parker 9 Jun 2014</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.format_molecule_for_psi4">
+<code class="sig-name descname"><span class="pre">format_molecule_for_psi4</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.format_molecule_for_psi4"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.format_molecule_for_psi4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns string of molecule definition block.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.from_arrays">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">from_arrays</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elea</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elez</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">real</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elbl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Angstrom'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_units_to_au</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fix_com</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fix_orientation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fix_symmetry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fragment_separators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fragment_charges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fragment_multiplicities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">molecular_charge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">molecular_multiplicity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">provenance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connectivity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">missing_enabled_return</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'error'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tooclose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zero_ghost_fragments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nonphysical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.from_arrays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.from_arrays" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct Molecule from unvalidated arrays and variables.</p>
+<p>Light wrapper around <code class="xref py py-func docutils literal notranslate"><span class="pre">from_arrays()</span></code>
+that is a full-featured constructor to dictionary representa-
+tion of Molecule. This follows one step further to return
+Molecule instance.</p>
+<p>:param See <code class="xref py py-func docutils literal notranslate"><span class="pre">from_arrays()</span></code>.:
+:param return_dict: Additionally return Molecule dictionary intermediate.
+:type return_dict: bool, optional</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>mol</strong> (<a class="reference internal" href="#qcdb.Molecule" title="qcdb.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a>)</p></li>
+<li><p><strong>molrec</strong> (<em>dict, optional</em>) – Dictionary representation of instance.
+Only provided if <cite>return_dict</cite> is True.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.from_dict">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molrec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.from_schema">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">from_schema</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molschema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.from_schema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.from_schema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct Molecule from non-Psi4 schema.</p>
+<p>Light wrapper around <a class="reference internal" href="#qcdb.Molecule.from_arrays" title="qcdb.Molecule.from_arrays"><code class="xref py py-func docutils literal notranslate"><span class="pre">from_arrays()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>molschema</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>) – Dictionary form of Molecule following known schema.</p></li>
+<li><p><strong>return_dict</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Additionally return Molecule dictionary intermediate.</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Amount of printing.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>mol</strong> (<a class="reference internal" href="#qcdb.Molecule" title="qcdb.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a>)</p></li>
+<li><p><strong>molrec</strong> (<em>dict, optional</em>) – Dictionary representation of instance.
+Only provided if <cite>return_dict</cite> is True.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.from_string">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">from_string</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molstr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fix_com</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fix_orientation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fix_symmetry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_qm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_efp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">missing_enabled_return_qm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">missing_enabled_return_efp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.from_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.from_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.inertia_tensor">
+<code class="sig-name descname"><span class="pre">inertia_tensor</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">masswt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zero</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-14</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.inertia_tensor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.inertia_tensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute inertia tensor.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">H2OH2O</span><span class="o">.</span><span class="n">inertia_tensor</span><span class="p">()</span>
+<span class="go">[[8.704574864178731, -8.828375721817082, 0.0], [-8.828375721817082, 280.82861714077666, 0.0], [0.0, 0.0, 281.249500988553]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.inertia_tensor_partial">
+<code class="sig-name descname"><span class="pre">inertia_tensor_partial</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">part</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masswt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zero</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-14</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.inertia_tensor_partial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.inertia_tensor_partial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute inertia tensor based on atoms in <em>part</em>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.inertial_system">
+<code class="sig-name descname"><span class="pre">inertial_system</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">masswt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zero</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-14</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.inertial_system"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.inertial_system" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve inertial system</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.inertial_system_partial">
+<code class="sig-name descname"><span class="pre">inertial_system_partial</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">part</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masswt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zero</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-14</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.inertial_system_partial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.inertial_system_partial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve inertial system based on atoms in <em>part</em></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.init_with_mol2">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">init_with_mol2</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyzfilename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_com</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_reorient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contentsNotFilename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.init_with_mol2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.init_with_mol2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pull information from a MOl2 file. No fragment info detected.
+Bohr/Angstrom pulled from first line if available.  Charge,
+multiplicity, tagline pulled from second line if available.  Body
+accepts atom symbol or atom charge in first column. Arguments
+<em>no_com</em> and <em>no_reorient</em> can be used to turn off shift and
+rotation. If <em>xyzfilename</em> is a string of the contents of an XYZ
+file, rather than the name of a file, set <em>contentsNotFilename</em>
+to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<p>NOTE: chg/mult NYI</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H2O</span> <span class="o">=</span> <span class="n">qcdb</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">init_with_mol2</span><span class="p">(</span><span class="s1">&#39;h2o.mol2&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.init_with_xyz">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">init_with_xyz</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyzfilename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_com</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_reorient</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contentsNotFilename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.init_with_xyz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.init_with_xyz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pull information from an XYZ file. No fragment info detected.
+Bohr/Angstrom pulled from first line if available.  Charge,
+multiplicity, tagline pulled from second line if available.  Body
+accepts atom symbol or atom charge in first column. Arguments
+<em>no_com</em> and <em>no_reorient</em> can be used to turn off shift and
+rotation. If <em>xyzfilename</em> is a string of the contents of an XYZ
+file, rather than the name of a file, set <em>contentsNotFilename</em>
+to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H2O</span> <span class="o">=</span> <span class="n">qcdb</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">init_with_xyz</span><span class="p">(</span><span class="s1">&#39;h2o.xyz&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.move_to_coc">
+<code class="sig-name descname"><span class="pre">move_to_coc</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.move_to_coc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.move_to_coc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moves molecule to center of charge</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.print_ring_planes">
+<code class="sig-name descname"><span class="pre">print_ring_planes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity3</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity4</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.print_ring_planes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.print_ring_planes" title="Permalink to this definition">¶</a></dt>
+<dd><p>(reals only, 1-indexed)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.rotational_symmetry_number">
+<code class="sig-name descname"><span class="pre">rotational_symmetry_number</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.rotational_symmetry_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.rotational_symmetry_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of unique orientations of the rigid molecule that only interchange identical atoms.</p>
+<p class="rubric">Notes</p>
+<p>Source <a class="reference external" href="http://cccbdb.nist.gov/thermo.asp">http://cccbdb.nist.gov/thermo.asp</a> (search “symmetry number”)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.rotor_type">
+<code class="sig-name descname"><span class="pre">rotor_type</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.rotor_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.rotor_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the rotor type.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H2OH2O</span><span class="o">.</span><span class="n">rotor_type</span><span class="p">()</span>
+<span class="go">RT_ASYMMETRIC_TOP</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.run_dftd3">
+<code class="sig-name descname"><span class="pre">run_dftd3</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dashlvl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dashparam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dertype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.run_dftd3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.run_dftd3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute dispersion correction via Grimme’s DFTD3 program.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – Name of functional (func only, func &amp; disp, or disp only) for
+which to compute dispersion (e.g., blyp, BLYP-D2, blyp-d3bj,
+blyp-d3(bj), hf+d). Any or all parameters initialized
+from <cite>dashcoeff[dashlvl][func]</cite> can be overwritten via
+<cite>dashparam</cite>.</p></li>
+<li><p><strong>dashlvl</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – Name of dispersion correction to be applied (e.g., d, D2,
+d3(bj), das2010). Must be key in <cite>dashcoeff</cite> or “alias” or
+“formal” to one.</p></li>
+<li><p><strong>dashparam</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>]) – Values for the same keys as <cite>dashcoeff[dashlvl][‘default’]</cite>
+used to override any or all values initialized by <cite>func</cite>.
+Extra parameters will error.</p></li>
+<li><p><strong>dertype</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – Maximum derivative level at which to run DFTD3. For large
+molecules, energy-only calculations can be significantly more
+efficient. Influences return values, see below.</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Amount of printing.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>energy</strong> (<em>float</em>) – When <cite>dertype=0</cite>, energy [Eh].</p></li>
+<li><p><strong>gradient</strong> (<em>ndarray</em>) – When <cite>dertype=1</cite>, (nat, 3) gradient [Eh/a0].</p></li>
+<li><p><strong>(energy, gradient)</strong> (<em>tuple of float and ndarray</em>) – When <cite>dertype=None</cite>, both energy [Eh] and (nat, 3) gradient [Eh/a0].</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.save_string_xyz">
+<code class="sig-name descname"><span class="pre">save_string_xyz</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_ghosts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_natom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.save_string_xyz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.save_string_xyz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a string for a XYZ-style file.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H2OH2O</span><span class="o">.</span><span class="n">save_string_xyz</span><span class="p">()</span>
+<span class="go">6</span>
+<span class="go">-2 3 water_dimer</span>
+<span class="go"> O   -1.551007000000   -0.114520000000    0.000000000000</span>
+<span class="go"> H   -1.934259000000    0.762503000000    0.000000000000</span>
+<span class="go"> H   -0.599677000000    0.040712000000    0.000000000000</span>
+<span class="go"> O    1.350625000000    0.111469000000    0.000000000000</span>
+<span class="go"> H    1.680398000000   -0.373741000000   -0.758561000000</span>
+<span class="go"> H    1.680398000000   -0.373741000000    0.758561000000</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.save_xyz">
+<code class="sig-name descname"><span class="pre">save_xyz</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_ghosts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_natom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.save_xyz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.save_xyz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save an XYZ file.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H2OH2O</span><span class="o">.</span><span class="n">save_xyz</span><span class="p">(</span><span class="s1">&#39;h2o.xyz&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.scramble">
+<code class="sig-name descname"><span class="pre">scramble</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">do_shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_resort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deflection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_mirror</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_to_completion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_resorting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.scramble"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.scramble" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tester for B787 by shifting, rotating, and atom shuffling <cite>ref_mol</cite> and
+checking that the aligner returns the opposite transformation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ref_mol</strong> (<a class="reference internal" href="#qcdb.Molecule" title="qcdb.molecule.molecule.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a>) – Molecule to perturb.</p></li>
+<li><p><strong>do_shift</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>]) – Whether to generate a random atom shift on interval [-3, 3) in each
+dimension (<cite>True</cite>) or leave at current origin. To shift by a specified
+vector, supply a 3-element list.</p></li>
+<li><p><strong>do_rotate</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>]]) – Whether to generate a random 3D rotation according to algorithm of Arvo.
+To rotate by a specified matrix, supply a 9-element list of lists.</p></li>
+<li><p><strong>do_resort</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>]) – Whether to shuffle atoms (<cite>True</cite>) or leave 1st atom 1st, etc. (<cite>False</cite>).
+To specify shuffle, supply a nat-element list of indices.</p></li>
+<li><p><strong>deflection</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – If <cite>do_rotate</cite>, how random a rotation: 0.0 is no change, 0.1 is small
+perturbation, 1.0 is completely random.</p></li>
+<li><p><strong>do_mirror</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether to construct the mirror image structure by inverting y-axis.</p></li>
+<li><p><strong>do_plot</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Pops up a mpl plot showing before, after, and ref geometries.</p></li>
+<li><p><strong>run_to_completion</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – By construction, scrambled systems are fully alignable (final RMSD=0).
+Even so, <cite>True</cite> turns off the mechanism to stop when RMSD reaches zero
+and instead proceed to worst possible time.</p></li>
+<li><p><strong>run_resorting</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Even if atoms not shuffled, test the resorting machinery.</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Print level.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/constants.html#None" title="(in Python v3.6)">None</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.set_fragment_pattern">
+<code class="sig-name descname"><span class="pre">set_fragment_pattern</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frm</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.set_fragment_pattern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.set_fragment_pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set fragment member data through public method analogous to psi4.core.Molecule</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.to_arrays">
+<code class="sig-name descname"><span class="pre">to_arrays</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dummy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ghost_as_dummy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.to_arrays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.to_arrays" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exports coordinate info into NumPy arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dummy</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether or not to include dummy atoms in returned arrays.</p></li>
+<li><p><strong>ghost_as_dummy</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether or not to treat ghost atoms as dummies.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>geom, mass, elem, elez, uniq</strong> (<em>ndarray, ndarray, ndarray, ndarray, ndarray</em>) – (nat, 3) geometry [a0].
+(nat,) mass [u].
+(nat,) element symbol.
+(nat,) atomic number.
+(nat,) hash of element symbol and mass.
+Note that coordinate, orientation, and element information is
+preserved but fragmentation, chgmult, and dummy/ghost is lost.</p></li>
+<li><p><em>Usage</em></p></li>
+<li><p><em>—–</em></p></li>
+<li><p><em>geom, mass, elem, elez, uniq = molinstance.to_arrays()</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.to_dict">
+<code class="sig-name descname"><span class="pre">to_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force_c1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">np_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serializes instance into Molecule dictionary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.to_schema">
+<code class="sig-name descname"><span class="pre">to_schema</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Bohr'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.to_schema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.to_schema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serializes instance into dictionary according to schema <cite>dtype</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.Molecule.to_string">
+<code class="sig-name descname"><span class="pre">to_string</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atom_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ghost_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">17</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.to_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.to_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format a string representation of QM molecule.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/qcdbsquare.png" alt="Logo"/>
+        </a></p><!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+<div id="searchbox" style="display: none" role="search">
+  <!--<h3>Quick search</h3>-->
+    <form class="search" action="../search.html" method="get">
+      <!--<div><input type="text" name="q" placeholder="search docs" /></div>-->
+      <div><input type="text" name="q" placeholder="&#xF002;" style="font-family:FontAwesome, Ariel" /></div>
+      <!--<div><input type="submit" value="Go" /></div>-->
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >Index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="qcdb.MoleculeFormatError.html" title="MoleculeFormatError"
+             ><i class="fa fa-long-arrow-right fa-lg"></i></a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="qcdb.Keywords.html" title="Keywords"
+             ><i class="fa fa-long-arrow-left fa-lg"></i></a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../index.html" title="Table Of Contents"
+             ><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.Molecule.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../api.html" ><span style="font-family: Optima, sans-serif; text-transform: none;">QCDB</span> API</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">Molecule</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, The QCDB Project.
+      Last updated on Thursday, 29 April 2021 05:29AM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

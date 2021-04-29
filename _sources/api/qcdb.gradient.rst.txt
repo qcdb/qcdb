@@ -1,0 +1,6 @@
+gradient
+========
+
+.. currentmodule:: qcdb
+
+.. autofunction:: gradient

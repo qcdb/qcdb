@@ -1,0 +1,6 @@
+yaml_run
+========
+
+.. currentmodule:: qcdb
+
+.. autofunction:: yaml_run

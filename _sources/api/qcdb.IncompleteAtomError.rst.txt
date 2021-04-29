@@ -1,0 +1,6 @@
+IncompleteAtomError
+===================
+
+.. currentmodule:: qcdb
+
+.. autoexception:: IncompleteAtomError

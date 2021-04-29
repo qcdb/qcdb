@@ -1,0 +1,2793 @@
+.. _`apdx:qcvariables_alpha`:
+
+QCVariables by Alpha
+====================
+
+.. qcvar:: (T) CORRECTION ENERGY
+
+   The coupled-cluster perturbative triples correction.
+   units: [Eh]
+
+.. qcvar:: B2GPPLYP DIPOLE
+
+   The total dipole for the B2GPPLYP level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: B2GPPLYP DOUBLE-HYBRID CORRECTION ENERGY
+
+   The scaled MP2 correlation energy correction appended to an
+   underlying functional B2GPPLYP.
+   units: [Eh]
+
+.. qcvar:: B2GPPLYP FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method B2GPPLYP, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B2GPPLYP QUADRUPOLE
+
+   The total quadrupole for the B2GPPLYP level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: B2GPPLYP TOTAL ENERGY
+
+   The total electronic energy for the B2GPPLYP level of theory.
+   units: [Eh]
+
+.. qcvar:: B2PLYP DIPOLE
+
+   The total dipole for the B2PLYP level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: B2PLYP DOUBLE-HYBRID CORRECTION ENERGY
+
+   The scaled MP2 correlation energy correction appended to an
+   underlying functional B2PLYP.
+   units: [Eh]
+
+.. qcvar:: B2PLYP FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method B2PLYP, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B2PLYP QUADRUPOLE
+
+   The total quadrupole for the B2PLYP level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: B2PLYP TOTAL ENERGY
+
+   The total electronic energy for the B2PLYP level of theory.
+   units: [Eh]
+
+.. qcvar:: B2PLYP-D2 DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   b2plyp when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: B2PLYP-D2 DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   b2plyp when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: B2PLYP-D2 TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method b2plyp, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B2PLYP-D3 DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   b2plyp when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: B2PLYP-D3 DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   b2plyp when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: B2PLYP-D3 TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method b2plyp, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B2PLYP-D3(BJ) DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   b2plyp when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: B2PLYP-D3(BJ) DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   b2plyp when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: B2PLYP-D3(BJ) TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method b2plyp, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B2PLYP-D3M DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   b2plyp when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: B2PLYP-D3M DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   b2plyp when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: B2PLYP-D3M TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method b2plyp, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B2PLYP-D3M(BJ) DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   b2plyp when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: B2PLYP-D3M(BJ) DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   b2plyp when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: B2PLYP-D3M(BJ) TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method b2plyp, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B3LYP DIPOLE
+
+   The total dipole for the B3LYP level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: B3LYP FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method B3LYP, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B3LYP QUADRUPOLE
+
+   The total quadrupole for the B3LYP level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: B3LYP TOTAL ENERGY
+
+   The total electronic energy for the B3LYP level of theory.
+   units: [Eh]
+
+.. qcvar:: B3LYP-D2 DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   b3lyp when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: B3LYP-D2 DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   b3lyp when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: B3LYP-D2 TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method b3lyp, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B3LYP-D3 DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   b3lyp when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: B3LYP-D3 DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   b3lyp when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: B3LYP-D3 TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method b3lyp, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B3LYP-D3(BJ) DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   b3lyp when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: B3LYP-D3(BJ) DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   b3lyp when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: B3LYP-D3(BJ) TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method b3lyp, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B3LYP-D3M DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   b3lyp when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: B3LYP-D3M DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   b3lyp when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: B3LYP-D3M TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method b3lyp, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B3LYP-D3M(BJ) DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   b3lyp when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: B3LYP-D3M(BJ) DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   b3lyp when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: B3LYP-D3M(BJ) TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method b3lyp, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B3LYP5 DIPOLE
+
+   The total dipole for the B3LYP5 level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: B3LYP5 FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method B3LYP5, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B3LYP5 QUADRUPOLE
+
+   The total quadrupole for the B3LYP5 level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: B3LYP5 TOTAL ENERGY
+
+   The total electronic energy for the B3LYP5 level of theory.
+   units: [Eh]
+
+.. qcvar:: B3LYP5-D2 DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   b3lyp5 when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: B3LYP5-D2 DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   b3lyp5 when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: B3LYP5-D2 TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method b3lyp5, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B3LYP5-D3 DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   b3lyp5 when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: B3LYP5-D3 DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   b3lyp5 when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: B3LYP5-D3 TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method b3lyp5, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B3LYP5-D3(BJ) DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   b3lyp5 when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: B3LYP5-D3(BJ) DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   b3lyp5 when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: B3LYP5-D3(BJ) TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method b3lyp5, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B3LYP5-D3M DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   b3lyp5 when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: B3LYP5-D3M DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   b3lyp5 when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: B3LYP5-D3M TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method b3lyp5, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B3LYP5-D3M(BJ) DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   b3lyp5 when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: B3LYP5-D3M(BJ) DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   b3lyp5 when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: B3LYP5-D3M(BJ) TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method b3lyp5, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B86BPBE DIPOLE
+
+   The total dipole for the B86BPBE level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: B86BPBE FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method B86BPBE, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B86BPBE QUADRUPOLE
+
+   The total quadrupole for the B86BPBE level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: B86BPBE TOTAL ENERGY
+
+   The total electronic energy for the B86BPBE level of theory.
+   units: [Eh]
+
+.. qcvar:: B97-0 FUNCTIONAL TOTAL ENERGY
+
+   functional energy for original hybrid B97-0 w/o disp correction ORPHAN
+   units: [Eh]
+
+.. qcvar:: B97-0 TOTAL ENERGY
+
+   functional energy for original hybrid B97-0 w/o disp correction ORPHAN
+   units: [Eh]
+
+.. qcvar:: B97-D FUNCTIONAL TOTAL ENERGY
+
+   functional energy for B97-D w/o disp correction ORPHAN
+   units: [Eh]
+
+.. qcvar:: B97-D TOTAL ENERGY
+
+   functional energy for B97-D w/ disp correction ORPHAN
+   units: [Eh]
+
+.. qcvar:: B97-D2 DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   b97 when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: B97-D2 DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   b97 when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: B97-D2 TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method b97, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B97-D3 DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   b97 when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: B97-D3 DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   b97 when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: B97-D3 TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method b97, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B97-D3(BJ) DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   b97 when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: B97-D3(BJ) DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   b97 when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: B97-D3(BJ) TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method b97, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B97-D3M DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   b97 when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: B97-D3M DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   b97 when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: B97-D3M TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method b97, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: B97-D3M(BJ) DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   b97 when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: B97-D3M(BJ) DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   b97 when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: B97-D3M(BJ) TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method b97, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: BLYP DIPOLE
+
+   The total dipole for the BLYP level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: BLYP FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method BLYP, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: BLYP QUADRUPOLE
+
+   The total quadrupole for the BLYP level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: BLYP TOTAL ENERGY
+
+   The total electronic energy for the BLYP level of theory.
+   units: [Eh]
+
+.. qcvar:: BLYP-D2 DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   blyp when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: BLYP-D2 DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   blyp when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: BLYP-D2 TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method blyp, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: BLYP-D3 DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   blyp when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: BLYP-D3 DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   blyp when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: BLYP-D3 TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method blyp, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: BLYP-D3(BJ) DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   blyp when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: BLYP-D3(BJ) DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   blyp when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: BLYP-D3(BJ) TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method blyp, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: BLYP-D3M DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   blyp when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: BLYP-D3M DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   blyp when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: BLYP-D3M TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method blyp, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: BLYP-D3M(BJ) DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   blyp when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: BLYP-D3M(BJ) DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   blyp when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: BLYP-D3M(BJ) TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method blyp, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: BOP DIPOLE
+
+   The total dipole for the BOP level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: BOP FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method BOP, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: BOP QUADRUPOLE
+
+   The total quadrupole for the BOP level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: BOP TOTAL ENERGY
+
+   The total electronic energy for the BOP level of theory.
+   units: [Eh]
+
+.. qcvar:: BP86 DIPOLE
+
+   The total dipole for the BP86 level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: BP86 FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method BP86, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: BP86 QUADRUPOLE
+
+   The total quadrupole for the BP86 level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: BP86 TOTAL ENERGY
+
+   The total electronic energy for the BP86 level of theory.
+   units: [Eh]
+
+.. qcvar:: BP86-D2 DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   bp86 when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: BP86-D2 DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   bp86 when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: BP86-D2 TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method bp86, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: BP86-D3 DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   bp86 when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: BP86-D3 DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   bp86 when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: BP86-D3 TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method bp86, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: BP86-D3(BJ) DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   bp86 when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: BP86-D3(BJ) DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   bp86 when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: BP86-D3(BJ) TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method bp86, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: BP86-D3M DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   bp86 when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: BP86-D3M DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   bp86 when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: BP86-D3M TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method bp86, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: BP86-D3M(BJ) DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   bp86 when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: BP86-D3M(BJ) DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   bp86 when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: BP86-D3M(BJ) TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method bp86, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: CAM-B3LYP DIPOLE
+
+   The total dipole for the CAM-B3LYP level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: CAM-B3LYP FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method CAM-B3LYP, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: CAM-B3LYP QUADRUPOLE
+
+   The total quadrupole for the CAM-B3LYP level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: CAM-B3LYP TOTAL ENERGY
+
+   The total electronic energy for the CAM-B3LYP level of theory.
+   units: [Eh]
+
+.. qcvar:: CBS CORRELATION ENERGY
+
+   The correlation correction energy for the compound method requested through cbs().
+   units: [Eh]
+
+.. qcvar:: CBS REFERENCE ENERGY
+
+   The reference total energy for the compound method requested through cbs().
+   units: [Eh]
+
+.. qcvar:: CBS TOTAL ENERGY
+
+   The total electronic energy for the compound method requested through cbs().
+   units: [Eh]
+
+.. qcvar:: CC DIPOLE
+
+   The total dipole for the CC level of theory
+   and root *n* (number starts at GS = 0).
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: CC QUADRUPOLE
+
+   The total quadrupole for the CC level of theory
+   and root *n* (number starts at GS = 0).
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: CCD CORRELATION ENERGY
+
+   The correlation energy component for the coupled cluster doubles level of theory.
+   units: [Eh]
+
+.. qcvar:: CCD TOTAL ENERGY
+
+   The total electronic energy
+   for the coupled cluster doubles level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSD CORRELATION ENERGY
+
+   The correlation energy component
+   for the coupled cluster singles and doubles level of theory.
+   .. qcvar:: CCSD CORRELATION ENERGY
+   The CCSD correlation energy for the requested DFT method,
+   :math:`E_{\text{CCSDcorl}}` in Eq. :eq:`CCSDcorl`.
+      
+   .. math::
+      :nowrap:
+      :label: CCSDcorl
+      
+         \begin{align*}
+            E_{\text{CCSDcorl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
+                               & = E_{\text{S}} + E_{\text{D}}
+         \end{align*}
+      
+   units: [Eh]
+
+.. qcvar:: CCSD DBOC ENERGY
+
+   A correction to the Born-Oppenheimer Approximation, calculated
+   at the coupled cluster singles and doubles level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSD DIPOLE
+
+   The total dipole for the CCSD level of theory
+   and root *n* (number starts at GS = 0).
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: CCSD DOUBLES ENERGY
+
+   The doubles portion of the CCSD correlation energy
+   including same-spin and opposite-spin correlations.
+   :math:`E_{\text{D}}` in Eq. :eq:`CCSDcorl`.
+   units: [Eh]
+
+.. qcvar:: CCSD ITERATIONS
+
+   The number of iterations in the CCSD set.
+   units: []
+
+.. qcvar:: CCSD OPPOSITE-SPIN CORRELATION ENERGY
+
+   #   The unscaled portion of the CCSD correlation energy
+   #   from opposite-spin or singlet doubles correlations.
+   #   :math:`E_{\text{OS}}` in Eq. :eq:`CCSDcorl`.
+   units: [Eh]
+
+.. qcvar:: CCSD QUADRUPOLE
+
+   The total quadrupole for the CCSD level of theory
+   and root *n* (number starts at GS = 0).
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: CCSD SAME-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the CCSD correlation energy
+   #   from same-spin or triplet doubles correlations.
+   #   canonical_corl(os_scale=1, ss_scale=1) = singles + os_scale * (tot_corl - ss_corl) + ss_scale * ss_corl
+   #   :math:`E_{\text{SS}}` in Eq. :eq:`CCSDcorl`.
+   units: [Eh]
+
+.. qcvar:: CCSD SINGLES ENERGY
+
+   The singles portion of the CCSD correlation energy.
+   Zero except in ROHF.
+   :math:`E_{\text{S}}` in Eq. :eq:`CCSDcorl`.
+   units: [Eh]
+
+.. qcvar:: CCSD TOTAL ENERGY
+
+   The total electronic energy
+   for the coupled cluster singles and doubles level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSD TOTAL GRADIENT
+
+   The total electronic gradient
+   for the coupled cluster singles and doubles level of theory.
+   units: [Eh/a0/a0]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: CCSD(T) CORRELATION ENERGY
+
+   The correlation energy component
+   for the coupled cluster singles and doubles plus perturbative triples level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSD(T) TOTAL ENERGY
+
+   The total electronic energy
+   for the coupled cluster singles and doubles plus perturbative triples level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSDT (PBE) CORRELATION ENERGY
+
+   The correlation energy component
+   for the coupled cluster singles, doubles, and triples level of theory.
+   .. qcvar:: CCSDT CORRELATION ENERGY
+   The CCSDT correlation energy for the requested DFT method,
+   :math:`E_{\text{CCSDTcorl}}` in Eq. :eq:`CCSDTcorl`.
+      
+   .. math::
+      :nowrap:
+      :label: CCSDTcorl
+      
+         \begin{align*}
+            E_{\text{CCSDTcorl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
+                               & = E_{\text{S}} + E_{\text{D}}
+         \end{align*}
+      
+   units: [Eh]
+
+.. qcvar:: CCSDT (PBE) TOTAL ENERGY
+
+   The total electronic energy
+   for the coupled cluster singles, doubles, and triples level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSDT CORRELATION ENERGY
+
+   The correlation energy component
+   for the coupled cluster singles and doubles plus perturbative triples level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSDT TOTAL ENERGY
+
+   The total electronic energy
+   for the coupled cluster singles and doubles plus perturbative triples level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSDTQ CORRELATION ENERGY
+
+   The correlation energy component
+   for the coupled cluster singles, doubles, triples, and quadruples level of theory.
+   .. qcvar:: CCSDTQ CORRELATION ENERGY
+   The CCSDTQ correlation energy for the requested DFT method,
+   :math:`E_{\text{CCSDTQcorl}}` in Eq. :eq:`CCSDTQcorl`.
+      
+   .. math::
+      :nowrap:
+      :label: CCSDTQcorl
+      
+         \begin{align*}
+            E_{\text{CCSDTQcorl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
+                               & = E_{\text{S}} + E_{\text{D}}
+         \end{align*}
+      
+   units: [Eh]
+
+.. qcvar:: CCSDTQ TOTAL ENERGY
+
+   The total electronic energy
+   for the coupled cluster singles, doubles, triples, and quadruples level of theory.
+   .. qcvar:: CCSDTQ TOTAL ENERGY
+   units: [Eh]
+
+.. qcvar:: CCSD[T] CORRELATION ENERGY
+
+   The correlation energy component
+   for the coupled cluster singles and doubles plus bracket perturbative triples level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSD[T] TOTAL ENERGY
+
+   The total electronic energy
+   for the coupled cluster singles and doubles plus bracket perturbative triples level of theory.
+   units: [Eh]
+
+.. qcvar:: CI CORRELATION ENERGY
+
+   The correlation energy component [H]
+   for the requested configuration interaction level of theory and root.
+   units: [Eh]
+
+.. qcvar:: CI ROOT 0 CORRELATION ENERGY
+
+   The total electronic energy [H] and correlation energy component [H]
+   for the requested configuration interaction level of theory and root
+   *n* (numbering starts at 0).
+   units: [Eh]
+
+.. qcvar:: CI ROOT 0 TOTAL ENERGY
+
+   The total electronic energy [H] and correlation energy component [H]
+   for the requested configuration interaction level of theory and root
+   *n* (numbering starts at 0).
+   units: [Eh]
+
+.. qcvar:: CI ROOT 1 CORRELATION ENERGY
+
+   The total electronic energy [H] and correlation energy component [H]
+   for the requested configuration interaction level of theory and root
+   *n* (numbering starts at 0).
+   units: [Eh]
+
+.. qcvar:: CI ROOT 1 TOTAL ENERGY
+
+   The total electronic energy [H] and correlation energy component [H]
+   for the requested configuration interaction level of theory and root
+   *n* (numbering starts at 0).
+   units: [Eh]
+
+.. qcvar:: CI ROOT 2 CORRELATION ENERGY
+
+   The total electronic energy [H] and correlation energy component [H]
+   for the requested configuration interaction level of theory and root
+   *n* (numbering starts at 0).
+   units: [Eh]
+
+.. qcvar:: CI ROOT 2 TOTAL ENERGY
+
+   The total electronic energy [H] and correlation energy component [H]
+   for the requested configuration interaction level of theory and root
+   *n* (numbering starts at 0).
+   units: [Eh]
+
+.. qcvar:: CI ROOT 3 CORRELATION ENERGY
+
+   The total electronic energy [H] and correlation energy component [H]
+   for the requested configuration interaction level of theory and root
+   *n* (numbering starts at 0).
+   units: [Eh]
+
+.. qcvar:: CI ROOT 3 TOTAL ENERGY
+
+   The total electronic energy [H] and correlation energy component [H]
+   for the requested configuration interaction level of theory and root
+   *n* (numbering starts at 0).
+   units: [Eh]
+
+.. qcvar:: CI TOTAL ENERGY
+
+   The total electronic energy [H]
+   for the requested configuration interaction level of theory and root.
+   units: [Eh]
+
+.. qcvar:: CISD CORRELATION ENERGY
+
+   The correlation energy corresponding to configuration interaction with single and doubles calculation.
+   units: [Eh]
+
+.. qcvar:: CISD TOTAL ENERGY
+
+   The total energy for a configuration interaction with singles and doubles calculation.
+   units: [Eh]
+
+.. qcvar:: CISDT CORRELATION ENERGY
+
+   The correlation energy for a configuration interaction with singles, doubles, and triples calculation.
+   units: [Eh]
+
+.. qcvar:: CISDT TOTAL ENERGY
+
+   The total energy for a configuration interaction with singles, doubles, and triples calculation.
+   units: [Eh]
+
+.. qcvar:: CISDTQ CORRELATION ENERGY
+
+   The correlation energy for a configuration interaction with singles, doubles, triples, and quadruples calculation.
+   units: [Eh]
+
+.. qcvar:: CISDTQ TOTAL ENERGY
+
+   The total energy for a configuration interaction with singles, doubles, triples, and quadruples calculation.
+   units: [Eh]
+
+.. qcvar:: CR-CC(2,3) CORRELATION ENERGY
+
+   The correlation energy for.
+   units: [Eh]
+
+.. qcvar:: CR-CC(2,3) TOTAL ENERGY
+
+   The total energy for.
+   units: [Eh]
+
+.. qcvar:: CR-CC(2,3),A CORRELATION ENERGY
+
+   The correlation energy for.
+   units: [Eh]
+
+.. qcvar:: CR-CC(2,3),A TOTAL ENERGY
+
+   The total energy for.
+   units: [Eh]
+
+.. qcvar:: CR-CCSD(T) CORRELATION ENERGY
+
+   The correlation energy component
+   for the completely renomalized coupled cluster singles and doubles plus parentheses perturbative connected triples level of theory.
+   units: [Eh]
+
+.. qcvar:: CR-CCSD(T) TOTAL ENERGY
+
+   The total electronic energy
+   for the completely renomalized coupled cluster singles and doubles plus parentheses perturbative connected triples level of theory.
+   units: [Eh]
+
+.. qcvar:: CR-CCSD[T] CORRELATION ENERGY
+
+   The correlation energy component
+   for the completely renomalized coupled cluster singles and doubles plus bracket perturbative triples level of theory.
+   units: [Eh]
+
+.. qcvar:: CR-CCSD[T] TOTAL ENERGY
+
+   The total electronic energy
+   for the completely renomalized coupled cluster singles and doubles plus bracket perturbative triples level of theory.
+   units: [Eh]
+
+.. qcvar:: CURRENT CORRELATION ENERGY
+
+   The correlation energy corresponding to the :qcvar:`CURRENT ENERGY` variable.
+   units: [Eh]
+
+.. qcvar:: CURRENT DIPOLE
+
+   The total dipole of the most recent stage of a calculation (frequently overwritten).
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: CURRENT DIPOLE GRADIENT
+
+   The derivative of the dipole with respect to nuclear perturbations
+   as a degree-of-freedom by dipole component array.
+   units: [Eh a0/u]
+   dimension: [(3 * {nat}, 3)]
+
+.. qcvar:: CURRENT ENERGY
+
+   The total electronic energy of the most recent stage of a
+   calculation (frequently overwritten). This is the quantity tracked by
+   the geometry optimizer.
+   units: [Eh]
+
+.. qcvar:: CURRENT GRADIENT
+
+   The total electronic gradient of the most recent stage of a
+   calculation (frequently overwritten). This is the quantity tracked by
+   the geometry optimizer.
+   units: [Eh/a0]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: CURRENT HESSIAN
+
+   The total electronic Hessian of the most recent stage of a
+   calculation.
+   units: [Eh/a0/a0]
+   dimension: [(3 * {nat}, 3 * {nat})]
+
+.. qcvar:: CURRENT REFERENCE ENERGY
+
+   The total electronic energy of the reference stage corresponding to
+   the :qcvar:`CURRENT ENERGY` variable.
+   units: [Eh]
+
+.. qcvar:: CUSTOM D2 DISPERSION CORRECTION ENERGY
+
+   Label for D2-formula dispersion correction when
+   parameters match no functional.
+   units: [Eh]
+
+.. qcvar:: CUSTOM D2 DISPERSION CORRECTION GRADIENT
+
+   Label for D2-formula dispersion correction gradient when
+   parameters match no functional.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: CUSTOM SCS-CCSD CORRELATION ENERGY
+
+   Changeable quantity. The CCSD-like correlation
+   energy by any reweighting of SAME-SPIN or
+   OPPOSITE-SPIN components. Depending on weights,
+   this may equal any of CCSD, SCS-CCSD,
+   etc. quantities.
+   units: [Eh]
+
+.. qcvar:: CUSTOM SCS-CCSD TOTAL ENERGY
+
+   The total energy built from
+   CUSTOM SCS-CCSD CORRELATION ENERGY and reference.
+   units: [Eh]
+
+.. qcvar:: CUSTOM SCS-MP2 CORRELATION ENERGY
+
+   Changeable quantity. The MP2-like correlation
+   energy by any reweighting of SAME-SPIN or
+   OPPOSITE-SPIN components. Depending on weights,
+   this may equal any of MP2, SCS-MP2, SCS(N)-MP2,
+   etc. quantities.
+   units: [Eh]
+
+.. qcvar:: CUSTOM SCS-MP2 TOTAL ENERGY
+
+   The total energy built from
+   CUSTOM SCS-MP2 CORRELATION ENERGY and reference.
+   units: [Eh]
+
+.. qcvar:: DFT FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method, without any dispersion correction; the first four
+   terms in Eq. :eq:`SCFterms` or :eq:`DFTterms`. Quantity
+   :math:`E_{\text{FCTL}}` in Eqs.  :eq:`SCFterms` and :eq:`DFTterms`.
+   Unless the method includes a dispersion correction, this quantity is
+   equal to :qcvar:`SCF TOTAL ENERGY`.
+   units: [Eh]
+
+.. qcvar:: DFT TOTAL ENERGY
+
+   The total electronic energy for the requested DFT method,
+   :math:`E_{\text{DFT}}` in Eq. :eq:`DFTterms`.
+      
+   .. math::
+      :nowrap:
+      :label: DFTterms
+      
+         \begin{align*}
+            E_{\text{DFT}} & = E_{NN} + E_{1e^-} + E_{2e^-} + E_{xc} + E_{\text{-D}} + E_{\text{DH}} \\
+                           & = E_{\text{FCTL}} + E_{\text{-D}} + E_{\text{DH}} \\
+                           & = E_{\text{SCF}} + E_{\text{DH}}
+         \end{align*}
+      
+   Unless the method is a DFT double-hybrid, this quantity is equal to
+   :qcvar:`SCF TOTAL ENERGY`. If the method is neither a
+   double-hybrid, nor dispersion corrected, this quantity is equal to
+   :qcvar:`DFT FUNCTIONAL TOTAL ENERGY`.
+   units: [Eh]
+
+.. qcvar:: DFT VV10 ENERGY
+
+   The functional energy contribution to the total SCF energy (DFT only).
+   units: [Eh]
+
+.. qcvar:: DFT XC ENERGY
+
+   The functional energy contribution [H] to the total SCF energy (DFT only).
+   Quantity :math:`E_{xc}` in Eqs. :eq:`SCFterms` and :eq:`DFTterms`.
+   units: [Eh]
+
+.. qcvar:: DISPERSION CORRECTION ENERGY
+
+   The dispersion correction appended to an underlying functional
+   when a DFT-D method is requested. Quantity :math:`E_{\text{-D}}`
+   in Eqs. :eq:`SCFterms` and :eq:`DFTterms`.
+   units: [Eh]
+
+.. qcvar:: DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction appended to an underlying functional
+   when a DFT-D method is requested. Quantity :math:`E_{\text{-D}}`
+   units: [Eh/a0]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: DLDF+D09 DIPOLE
+
+   The total dipole for the DLDF+D09 level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: DLDF+D09 FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method DLDF+D09, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: DLDF+D09 QUADRUPOLE
+
+   The total quadrupole for the DLDF+D09 level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: DLDF+D09 TOTAL ENERGY
+
+   The total electronic energy for the DLDF+D09 level of theory.
+   units: [Eh]
+
+.. qcvar:: DLDF-DAS2009 DISPERSION CORRECTION ENERGY
+
+   disp correction attaching to DLDF+D09 ORPHAN
+   units: [Eh]
+
+.. qcvar:: DMRG-CASPT2 TOTAL ENERGY
+
+   The total DMRG plus CASPT2 total electonic energy. Not unique b/c orbital spaces.
+   units: [Eh]
+
+.. qcvar:: DMRG-SCF TOTAL ENERGY
+
+   The total DMRG total electonic energy. Not unique b/c oribital spaces
+   units: [Eh]
+
+.. qcvar:: DOUBLE-HYBRID CORRECTION ENERGY
+
+   The scaled MP2 correlation energy correction [H] appended to an
+   underlying functional when a DH-DFT method is requested.
+   Quantity :math:`E_{\text{DH}}` in Eq. :eq:`DFTterms`.
+   units: [Eh]
+
+.. qcvar:: DSD-BLYP DIPOLE
+
+   The total dipole for the DSD-BLYP level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: DSD-BLYP DOUBLE-HYBRID CORRECTION ENERGY
+
+   The scaled MP2 correlation energy correction appended to an
+   underlying functional DSD-BLYP.
+   units: [Eh]
+
+.. qcvar:: DSD-BLYP FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method DSD-BLYP, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: DSD-BLYP QUADRUPOLE
+
+   The total quadrupole for the DSD-BLYP level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: DSD-BLYP TOTAL ENERGY
+
+   The total electronic energy for the DSD-BLYP level of theory.
+   units: [Eh]
+
+.. qcvar:: DSD-PBEP86 DIPOLE
+
+   The total dipole for the DSD-PBEP86 level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: DSD-PBEP86 DOUBLE-HYBRID CORRECTION ENERGY
+
+   The scaled MP2 correlation energy correction appended to an
+   underlying functional DSD-PBEP86.
+   units: [Eh]
+
+.. qcvar:: DSD-PBEP86 FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method DSD-PBEP86, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: DSD-PBEP86 QUADRUPOLE
+
+   The total quadrupole for the DSD-PBEP86 level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: DSD-PBEP86 TOTAL ENERGY
+
+   The total electronic energy for the DSD-PBEP86 level of theory.
+   units: [Eh]
+
+.. qcvar:: EOM-CCSD ROOT 0 -> ROOT 1 EXCITATION ENERGY - [] SYMMETRY
+
+   The excitation energy of EOM-CCSD in [] symmetry from 0 to root 0
+   units: [Eh]
+
+.. qcvar:: EOM-CCSD ROOT 0 -> ROOT 1 TOTAL ENERGY - [] SYMMETRY
+
+   The total energy of EOM-CCSD in [] symmetry from 0 to root 0
+   units: [Eh]
+
+.. qcvar:: EOM-CCSD ROOT 0 -> ROOT 2 EXCITATION ENERGY - [] SYMMETRY
+
+   The excitation energy of EOM-CCSD in [] symmetry from 0 to root 1
+   units: [Eh]
+
+.. qcvar:: EOM-CCSD ROOT 0 -> ROOT 2 TOTAL ENERGY - [] SYMMETRY
+
+   The total energy of EOM-CCSD in [] symmetry from 0 to root 1
+   units: [Eh]
+
+.. qcvar:: EOM-CCSD ROOT 0 -> ROOT 3 EXCITATION ENERGY - [] SYMMETRY
+
+   The excitation energy of EOM-CCSD in [] symmetry from 0 to root 2
+   units: [Eh]
+
+.. qcvar:: EOM-CCSD ROOT 0 -> ROOT 3 TOTAL ENERGY - [] SYMMETRY
+
+   The total energy of EOM-CCSD in [] symmetry from 0 to root 2
+   units: [Eh]
+
+.. qcvar:: EOM-CCSD ROOT 0 -> ROOT 4 EXCITATION ENERGY - [] SYMMETRY
+
+   The excitation energy of EOM-CCSD in [] symmetry from 0 to root 3
+   units: [Eh]
+
+.. qcvar:: EOM-CCSD ROOT 0 -> ROOT 4 TOTAL ENERGY - [] SYMMETRY
+
+   The total energy of EOM-CCSD in [] symmetry from 0 to root 3
+   units: [Eh]
+
+.. qcvar:: FCI CORRELATION ENERGY
+
+   The electronic correlation energy component [H]
+   for the full configuration interaction level of theory.
+   units: [Eh]
+
+.. qcvar:: FCI TOTAL ENERGY
+
+   The total electronic energy
+   for the full configuration interaction level of theory.
+   units: [Eh]
+
+.. qcvar:: FT97 DIPOLE
+
+   The total dipole for the FT97 level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: FT97 FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method FT97, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: FT97 QUADRUPOLE
+
+   The total quadrupole for the FT97 level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: FT97 TOTAL ENERGY
+
+   The total electronic energy for the FT97 level of theory.
+   units: [Eh]
+
+.. qcvar:: GROUND-STATE SYMMETRY
+
+   Ground state symmetry value of an excited state calculation.
+   units: [None]
+
+.. qcvar:: HF DIPOLE
+
+   The total dipole for the HF level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: HF DIPOLE GRADIENT
+
+   The derivative of the Hartree--Fock method dipole with respect to nuclear perturbations
+   as a degree-of-freedom by dipole component array.
+   units: [Eh a0/u]
+   dimension: [(3 * {nat}, 3)]
+
+.. qcvar:: HF QUADRUPOLE
+
+   The total quadrupole for the HF level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: HF TOTAL ENERGY
+
+   The total electronic energy for the Hartree--Fock method, without
+   any dispersion correction; the first three (or four, since
+   :math:`E_{xc} = 0`) terms in Eq. :eq:`SCFterms`. Quantity :math:`E_{\text{HF}}`
+   in Eq. :eq:`SCFterms`.
+   units: [Eh]
+
+.. qcvar:: HF TOTAL GRADIENT
+
+   The total electronic gradient of the Hartree--Fock method.
+   units: [Eh/a0/a0]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: HF TOTAL HESSIAN
+
+   The total electronic energy for the Hartree-Fock method.
+   units: [Eh/a0/a0]
+   dimension: [(3 * {nat}, 3 * {nat})]
+
+.. qcvar:: HOMO
+
+   Highest occupied molecular orbitals
+   units: [Eh a0/u]
+   dimension: [(1 , 1)]
+
+.. qcvar:: LCCD CORRELATION ENERGY
+
+   The correlation energy for linearized coupled cluster doubles level of theory.
+   units: [Eh]
+
+.. qcvar:: LCCD TOTAL ENERGY
+
+   The total energy for linearized coupled cluster doubles level of theory.
+   units: [Eh]
+
+.. qcvar:: LCCSD CORRELATION ENERGY
+
+   The correlation energy for linearized coupled cluster singles and doubles level of theory.
+   units: [Eh]
+
+.. qcvar:: LCCSD TOTAL ENERGY
+
+   The total energy for linearized coupled cluster singles and doubles level of theory.
+   units: [Eh]
+
+.. qcvar:: LUMO
+
+   Lowest unoccupied molecular orbitals
+   units: [Eh a0/u]
+   dimension: [(1 , 1)]
+
+.. qcvar:: MCSCF TOTAL ENERGY
+
+   The total energy for a MultiConfiguration Self-Consistent Field energy calculation.
+   units: [Eh]
+
+.. qcvar:: MN15 DIPOLE
+
+   The total dipole for the MN15 level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: MN15 FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method MN15, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: MN15 QUADRUPOLE
+
+   The total quadrupole for the MN15 level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: MN15 TOTAL ENERGY
+
+   The total electronic energy for the MN15 level of theory.
+   units: [Eh]
+
+.. qcvar:: MP2 CORRELATION ENERGY
+
+   The correlation energy component
+   for the MP2 level of theory.
+   .. qcvar:: MP2 CORRELATION ENERGY
+   The MP2 correlation energy for the requested DFT method,
+   :math:`E_{\text{MP2corl}}` in Eq. :eq:`MP2corl`.
+      
+   .. math::
+      :nowrap:
+      :label: MP2corl
+      
+         \begin{align*}
+            E_{\text{MP2corl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
+                               & = E_{\text{S}} + E_{\text{D}}
+         \end{align*}
+      
+   units: [Eh]
+
+.. qcvar:: MP2 DOUBLES ENERGY
+
+   The doubles portion of the MP2 correlation energy
+   including same-spin and opposite-spin correlations.
+   :math:`E_{\text{D}}` in Eq. :eq:`MP2corl`.
+   units: [Eh]
+
+.. qcvar:: MP2 OPPOSITE-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the MP2 correlation energy
+   from opposite-spin or singlet doubles correlations.
+   :math:`E_{\text{OS}}` in Eq. :eq:`MP2corl`.
+   units: [Eh]
+
+.. qcvar:: MP2 SAME-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the MP2 correlation energy
+   from same-spin or triplet doubles correlations.
+   canonical_corl(os_scale=1, ss_scale=1) = singles + os_scale * (tot_corl - ss_corl) + ss_scale * ss_corl
+   :math:`E_{\text{SS}}` in Eq. :eq:`MP2corl`.
+   units: [Eh]
+
+.. qcvar:: MP2 SINGLES ENERGY
+
+   The singles portion of the MP2 correlation energy.
+   Zero except in ROHF.
+   :math:`E_{\text{S}}` in Eq. :eq:`MP2corl`.
+   units: [Eh]
+
+.. qcvar:: MP2 TOTAL ENERGY
+
+   The total electronic energy
+   for the MP2 level of theory.
+   units: [Eh]
+
+.. qcvar:: MP2 TOTAL GRADIENT
+
+   The total electronic gradient of the MP2 method.
+   units: [Eh/a0/a0]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: MP2.5 CORRELATION ENERGY
+
+   The correlation energy component for the MP2.5 level of theory.
+      
+   .. math::
+      :nowrap:
+      :label: MP2p5corl
+      
+         \begin{align*}
+            E_{\text{MP2.5corl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
+                               & = E_{\text{S}} + E_{\text{D}}
+         \end{align*}
+      
+   units: [Eh]
+
+.. qcvar:: MP2.5 DOUBLES ENERGY
+
+   The doubles portion of the MP2.5 correlation energy
+   including same-spin and opposite-spin correlations.
+   :math:`E_{\text{D}}` in Eq. :eq:`MP2p5corl`.
+   units: [Eh]
+
+.. qcvar:: MP2.5 OPPOSITE-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the MP2.5 correlation energy
+   from opposite-spin or singlet doubles correlations.
+   :math:`E_{\text{OS}}` in Eq. :eq:`MP2p5corl`.
+   units: [Eh]
+
+.. qcvar:: MP2.5 SAME-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the MP2.5 correlation energy
+   from same-spin or triplet doubles correlations.
+   canonical_corl(os_scale=1, ss_scale=1) = singles + os_scale * (tot_corl - ss_corl) + ss_scale * ss_corl
+   :math:`E_{\text{SS}}` in Eq. :eq:`MP2p5corl`.
+   units: [Eh]
+
+.. qcvar:: MP2.5 SINGLES ENERGY
+
+   The singles portion of the MP2.5 correlation energy.
+   Zero except in ROHF.
+   :math:`E_{\text{S}}` in Eq. :eq:`MP2p5corl`.
+   units: [Eh]
+
+.. qcvar:: MP2.5 TOTAL ENERGY
+
+   The total electronic energy for the MP2.5 level of theory.
+   units: [Eh]
+
+.. qcvar:: MP3 CORRECTION ENERGY
+
+   The correlation energy difference between 2nd and 3-order Perturbation theory.
+   units: [Eh]
+
+.. qcvar:: MP3 CORRELATION ENERGY
+
+   The correlation energy component for 3-order Perturbation theory.
+      
+   .. math::
+      :nowrap:
+      :label: MP3corl
+      
+         \begin{align*}
+            E_{\text{MP3corl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
+                               & = E_{\text{S}} + E_{\text{D}}
+         \end{align*}
+      
+   units: [Eh]
+
+.. qcvar:: MP3 DOUBLES ENERGY
+
+   The doubles portion of the MP3 correlation energy
+   including same-spin and opposite-spin correlations.
+   :math:`E_{\text{D}}` in Eq. :eq:`MP3corl`.
+   units: [Eh]
+
+.. qcvar:: MP3 OPPOSITE-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the MP3 correlation energy
+   from opposite-spin or singlet doubles correlations.
+   :math:`E_{\text{OS}}` in Eq. :eq:`MP3corl`.
+   units: [Eh]
+
+.. qcvar:: MP3 SAME-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the MP3 correlation energy
+   from same-spin or triplet doubles correlations.
+   canonical_corl(os_scale=1, ss_scale=1) = singles + os_scale * (tot_corl - ss_corl) + ss_scale * ss_corl
+   :math:`E_{\text{SS}}` in Eq. :eq:`MP3corl`.
+   units: [Eh]
+
+.. qcvar:: MP3 SINGLES ENERGY
+
+   The singles portion of the MP3 correlation energy.
+   Zero except in ROHF.
+   :math:`E_{\text{S}}` in Eq. :eq:`MP3corl`.
+   units: [Eh]
+
+.. qcvar:: MP3 TOTAL ENERGY
+
+   The total electronic energy for 3-order Perturbation theory.
+   units: [Eh]
+
+.. qcvar:: MP4 CORRECTION ENERGY
+
+   The correlation energy difference between 3rd and 4th-order Perturbation theory.
+   units: [Eh]
+
+.. qcvar:: MP4 CORRELATION ENERGY
+
+   The correlation energy component for 4-order Perturbation theory.
+   units: [Eh]
+
+.. qcvar:: MP4 TOTAL ENERGY
+
+   The total electronic energy for 4-order Perturbation theory.
+   units: [Eh]
+
+.. qcvar:: MP5 CORRELATION ENERGY
+
+   The correlation energy component for 5-order Perturbation theory.
+   units: [Eh]
+
+.. qcvar:: MP5 TOTAL ENERGY
+
+   The total electronic energy for 5-order Perturbation theory.
+   units: [Eh]
+
+.. qcvar:: MP6 CORRELATION ENERGY
+
+   The correlation energy component for 6-order Perturbation theory.
+   units: [Eh]
+
+.. qcvar:: MP6 TOTAL ENERGY
+
+   The total electronic energy for 6-order Perturbation theory.
+   units: [Eh]
+
+.. qcvar:: MPWPW DIPOLE
+
+   The total dipole for the MPWPW level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: MPWPW FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method MPWPW, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: MPWPW QUADRUPOLE
+
+   The total quadrupole for the MPWPW level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: MPWPW TOTAL ENERGY
+
+   The total electronic energy for the MPWPW level of theory.
+   units: [Eh]
+
+.. qcvar:: N ALPHA ELECTRONS
+
+   The number of alpha electrons
+   units: [Eh]
+
+.. qcvar:: N ATOMS
+
+   The number of atoms
+   units: [Eh]
+
+.. qcvar:: N BASIS
+
+   The number of molecular orbitals
+   units: [Eh]
+
+.. qcvar:: N BASIS FUNCTIONS
+
+   The number of basis functions
+   units: []
+
+.. qcvar:: N BETA ELECTRONS
+
+   The number of beta electrons
+   units: [Eh]
+
+.. qcvar:: N MO
+
+   The number of molecular orbitals
+   units: [Eh]
+
+.. qcvar:: N MOLECULAR ORBITALS
+
+   The number of molecular orbitals
+   units: []
+
+.. qcvar:: NUCLEAR REPULSION ENERGY
+
+   The nuclear repulsion energy contribution [H] to the total SCF energy.
+   Quantity :math:`E_{NN}` in Eq. :eq:`SCFterms`.
+      
+   .. math:: E_{NN} = \sum_{i, j<i}^{N_{atom}}\frac{Z_i Z_j}{\lvert\mathbf{R}_i - \mathbf{R}_j\rvert}
+      :label: ENN
+      
+   units: [Eh]
+
+.. qcvar:: ONE-ELECTRON ENERGY
+
+   The one-electron energy contribution [H] to the total SCF energy.
+   Quantity :math:`E_{1e^-}` in Eq. :eq:`SCFterms`.
+   units: [Eh]
+
+.. qcvar:: PBE DIPOLE
+
+   The total dipole for the PBE level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: PBE FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method PBE, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: PBE QUADRUPOLE
+
+   The total quadrupole for the PBE level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: PBE TOTAL ENERGY
+
+   The total electronic energy for the PBE level of theory.
+   units: [Eh]
+
+.. qcvar:: PBE-D2 DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   pbe when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: PBE-D2 DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   pbe when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: PBE-D2 TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method pbe, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: PBE-D3 DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   pbe when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: PBE-D3 DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   pbe when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: PBE-D3 TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method pbe, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: PBE-D3(BJ) DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   pbe when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: PBE-D3(BJ) DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   pbe when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: PBE-D3(BJ) TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method pbe, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: PBE-D3M DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   pbe when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: PBE-D3M DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   pbe when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: PBE-D3M TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method pbe, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: PBE-D3M(BJ) DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   pbe when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: PBE-D3M(BJ) DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   pbe when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: PBE-D3M(BJ) TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method pbe, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: PBE0 DIPOLE
+
+   The total dipole for the PBE0 level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: PBE0 FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method PBE0, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: PBE0 QUADRUPOLE
+
+   The total quadrupole for the PBE0 level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: PBE0 TOTAL ENERGY
+
+   The total electronic energy for the PBE0 level of theory.
+   units: [Eh]
+
+.. qcvar:: PBE0-2 DIPOLE
+
+   The total dipole for the PBE0-2 level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: PBE0-2 DOUBLE-HYBRID CORRECTION ENERGY
+
+   The scaled MP2 correlation energy correction appended to an
+   underlying functional PBE0-2.
+   units: [Eh]
+
+.. qcvar:: PBE0-2 FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method PBE0-2, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: PBE0-2 QUADRUPOLE
+
+   The total quadrupole for the PBE0-2 level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: PBE0-2 TOTAL ENERGY
+
+   The total electronic energy for the PBE0-2 level of theory.
+   units: [Eh]
+
+.. qcvar:: PBE0-D2 DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   pbe0 when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: PBE0-D2 DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   pbe0 when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: PBE0-D2 TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method pbe0, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: PBE0-D3 DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   pbe0 when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: PBE0-D3 DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   pbe0 when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: PBE0-D3 TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method pbe0, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: PBE0-D3(BJ) DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   pbe0 when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: PBE0-D3(BJ) DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   pbe0 when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: PBE0-D3(BJ) TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method pbe0, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: PBE0-D3M DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   pbe0 when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: PBE0-D3M DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   pbe0 when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: PBE0-D3M TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method pbe0, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: PBE0-D3M(BJ) DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   pbe0 when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: PBE0-D3M(BJ) DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   pbe0 when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: PBE0-D3M(BJ) TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method pbe0, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: PBE0-DH DIPOLE
+
+   The total dipole for the PBE0-DH level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: PBE0-DH DOUBLE-HYBRID CORRECTION ENERGY
+
+   The scaled MP2 correlation energy correction appended to an
+   underlying functional PBE0-DH.
+   units: [Eh]
+
+.. qcvar:: PBE0-DH FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method PBE0-DH, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: PBE0-DH QUADRUPOLE
+
+   The total quadrupole for the PBE0-DH level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: PBE0-DH TOTAL ENERGY
+
+   The total electronic energy for the PBE0-DH level of theory.
+   units: [Eh]
+
+.. qcvar:: PCM POLARIZATION ENERGY
+
+   The Mutual polarization between the quantum chemical region and the classical polarizable continuum.
+   units: [Eh]
+
+.. qcvar:: PE ENERGY
+
+   The polarizable embedding energy.
+   units: [Eh]
+
+.. qcvar:: PTPSS DIPOLE
+
+   The total dipole for the PTPSS level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: PTPSS DOUBLE-HYBRID CORRECTION ENERGY
+
+   The scaled MP2 correlation energy correction appended to an
+   underlying functional PTPSS.
+   units: [Eh]
+
+.. qcvar:: PTPSS FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method PTPSS, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: PTPSS QUADRUPOLE
+
+   The total quadrupole for the PTPSS level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: PTPSS TOTAL ENERGY
+
+   The total electronic energy for the PTPSS level of theory.
+   units: [Eh]
+
+.. qcvar:: PW6B95 DIPOLE
+
+   The total dipole for the PW6B95 level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: PW6B95 FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method PW6B95, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: PW6B95 QUADRUPOLE
+
+   The total quadrupole for the PW6B95 level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: PW6B95 TOTAL ENERGY
+
+   The total electronic energy for the PW6B95 level of theory.
+   units: [Eh]
+
+.. qcvar:: PW86PBE DIPOLE
+
+   The total dipole for the PW86PBE level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: PW86PBE FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method PW86PBE, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: PW86PBE QUADRUPOLE
+
+   The total quadrupole for the PW86PBE level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: PW86PBE TOTAL ENERGY
+
+   The total electronic energy for the PW86PBE level of theory.
+   units: [Eh]
+
+.. qcvar:: PW91 DIPOLE
+
+   The total dipole for the PW91 level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: PW91 FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method PW91, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: PW91 QUADRUPOLE
+
+   The total quadrupole for the PW91 level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: PW91 TOTAL ENERGY
+
+   The total electronic energy for the PW91 level of theory.
+   units: [Eh]
+
+.. qcvar:: PWPB95 DIPOLE
+
+   The total dipole for the PWPB95 level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: PWPB95 DOUBLE-HYBRID CORRECTION ENERGY
+
+   The scaled MP2 correlation energy correction appended to an
+   underlying functional PWPB95.
+   units: [Eh]
+
+.. qcvar:: PWPB95 FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method PWPB95, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: PWPB95 QUADRUPOLE
+
+   The total quadrupole for the PWPB95 level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: PWPB95 TOTAL ENERGY
+
+   The total electronic energy for the PWPB95 level of theory.
+   units: [Eh]
+
+.. qcvar:: QCISD CORRELATION ENERGY
+
+   The correlation energy for a quadratic configuration interaction with singles and doubles calculation.
+   units: [Eh]
+
+.. qcvar:: QCISD TOTAL ENERGY
+
+   The total energy for a quadratic configuration interaction with singles and doubles calculation.
+   units: [Eh]
+
+.. qcvar:: SCF DIPOLE
+
+   The total dipole for the SCF level of theory.  This is a generic HF/DFT quantity and not necessarily aligned across different calcs.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: SCF DIPOLE GRADIENT
+
+   The derivative of the SCF dipole with respect to nuclear perturbations
+   as a degree-of-freedom by dipole component array.
+   units: [Eh a0/u]
+   dimension: [(3 * {nat}, 3)]
+
+.. qcvar:: SCF ITERATION ENERGY
+
+   The total SCF energy for the last completed iteration.
+   units: [Eh]
+
+.. qcvar:: SCF ITERATIONS
+
+   The number of iterations in final? SCF set.
+   units: []
+
+.. qcvar:: SCF QUADRUPOLE
+
+   The total quadrupole for the SCF level of theory.  This is a generic HF/DFT quantity and not necessarily aligned across different calcs.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: SCF TOTAL ENERGY
+
+   The total electronic energy of the SCF stage of the calculation.
+   The :samp:`{method} CORRELATION ENERGY` variables from subsequent stages of a
+   calculation are often the corresponding :samp:`{method} TOTAL ENERGY`
+   variables less this quantity. Constructed from Eq. :eq:`SCFterms`,
+   where this quantity is :math:`E_{\text{SCF}}`.
+      
+   .. math::
+      :nowrap:
+      :label: SCFterms
+      
+         \begin{align*}
+            E_{\text{SCF}} & = E_{NN} + E_{1e^-} + E_{2e^-} + E_{xc} + E_{\text{-D}} \\
+                           & = E_{\text{FCTL/HF}} + E_{\text{-D}}
+         \end{align*}
+      
+   Unless the method includes a dispersion correction, this quantity is equal to :qcvar:`HF TOTAL ENERGY` (for HF) or
+   :qcvar:`DFT FUNCTIONAL TOTAL ENERGY` (for
+   DFT). Unless the method is a DFT double-hybrid, this quantity is equal
+   to :qcvar:`DFT TOTAL ENERGY`.
+   units: [Eh]
+
+.. qcvar:: SCF TOTAL GRADIENT
+
+   The total electronic gradient of the SCF stage of a calculation.
+   May be HF or DFT.
+   units: [Eh/a0/a0]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: SCF TOTAL HESSIAN
+
+   The total electronic Hessian of the SCF stage of a calculation.
+   May be HF or DFT.
+   units: [Eh/a0/a0]
+   dimension: [(3 * {nat}, 3 * {nat})]
+
+.. qcvar:: SCS(N)-MP2 CORRELATION ENERGY
+
+   The MP2-like correlation energy by reweighting
+   MP2 DOUBLES ENERGY by 0 opposite-spin
+   and 1.76 same-spin contributions, with any singles
+   carried along.
+   units: [Eh]
+
+.. qcvar:: SCS(N)-MP2 TOTAL ENERGY
+
+   The total energy built from SCS(N)-MP2 CORRELATION ENERGY
+   and reference.
+   units: [Eh]
+
+.. qcvar:: SCS-MP2 CORRELATION ENERGY
+
+   The MP2-like correlation energy by reweighting
+   MP2 DOUBLES ENERGY by 6/5 opposite-spin
+   and 1/3 same-spin contributions, with any singles
+   carried along.
+   units: [Eh]
+
+.. qcvar:: SCS-MP2 TOTAL ENERGY
+
+   The total energy built from SCS-MP2 CORRELATION ENERGY
+   and reference.
+   units: [Eh]
+
+.. qcvar:: SCS-MP2-VDW CORRELATION ENERGY
+
+   The MP2-like correlation energy by reweighting
+   MP2 DOUBLES ENERGY by 1.28 opposite-spin
+   and 0.50 same-spin contributions, with any singles
+   carried along.
+   units: [Eh]
+
+.. qcvar:: SCS-MP2-VDW TOTAL ENERGY
+
+   The total energy built from
+   SCS-MP2-VDW CORRELATION ENERGY and reference.
+   units: [Eh]
+
+.. qcvar:: SOGGA11 DIPOLE
+
+   The total dipole for the SOGGA11 level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: SOGGA11 FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method SOGGA11, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: SOGGA11 QUADRUPOLE
+
+   The total quadrupole for the SOGGA11 level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: SOGGA11 TOTAL ENERGY
+
+   The total electronic energy for the SOGGA11 level of theory.
+   units: [Eh]
+
+.. qcvar:: SOGGA11-X DIPOLE
+
+   The total dipole for the SOGGA11-X level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: SOGGA11-X FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method SOGGA11-X, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: SOGGA11-X QUADRUPOLE
+
+   The total quadrupole for the SOGGA11-X level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: SOGGA11-X TOTAL ENERGY
+
+   The total electronic energy for the SOGGA11-X level of theory.
+   units: [Eh]
+
+.. qcvar:: SVWN DIPOLE
+
+   The total dipole for the SVWN level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: SVWN FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method SVWN, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: SVWN QUADRUPOLE
+
+   The total quadrupole for the SVWN level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: SVWN TOTAL ENERGY
+
+   The total electronic energy for the SVWN level of theory.
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 1 EXCITATION ENERGY - [] SYMMETRY
+
+   The excitation energy of time-dependent DFT in [] symmetry from 0 to root 1
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 1 EXCITED STATE ENERGY - [] SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 1 in [] symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 10 EXCITATION ENERGY - [] SYMMETRY
+
+   The excitation energy of time-dependent DFT in [] symmetry from 0 to root 10
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 10 EXCITED STATE ENERGY - [] SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 10 in [] symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 2 EXCITATION ENERGY - [] SYMMETRY
+
+   The excitation energy of time-dependent DFT in [] symmetry from 0 to root 2
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 2 EXCITED STATE ENERGY - [] SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 2 in [] symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 3 EXCITATION ENERGY - [] SYMMETRY
+
+   The excitation energy of time-dependent DFT in [] symmetry from 0 to root 3
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 3 EXCITED STATE ENERGY - [] SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 3 in [] symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 4 EXCITATION ENERGY - [] SYMMETRY
+
+   The excitation energy of time-dependent DFT in [] symmetry from 0 to root 4
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 4 EXCITED STATE ENERGY - [] SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 4 in [] symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 5 EXCITATION ENERGY - [] SYMMETRY
+
+   The excitation energy of time-dependent DFT in [] symmetry from 0 to root 5
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 5 EXCITED STATE ENERGY - [] SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 5 in [] symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 6 EXCITATION ENERGY - [] SYMMETRY
+
+   The excitation energy of time-dependent DFT in [] symmetry from 0 to root 6
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 6 EXCITED STATE ENERGY - [] SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 6 in [] symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 7 EXCITATION ENERGY - [] SYMMETRY
+
+   The excitation energy of time-dependent DFT in [] symmetry from 0 to root 7
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 7 EXCITED STATE ENERGY - [] SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 7 in [] symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 8 EXCITATION ENERGY - [] SYMMETRY
+
+   The excitation energy of time-dependent DFT in [] symmetry from 0 to root 8
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 8 EXCITED STATE ENERGY - [] SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 8 in [] symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 9 EXCITATION ENERGY - [] SYMMETRY
+
+   The excitation energy of time-dependent DFT in [] symmetry from 0 to root 9
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 9 EXCITED STATE ENERGY - [] SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 9 in [] symmetry
+   units: [Eh]
+
+.. qcvar:: TWO-ELECTRON ENERGY
+
+   The two-electron energy contribution [H] to the total SCF energy.
+   Quantity :math:`E_{2e^-}` in Eq. :eq:`SCFterms`.
+   units: [Eh]
+
+.. qcvar:: WB97 DIPOLE
+
+   The total dipole for the WB97 level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: WB97 FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method WB97, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: WB97 QUADRUPOLE
+
+   The total quadrupole for the WB97 level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: WB97 TOTAL ENERGY
+
+   The total electronic energy for the WB97 level of theory.
+   units: [Eh]
+
+.. qcvar:: WB97-CHG DISPERSION CORRECTION ENERGY
+
+   disp correction attaching to DLDF+D09 ORPHAN
+   units: [Eh]
+
+.. qcvar:: WB97X DIPOLE
+
+   The total dipole for the WB97X level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: WB97X FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method WB97X, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: WB97X QUADRUPOLE
+
+   The total quadrupole for the WB97X level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: WB97X TOTAL ENERGY
+
+   The total electronic energy for the WB97X level of theory.
+   units: [Eh]
+
+.. qcvar:: WB97X-D DIPOLE
+
+   The total dipole for the WB97X-D level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: WB97X-D FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method WB97X-D, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: WB97X-D QUADRUPOLE
+
+   The total quadrupole for the WB97X-D level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: WB97X-D TOTAL ENERGY
+
+   The total electronic energy for the WB97X-D level of theory.
+   units: [Eh]
+
+.. qcvar:: WPBE DIPOLE
+
+   The total dipole for the WPBE level of theory.
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: WPBE FUNCTIONAL TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method WPBE, without any dispersion correction.
+   units: [Eh]
+
+.. qcvar:: WPBE QUADRUPOLE
+
+   The total quadrupole for the WPBE level of theory.
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: WPBE TOTAL ENERGY
+
+   The total electronic energy for the WPBE level of theory.
+   units: [Eh]
+
+.. qcvar:: WPBE-D2 DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   wpbe when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: WPBE-D2 DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   wpbe when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: WPBE-D2 TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method wpbe, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: WPBE-D3 DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   wpbe when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: WPBE-D3 DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   wpbe when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: WPBE-D3 TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method wpbe, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: WPBE-D3(BJ) DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   wpbe when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: WPBE-D3(BJ) DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   wpbe when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: WPBE-D3(BJ) TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method wpbe, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: WPBE-D3M DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   wpbe when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: WPBE-D3M DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   wpbe when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: WPBE-D3M TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method wpbe, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: WPBE-D3M(BJ) DISPERSION CORRECTION ENERGY
+
+   The dispersion correction defined for appending to underlying functional
+   wpbe when a DFT-D method is requested.
+   units: [Eh]
+
+.. qcvar:: WPBE-D3M(BJ) DISPERSION CORRECTION GRADIENT
+
+   The gradient to the dispersion correction defined for appending to underlying functional
+   wpbe when a DFT-D method is requested.
+   units: [Eh]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: WPBE-D3M(BJ) TOTAL ENERGY
+
+   The total electronic energy for the underlying functional of the
+   requested DFT method wpbe, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: [T] CORRECTION ENERGY
+
+   The coupled-cluster bracket perturbative triples correction.
+   units: [Eh]

@@ -1,0 +1,6 @@
+TestComparisonError
+===================
+
+.. currentmodule:: qcdb
+
+.. autoexception:: TestComparisonError

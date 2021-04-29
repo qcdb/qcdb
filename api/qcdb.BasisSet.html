@@ -1,0 +1,865 @@
+<!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BasisSet</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/psi4.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="shortcut icon" href="../_static/favicon-qcdb.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="BasisSetFileNotFound" href="qcdb.BasisSetFileNotFound.html" />
+    <link rel="prev" title="AliasKeyword" href="qcdb.AliasKeyword.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">Index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="qcdb.BasisSetFileNotFound.html" title="BasisSetFileNotFound"
+             accesskey="N"><i class="fa fa-long-arrow-right fa-lg"></i></a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="qcdb.AliasKeyword.html" title="AliasKeyword"
+             accesskey="P"><i class="fa fa-long-arrow-left fa-lg"></i></a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../index.html" title="Table Of Contents"
+             accesskey="C"><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.BasisSet.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../api.html" accesskey="U"><span style="font-family: Optima, sans-serif; text-transform: none;">QCDB</span> API</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">BasisSet</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="basisset">
+<h1>BasisSet<a class="headerlink" href="#basisset" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="qcdb.BasisSet">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">qcdb.</span></code><code class="sig-name descname"><span class="pre">BasisSet</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Basis set container class
+Reads the basis set from a checkpoint file object. Also reads the molecule
+from the checkpoint file storing the information in an internal Molecule class
+which can be accessed using molecule().</p>
+<p class="rubric">Attributes Summary</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.LIBINT_MAX_AM" title="qcdb.BasisSet.LIBINT_MAX_AM"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LIBINT_MAX_AM</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.exp_ao" title="qcdb.BasisSet.exp_ao"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exp_ao</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.initialized_shared" title="qcdb.BasisSet.initialized_shared"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initialized_shared</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods Summary</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.add" title="qcdb.BasisSet.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a>(b)</p></td>
+<td><p>Adds this plus another basis set and returns the result.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.ao_to_shell" title="qcdb.BasisSet.ao_to_shell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ao_to_shell</span></code></a>(i)</p></td>
+<td><p>Given a Cartesian function (AO) number what shell does it correspond to.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.atomic_basis_set" title="qcdb.BasisSet.atomic_basis_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atomic_basis_set</span></code></a>(center)</p></td>
+<td><p>Return a BasisSet object containing all shells at center i (0-index) * Used for Atomic HF computations for SAD Guesses * &#64;param center Atomic center to provide a basis object for.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.build" title="qcdb.BasisSet.build"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build</span></code></a>(molecule, shells)</p></td>
+<td><p>Builder factory method * &#64;param molecule the molecule to build the BasisSet around * &#64;param shells array of <em>atom-numbered</em> ShellInfo to build the BasisSet from * &#64;return BasisSet corresponding to this molecule and set of shells</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.compute_phi" title="qcdb.BasisSet.compute_phi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_phi</span></code></a>(phi_ao, x, y, z)</p></td>
+<td><p>Returns the values of the basis functions at a point</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.concatenate" title="qcdb.BasisSet.concatenate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">concatenate</span></code></a>(b)</p></td>
+<td><p>Concatenates two basis sets together into a new basis without reordering anything.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.construct" title="qcdb.BasisSet.construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">construct</span></code></a>(parser, mol, key[, deffit, …])</p></td>
+<td><p>Returns a new BasisSet object configured from the <em>mol</em> Molecule object for <em>key</em> (generally a Psi4 keyword: BASIS, DF_BASIS_SCF, etc.).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.constructor_basisset_center" title="qcdb.BasisSet.constructor_basisset_center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">constructor_basisset_center</span></code></a>(bs, center)</p></td>
+<td><p><ul class="simple">
+<li><p>Creates a new basis set object for an atom, from an existing basis set</p></li>
+</ul>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.constructor_role_mol_shellmap" title="qcdb.BasisSet.constructor_role_mol_shellmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">constructor_role_mol_shellmap</span></code></a>(role, mol, …)</p></td>
+<td><p>The most commonly used constructor.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.constructor_zero_ao_basis" title="qcdb.BasisSet.constructor_zero_ao_basis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">constructor_zero_ao_basis</span></code></a>()</p></td>
+<td><p>Constructs a zero AO basis set</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.decontract" title="qcdb.BasisSet.decontract"><code class="xref py py-obj docutils literal notranslate"><span class="pre">decontract</span></code></a>(shells)</p></td>
+<td><p>Procedure applied to list to ShellInfo-s <em>shells</em> that returns another list of shells, one for every AM and exponent pair in the input list.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.export_for_libmints" title="qcdb.BasisSet.export_for_libmints"><code class="xref py py-obj docutils literal notranslate"><span class="pre">export_for_libmints</span></code></a>(role)</p></td>
+<td><p>From complete BasisSet object, returns array where triplets of elements are each unique atom label, the hash of the string shells entry in gbs format and the shells entry in gbs format for that label.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.function_to_center" title="qcdb.BasisSet.function_to_center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">function_to_center</span></code></a>(i)</p></td>
+<td><p>Given a function what is its atomic center *  &#64;param i Function number *  &#64;return The atomic center for the i’th function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.function_to_shell" title="qcdb.BasisSet.function_to_shell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">function_to_shell</span></code></a>(i)</p></td>
+<td><p>Given a function number what shell does it correspond to.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.get_ao_sorted_list" title="qcdb.BasisSet.get_ao_sorted_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ao_sorted_list</span></code></a>()</p></td>
+<td><p>Returns the vector of sorted shell list.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.get_ao_sorted_shell" title="qcdb.BasisSet.get_ao_sorted_shell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ao_sorted_shell</span></code></a>(i)</p></td>
+<td><p>Returns the value of the sorted shell list.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.has_puream" title="qcdb.BasisSet.has_puream"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_puream</span></code></a>()</p></td>
+<td><p>Spherical harmonics? *  &#64;return true if using spherical harmonics</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.initialize_singletons" title="qcdb.BasisSet.initialize_singletons"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initialize_singletons</span></code></a>()</p></td>
+<td><p>Initialize singleton values that are shared by all basis set objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.make_filename" title="qcdb.BasisSet.make_filename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_filename</span></code></a>(name)</p></td>
+<td><p>Converts basis set name to a compatible filename.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.max_am" title="qcdb.BasisSet.max_am"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_am</span></code></a>()</p></td>
+<td><p>Maximum angular momentum used in the basis set.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.max_function_per_shell" title="qcdb.BasisSet.max_function_per_shell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_function_per_shell</span></code></a>()</p></td>
+<td><p>Compute the maximum number of basis functions contained in a shell.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.max_nprimitive" title="qcdb.BasisSet.max_nprimitive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_nprimitive</span></code></a>()</p></td>
+<td><p>Maximum number of primitives in a shell.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.molecule" title="qcdb.BasisSet.molecule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">molecule</span></code></a>()</p></td>
+<td><p>Molecule this basis is for.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.name" title="qcdb.BasisSet.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a>()</p></td>
+<td><p>Returns the name of this basis set</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.nao" title="qcdb.BasisSet.nao"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nao</span></code></a>()</p></td>
+<td><p>Number of atomic orbitals (Cartesian).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.nbf" title="qcdb.BasisSet.nbf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nbf</span></code></a>()</p></td>
+<td><p>Number of basis functions (Spherical).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.nprimitive" title="qcdb.BasisSet.nprimitive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nprimitive</span></code></a>()</p></td>
+<td><p>Number of primitives.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.nshell" title="qcdb.BasisSet.nshell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nshell</span></code></a>()</p></td>
+<td><p>Number of shells.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.nshell_on_center" title="qcdb.BasisSet.nshell_on_center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nshell_on_center</span></code></a>(i)</p></td>
+<td><p>Return the number of shells on a given center.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.print_by_level" title="qcdb.BasisSet.print_by_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_by_level</span></code></a>([out, level])</p></td>
+<td><p>Print basis set information according to the level of detail in print_level &#64;param out The file stream to use for printing.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.print_detail" title="qcdb.BasisSet.print_detail"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_detail</span></code></a>([out, numbersonly])</p></td>
+<td><p>Prints a detailed PSI3-style summary of the basis (per-atom) *  &#64;param out The file stream to use for printing.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.print_detail_cfour" title="qcdb.BasisSet.print_detail_cfour"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_detail_cfour</span></code></a>([out])</p></td>
+<td><p>Returns a string in CFOUR-style of the basis (per-atom) *  Format from <a class="reference external" href="http://slater.chemie.uni-mainz.de/cfour/index.php?n=Main.OldFormatOfAnEntryInTheGENBASFile">http://slater.chemie.uni-mainz.de/cfour/index.php?n=Main.OldFormatOfAnEntryInTheGENBASFile</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.print_detail_gamess" title="qcdb.BasisSet.print_detail_gamess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_detail_gamess</span></code></a>([out, numbersonly, …])</p></td>
+<td><p>Prints a detailed PSI3-style summary of the basis (per-atom) *  &#64;param out The file stream to use for printing.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.print_detail_nwchem" title="qcdb.BasisSet.print_detail_nwchem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_detail_nwchem</span></code></a>([out, numbersonly])</p></td>
+<td><p>Prints a detailed NWChem-style summary of the basis (per-atom) *  &#64;param out The file stream to use for printing.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.print_summary" title="qcdb.BasisSet.print_summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_summary</span></code></a>([out])</p></td>
+<td><p>Prints a short string summarizing the basis set *  &#64;param out The file stream to use for printing.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.pyconstruct" title="qcdb.BasisSet.pyconstruct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyconstruct</span></code></a>(mol, key, target[, fitrole, …])</p></td>
+<td><p>Builds a BasisSet object for <em>mol</em> (either a qcdb.Molecule or a string that can be instantiated into one) from basis set specifications passed in as python functions or as a string that names a basis to be applied to all atoms.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.pyprint" title="qcdb.BasisSet.pyprint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyprint</span></code></a>([out])</p></td>
+<td><p>Print the basis set.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.refresh" title="qcdb.BasisSet.refresh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">refresh</span></code></a>()</p></td>
+<td><p>Refresh internal basis set data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.set_name" title="qcdb.BasisSet.set_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_name</span></code></a>(name)</p></td>
+<td><p>Sets the name of this basis set</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.shell" title="qcdb.BasisSet.shell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shell</span></code></a>(si[, center])</p></td>
+<td><p>Return the si’th Gaussian shell on center *  &#64;param i Shell number *  &#64;return A shared pointer to the ShellInfo object for the i’th shell.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.shell_on_center" title="qcdb.BasisSet.shell_on_center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shell_on_center</span></code></a>(center, shell)</p></td>
+<td><p>Return the overall shell number</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.shell_sorter_am" title="qcdb.BasisSet.shell_sorter_am"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shell_sorter_am</span></code></a>(d1, d2)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.shell_sorter_ncenter" title="qcdb.BasisSet.shell_sorter_ncenter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shell_sorter_ncenter</span></code></a>(d1, d2)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.shell_to_ao_function" title="qcdb.BasisSet.shell_to_ao_function"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shell_to_ao_function</span></code></a>(i)</p></td>
+<td><p>Given a shell what is its first AO function *  &#64;param i Shell number *  &#64;return The function number for the first function for the i’th shell.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.shell_to_basis_function" title="qcdb.BasisSet.shell_to_basis_function"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shell_to_basis_function</span></code></a>(i)</p></td>
+<td><p>Given a shell what is its first basis function (spherical) function *  &#64;param i Shell number *  &#64;return The function number for the first function for the i’th shell.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.shell_to_center" title="qcdb.BasisSet.shell_to_center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shell_to_center</span></code></a>(i)</p></td>
+<td><p>Given a shell what is its atomic center *  &#64;param i Shell number *  &#64;return The atomic center for the i’th shell.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.test_basis_set" title="qcdb.BasisSet.test_basis_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_basis_set</span></code></a>(max_am)</p></td>
+<td><p>Returns a shell-labeled test basis set object * &#64;param max_am maximum angular momentum to build * &#64;return pair containing shell labels and four-center * test basis for use in benchmarking * See libmints/benchmark.cc for details The libmints version seems not to have been updated along with the classes.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.zero_ao_basis_set" title="qcdb.BasisSet.zero_ao_basis_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zero_ao_basis_set</span></code></a>()</p></td>
+<td><p>Returns an empty basis set object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.zero_so_basis_set" title="qcdb.BasisSet.zero_so_basis_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zero_so_basis_set</span></code></a>(factory)</p></td>
+<td><p><strong>NYI</strong> Returns an empty SO basis set object.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes Documentation</p>
+<dl class="py attribute">
+<dt id="qcdb.BasisSet.LIBINT_MAX_AM">
+<code class="sig-name descname"><span class="pre">LIBINT_MAX_AM</span></code><em class="property"> <span class="pre">=</span> <span class="pre">6</span></em><a class="headerlink" href="#qcdb.BasisSet.LIBINT_MAX_AM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="qcdb.BasisSet.exp_ao">
+<code class="sig-name descname"><span class="pre">exp_ao</span></code><em class="property"> <span class="pre">=</span> <span class="pre">[[],</span> <span class="pre">[],</span> <span class="pre">[],</span> <span class="pre">[],</span> <span class="pre">[],</span> <span class="pre">[]]</span></em><a class="headerlink" href="#qcdb.BasisSet.exp_ao" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="qcdb.BasisSet.initialized_shared">
+<code class="sig-name descname"><span class="pre">initialized_shared</span></code><em class="property"> <span class="pre">=</span> <span class="pre">False</span></em><a class="headerlink" href="#qcdb.BasisSet.initialized_shared" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods Documentation</p>
+<dl class="py method">
+<dt id="qcdb.BasisSet.add">
+<code class="sig-name descname"><span class="pre">add</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds this plus another basis set and returns the result.
+Equivalent to the ‘+’ operator. Appears defunct.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.ao_to_shell">
+<code class="sig-name descname"><span class="pre">ao_to_shell</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.ao_to_shell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.ao_to_shell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a Cartesian function (AO) number what shell does it correspond to.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.atomic_basis_set">
+<code class="sig-name descname"><span class="pre">atomic_basis_set</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.atomic_basis_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.atomic_basis_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a BasisSet object containing all shells at center i (0-index)
+* Used for Atomic HF computations for SAD Guesses
+* &#64;param center Atomic center to provide a basis object for.
+* &#64;returns A new basis set object for the atomic center.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.build">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">build</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molecule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shells</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builder factory method
+* &#64;param molecule the molecule to build the BasisSet around
+* &#64;param shells array of <em>atom-numbered</em> ShellInfo to build the BasisSet from
+* &#64;return BasisSet corresponding to this molecule and set of shells</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.compute_phi">
+<code class="sig-name descname"><span class="pre">compute_phi</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phi_ao</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.compute_phi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.compute_phi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the values of the basis functions at a point</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.concatenate">
+<code class="sig-name descname"><span class="pre">concatenate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.concatenate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.concatenate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenates two basis sets together into a new basis without
+reordering anything. Unless you know what you’re doing, you should
+use the ‘+’ operator instead of this method. Appears defunct.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.construct">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">construct</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deffit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basstrings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_atomlist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.construct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.construct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new BasisSet object configured from the <em>mol</em>
+Molecule object for <em>key</em> (generally a Psi4 keyword: BASIS,
+DF_BASIS_SCF, etc.). Fails utterly if a basis has not been set for
+<em>key</em> for every atom in <em>mol</em>, unless <em>deffit</em> is set (JFIT,
+JKFIT, or RIFIT), whereupon empty atoms are assigned to <em>key</em>
+from the BasisFamily. This function is significantly
+re-worked from its libmints analog.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mol</strong> (<a class="reference internal" href="qcdb.Molecule.html#qcdb.Molecule" title="qcdb.molecule.molecule.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a>) – A molecule object for which every atom has had a basisset set for <cite>key</cite></p></li>
+<li><p><strong>basstrings</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>]) – Additional source for basis data. Keys are regularized basis names and values are gbs strings.</p></li>
+<li><p><strong>return_atomlist</strong> – Return list of one-atom BasisSet-s, rather than single whole-mol BasisSet.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.constructor_basisset_center">
+<code class="sig-name descname"><span class="pre">constructor_basisset_center</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.constructor_basisset_center"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.constructor_basisset_center" title="Permalink to this definition">¶</a></dt>
+<dd><ul class="simple">
+<li><p>Creates a new basis set object for an atom, from an existing basis set</p></li>
+<li><p>bs: the basis set to copy data from</p></li>
+<li><p>center: the atom in bs to copy over</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.constructor_role_mol_shellmap">
+<code class="sig-name descname"><span class="pre">constructor_role_mol_shellmap</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">role</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shell_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.constructor_role_mol_shellmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.constructor_role_mol_shellmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>The most commonly used constructor. Extracts basis set name for <em>role</em>
+from each atom of <em>mol</em>, looks up basis and role entries in the
+<em>shell_map</em> dictionary, retrieves the ShellInfo objects and returns
+the BasisSet.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.constructor_zero_ao_basis">
+<code class="sig-name descname"><span class="pre">constructor_zero_ao_basis</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.constructor_zero_ao_basis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.constructor_zero_ao_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs a zero AO basis set</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.decontract">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">decontract</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shells</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.decontract"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.decontract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Procedure applied to list to ShellInfo-s <em>shells</em> that returns
+another list of shells, one for every AM and exponent pair in the input
+list. Decontracts the shells.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.export_for_libmints">
+<code class="sig-name descname"><span class="pre">export_for_libmints</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">role</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.export_for_libmints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.export_for_libmints" title="Permalink to this definition">¶</a></dt>
+<dd><p>From complete BasisSet object, returns array where
+triplets of elements are each unique atom label, the hash
+of the string shells entry in gbs format and the
+shells entry in gbs format for that label. This packaging is
+intended for return to libmints BasisSet::construct_from_pydict for
+instantiation of a libmints BasisSet clone of <em>self</em>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.function_to_center">
+<code class="sig-name descname"><span class="pre">function_to_center</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.function_to_center"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.function_to_center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a function what is its atomic center
+*  &#64;param i Function number
+*  &#64;return The atomic center for the i’th function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.function_to_shell">
+<code class="sig-name descname"><span class="pre">function_to_shell</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.function_to_shell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.function_to_shell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a function number what shell does it correspond to.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.get_ao_sorted_list">
+<code class="sig-name descname"><span class="pre">get_ao_sorted_list</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.get_ao_sorted_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.get_ao_sorted_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the vector of sorted shell list. Defunct</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.get_ao_sorted_shell">
+<code class="sig-name descname"><span class="pre">get_ao_sorted_shell</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.get_ao_sorted_shell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.get_ao_sorted_shell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the value of the sorted shell list. Defunct</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.has_puream">
+<code class="sig-name descname"><span class="pre">has_puream</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.has_puream"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.has_puream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Spherical harmonics?
+*  &#64;return true if using spherical harmonics</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.initialize_singletons">
+<code class="sig-name descname"><span class="pre">initialize_singletons</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.initialize_singletons"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.initialize_singletons" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize singleton values that are shared by all basis set objects.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.make_filename">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">make_filename</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.make_filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.make_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts basis set name to a compatible filename.
+* &#64;param basisname Basis name
+* &#64;return Compatible file name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.max_am">
+<code class="sig-name descname"><span class="pre">max_am</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.max_am"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.max_am" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum angular momentum used in the basis set.
+*  &#64;return Maximum angular momentum.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.max_function_per_shell">
+<code class="sig-name descname"><span class="pre">max_function_per_shell</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.max_function_per_shell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.max_function_per_shell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the maximum number of basis functions contained in a shell.
+*  &#64;return The max number of basis functions in a shell.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.max_nprimitive">
+<code class="sig-name descname"><span class="pre">max_nprimitive</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.max_nprimitive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.max_nprimitive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum number of primitives in a shell.
+*  Examines each shell and find the shell with the maximum number of primitives returns that
+*  number of primitives.
+*  &#64;return Maximum number of primitives.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.molecule">
+<code class="sig-name descname"><span class="pre">molecule</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.molecule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.molecule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Molecule this basis is for.
+*  &#64;return Shared pointer to the molecule for this basis set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.name">
+<code class="sig-name descname"><span class="pre">name</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the name of this basis set</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.nao">
+<code class="sig-name descname"><span class="pre">nao</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.nao"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.nao" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of atomic orbitals (Cartesian).
+* &#64;return The number of atomic orbitals (Cartesian orbitals, always).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.nbf">
+<code class="sig-name descname"><span class="pre">nbf</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.nbf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.nbf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of basis functions (Spherical).
+*  &#64;return The number of basis functions (Spherical, if has_puream() == true).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.nprimitive">
+<code class="sig-name descname"><span class="pre">nprimitive</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.nprimitive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.nprimitive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of primitives.
+*  &#64;return The total number of primitives in all contractions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.nshell">
+<code class="sig-name descname"><span class="pre">nshell</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.nshell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.nshell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of shells.
+*  &#64;return Number of shells.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.nshell_on_center">
+<code class="sig-name descname"><span class="pre">nshell_on_center</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.nshell_on_center"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.nshell_on_center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of shells on a given center.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.print_by_level">
+<code class="sig-name descname"><span class="pre">print_by_level</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.print_by_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.print_by_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print basis set information according to the level of detail in print_level
+&#64;param out The file stream to use for printing. Defaults to outfile.
+&#64;param print_level: defaults to 2
+*  &lt; 1: Nothing
+*    1: Brief summary
+*    2: Summary and contraction details
+*  &gt; 2: Full details</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.print_detail">
+<code class="sig-name descname"><span class="pre">print_detail</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numbersonly</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.print_detail"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.print_detail" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints a detailed PSI3-style summary of the basis (per-atom)
+*  &#64;param out The file stream to use for printing. Defaults to outfile.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.print_detail_cfour">
+<code class="sig-name descname"><span class="pre">print_detail_cfour</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.print_detail_cfour"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.print_detail_cfour" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a string in CFOUR-style of the basis (per-atom)
+*  Format from <a class="reference external" href="http://slater.chemie.uni-mainz.de/cfour/index.php?n=Main.OldFormatOfAnEntryInTheGENBASFile">http://slater.chemie.uni-mainz.de/cfour/index.php?n=Main.OldFormatOfAnEntryInTheGENBASFile</a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.print_detail_gamess">
+<code class="sig-name descname"><span class="pre">print_detail_gamess</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numbersonly</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.print_detail_gamess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.print_detail_gamess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints a detailed PSI3-style summary of the basis (per-atom)
+*  &#64;param out The file stream to use for printing. Defaults to outfile.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.print_detail_nwchem">
+<code class="sig-name descname"><span class="pre">print_detail_nwchem</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numbersonly</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.print_detail_nwchem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.print_detail_nwchem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints a detailed NWChem-style summary of the basis (per-atom)
+*  &#64;param out The file stream to use for printing. Defaults to outfile.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.print_summary">
+<code class="sig-name descname"><span class="pre">print_summary</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.print_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.print_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints a short string summarizing the basis set
+*  &#64;param out The file stream to use for printing. Defaults to outfile.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.pyconstruct">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">pyconstruct</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitrole</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ORBITAL'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_atomlist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.pyconstruct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.pyconstruct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds a BasisSet object for <em>mol</em> (either a qcdb.Molecule or
+a string that can be instantiated into one) from basis set
+specifications passed in as python functions or as a string that
+names a basis to be applied to all atoms. Always required is the
+keyword <em>key</em> and string/function <em>target</em> of the basis to be
+constructed. For orbital basis sets, <em>key</em> will likely be ‘BASIS’
+and, together with <em>target</em>, these arguments suffice.
+<code class="docutils literal notranslate"><span class="pre">pyconstruct(smol,</span> <span class="pre">&quot;BASIS&quot;,</span> <span class="pre">basisspec_psi4_yo_631pg_d_p_)</span></code>
+<code class="docutils literal notranslate"><span class="pre">pyconstruct(mol,</span> <span class="pre">&quot;BASIS&quot;,</span> <span class="pre">&quot;6-31+G**&quot;)</span></code>
+When building an auxiliary basis, <em>key</em> is again the keyword,
+<em>target</em> is the string or function for the fitting basis (this
+may also be an empty string). In case the fitting basis isn’t
+fully specified, also provide a <em>fitrole</em> and the string/function
+of the orbital basis as <em>other</em>, so that orbital hints can be
+used to look up a suitable default basis in BasisFamily.
+<code class="docutils literal notranslate"><span class="pre">pyconstruct(smol,</span> <span class="pre">&quot;DF_BASIS_MP2&quot;,</span> <span class="pre">basisspec_psi4_yo_ccpvdzri,</span> <span class="pre">'RIFIT',</span> <span class="pre">basisspec_psi4_yo_631pg_d_p_)</span></code>
+<code class="docutils literal notranslate"><span class="pre">pyconstruct(mol,</span> <span class="pre">&quot;DF_BASIS_MP2&quot;,</span> <span class="pre">&quot;&quot;,</span> <span class="pre">&quot;RIFIT&quot;,</span> <span class="pre">&quot;6-31+G(d,p)&quot;)</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mol</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference internal" href="qcdb.Molecule.html#qcdb.Molecule" title="qcdb.molecule.molecule.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – If not a <a class="reference internal" href="qcdb.Molecule.html#qcdb.Molecule" title="qcdb.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">qcdb.Molecule</span></code></a>, something that can be converted into one.
+If the latter, the basisset dict is returned rather than the BasisSet object.
+If you’ve got a psi4.core.Molecule, pass <cite>qcdb.Molecule(psimol.to_dict())</cite>.</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – {‘BASIS’, ‘DF_BASIS_SCF’, ‘DF_BASIS_MP2’, ‘DF_BASIS_CC’}
+Label (effectively Psi4 keyword) to append the basis on the molecule.</p></li>
+<li><p><strong>target</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>]) – Defines the basis set to be constructed. Can be a string (naming a
+basis file) or a function (multiple files, shells).
+Required for <cite>fitrole=’ORBITAL’</cite>. For auxiliary bases to be built
+entirely from orbital default, can be empty string.</p></li>
+<li><p><strong>fitrole</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – {‘ORBITAL’, ‘JKFIT’, ‘RIFIT’}</p></li>
+<li><p><strong>other</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Callable" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]) – Only used when building fitting bases. Like <cite>target</cite> only supplies
+the definitions for the orbital basis.</p></li>
+<li><p><strong>return_atomlist</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Build one-atom basis sets (for SAD) rather than one whole-Mol basis set</p></li>
+<li><p><strong>return_dict</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Additionally return the dictionary representation of built BasisSet</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>bas</strong> (<a class="reference internal" href="#qcdb.BasisSet" title="qcdb.BasisSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">qcdb.BasisSet</span></code></a>) – Built BasisSet object for <cite>mol</cite>.</p></li>
+<li><p><strong>dbas</strong> (<em>dict, optional</em>) – Only returned if <cite>return_dict=True</cite>. Suitable for feeding to libmints.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.pyprint">
+<code class="sig-name descname"><span class="pre">pyprint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.pyprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.pyprint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the basis set.
+*  &#64;param out The file stream to use for printing. Defaults to outfile.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.refresh">
+<code class="sig-name descname"><span class="pre">refresh</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.refresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.refresh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refresh internal basis set data. Useful if someone has pushed
+to shells. Pushing to shells happens in the BasisSetParsers, so
+the parsers will call refresh(). This function is now defunct.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.set_name">
+<code class="sig-name descname"><span class="pre">set_name</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.set_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.set_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the name of this basis set</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.shell">
+<code class="sig-name descname"><span class="pre">shell</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">si</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.shell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.shell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the si’th Gaussian shell on center
+*  &#64;param i Shell number
+*  &#64;return A shared pointer to the ShellInfo object for the i’th shell.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.shell_on_center">
+<code class="sig-name descname"><span class="pre">shell_on_center</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shell</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.shell_on_center"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.shell_on_center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the overall shell number</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.shell_sorter_am">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">shell_sorter_am</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.shell_sorter_am"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.shell_sorter_am" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.shell_sorter_ncenter">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">shell_sorter_ncenter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.shell_sorter_ncenter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.shell_sorter_ncenter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.shell_to_ao_function">
+<code class="sig-name descname"><span class="pre">shell_to_ao_function</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.shell_to_ao_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.shell_to_ao_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a shell what is its first AO function
+*  &#64;param i Shell number
+*  &#64;return The function number for the first function for the i’th shell.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.shell_to_basis_function">
+<code class="sig-name descname"><span class="pre">shell_to_basis_function</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.shell_to_basis_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.shell_to_basis_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a shell what is its first basis function (spherical) function
+*  &#64;param i Shell number
+*  &#64;return The function number for the first function for the i’th shell.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.shell_to_center">
+<code class="sig-name descname"><span class="pre">shell_to_center</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.shell_to_center"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.shell_to_center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a shell what is its atomic center
+*  &#64;param i Shell number
+*  &#64;return The atomic center for the i’th shell.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.test_basis_set">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">test_basis_set</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_am</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.test_basis_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.test_basis_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a shell-labeled test basis set object
+* &#64;param max_am maximum angular momentum to build
+* &#64;return pair containing shell labels and four-center
+* test basis for use in benchmarking
+* See libmints/benchmark.cc for details
+The libmints version seems not to have been updated along with the classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.zero_ao_basis_set">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">zero_ao_basis_set</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.zero_ao_basis_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.zero_ao_basis_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an empty basis set object.
+Returns a BasisSet object that actually has a single s-function
+at the origin with an exponent of 0.0 and contraction of 1.0.
+*  &#64;return A new empty BasisSet object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qcdb.BasisSet.zero_so_basis_set">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">zero_so_basis_set</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">factory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet.zero_so_basis_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet.zero_so_basis_set" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>NYI</strong> Returns an empty SO basis set object.
+*  Returns an SOBasis object that actually has a single s-function
+*  at the origin with an exponent of 0.0 and contraction of 1.0.
+*  &#64;return A new empty SOBasis object.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/qcdbsquare.png" alt="Logo"/>
+        </a></p><!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+<div id="searchbox" style="display: none" role="search">
+  <!--<h3>Quick search</h3>-->
+    <form class="search" action="../search.html" method="get">
+      <!--<div><input type="text" name="q" placeholder="search docs" /></div>-->
+      <div><input type="text" name="q" placeholder="&#xF002;" style="font-family:FontAwesome, Ariel" /></div>
+      <!--<div><input type="submit" value="Go" /></div>-->
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >Index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="qcdb.BasisSetFileNotFound.html" title="BasisSetFileNotFound"
+             ><i class="fa fa-long-arrow-right fa-lg"></i></a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="qcdb.AliasKeyword.html" title="AliasKeyword"
+             ><i class="fa fa-long-arrow-left fa-lg"></i></a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../index.html" title="Table Of Contents"
+             ><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="http://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.BasisSet.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="http://github.com/qcdb/qcdb/tree/0+untagged.1.ge6d20d5">0+untagged.1.ge6d20d5</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../api.html" ><span style="font-family: Optima, sans-serif; text-transform: none;">QCDB</span> API</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">BasisSet</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, The QCDB Project.
+      Last updated on Thursday, 29 April 2021 05:29AM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>
