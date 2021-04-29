@@ -1,0 +1,100 @@
+#  container:
+#    image: python:3.6
+#    volumes:
+#      - dist:dist
+#      - public:public
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  release_sphinx:
+    needs: [CI]
+    runs-on: ubuntu-latest
+  #build:
+    defaults:
+      run:
+        shell: bash -l {0}
+    strategy:
+      fail-fast: false
+      matrix:
+        cfg:
+          - conda-env: docs-cf
+            python-version: 3.6
+            label: Generic
+            runs-on: ubuntu-latest
+
+          # - conda-env:
+          #   python-version:
+          #   label:
+          #   runs-on: ubuntu-latest
+
+    name: "🐍 ${{ matrix.cfg.python-version }} • ${{ matrix.cfg.label }}"
+    runs-on: ${{ matrix.cfg.runs-on }}
+
+    steps:
+    - uses: actions/checkout@v2
+#      with:
+#        fetch-depth: 0
+
+    - name: Create Environment
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        activate-environment: test
+        environment-file: devtools/conda-envs/${{ matrix.cfg.conda-env }}.yaml
+        python-version: ${{ matrix.cfg.python-version }}
+        auto-activate-base: false
+
+    - name: Environment Information
+      run: |
+        conda info
+        conda list --show-channel-urls
+
+    - name: Install QCDB & Build Documentation
+      run: |
+        python -m pip install . --no-deps
+        cd docs
+        make html
+
+
+
+
+#  steps:
+#
+#    # check out sources that will be used for autodocs, plus readme
+#    - uses: actions/checkout@v1
+#
+#    # download wheel that was build and uploaded in the build step
+#    - uses: actions/download-artifact@v1
+#      with:
+#        name: distributions
+#        path: dist
+#
+#    # didn't need to change anything here, but had to add sphinx.ext.githubpages
+#    # to my conf.py extensions list. that fixes the broken uploads
+#    - name: Building documentation
+#      run: |
+#        pip install dist/*.whl
+#        pip install sphinx Pallets-Sphinx-Themes
+#        sphinx-apidoc --no-toc --module-first -o docs/autodoc src/stenotype
+#        sphinx-build docs public -b dirhtml
+
+    # still need to build and set the PAT to get a rebuild on the pages job,
+    # apart from that quite clean and nice 
+    - name: github pages deploy
+      uses: peaceiris/actions-gh-pages@v2.3.1
+      env:
+        PERSONAL_TOKEN: ${{ secrets.PAT }}
+        PUBLISH_BRANCH: gh-pages
+        PUBLISH_DIR: public
+
+    # since gh-pages has a history, this step might no longer be necessary.
+#    - uses: actions/upload-artifact@v1
+#      with:
+#        name: documentation
+#        path: public
