@@ -22,11 +22,6 @@ jobs:
             label: Generic
             runs-on: ubuntu-latest
 
-          # - conda-env:
-          #   python-version:
-          #   label:
-          #   runs-on: ubuntu-latest
-
     name: "🐍 ${{ matrix.cfg.python-version }} • ${{ matrix.cfg.label }}"
     runs-on: ${{ matrix.cfg.runs-on }}
 
@@ -62,8 +57,6 @@ jobs:
 
   release_sphinx:
     needs: [build]
-    #runs-on: ubuntu-latest
-  #build:
     defaults:
       run:
         shell: bash -l {0}
@@ -73,21 +66,14 @@ jobs:
         cfg:
           - conda-env: docs-cf
             python-version: 3.6
-            label: Generic
+            label: Sphinx
             runs-on: ubuntu-latest
-
-          # - conda-env:
-          #   python-version:
-          #   label:
-          #   runs-on: ubuntu-latest
 
     name: "🐍 ${{ matrix.cfg.python-version }} • ${{ matrix.cfg.label }}"
     runs-on: ${{ matrix.cfg.runs-on }}
 
     steps:
     - uses: actions/checkout@v2
-#      with:
-#        fetch-depth: 0
 
     - name: Create Environment
       uses: conda-incubator/setup-miniconda@v2

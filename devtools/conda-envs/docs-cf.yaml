@@ -13,6 +13,7 @@ dependencies:
     # docs
   - python-graphviz
   - sphinx >=3.5
+  - sphinx-autodoc-typehints
   - sphinx-automodapi
   - psi4/label/dev::sphinx-psi-theme
 
