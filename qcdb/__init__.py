@@ -20,11 +20,15 @@ elif 'CMAKE_INSTALL_DATADIR' in data_dir:
     data_dir = os.sep.join([os.path.abspath(os.path.dirname(__file__)), '..', 'share', 'qcdb'])
 
 data_dir = os.path.abspath(data_dir)
+data_dir = qcdb_module_loc
 if not os.path.isdir(data_dir):
     raise KeyError('Unable to read the data folder - check the PSIDATADIR environment variable'
                    '      Current value of PSIDATADIR is {}'.format(data_dir))
 
-from .metadata import __version__, version_formatter
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
+
 from .driver import energy, properties, hessian, gradient, frequency
 from .driver import optking, geometric
 from .driver import vpt2
@@ -44,3 +48,4 @@ from . import vib
 ## Load items that are useful to access from an input file
 from .vib import compare_vibinfos
 from .testing import *
+

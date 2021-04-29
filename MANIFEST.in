@@ -1,0 +1,12 @@
+recursive-include qcdb *.py *.md *.gbs
+prune qcdb/legacy
+prune qcdb/basis/primitives
+prune qcdb/basis/generally_contracted
+
+include setup.py
+include README.md
+include LICENSE
+include MANIFEST.in
+
+include versioneer.py
+include qcdb/_version.py

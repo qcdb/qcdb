@@ -1,4 +1,5 @@
 import math
+from typing import Union
 
 import numpy as np
 
@@ -15,7 +16,7 @@ _zeta_val2sym = {k + 2: v for k, v in enumerate(_zeta_values)}
 _zeta_sym2val = {v: k for k, v in _zeta_val2sym.items()}
 
 
-def xtpl_highest_1(mtdname, zHI, valueHI, verbose=1):
+def xtpl_highest_1(mtdname: str, zHI: int, valueHI: Union[float, np.ndarray], verbose: int = 1):
     r"""Scheme for total or correlation energies with a single basis or the highest
     zeta-level among an array of bases. Used by :py:func:`qcdb.cbs`.
 
@@ -23,13 +24,13 @@ def xtpl_highest_1(mtdname, zHI, valueHI, verbose=1):
 
     Parameters
     ----------
-    mtdname : str
+    mtdname
         Method name (e.g., 'mp2') used in summary printing.
-    zHI : int
+    zHI
         Zeta number of the basis set.
-    valueHI : float or numpy.ndarray
+    valueHI
         Energy, gradient, or Hessian value at the basis set.
-    verbose : int, optional
+    verbose
         Controls volume of printing.
 
     Returns
@@ -64,7 +65,7 @@ def xtpl_highest_1(mtdname, zHI, valueHI, verbose=1):
         return valueHI
 
 
-def scf_xtpl_helgaker_2(mtdname, zLO, valueLO, zHI, valueHI, alpha=1.63, verbose=1):
+def scf_xtpl_helgaker_2(mtdname: str, zLO: int, valueLO: Union[float, np.ndarray], zHI: int, valueHI: Union[float, np.ndarray], alpha: float = 1.63, verbose: int = 1):
     r"""Extrapolation scheme for reference energies with two adjacent zeta-level bases.
     Used by :py:func:`qcdb.cbs`.
     `Halkier, Helgaker, Jorgensen, Klopper, & Olsen, Chem. Phys. Lett. 302 (1999) 437-446
@@ -74,22 +75,22 @@ def scf_xtpl_helgaker_2(mtdname, zLO, valueLO, zHI, valueHI, alpha=1.63, verbose
 
     Parameters
     ----------
-    mtdname : str
+    mtdname
         Method name (e.g., 'HF') used in summary printing.
-    zLO : int
+    zLO
         Zeta number of the smaller basis set in 2-point extrapolation.
-    valueLO : float or numpy.ndarray
+    valueLO
         Energy, gradient, or Hessian value at the smaller basis set in 2-point
         extrapolation.
-    zHI : int
+    zHI
         Zeta number of the larger basis set in 2-point extrapolation.
         Must be `zLO + 1`.
-    valueHI : float or numpy.ndarray
+    valueHI
         Energy, gradient, or Hessian value at the larger basis set in 2-point
         extrapolation.
-    verbose : int, optional
+    verbose
         Controls volume of printing.
-    alpha : float, optional
+    alpha
         Fitted 2-point parameter.
 
     Returns
@@ -158,7 +159,7 @@ def scf_xtpl_helgaker_2(mtdname, zLO, valueLO, zHI, valueHI, alpha=1.63, verbose
         raise ValidationError("scf_xtpl_helgaker_2: datatype is not recognized '%s'." % type(valueLO))
 
 
-def scf_xtpl_helgaker_3(mtdname, zLO, valueLO, zMD, valueMD, zHI, valueHI, verbose=1):
+def scf_xtpl_helgaker_3(mtdname: str, zLO: int, valueLO: Union[float, np.ndarray], zMD: int, valueMD: Union[float, np.ndarray], zHI: int, valueHI: Union[float, np.ndarray], verbose: int = 1):
     r"""Extrapolation scheme for reference energies with three adjacent zeta-level bases.
     Used by :py:func:`qcdb.cbs`.
     `Halkier, Helgaker, Jorgensen, Klopper, & Olsen, Chem. Phys. Lett. 302 (1999) 437-446
@@ -168,26 +169,26 @@ def scf_xtpl_helgaker_3(mtdname, zLO, valueLO, zMD, valueMD, zHI, valueHI, verbo
 
     Parameters
     ----------
-    mtdname : str
+    mtdname
         Method name (e.g., 'HF') used in summary printing.
-    zLO : int
+    zLO
         Zeta number of the smaller basis set in 3-point extrapolation.
-    valueLO : float or numpy.ndarray
+    valueLO
         Energy, gradient, or Hessian value at the smaller basis set in 3-point
         extrapolation.
-    zMD : int
+    zMD
         Zeta number of the medium basis set in 3-point extrapolation.
         Must be `zLO + 1`.
-    valueMD : float or numpy.ndarray
+    valueMD
         Energy, gradient, or Hessian value at the medium basis set in 3-point
         extrapolation.
-    zHI : int
+    zHI
         Zeta number of the larger basis set in 3-point extrapolation.
         Must be `zLO + 2`.
-    valueHI : float or numpy.ndarray
+    valueHI
         Energy, gradient, or Hessian value at the larger basis set in 3-point
         extrapolation.
-    verbose : int, optional
+    verbose
         Controls volume of printing.
 
     Returns
@@ -259,7 +260,7 @@ def scf_xtpl_helgaker_3(mtdname, zLO, valueLO, zMD, valueMD, zHI, valueHI, verbo
         raise ValidationError("scf_xtpl_helgaker_3: datatype is not recognized '%s'." % type(valueLO))
 
 
-def corl_xtpl_helgaker_2(mtdname, zLO, valueLO, zHI, valueHI, verbose=1):
+def corl_xtpl_helgaker_2(mtdname: str, zLO: int, valueLO: Union[float, np.ndarray], zHI: int, valueHI: Union[float, np.ndarray], verbose: int = 1):
     r"""Extrapolation scheme for correlation energies with two adjacent zeta-level bases.
     Used by :py:func:`qcdb.cbs`.
     `Halkier, Helgaker, Jorgensen, Klopper, Koch, Olsen, & Wilson, Chem. Phys. Lett. 286 (1998) 243-252
@@ -269,20 +270,20 @@ def corl_xtpl_helgaker_2(mtdname, zLO, valueLO, zHI, valueHI, verbose=1):
 
     Parameters
     ----------
-    mtdname : str
+    mtdname
         Method name (e.g., 'MP2') used in summary printing.
-    zLO : int
+    zLO
         Zeta number of the smaller basis set in 2-point extrapolation.
-    valueLO : float or numpy.ndarray
+    valueLO
         Energy, gradient, or Hessian value at the smaller basis set in 2-point
         extrapolation.
-    zHI : int
+    zHI
         Zeta number of the larger basis set in 2-point extrapolation.
         Must be `zLO + 1`.
-    valueHI : float or numpy.ndarray
+    valueHI
         Energy, gradient, or Hessian value at the larger basis set in 2-point
         extrapolation.
-    verbose : int, optional
+    verbose
         Controls volume of printing.
 
     Returns

@@ -2,6 +2,7 @@ import os
 import hashlib
 import itertools
 import collections
+from typing import Callable, Dict, Union
 
 import qcelemental as qcel
 
@@ -537,14 +538,14 @@ class BasisSet(object):
 #TRIAL#            return bsdict
 
     @staticmethod
-    def pyconstruct(mol,
-                    key,
-                    target,
-                    fitrole='ORBITAL',
-                    other=None,
-                    return_atomlist=False,
-                    return_dict=False,
-                    verbose=1):
+    def pyconstruct(mol: Union[Molecule, Dict, str],
+                    key: str,
+                    target: Union[str, Callable],
+                    fitrole: str = 'ORBITAL',
+                    other: Union[str, Callable] = None,
+                    return_atomlist: bool = False,
+                    return_dict: bool = False,
+                    verbose: int = 1):
         """Builds a BasisSet object for *mol* (either a qcdb.Molecule or
         a string that can be instantiated into one) from basis set
         specifications passed in as python functions or as a string that
@@ -565,24 +566,26 @@ class BasisSet(object):
 
         Parameters
         ----------
-        mol : :py:class:`qcdb.Molecule` or dict or str
+        mol
             If not a :py:class:`qcdb.Molecule`, something that can be converted into one.
             If the latter, the basisset dict is returned rather than the BasisSet object.
             If you've got a psi4.core.Molecule, pass `qcdb.Molecule(psimol.to_dict())`.
-        key : {'BASIS', 'DF_BASIS_SCF', 'DF_BASIS_MP2', 'DF_BASIS_CC'}
+        key
+            {'BASIS', 'DF_BASIS_SCF', 'DF_BASIS_MP2', 'DF_BASIS_CC'}
             Label (effectively Psi4 keyword) to append the basis on the molecule.
-        target : str or function
+        target
             Defines the basis set to be constructed. Can be a string (naming a
             basis file) or a function (multiple files, shells).
             Required for `fitrole='ORBITAL'`. For auxiliary bases to be built
             entirely from orbital default, can be empty string.
-        fitrole : {'ORBITAL', 'JKFIT', 'RIFIT'}
-        other : 
+        fitrole
+            {'ORBITAL', 'JKFIT', 'RIFIT'}
+        other
             Only used when building fitting bases. Like `target` only supplies
             the definitions for the orbital basis.
-        return_atomlist : bool, optional
+        return_atomlist
             Build one-atom basis sets (for SAD) rather than one whole-Mol basis set
-        return_dict : bool, optional
+        return_dict
             Additionally return the dictionary representation of built BasisSet
 
         Returns
@@ -698,21 +701,21 @@ class BasisSet(object):
             return bs
 
     @classmethod
-    def construct(cls, parser, mol, key, deffit=None, basstrings=None, return_atomlist=False, verbose=1):
+    def construct(cls, parser, mol: Molecule, key, deffit=None, basstrings: Dict = None, return_atomlist=False, verbose=1):
         """Returns a new BasisSet object configured from the *mol*
         Molecule object for *key* (generally a Psi4 keyword: BASIS,
         DF_BASIS_SCF, etc.). Fails utterly if a basis has not been set for
         *key* for every atom in *mol*, unless *deffit* is set (JFIT,
         JKFIT, or RIFIT), whereupon empty atoms are assigned to *key*
-        from the :py:class:`~BasisFamily`. This function is significantly
+        from the BasisFamily. This function is significantly
         re-worked from its libmints analog.
 
         Parameters
         ----------
-        mol : qcdb.Molecule
+        mol
             A molecule object for which every atom has had a basisset set for `key`
 
-        basstrings : dict, optional
+        basstrings
             Additional source for basis data. Keys are regularized basis names and values are gbs strings.
         return_atomlist
             Return list of one-atom BasisSet-s, rather than single whole-mol BasisSet.

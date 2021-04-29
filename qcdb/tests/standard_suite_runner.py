@@ -2,9 +2,13 @@ import pprint
 
 import pytest
 from qcengine.programs.tests.standard_suite_contracts import (
-    contractual_ccsd,
-    contractual_current,
+    contractual_hf,
     contractual_mp2,
+    contractual_mp2p5,
+    contractual_mp3,
+    contractual_ccsd,
+    contractual_ccsd_prt_pr,
+    contractual_current,
     query_has_qcvar,
     query_qcvar,
 )
@@ -26,8 +30,15 @@ def runner_asserter(inp, subject, method, basis, tnm):
 
     # ? precedence on next two
     mp2_type = inp.get("corl_type", inp["keywords"].get("mp2_type", "df"))  # hard-code of read_options.cc MP2_TYPE
+    mp_type = inp.get("corl_type", inp["keywords"].get("mp_type", "conv"))  # hard-code of read_options.cc MP_TYPE
     cc_type = inp.get("corl_type", inp["keywords"].get("cc_type", "conv"))  # hard-code of read_options.cc CC_TYPE
-    corl_natural_values = {"mp2": mp2_type, "ccsd": cc_type}
+    corl_natural_values = {
+        "hf": "conv",  # dummy to assure df/cd/conv scf_type refs available
+        "mp2": mp2_type,
+        "mp3": mp_type,
+        "ccsd": cc_type,
+        "ccsd(t)": cc_type
+    }
     corl_type = corl_natural_values[method]
 
     natural_ref = {"conv": "pk", "df": "df", "cd": "cd"}
@@ -108,11 +119,21 @@ def runner_asserter(inp, subject, method, basis, tnm):
 
     def qcvar_assertions():
         print("BLOCK", chash, contractual_args)
-        if method == "mp2":
+        if method == "hf":
+            _asserter(asserter_args, contractual_args, contractual_hf)
+        elif method == "mp2":
             _asserter(asserter_args, contractual_args, contractual_mp2)
+        elif method == "mp3":
+            _asserter(asserter_args, contractual_args, contractual_mp2)
+            _asserter(asserter_args, contractual_args, contractual_mp2p5)
+            _asserter(asserter_args, contractual_args, contractual_mp3)
         elif method == "ccsd":
             _asserter(asserter_args, contractual_args, contractual_mp2)
             _asserter(asserter_args, contractual_args, contractual_ccsd)
+#        elif method == "ccsd(t)":
+#            _asserter(asserter_args, contractual_args, contractual_mp2)
+#            _asserter(asserter_args, contractual_args, contractual_ccsd)
+#            _asserter(asserter_args, contractual_args, contractual_ccsd_prt_pr)
 
     if "wrong" in inp:
         errmsg, reason = inp["wrong"]
@@ -129,14 +150,32 @@ def runner_asserter(inp, subject, method, basis, tnm):
     _asserter(asserter_args, contractual_args, contractual_current)
 
     # returns
-    assert compare_values(ref_block[f"{method.upper()} TOTAL ENERGY"], wfn["return_result"], tnm + " wfn", atol=atol)
-
     if driver == "energy":
+        assert compare_values(
+            ref_block[f"{method.upper()} TOTAL ENERGY"], wfn["return_result"], tnm + " wfn", atol=atol
+        )
+        assert compare_values(
+            ref_block[f"{method.upper()} TOTAL ENERGY"], wfn["properties"]["return_energy"], tnm + " prop", atol=atol
+        )
         assert compare_values(ref_block[f"{method.upper()} TOTAL ENERGY"], ret, tnm + " return")
 
     elif driver == "gradient":
-        assert compare_values(ref_block[f"{method.upper()} TOTAL GRADIENT"], wfn_gradient, tnm + " grad wfn", atol=atol)
-        assert compare_values(ref_block[f"{method.upper()} TOTAL GRADIENT"], ret.np, tnm + " grad return", atol=atol)
+        assert compare_values(
+            ref_block[f"{method.upper()} TOTAL GRADIENT"], wfn["return_result"], tnm + " grad wfn", atol=atol
+        )
+        assert compare_values(
+            ref_block[f"{method.upper()} TOTAL ENERGY"], wfn["properties"]["return_energy"], tnm + " prop", atol=atol
+        )
+        # assert compare_values(ref_block[f"{method.upper()} TOTAL GRADIENT"], wfn["properties"]["return_gradient"], tnm + " grad prop", atol=atol)
+        assert compare_values(ref_block[f"{method.upper()} TOTAL GRADIENT"], ret, tnm + " grad return", atol=atol)
+
+    # generics
+    # yapf: disable
+    assert compare(ref_block["N BASIS FUNCTIONS"], wfn["properties"]["calcinfo_nbasis"], tnm + " nbasis wfn"), f"nbasis {wfn.properties.calcinfo_nbasis} != {ref_block['N BASIS FUNCTIONS']}"
+    assert compare(ref_block["N MOLECULAR ORBITALS"], wfn["properties"]["calcinfo_nmo"], tnm + " nmo wfn"), f"nmo {wfn.properties.calcinfo_nmo} != {ref_block['N MOLECULAR ORBITALS']}"
+    assert compare(ref_block["N ALPHA ELECTRONS"], wfn["properties"]["calcinfo_nalpha"], tnm + " nalpha wfn"), f"nalpha {wfn.properties.calcinfo_nalpha} != {ref_block['N ALPHA ELECTRONS']}"
+    assert compare(ref_block["N BETA ELECTRONS"], wfn["properties"]["calcinfo_nbeta"], tnm + " nbeta wfn"), f"nbeta {wfn.properties.calcinfo_nbeta} != {ref_block['N BETA ELECTRONS']}"
+    # yapf: enable
 
 
 def _asserter(asserter_args, contractual_args, contractual_fn):
@@ -164,4 +203,4 @@ def _asserter(asserter_args, contractual_args, contractual_fn):
                 #   If a plain bool is compared in the assert, the printed message will show booleans and not numbers.
             else:
                 # verify and forgive known contract violations
-                assert compare(False, query_has_qcvar(obj, pv), label + " SKIP")
+                assert compare(False, query_has_qcvar(obj, pv), label + " SKIP"), f"{label} wrongly present"

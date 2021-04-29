@@ -24,9 +24,15 @@ def clsd_open_pmols():
 _q1 = (qcng.exceptions.InputError, "unknown SCFTYPE")  # no rohf reference for nwc mp2
 _q2 = (qcng.exceptions.InputError, "CCTYP IS PROGRAMMED ONLY FOR SCFTYP=RHF OR ROHF")
 _q3 = (qcng.exceptions.InputError, "ccsd: nopen is not zero")
+_q4 = (qcng.exceptions.InputError, "ROHF'S CCTYP MUST BE CCSD OR CR-CCL")  # No (T) w/ rohf in gms
+_q5 = (qcdb.exceptions.ValidationError, "Derivative method 'name' (gms-ccsd) and derivative level 'dertype' (1) are not available.")  # no gms cc grad
+
 
 _w1 = ("MP2 CORRELATION ENERGY", "nonstandard answer: NWChem TCE MP2 doesn't report singles (affects ROHF)")
 _w2 = ("CCSD CORRELATION ENERGY", "nonstandard answer: GAMESS CCSD ROHF FC energy")
+_w3 = ("(T) CORRECTION ENERGY", "nonstandard answer: NWChem CCSD(T) ROHF AE energy")
+_w4 = ("MP2 CORRELATION ENERGY", "nonstandard answer: NWChem TCE MP3 doesn't report singles (affects ROHF), may be off by MP2 singles value")
+_w5 = ("MP2 CORRELATION ENERGY", "nonstandard answer: GAMESS MP2 ROHF gradient ZAPT energies")
 # yapf: enable
 
 
@@ -49,7 +55,170 @@ def _trans_key(qc, bas, key):
     sys.exit(1)
 
 
-@pytest.mark.parametrize("dertype", [0,], ids=["ene0"])
+# http://patorjk.com/software/taag/#p=display&c=bash&f=Soft&t=MP3
+
+
+#  ,--.  ,--.,------.    ,------.
+#  |  '--'  ||  .---'    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  .--.  ||  `--,     |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  |  |  |  ||  |`       |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#  `--'  `--'`--'        `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                                      `---' `---'
+#  <<<  HF Energy
+
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(0, id="ene0"),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        ######## Are all possible ways of computing <method> working?
+
+        pytest.param({"call": "c4-hf",  "reference": "rhf",  "fcae": "ae", "keywords": {"basis": "<>", "cfour_scf_conv": 12},                                                                           }, id="hf  rhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-hf", "reference": "rhf",  "fcae": "ae", "keywords": {"basis": "<>"},                                                                                                 }, id="hf  rhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-hf", "reference": "rhf",  "fcae": "ae", "keywords": {"basis": "<>"},                                                                                                 }, id="hf  rhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-hf",  "reference": "rhf",  "fcae": "ae", "keywords": {"basis": "<>", "psi4_scf_type": "pk"},                                                                          }, id="hf  rhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-hf",  "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "cfour_reference": "uhf", "cfour_scf_conv": 12},                                                 }, id="hf  uhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-hf", "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "gamess_contrl__scftyp": "uhf"},                                                                 }, id="hf  uhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-hf", "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "nwchem_scf__uhf": True},                                                                        }, id="hf  uhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-hf",  "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "reference": "uhf", "psi4_scf_type": "pk"},                                                      }, id="hf  uhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-hf",  "reference": "rohf", "fcae": "ae", "keywords": {"basis": "<>", "cfour_reference": "rohf", "cfour_scf_conv": 12},                                                }, id="hf rohf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-hf", "reference": "rohf", "fcae": "ae", "keywords": {"basis": "<>", "gamess_contrl__scftyp": "rohf"},                                                                }, id="hf rohf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-hf", "reference": "rohf", "fcae": "ae", "keywords": {"basis": "<>", "nwchem_scf__rohf": True},                                                                       }, id="hf rohf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-hf",  "reference": "rohf", "fcae": "ae", "keywords": {"basis": "<>", "reference": "rohf", "psi4_scf_type": "pk"},                                                     }, id="hf rohf ae: psi4",       marks=using("psi4")),
+        # yapf: enable
+    ],
+)
+def test_hf_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    qcprog, method = inp["call"].split("-", 1)
+    qcprog = _trans_qcprog[qcprog.lower()]
+    tnm = request.node.name
+    subject = clsd_open_pmols[subjects[std_refs.index(inp["reference"])]]
+
+    inpcopy = {k: v for k, v in inp.items()}
+    inpcopy["keywords"] = {
+        k: (_trans_key(qcprog, basis, k) if v == "<>" else v) for k, v in inpcopy["keywords"].items()
+    }
+
+    inpcopy["driver"] = "energy"
+    inpcopy["scf_type"] = "pk"
+    inpcopy["corl_type"] = "conv"
+    inpcopy["qc_module"] = "-".join([qcprog, inp["keywords"].get("qc_module", "")]).strip("-")
+    print("INP", inpcopy)
+
+    runner_asserter(inpcopy, subject, method, basis, tnm)
+
+
+#
+#  ,--.  ,--.,------.     ,----.                     ,--.,--.                 ,--.
+#  |  '--'  ||  .---'    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-.
+#  |  .--.  ||  `--,     |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-'
+#  |  |  |  ||  |`       '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |
+#  `--'  `--'`--'         `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'
+#
+#  <<<  HF Gradient
+
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(1, id="grd1"),
+        #    pytest.param(0, id="grd0", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        ######## Are all possible ways of computing <method> working?
+
+        pytest.param({"call": "c4-hf",  "reference": "rhf",  "fcae": "ae", "keywords": {"basis": "<>", "cfour_scf_conv": 12},                                                                           }, id="hf  rhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-hf", "reference": "rhf",  "fcae": "ae", "keywords": {"basis": "<>"},                                                                                                 }, id="hf  rhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-hf", "reference": "rhf",  "fcae": "ae", "keywords": {"basis": "<>"},                                                                                                 }, id="hf  rhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-hf",  "reference": "rhf",  "fcae": "ae", "keywords": {"basis": "<>", "psi4_scf_type": "pk"},                                                                          }, id="hf  rhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-hf",  "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "cfour_reference": "uhf", "cfour_scf_conv": 12},                                                 }, id="hf  uhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-hf", "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "gamess_contrl__scftyp": "uhf"},                                                                 }, id="hf  uhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-hf", "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "nwchem_scf__uhf": True},                                                                        }, id="hf  uhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-hf",  "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "reference": "uhf", "psi4_scf_type": "pk"},                                                      }, id="hf  uhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-hf",  "reference": "rohf", "fcae": "ae", "keywords": {"basis": "<>", "cfour_reference": "rohf", "cfour_scf_conv": 12},                                                }, id="hf rohf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-hf", "reference": "rohf", "fcae": "ae", "keywords": {"basis": "<>", "gamess_contrl__scftyp": "rohf"},                                                                }, id="hf rohf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-hf", "reference": "rohf", "fcae": "ae", "keywords": {"basis": "<>", "nwchem_scf__rohf": True},                                                                       }, id="hf rohf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-hf",  "reference": "rohf", "fcae": "ae", "keywords": {"basis": "<>", "reference": "rohf", "psi4_scf_type": "pk"},                                                     }, id="hf rohf ae: psi4",       marks=using("psi4")),
+        # yapf: enable
+    ],
+)
+def test_hf_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    qcprog, method = inp["call"].split("-", 1)
+    qcprog = _trans_qcprog[qcprog.lower()]
+    tnm = request.node.name
+    subject = clsd_open_pmols[subjects[std_refs.index(inp["reference"])]]
+
+    inpcopy = {k: v for k, v in inp.items() if k != "error"}
+    if inp.get("error", False) and inp["error"].get(dertype, False):
+        inpcopy["error"] = inp["error"][dertype]
+    if inp.get("marks", False) and inp["marks"].get(dertype, False):
+        pytest.xfail(inp["marks"][dertype])
+        # request.node.add_marker(inp["marks"][dertype])
+
+    inpcopy["keywords"] = {
+        k: (_trans_key(qcprog, basis, k) if v == "<>" else v) for k, v in inpcopy["keywords"].items()
+    }
+    inpcopy["driver"] = "gradient"
+    if not any([k.lower() in _basis_keywords for k in inpcopy["keywords"]]):
+        inpcopy["keywords"]["basis"] = basis
+    inpcopy["scf_type"] = "pk"
+    inpcopy["corl_type"] = "conv"
+    inpcopy["qc_module"] = "-".join(
+        [qcprog, inp["keywords"].get("qc_module", inp["keywords"].get("cfour_cc_program", ""))]
+    ).strip("-")
+    inpcopy["keywords"]["function_kwargs"] = {"dertype": dertype}
+    print("INP", inpcopy)
+
+    runner_asserter(inpcopy, subject, method, basis, tnm)
+
+
+#
+#  ,--.   ,--.,------.  ,---.     ,------.
+#  |   `.'   ||  .--. ''.-.  \    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  |'.'|  ||  '--' | .-' .'    |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  |  |   |  ||  | --' /   '-.    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#  `--'   `--'`--'     '-----'    `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                                               `---' `---'
+#  <<<  MP2 Energy
+
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        0,
+    ],
+    ids=["ene0"],
+)
 @pytest.mark.parametrize(
     "basis, subjects",
     [
@@ -131,27 +300,192 @@ def test_mp2_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, reque
     runner_asserter(inpcopy, subject, method, basis, tnm)
 
 
-@pytest.mark.parametrize("dertype", [1, pytest.param(0, marks=pytest.mark.long),], ids=["grd1", "grd0"])
+#
+#  ,--.   ,--.,------.  ,---.      ,----.                     ,--.,--.                 ,--.
+#  |   `.'   ||  .--. ''.-.  \    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-.
+#  |  |'.'|  ||  '--' | .-' .'    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-'
+#  |  |   |  ||  | --' /   '-.    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |
+#  `--'   `--'`--'     '-----'     `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'
+#
+#  <<<  MP2 Gradient
+
+
 @pytest.mark.parametrize(
-    "basis, subjects", [pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),],
+    "dertype",
+    [
+        pytest.param(1, id="grd1"),
+        #    pytest.param(0, id="grd0", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
 )
 @pytest.mark.parametrize(
     "inp",
     [
         # yapf: disable
-        # pytest.param({"driver": "gradient", "subject": "bh3p", "options": {"reference": "uhf",  "mp2_type": "cd",   "qc_module": "occ", "freeze_core": "true",                     }, "error": {1: _e8f},}, id="mp2  uhf    cd   fc: * dfocc",),
+        ######## Are all possible ways of computing <method> working?
+
+        pytest.param({"call": "c4-mp2",  "reference": "rhf",  "fcae": "ae", "keywords": {"basis": "<>", "cfour_scf_conv": 12},                                                                                      }, id="mp2  rhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-mp2", "reference": "rhf",  "fcae": "ae", "keywords": {"basis": "<>", "gamess_mp2__nacore": 0},                                                                                   }, id="mp2  rhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-mp2", "reference": "rhf",  "fcae": "ae", "keywords": {"basis": "<>"},                                                                                                            }, id="mp2  rhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-mp2",  "reference": "rhf",  "fcae": "ae", "keywords": {"basis": "<>", "psi4_mp2_type": "conv"},                                                                                   }, id="mp2  rhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-mp2",  "reference": "rhf",  "fcae": "fc", "keywords": {"basis": "<>", "cfour_dropmo": 1, "cfour_scf_conv": 12},                                                                   }, id="mp2  rhf fc: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-mp2", "reference": "rhf",  "fcae": "fc", "keywords": {"basis": "<>"},                                                                                                            }, id="mp2  rhf fc: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-mp2", "reference": "rhf",  "fcae": "fc", "keywords": {"basis": "<>", "nwchem_mp2__freeze": 1},                                                                                   }, id="mp2  rhf fc: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-mp2",  "reference": "rhf",  "fcae": "fc", "keywords": {"basis": "<>", "psi4_freeze_core": True, "psi4_mp2_type": "conv", "psi4_points": 5},                                       }, id="mp2  rhf fc: psi4",       marks=using("psi4")),  # findif
+
+        pytest.param({"call": "c4-mp2",  "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "cfour_reference": "uhf", "cfour_scf_conv": 12},                                                            }, id="mp2  uhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-mp2", "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "gamess_contrl__scftyp": "uhf", "gamess_mp2__nacore": 0},                                                   }, id="mp2  uhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-mp2", "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "nwchem_scf__uhf": True},                                                                                   }, id="mp2  uhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-mp2",  "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "reference": "uhf", "psi4_mp2_type": "conv"},                                                               }, id="mp2  uhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-mp2",  "reference": "uhf",  "fcae": "fc", "keywords": {"basis": "<>", "cfour_reference": "uhf", "cfour_dropmo": [1], "cfour_scf_conv": 12},                                       }, id="mp2  uhf fc: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-mp2", "reference": "uhf",  "fcae": "fc", "keywords": {"basis": "<>", "gamess_contrl__scftyp": "uhf"},                                                                            }, id="mp2  uhf fc: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-mp2", "reference": "uhf",  "fcae": "fc", "keywords": {"basis": "<>", "nwchem_scf__uhf": True, "nwchem_mp2__freeze": 1},                                                          }, id="mp2  uhf fc: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-mp2",  "reference": "uhf",  "fcae": "fc", "keywords": {"basis": "<>", "reference": "uhf", "psi4_mp2_type": "conv", "psi4_freeze_core": True, "psi4_points": 5},                   }, id="mp2  uhf fc: psi4",       marks=using("psi4")),  # findif
+
+        pytest.param({"call": "c4-mp2",  "reference": "rohf", "fcae": "ae", "keywords": {"basis": "<>", "cfour_reference": "rohf", "cfour_scf_conv": 12},                                                           }, id="mp2 rohf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-mp2", "reference": "rohf", "fcae": "ae", "keywords": {"basis": "<>", "gamess_contrl__scftyp": "rohf", "gamess_mp2__nacore": 0, "gamess_system__memddi": 300},   "wrong": {1: _w5}}, id="mp2 rohf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-mp2", "reference": "rohf", "fcae": "ae", "keywords": {"basis": "<>", "nwchem_scf__rohf": True},                                                                 "error": {1: _q1}}, id="mp2 rohf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-mp2",  "reference": "rohf", "fcae": "ae", "keywords": {"basis": "<>", "reference": "rohf", "psi4_mp2_type": "conv", "psi4_points": 5},                                            }, id="mp2 rohf ae: psi4",       marks=using("psi4")),  # findif
+
+        pytest.param({"call": "c4-mp2",  "reference": "rohf", "fcae": "fc", "keywords": {"basis": "<>", "cfour_reference": "rohf", "cfour_dropmo": [1], "cfour_scf_conv": 12},                                      }, id="mp2 rohf fc: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-mp2", "reference": "rohf", "fcae": "fc", "keywords": {"basis": "<>", "gamess_contrl__scftyp": "rohf", "gamess_system__memddi": 300},                            "wrong": {1: _w5}}, id="mp2 rohf fc: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-mp2", "reference": "rohf", "fcae": "fc", "keywords": {"basis": "<>", "nwchem_scf__rohf": True, "nwchem_mp2__freeze": 1},                                        "error": {1: _q1}}, id="mp2 rohf fc: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-mp2",  "reference": "rohf", "fcae": "fc", "keywords": {"basis": "<>", "reference": "rohf", "psi4_mp2_type": "conv", "psi4_freeze_core": True, "psi4_points": 5},                  }, id="mp2 rohf fc: psi4",       marks=using("psi4")),  # findif
         # yapf: enable
     ],
 )
-def hide_test_mp2_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+def test_mp2_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    qcprog, method = inp["call"].split("-", 1)
+    qcprog = _trans_qcprog[qcprog.lower()]
+    tnm = request.node.name
+    subject = clsd_open_pmols[subjects[std_refs.index(inp["reference"])]]
+
     inpcopy = {k: v for k, v in inp.items() if k != "error"}
     if inp.get("error", False) and inp["error"].get(dertype, False):
         inpcopy["error"] = inp["error"][dertype]
+    if inp.get("wrong", False) and inp["wrong"].get(dertype, False):
+        inpcopy["wrong"] = inp["wrong"][dertype]
     if inp.get("marks", False) and inp["marks"].get(dertype, False):
         pytest.xfail(inp["marks"][dertype])
+        # request.node.add_marker(inp["marks"][dertype])
+
+    inpcopy["keywords"] = {
+        k: (_trans_key(qcprog, basis, k) if v == "<>" else v) for k, v in inpcopy["keywords"].items()
+    }
+    inpcopy["driver"] = "gradient"
+    if not any([k.lower() in _basis_keywords for k in inpcopy["keywords"]]):
+        inpcopy["keywords"]["basis"] = basis
+    inpcopy["scf_type"] = "pk"
+    inpcopy["corl_type"] = "conv"
+    inpcopy["qc_module"] = "-".join(
+        [qcprog, inp["keywords"].get("qc_module", inp["keywords"].get("cfour_cc_program", ""))]
+    ).strip("-")
+    inpcopy["keywords"]["function_kwargs"] = {"dertype": dertype}
+    print("INP", inpcopy)
+
+    runner_asserter(inpcopy, subject, method, basis, tnm)
 
 
-@pytest.mark.parametrize("dertype", [0,], ids=["ene0"])
+#
+#  ,--.   ,--.,------. ,----.     ,------.
+#  |   `.'   ||  .--. ''.-.  |    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  |'.'|  ||  '--' |  .' <     |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  |  |   |  ||  | --' /'-'  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#  `--'   `--'`--'     `----'     `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                                               `---' `---'
+#  <<<  MP3 Energy
+
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        0,
+    ],
+    ids=["ene0"],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz"),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p"),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # GAMESS doesn't do mp3. Psi4 only does rohf mp3 with detci, which is already non-std for mp2.
+        # yapf: disable
+        pytest.param({"call": "c4-mp3",  "reference": "rhf",  "fcae": "ae", "keywords": {"basis": "<>", "cfour_scf_conv": 12},                                                                           }, id="mp3  rhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "nwc-mp3", "reference": "rhf",  "fcae": "ae", "keywords": {"basis": "<>", "qc_module": "tce"},                                                                             }, id="mp3  rhf ae: nwchem-tce", marks=using("nwchem")),
+        pytest.param({"call": "p4-mp3",  "reference": "rhf",  "fcae": "ae", "keywords": {"basis": "<>", "psi4_mp_type": "conv"},                                                                         }, id="mp3  rhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-mp3",  "reference": "rhf",  "fcae": "fc", "keywords": {"basis": "<>", "cfour_dropmo": 1, "cfour_scf_conv": 12},                                                        }, id="mp3  rhf fc: cfour",      marks=using("cfour")),
+        pytest.param({"call": "nwc-mp3", "reference": "rhf",  "fcae": "fc", "keywords": {"basis": "<>", "qc_module": "tce", "nwchem_tce__freeze": 1},                                                    }, id="mp3  rhf fc: nwchem-tce", marks=using("nwchem")),
+        pytest.param({"call": "p4-mp3",  "reference": "rhf",  "fcae": "fc", "keywords": {"basis": "<>", "psi4_freeze_core": True, "psi4_mp_type": "conv"},                                               }, id="mp3  rhf fc: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-mp3",  "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "cfour_reference": "uhf", "cfour_scf_conv": 12},                                                 }, id="mp3  uhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "nwc-mp3", "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "qc_module": "tce", "nwchem_scf__uhf": True},                                                    }, id="mp3  uhf ae: nwchem-tce", marks=using("nwchem")),
+        pytest.param({"call": "p4-mp3",  "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "reference": "uhf", "psi4_mp_type": "conv"},                                                     }, id="mp3  uhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-mp3",  "reference": "uhf",  "fcae": "fc", "keywords": {"basis": "<>", "cfour_reference": "uhf", "cfour_dropmo": 1, "cfour_scf_conv": 12},                              }, id="mp3  uhf fc: cfour",      marks=using("cfour")),
+        pytest.param({"call": "nwc-mp3", "reference": "uhf",  "fcae": "fc", "keywords": {"basis": "<>", "nwchem_tce__freeze": 1, "qc_module": "tce", "nwchem_scf__uhf": True},                           }, id="mp3  uhf fc: nwchem-tce", marks=using("nwchem")),
+        pytest.param({"call": "p4-mp3",  "reference": "uhf",  "fcae": "fc", "keywords": {"basis": "<>", "reference": "uhf", "psi4_freeze_core": True, "psi4_mp_type": "conv"},                           }, id="mp3  uhf fc: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-mp3",  "reference": "rohf", "fcae": "ae", "keywords": {"basis": "<>", "cfour_reference": "rohf", "cfour_scf_conv": 12},                                                }, id="mp3 rohf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "nwc-mp3", "reference": "rohf", "fcae": "ae", "keywords": {"basis": "<>", "qc_module": "tce", "nwchem_scf__rohf": True, "nwchem_scf__thresh": 1.e-8},          "wrong": _w4}, id="mp3 rohf ae: nwchem-tce", marks=using("nwchem")),
+
+        pytest.param({"call": "c4-mp3",  "reference": "rohf", "fcae": "fc", "keywords": {"basis": "<>", "cfour_reference": "rohf", "cfour_dropmo": 1, "cfour_scf_conv": 12},                             }, id="mp3 rohf fc: cfour",      marks=using("cfour")),
+        pytest.param({"call": "nwc-mp3", "reference": "rohf", "fcae": "fc", "keywords": {"basis": "<>", "nwchem_tce__freeze": 1, "qc_module": "tce", "nwchem_scf__rohf": True},              "wrong": _w4}, id="mp3 rohf fc: nwchem-tce", marks=using("nwchem")),
+        # yapf: enable
+    ],
+)
+def test_mp3_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    qcprog, method = inp["call"].split("-", 1)
+    qcprog = _trans_qcprog[qcprog.lower()]
+    tnm = request.node.name
+    subject = clsd_open_pmols[subjects[std_refs.index(inp["reference"])]]
+
+    inpcopy = {k: v for k, v in inp.items()}
+    inpcopy["keywords"] = {
+        k: (_trans_key(qcprog, basis, k) if v == "<>" else v) for k, v in inpcopy["keywords"].items()
+    }
+
+    inpcopy["driver"] = "energy"
+    inpcopy["scf_type"] = "pk"
+    inpcopy["corl_type"] = "conv"
+    inpcopy["qc_module"] = "-".join([qcprog, inp["keywords"].get("qc_module", "")]).strip("-")
+    print("INP", inpcopy)
+
+    runner_asserter(inpcopy, subject, method, basis, tnm)
+
+
+#
+#   ,-----. ,-----. ,---.  ,------.      ,------.
+#  '  .--./'  .--./'   .-' |  .-.  \     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  |    |  |    `.  `-. |  |  \  :    |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  '  '--'\'  '--'\.-'    ||  '--'  /    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#   `-----' `-----'`-----' `-------'     `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                                                      `---' `---'
+#  <<<  CCSD Energy
+
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        0,
+    ],
+    ids=["ene0"],
+)
 @pytest.mark.parametrize(
     "basis, subjects",
     [

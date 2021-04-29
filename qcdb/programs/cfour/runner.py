@@ -133,15 +133,15 @@ class QcdbCFOURHarness(CFOURHarness):
         # badly placed
         # Cfour's SCS-MP2 is non adjustible and only valid for UHF
         # ROMP2 doesn't print SS & OS
-        if "MP2 OPPOSITE-SPIN CORRELATION ENERGY" in dqcvars and "MP2 SAME-SPIN CORRELATION ENERGY" in dqcvars:
-            oss_opt = input_model.extras['qcdb:options'].scroll['QCDB']['MP2_OS_SCALE']
-            sss_opt = input_model.extras['qcdb:options'].scroll['QCDB']['MP2_SS_SCALE']
-            custom_scsmp2_corl = \
-                Decimal(oss_opt.value) * dqcvars["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] + \
-                Decimal(sss_opt.value) * dqcvars["MP2 SAME-SPIN CORRELATION ENERGY"]
-            if "MP2 SINGLES ENERGY" in dqcvars:
-                custom_scsmp2_corl += dqcvars["MP2 SINGLES ENERGY"]
-            dqcvars["CUSTOM SCS-MP2 CORRELATION ENERGY"] = custom_scsmp2_corl
+#        if "MP2 OPPOSITE-SPIN CORRELATION ENERGY" in dqcvars and "MP2 SAME-SPIN CORRELATION ENERGY" in dqcvars:
+#            oss_opt = input_model.extras['qcdb:options'].scroll['QCDB']['MP2_OS_SCALE']
+#            sss_opt = input_model.extras['qcdb:options'].scroll['QCDB']['MP2_SS_SCALE']
+#            custom_scsmp2_corl = \
+#                Decimal(oss_opt.value) * dqcvars["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] + \
+#                Decimal(sss_opt.value) * dqcvars["MP2 SAME-SPIN CORRELATION ENERGY"]
+#            if "MP2 SINGLES ENERGY" in dqcvars:
+#                custom_scsmp2_corl += dqcvars["MP2 SINGLES ENERGY"]
+#            dqcvars["CUSTOM SCS-MP2 CORRELATION ENERGY"] = custom_scsmp2_corl
 
         qcvars.build_out(dqcvars)
         calcinfo = qcvars.certify_and_datumize(dqcvars, plump=True, nat=len(output_model.molecule.symbols))

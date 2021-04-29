@@ -1,5 +1,6 @@
 import uuid
 import collections
+from typing import Any
 
 from ..exceptions import KeywordReconciliationError, KeywordValidationError, ValidationError
 
@@ -183,7 +184,7 @@ class Keyword(object):
     def suggest(self, value, overlap=None, accession=None, verbose=1):
         self._set(False, value, overlap, accession, verbose)
 
-    def require(self, value, overlap=None, accession=None, verbose=1):
+    def require(self, value: Any, overlap: int = None, accession: str = None, verbose: int = 1):
         """
 
         Parameters
@@ -193,7 +194,7 @@ class Keyword(object):
             `self.validator` before function returns. May still be incompatible with
             other `require` calls of same priority, but that won't be checked until
             `self.value` is accessed.
-        overlap : int, optional
+        overlap
             Specificity of assertion. If `self.keyword='CC_MAXITER'` and `value`
             is set for `MAXITER`, `overlap=7`, whereas if set for `CC_MAXITER`,
             `overlap=10`.

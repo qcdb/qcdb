@@ -172,12 +172,12 @@ def cbs(func, label, **kwargs):
     .. hlist::
        :columns: 1
 
-       * :qcvar:`CBS TOTAL ENERGY <CBSTOTALENERGY>`
-       * :qcvar:`CBS REFERENCE ENERGY <CBSREFERENCEENERGY>`
-       * :qcvar:`CBS CORRELATION ENERGY <CBSCORRELATIONENERGY>`
-       * :qcvar:`CURRENT ENERGY <CURRENTENERGY>`
-       * :qcvar:`CURRENT REFERENCE ENERGY <CURRENTREFERENCEENERGY>`
-       * :qcvar:`CURRENT CORRELATION ENERGY <CURRENTCORRELATIONENERGY>`
+       * :qcvar:`CBS TOTAL ENERGY`
+       * :qcvar:`CBS REFERENCE ENERGY`
+       * :qcvar:`CBS CORRELATION ENERGY`
+       * :qcvar:`CURRENT ENERGY`
+       * :qcvar:`CURRENT REFERENCE ENERGY`
+       * :qcvar:`CURRENT CORRELATION ENERGY`
 
     .. caution:: Some features are not yet implemented. Buy a developer a coffee.
 
@@ -192,8 +192,6 @@ def cbs(func, label, **kwargs):
     of the reference total energy, the correlation energy, a delta correction to the
     correlation energy, and a second delta correction, etc.. Each is activated by its
     stage_wfn keyword and is only allowed if all preceding stages are active.
-
-    .. include:: ../cbs_eqn.rst
 
     * Energy Methods
         The presence of a stage_wfn keyword is the indicator to incorporate
@@ -248,14 +246,14 @@ def cbs(func, label, **kwargs):
            * mrccsdt
            * mrccsdt(q)
 
-    :type name: string
+    :type name: str
     :param name: ``'scf'`` || ``'ccsd'`` || etc.
 
         First argument, usually unlabeled. Indicates the computational method
         for the correlation energy, unless only reference step to be performed,
         in which case should be ``'scf'``. Overruled if stage_wfn keywords supplied.
 
-    :type scf_wfn: string
+    :type scf_wfn: str
     :param scf_wfn: |dl| ``'scf'`` |dr| || ``'c4-scf'`` || etc.
 
         Indicates the energy method for which the reference energy is to be
@@ -263,68 +261,68 @@ def cbs(func, label, **kwargs):
         can be used to direct lone scf components to run in |PSIfour| or Cfour
         in a mixed-program composite method.
 
-    :type corl_wfn: string
+    :type corl_wfn: str
     :param corl_wfn: ``'mp2'`` || ``'ccsd(t)'`` || etc.
 
         Indicates the energy method for which the correlation energy is to be
         obtained. Can also be specified with ``name`` or as the unlabeled
         first argument to the function.
 
-    :type delta_wfn: string
+    :type delta_wfn: str
     :param delta_wfn: ``'ccsd'`` || ``'ccsd(t)'`` || etc.
 
         Indicates the (superior) energy method for which a delta correction
         to the correlation energy is to be obtained.
 
-    :type delta_wfn_lesser: string
+    :type delta_wfn_lesser: str
     :param delta_wfn_lesser: |dl| ``corl_wfn`` |dr| || ``'mp2'`` || etc.
 
         Indicates the inferior energy method for which a delta correction
         to the correlation energy is to be obtained.
 
-    :type delta2_wfn: string
+    :type delta2_wfn: str
     :param delta2_wfn: ``'ccsd'`` || ``'ccsd(t)'`` || etc.
 
         Indicates the (superior) energy method for which a second delta correction
         to the correlation energy is to be obtained.
 
-    :type delta2_wfn_lesser: string
+    :type delta2_wfn_lesser: str
     :param delta2_wfn_lesser: |dl| ``delta_wfn`` |dr| || ``'ccsd(t)'`` || etc.
 
         Indicates the inferior energy method for which a second delta correction
         to the correlation energy is to be obtained.
 
-    :type delta3_wfn: string
+    :type delta3_wfn: str
     :param delta3_wfn: ``'ccsd'`` || ``'ccsd(t)'`` || etc.
 
         Indicates the (superior) energy method for which a third delta correction
         to the correlation energy is to be obtained.
 
-    :type delta3_wfn_lesser: string
+    :type delta3_wfn_lesser: str
     :param delta3_wfn_lesser: |dl| ``delta2_wfn`` |dr| || ``'ccsd(t)'`` || etc.
 
         Indicates the inferior energy method for which a third delta correction
         to the correlation energy is to be obtained.
 
-    :type delta4_wfn: string
+    :type delta4_wfn: str
     :param delta4_wfn: ``'ccsd'`` || ``'ccsd(t)'`` || etc.
 
         Indicates the (superior) energy method for which a fourth delta correction
         to the correlation energy is to be obtained.
 
-    :type delta4_wfn_lesser: string
+    :type delta4_wfn_lesser: str
     :param delta4_wfn_lesser: |dl| ``delta3_wfn`` |dr| || ``'ccsd(t)'`` || etc.
 
         Indicates the inferior energy method for which a fourth delta correction
         to the correlation energy is to be obtained.
 
-    :type delta5_wfn: string
+    :type delta5_wfn: str
     :param delta5_wfn: ``'ccsd'`` || ``'ccsd(t)'`` || etc.
 
         Indicates the (superior) energy method for which a fifth delta correction
         to the correlation energy is to be obtained.
 
-    :type delta5_wfn_lesser: string
+    :type delta5_wfn_lesser: str
     :param delta5_wfn_lesser: |dl| ``delta4_wfn`` |dr| || ``'ccsd(t)'`` || etc.
 
         Indicates the inferior energy method for which a fifth delta correction
@@ -383,7 +381,7 @@ def cbs(func, label, **kwargs):
         An exception is the default, ``'xtpl_highest_1'``, which uses the best basis
         set available. See :ref:`sec:cbs_xtpl` for all available schemes.
 
-    :type scf_scheme: function
+    :type scf_scheme: Callable
     :param scf_scheme: |dl| ``xtpl_highest_1`` |dr| || ``scf_xtpl_helgaker_3`` || etc.
 
         Indicates the basis set extrapolation scheme to be applied to the reference energy.
@@ -391,14 +389,14 @@ def cbs(func, label, **kwargs):
         present in ``scf_basis``, :py:func:`~scf_xtpl_helgaker_2` if two valid basis
         sets present in ``scf_basis``, and :py:func:`~xtpl_highest_1` otherwise.
 
-    :type corl_scheme: function
+    :type corl_scheme: Callable
     :param corl_scheme: |dl| ``xtpl_highest_1`` |dr| || ``corl_xtpl_helgaker_2`` || etc.
 
         Indicates the basis set extrapolation scheme to be applied to the correlation energy.
         Defaults to :py:func:`~corl_xtpl_helgaker_2` if two valid basis sets
         present in ``corl_basis`` and :py:func:`~xtpl_highest_1` otherwise.
 
-    :type delta_scheme: function
+    :type delta_scheme: Callable
     :param delta_scheme: |dl| ``xtpl_highest_1`` |dr| || ``corl_xtpl_helgaker_2`` || etc.
 
         Indicates the basis set extrapolation scheme to be applied to the delta correction
@@ -406,7 +404,7 @@ def cbs(func, label, **kwargs):
         Defaults to :py:func:`~corl_xtpl_helgaker_2` if two valid basis sets
         present in ``delta_basis`` and :py:func:`~xtpl_highest_1` otherwise.
 
-    :type delta2_scheme: function
+    :type delta2_scheme: Callable
     :param delta2_scheme: |dl| ``xtpl_highest_1`` |dr| || ``corl_xtpl_helgaker_2`` || etc.
 
         Indicates the basis set extrapolation scheme to be applied to the second delta correction
@@ -414,7 +412,7 @@ def cbs(func, label, **kwargs):
         Defaults to :py:func:`~corl_xtpl_helgaker_2` if two valid basis sets
         present in ``delta2_basis`` and :py:func:`~xtpl_highest_1` otherwise.
 
-    :type delta3_scheme: function
+    :type delta3_scheme: Callable
     :param delta3_scheme: |dl| ``xtpl_highest_1`` |dr| || ``corl_xtpl_helgaker_2`` || etc.
 
         Indicates the basis set extrapolation scheme to be applied to the third delta correction
@@ -422,7 +420,7 @@ def cbs(func, label, **kwargs):
         Defaults to :py:func:`~corl_xtpl_helgaker_2` if two valid basis sets
         present in ``delta3_basis`` and :py:func:`~xtpl_highest_1` otherwise.
 
-    :type delta4_scheme: function
+    :type delta4_scheme: Callable
     :param delta4_scheme: |dl| ``xtpl_highest_1`` |dr| || ``corl_xtpl_helgaker_2`` || etc.
 
         Indicates the basis set extrapolation scheme to be applied to the fourth delta correction
@@ -430,7 +428,7 @@ def cbs(func, label, **kwargs):
         Defaults to :py:func:`~corl_xtpl_helgaker_2` if two valid basis sets
         present in ``delta4_basis`` and :py:func:`~xtpl_highest_1` otherwise.
 
-    :type delta5_scheme: function
+    :type delta5_scheme: Callable
     :param delta5_scheme: |dl| ``xtpl_highest_1`` |dr| || ``corl_xtpl_helgaker_2`` || etc.
 
         Indicates the basis set extrapolation scheme to be applied to the fifth delta correction

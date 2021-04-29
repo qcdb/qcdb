@@ -168,26 +168,26 @@ class QcdbNWChemHarness(NWChemHarness):
         ropts = input_model.extras['qcdb:options']
 
         # badly placed
-        if "MP2 OPPOSITE-SPIN CORRELATION ENERGY" in progvars and "MP2 SAME-SPIN CORRELATION ENERGY" in progvars:
-            oss_opt = ropts.scroll['QCDB']['MP2_OS_SCALE']
-            sss_opt = ropts.scroll['QCDB']['MP2_SS_SCALE']
-            custom_scsmp2_corl = \
-                    Decimal(oss_opt.value) * progvars["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] + \
-                    Decimal(sss_opt.value) * progvars["MP2 SAME-SPIN CORRELATION ENERGY"]
-            if "MP2 SINGLES ENERGY" in progvars:
-                custom_scsmp2_corl += progvars["MP2 SINGLES ENERGY"]
-            progvars["CUSTOM SCS-MP2 CORRELATION ENERGY"] = custom_scsmp2_corl
-
-        if "CCSD OPPOSITE-SPIN CORRELATION ENERGY" in progvars and "CCSD SAME-SPIN CORRELATION ENERGY" in progvars:
-            oss_opt = ropts.scroll['QCDB']['CCSD_OS_SCALE']
-            sss_opt = ropts.scroll['QCDB']['CCSD_SS_SCALE']
-            custom_scsmp2_corl = \
-                    Decimal(oss_opt.value) * progvars["CCSD OPPOSITE-SPIN CORRELATION ENERGY"] + \
-                    Decimal(sss_opt.value) * progvars["CCSD SAME-SPIN CORRELATION ENERGY"]
-            # TODO check on validity of CCSD SINGLES ENERGY
-            if "CCSD SINGLES ENERGY" in progvars:
-                custom_scsccsd_corl += progvars["CCSD SINGLES ENERGY"]
-            progvars["CUSTOM SCS-CCSD CORRELATION ENERGY"] = custom_scsccsd_corl
+#        if "MP2 OPPOSITE-SPIN CORRELATION ENERGY" in progvars and "MP2 SAME-SPIN CORRELATION ENERGY" in progvars:
+#            oss_opt = ropts.scroll['QCDB']['MP2_OS_SCALE']
+#            sss_opt = ropts.scroll['QCDB']['MP2_SS_SCALE']
+#            custom_scsmp2_corl = \
+#                    Decimal(oss_opt.value) * progvars["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] + \
+#                    Decimal(sss_opt.value) * progvars["MP2 SAME-SPIN CORRELATION ENERGY"]
+#            if "MP2 SINGLES ENERGY" in progvars:
+#                custom_scsmp2_corl += progvars["MP2 SINGLES ENERGY"]
+#            progvars["CUSTOM SCS-MP2 CORRELATION ENERGY"] = custom_scsmp2_corl
+#
+#        if "CCSD OPPOSITE-SPIN CORRELATION ENERGY" in progvars and "CCSD SAME-SPIN CORRELATION ENERGY" in progvars:
+#            oss_opt = ropts.scroll['QCDB']['CCSD_OS_SCALE']
+#            sss_opt = ropts.scroll['QCDB']['CCSD_SS_SCALE']
+#            custom_scsmp2_corl = \
+#                    Decimal(oss_opt.value) * progvars["CCSD OPPOSITE-SPIN CORRELATION ENERGY"] + \
+#                    Decimal(sss_opt.value) * progvars["CCSD SAME-SPIN CORRELATION ENERGY"]
+#            # TODO check on validity of CCSD SINGLES ENERGY
+#            if "CCSD SINGLES ENERGY" in progvars:
+#                custom_scsccsd_corl += progvars["CCSD SINGLES ENERGY"]
+#            progvars["CUSTOM SCS-CCSD CORRELATION ENERGY"] = custom_scsccsd_corl
 
         qcvars.build_out(progvars)
         calcinfo = qcvars.certify_and_datumize(progvars, plump=True, nat=len(output_model.molecule.symbols))
