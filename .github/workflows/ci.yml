@@ -94,6 +94,11 @@ jobs:
         cd docs
         make html
 
+    - name: GitHub Pages Deploy
+      uses: JamesIves/github-pages-deploy-action@4.1.1
+      with:
+        branch: gh-pages # The branch the action should deploy to.
+        folder: docs/build/html # The folder the action should deploy.
 
 
 
@@ -118,13 +123,13 @@ jobs:
 #        sphinx-build docs public -b dirhtml
 
     # still need to build and set the PAT to get a rebuild on the pages job,
-    # apart from that quite clean and nice 
-    - name: github pages deploy
-      uses: peaceiris/actions-gh-pages@v2.3.1
-      env:
-        PERSONAL_TOKEN: ${{ secrets.PAT }}
-        PUBLISH_BRANCH: gh-pages
-        PUBLISH_DIR: public
+#    # apart from that quite clean and nice 
+#    - name: github pages deploy
+#      uses: peaceiris/actions-gh-pages@v2.3.1
+#      env:
+#        PERSONAL_TOKEN: ${{ secrets.PAT }}
+#        PUBLISH_BRANCH: gh-pages
+#        PUBLISH_DIR: public
 
     # since gh-pages has a history, this step might no longer be necessary.
 #    - uses: actions/upload-artifact@v1
