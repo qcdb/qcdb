@@ -1195,7 +1195,7 @@ class Molecule(LibmintsMolecule):
                 # TODO real back to type Ghost?
 
         # apparently py- and c- sides settled on a diff convention of 2nd of pair in fragments_
-        fragment_separators = np.array(molrec['fragment_separators'], dtype=np.int)
+        fragment_separators = np.array(molrec['fragment_separators'], dtype=int)
         fragment_separators = np.insert(fragment_separators, 0, 0)
         fragment_separators = np.append(fragment_separators, nat)
         fragments = [[fragment_separators[ifr], fr - 1] for ifr, fr in enumerate(fragment_separators[1:])]
