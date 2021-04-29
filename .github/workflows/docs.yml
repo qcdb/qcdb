@@ -1,3 +1,5 @@
+name: Docs
+
 #  container:
 #    image: python:3.6
 #    volumes:
@@ -15,7 +17,7 @@ on:
 jobs:
   release_sphinx:
     needs: [CI]
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
   #build:
     defaults:
       run:
