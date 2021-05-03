@@ -1,11 +1,12 @@
 import re
+import sys
 import copy
 import pprint
 
 import numpy as np
 from qcelemental import Datum
 
-from ..exceptions import ValidationError
+from ..exceptions import ValidationError, BasisSetNotFound
 from ..keywords import register_kwds
 from ..qcvars import VARH
 from ..util import banner
@@ -1229,21 +1230,46 @@ def _expand_bracketed_basis(basisstring, molecule=None):
 
     BSET = []
     ZSET = []
-    legit_compound_basis = re.compile(r'^(?P<pre>.*cc-.*)\[(?P<zeta>[dtq2345678,]*)\](?P<post>.*z)$', re.IGNORECASE)
+    legit_compound_basis = re.compile(
+        r'^(?P<pre>.*cc-.*|def2-|.*pcs+eg-|.*)\[(?P<zeta>[dtq2345678,s1]*)\](?P<post>.*z.*|)$', re.IGNORECASE)
+    pc_basis = re.compile(r'.*pcs+eg-$', re.IGNORECASE)
+    def2_basis = re.compile(r'def2-', re.IGNORECASE)
+    zapa_basis = re.compile(r'.*zapa.*', re.IGNORECASE)
 
     if legit_compound_basis.match(basisstring):
         basisname = legit_compound_basis.match(basisstring)
+        # handle def2-svp* basis sets as double-zeta
+        if def2_basis.match(basisname.group('pre')):
+            bn_gz = basisname.group('zeta').replace("s", "d")
+        # handle pc-n basis set polarisation -> zeta conversion
+        elif pc_basis.match(basisname.group('pre')):
+            bn_gz = basisname.group('zeta').replace("4", "5").replace("3", "4").replace("2", "3").replace("1", "2")
+        else:
+            bn_gz = basisname.group('zeta')
         # filter out commas and be forgiving of e.g., t5q or 3q
-        bn_gz = basisname.group('zeta')
         zetas = [z for z in _zeta_values if (z in bn_gz or str(_zeta_values.index(z) + 2) in bn_gz)]
         for b in zetas:
             if ZSET and (int(ZSET[len(ZSET) - 1]) - _zeta_values.index(b)) != 1:
-                    raise ValidationError("""Basis set '%s' has skipped zeta level '%s'.""" % (basisstring, b))
-            BSET.append(basisname.group('pre') + b + basisname.group('post'))
+                raise ValidationError("""Basis set '%s' has skipped zeta level '%s'.""" %
+                                      (basisstring, _zeta_val2sym[_zeta_sym2val[b] - 1]))
+            # reassemble def2-svp* properly instead of def2-dzvp*
+            if def2_basis.match(basisname.group('pre')) and b == "d":
+                BSET.append(basisname.group('pre') + "s" + basisname.group('post')[1:])
+            # reassemble pc-n basis sets properly
+            elif pc_basis.match(basisname.group('pre')):
+                BSET.append(basisname.group('pre') + "{0:d}".format(_zeta_sym2val[b] - 1))
+            # assemble nZaPa basis sets
+            elif zapa_basis.match(basisname.group('post')):
+                bzapa = b.replace("d", "2").replace("t", "3").replace("q", "4")
+                BSET.append(basisname.group('pre') + bzapa + basisname.group('post'))
+            else:
+                BSET.append(basisname.group('pre') + b + basisname.group('post'))
             ZSET.append(_zeta_values.index(b) + 2)
     elif re.match(r'.*\[.*\].*$', basisstring, flags=re.IGNORECASE):
-        raise ValidationError("""Basis series '%s' invalid. Specify a basis series matching"""
-                              """ '*cc-*[dtq2345678,]*z'.""" % (basisstring))
+        raise ValidationError(
+            """Basis series '%s' invalid. Specify a basis series matching"""
+            """ '*cc-*[dtq2345678,]*z*'. or 'def2-[sdtq]zvp*' or '*pcs[s]eg-[1234]' or '[1234567]ZaPa' """ %
+            (basisstring))
     else:
         BSET.append(basisstring)
         ZSET.append(0)

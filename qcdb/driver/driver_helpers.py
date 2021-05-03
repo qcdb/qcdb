@@ -227,6 +227,7 @@ def set_options(options_dict):
         else:
             raise ValidationError(f'Keyword not in {{space}}?_{{module}}?__{{option}} format: {k}')
 
+set_keywords = set_options
 
 def has_variable(key):
     return key.upper() in pe.active_qcvars

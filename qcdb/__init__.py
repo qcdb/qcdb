@@ -35,7 +35,7 @@ from .driver import vpt2
 from .driver.cbs_driver import cbs
 from .driver.cbs_helpers import *
 from .driver.driver_helpers import get_variable, has_variable, print_variables, variable
-from .driver.driver_helpers import set_options, get_active_options
+from .driver.driver_helpers import set_keywords, set_options, get_active_options
 from .driver.driver_helpers import set_molecule, activate
 from .driver.yaml import yaml_run
 from .exceptions import *
