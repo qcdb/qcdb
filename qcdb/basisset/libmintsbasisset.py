@@ -7,7 +7,7 @@ from typing import Callable, Dict, Union
 import qcelemental as qcel
 
 from ..driver import pe
-from ..exceptions import ValidationError
+from ..exceptions import BasisSetNotFound, ValidationError
 from ..molecule import Molecule
 from ..util import search_file
 from .basislist import corresponding_basis, corresponding_zeta

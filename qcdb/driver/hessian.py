@@ -627,10 +627,13 @@ def vibanal_jobrec(jobrec, hess=None, irrep=None, molecule=None, project_trans=T
 #    else:
 #        nmwhess = hess
 
-    molrec = jobrec['molecule']
-    molecule = Molecule(jobrec['molecule'])
-    geom = np.array(molrec['geom']).reshape((-1, 3))
-    symbols = molrec['elem']
+    molrec = jobrec['molecule']  # actually qcsk
+    pp.pprint(molrec)
+    molecule = Molecule.from_schema(jobrec['molecule'])
+#    geom = np.array(molrec['geom']).reshape((-1, 3))
+#    symbols = molrec['elem']
+    geom = molrec["geometry"]
+    symbols = molrec["symbols"]
 
 #    if molecule is not None:
 #        molecule.update_geometry()
@@ -644,11 +647,12 @@ def vibanal_jobrec(jobrec, hess=None, irrep=None, molecule=None, project_trans=T
 #        #        np.asarray(mol.geometry()), np.asarray(molecule.geometry())))
 #        mol = molecule
             
-    m = np.asarray(molrec['mass'])
+    m = np.asarray(molrec['masses'])
     irrep_labels = molecule.irrep_labels()
 
     import psi4
-    wfn = psi4.core.Wavefunction.build(psi4.core.Molecule.from_dict(molrec), "STO-3G")  # dummy, obviously. only used for SALCs
+    #wfn = psi4.core.Wavefunction.build(psi4.core.Molecule.from_dict(molrec), "STO-3G")  # dummy, obviously. only used for SALCs
+    wfn = psi4.core.Wavefunction.build(psi4.core.Molecule.from_dict(molecule.to_dict()), "STO-3G")  # dummy, obviously. only used for SALCs
     basisset = wfn.basisset()
 
     vibinfo, vibtext = vib.harmonic_analysis(nmwhess, geom, m, basisset, irrep_labels,
