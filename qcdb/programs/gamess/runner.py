@@ -15,6 +15,7 @@ from qcengine.programs.util import PreservingDict
 
 from ... import qcvars
 from ...basisset import BasisSet
+from ...molecule import Molecule
 from ...util import print_jobrec, provenance_stamp
 from .germinate import muster_inherited_keywords, muster_modelchem, muster_molecule_and_basisset
 
@@ -90,35 +91,46 @@ class QcdbGAMESSHarness(GAMESSHarness):
         molrecc1['fix_symmetry'] = 'c1'  # write _all_ atoms to input
         ropts = input_model.extras['qcdb:options']
 
-        # Handle qcdb keywords implying gamess keyword values
-        muster_inherited_keywords(ropts)
+        nel = sum([z * int(real) for z, real in zip(molrec['elez'], molrec['real'])]) - molrec['molecular_charge']
+        nel = int(nel)
+        qmol = Molecule(molrecc1)
+        qmol.update_geometry()
 
         _qcdb_basis = ropts.scroll['QCDB']['BASIS'].value
         #_gamess_basis = ropts.scroll['GAMESS']['BASIS'].value
         qbs = BasisSet.pyconstruct(molrecc1, 'BASIS', _qcdb_basis)
 
-        molbascmd = muster_molecule_and_basisset(molrec, ropts, qbs)
-
-        nel = sum([z * int(real) for z, real in zip(molrec['elez'], molrec['real'])]) - molrec['molecular_charge']
-        nel = int(nel)
-        #nfzc = input_model.molecule.nfrozen_core(depth=True)  # this will be default FC  # TODO change these values when user sets custom FC
-        # not sure how to do this???
-        nfzc = 0
-
+        sysinfo = {}
         # forcing nfc above. all these need to be reocmputed together for a consistent cidet input group
+        # this will be default FC  # TODO change these values when user sets custom FC
+        nfzc = qmol.n_frozen_core(depth=True)
         nels = nel - 2 * nfzc
         nact = qbs.nbf() - nfzc
-        sysinfo = {
-            'nel': nel,
-            'ncore': nfzc,
-            'nact': nact,
-            'nels': nels,
+        sysinfo["fc"] = {
+                'nel': nel,
+                'ncore': nfzc,
+                'nact': nact,
+                'nels': nels,
         }
+        nfzc = 0
+        nels = nel - 2 * nfzc
+        nact = qbs.nbf() - nfzc
+        sysinfo["ae"] = {
+                'nel': nel,
+                'ncore': nfzc,
+                'nact': nact,
+                'nels': nels,
+        }
+
+        # Handle qcdb keywords implying gamess keyword values
+        muster_inherited_keywords(ropts, sysinfo)
+
+        molbascmd = muster_molecule_and_basisset(molrec, ropts, qbs)
 
         # Handle calc type and quantum chemical method
         muster_modelchem(input_model.model.method, input_model.driver.derivative_int(), ropts, sysinfo)
 
-        # Handle conversion of psi4 keyword structure into cfour format
+        # Handle conversion of qcsk keyword structure into program format
         skma_options = {key: ropt.value for key, ropt in sorted(ropts.scroll['GAMESS'].items()) if ropt.disputed()}
 
         optcmd = format_keywords(skma_options)

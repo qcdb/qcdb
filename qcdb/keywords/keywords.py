@@ -17,7 +17,7 @@ class Keywords(object):
     def __str__(self):
         text = []
         for pkg in self.scroll:
-            text.append('  <<<  {}  >>>'.format(pkg))
+            text.append(f"  <<<  {pkg}  >>>")
             for opt, oopt in sorted(self.scroll[pkg].items()):
                 text.append(str(oopt))
 
@@ -26,7 +26,7 @@ class Keywords(object):
     def print_changed(self, history=True):
         text = []
         for pkg in self.scroll:
-            text.append('  <<<  {}  >>>'.format(pkg))
+            text.append(f"  <<<  {pkg}  >>>")
             for opt, oopt in sorted(self.scroll[pkg].items()):
                 #if not oopt.is_default():
                 if len(oopt.history) > 1:
@@ -86,7 +86,7 @@ class Keywords(object):
                     acount += 1
 
         if count == 0 and acount == 0:
-            raise ValidationError('Keyword ({}) does not exist in domain ({}).'.format(option, package))
+            raise ValidationError(f"Keyword ({option}) does not exist in domain ({package}).")
 
     def unwind_by_accession(self, accession):
         for pkg in self.scroll:
@@ -223,7 +223,7 @@ class Keyword(object):
         try:
             nuval = self.validator(val)
         except Exception as err:
-            raise KeywordValidationError('Keyword ({}) value ({}) does not pass.'.format(self.keyword, val)) from err
+            raise KeywordValidationError(f"Keyword ({self.keyword}) value ({val}) does not pass.") from err
         return nuval
 
     def is_default(self):

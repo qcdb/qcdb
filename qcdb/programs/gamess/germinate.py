@@ -122,9 +122,10 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', sysinfo: Dict, 
         ropts.require('GAMESS', 'contrl__cityp', 'aldet', accession=accession, verbose=verbose)
         ropts.require('GAMESS', 'contrl__cctyp', 'none', accession=accession, verbose=verbose)
 
-        ropts.suggest('GAMESS', 'cidet__ncore', sysinfo['ncore'], accession=accession, verbose=verbose)
-        ropts.suggest('GAMESS', 'cidet__nact', sysinfo['nact'], accession=accession, verbose=verbose)
-        ropts.suggest('GAMESS', 'cidet__nels', sysinfo['nels'], accession=accession, verbose=verbose)
+        ropts.suggest('GAMESS', 'cidet__ncore', sysinfo["fc"]['ncore'], accession=accession, verbose=verbose)
+        ropts.suggest('GAMESS', 'cidet__nact', sysinfo["fc"]['nact'], accession=accession, verbose=verbose)
+        ropts.suggest('GAMESS', 'cidet__nels', sysinfo["fc"]['nels'], accession=accession, verbose=verbose)
+        # TODO FC hack!!!
 
     # unused from Nuwan
 
@@ -177,7 +178,7 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', sysinfo: Dict, 
         raise ValidationError("""Requested GAMESS computational methods %d is not available.""" % (lowername))
 
 
-def muster_inherited_keywords(ropts: 'Keywords', verbose: int = 1) -> None:
+def muster_inherited_keywords(ropts: 'Keywords', sysinfo: Dict, verbose: int = 1) -> None:
     accession = uuid.uuid4()
 
     kwgs = {'accession': accession, 'verbose': verbose}
@@ -210,3 +211,13 @@ def muster_inherited_keywords(ropts: 'Keywords', verbose: int = 1) -> None:
     if qopt.disputed():
         conv = conv_float2negexp(qopt.value)
         ropts.suggest('GAMESS', 'ccinp__iconv', conv, **kwgs)
+
+    # qcdb/freeze_core --> gamess/
+    qopt = ropts.scroll["QCDB"]["FREEZE_CORE"]
+    if qopt.disputed():
+        if qopt.value is True:
+            ncore = sysinfo["fc"]["ncore"]
+        elif qopt.value is False:
+            ncore = 0
+        ropts.suggest("GAMESS", "ccinp__ncore", ncore, accession=accession, verbose=verbose)
+        ropts.suggest("GAMESS", "mp2__nacore", ncore, accession=accession, verbose=verbose)

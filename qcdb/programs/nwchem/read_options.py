@@ -1296,15 +1296,36 @@ def load_nwchem_keywords(options: Keywords) -> None:
                 validator=parsers.parse_convergence,
                 glossary='Convergence threshold for the iterative part of the calculation.'))
 
-    options.add('nwchem',
-                Keyword(keyword='ccsd__freeze',
-                        default=0,
-                        validator=parsers.nonnegative_integer,
-                        glossary='Number of orbitals to freeze'))  # expand to core/atomic/virtual
     # freeze 10 == freeze core 10
     # freeze virtual 5
     # freeze atomic
     # freeze atomic O 1 Si 3
+
+    options.add(
+        'nwchem',
+        Keyword(keyword='ccsd__freeze__core',
+                default=0,
+                validator=parsers.nonnegative_integer,
+                glossary='Number of core orbitals to freeze'))
+
+    options.add_alias('nwchem', AliasKeyword(alias='ccsd__freeze', target='ccsd__freeze__core'))
+
+    options.add(
+        'nwchem',
+        Keyword(keyword='ccsd__freeze__virtual',
+                default=0,
+                validator=parsers.nonnegative_integer,
+                glossary='Number of virtual orbitals to freeze'))
+
+    options.add(
+        'nwchem',
+        Keyword(keyword='ccsd__freeze__atomic',
+                default=False,
+                validator=parsers.bool_or_elem_dict,
+                glossary=
+                """Freeze orbitals by element standard lookup (``True``) or specify in dict ``{'O': 1, 'Si': 3}``"""))
+
+    options.add_alias('nwchem', AliasKeyword(alias='ccsd__freeze__core__atomic', target='ccsd__freeze__atomic'))
 
     #TCE block
     options.add(
@@ -1601,12 +1622,29 @@ def load_nwchem_keywords(options: Keywords) -> None:
 
     options.add(
         'nwchem',
-        Keyword(
-            keyword='tce__freeze',
-            default=0,
-            validator=parsers.nonnegative_integer,
-            glossary=' Freezing orbitals. None are frozen by default. Only capable of freezing core orbitals at moment.'
-        ))
+        Keyword(keyword='tce__freeze__core',
+                default=0,
+                validator=parsers.nonnegative_integer,
+                glossary='Number of core orbitals to freeze'))
+
+    options.add_alias('nwchem', AliasKeyword(alias='tce__freeze', target='tce__freeze__core'))
+
+    options.add(
+        'nwchem',
+        Keyword(keyword='tce__freeze__virtual',
+                default=0,
+                validator=parsers.nonnegative_integer,
+                glossary='Number of virtual orbitals to freeze'))
+
+    options.add(
+        'nwchem',
+        Keyword(keyword='tce__freeze__atomic',
+                default=False,
+                validator=parsers.bool_or_elem_dict,
+                glossary=
+                """Freeze orbitals by element standard lookup (``True``) or specify in dict ``{'O': 1, 'Si': 3}``"""))
+
+    options.add_alias('nwchem', AliasKeyword(alias='tce__freeze__core__atomic', target='tce__freeze__atomic'))
     #need to incorporate virtual/core distinction
     #Array TODO
 
