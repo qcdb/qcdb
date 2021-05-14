@@ -89,12 +89,19 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp} \n\n'
             ropts.require('NWCHEM', 'tce__ccd', True, **kwgs)
+
     elif lowername == 'nwc-ccsd':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp}\n\n'
             ropts.require('NWCHEM', 'tce__ccsd', True, **kwgs)
         else:
             mdccmd = f'task ccsd {runtyp}\n\n'
+
+            #if (ropts.scroll["NWCHEM"]["SCF__UHF"].value is True) or \
+            #   (ropts.scroll["NWCHEM"]["SCF__ROHF"].value is True):
+            #    ropts.suggest('NWCHEM', 'tce__ccsd', True, **kwgs)
+            #    mdccmd = f'task tce {runtyp}\n\n'
+
     elif lowername == 'nwc-ccsdt':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp} \n\n'
@@ -453,3 +460,14 @@ def muster_inherited_keywords(ropts: 'Keywords', verbose: int = 1) -> None:
         conv = conv_float2negexp(qopt.value)
         ropts.suggest('NWCHEM', 'ccsd__thresh', conv, **kwgs)
         ropts.suggest('NWCHEM', 'dft__convergence__energy', conv, **kwgs)
+
+    # qcdb/freeze_core --> nwchem/[mp2|ccsd|tce]__freeze
+    fcae = ropts.scroll["QCDB"]["FREEZE_CORE"].value
+    if fcae is True:
+        ropts.suggest("NWCHEM", "mp2__freeze__atomic", True, **kwgs)
+        ropts.suggest("NWCHEM", "ccsd__freeze__atomic", True, **kwgs)
+        ropts.suggest("NWCHEM", "tce__freeze__atomic", True, **kwgs)
+    elif fcae is False:
+        ropts.suggest("NWCHEM", "mp2__freeze", 0, **kwgs)
+        ropts.suggest("NWCHEM", "ccsd__freeze", 0, **kwgs)
+        ropts.suggest("NWCHEM", "tce__freeze", 0, **kwgs)

@@ -203,11 +203,11 @@ def load_qcdb_keywords(options: Keywords) -> None:
     #options.add_bool("FLEXIBLE_G_CONVERGENCE", false);
 
 
-#    options.add('qcdb', Keyword(
-#            keyword='',
-#            default=,
-#            validator=,
-#            glossary="""."""))
+    options.add('qcdb', Keyword(
+            keyword="freeze_core",
+            default=False,
+            validator=parsers.boolean,
+            glossary="""Handle core orbitals in correlated calculation."""))
 
 #    options.add('qcdb', Keyword(
 #            keyword='',

@@ -28,7 +28,7 @@ def muster_inherited_keywords(ropts: 'Keywords', verbose: int = 1) -> None:
     #    #       'ROHF': 'ROHF'}[ropts.scroll['QCDB']['REFERENCE'].value]
     #        ropts.suggest('CFOUR', 'REFERENCE', qref, **kwgs)
 
-    # qcdb/scf__d_convergence --> cfour/scf_conv
+    # qcdb/mp2__mp2_type --> psi4/mp2_type
     qopt = ropts.scroll['QCDB']['MP2__MP2_TYPE']
     if qopt.disputed():
         ropts.suggest('PSI4', 'MP2_TYPE', qopt.value, **kwgs)

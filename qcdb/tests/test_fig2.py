@@ -11,6 +11,7 @@ from .utils import *
 
 _abbr = {v: k for k, v in qcdb.driver.driver_util.pkgprefix.items()}
 
+_the_fc_energy = -55.74674563
 _the_energy = -55.74896542928988
 _the_short_energy = str(_the_energy)[:10]
 
@@ -254,7 +255,7 @@ def wanted_test_fig2c_json(qcprog, request):
 
 
 @pytest.mark.parametrize("qcprog", ["cfour", "gamess", "nwchem", "psi4"])
-def wanted_test_fig2d_api(qcprog, request):
+def test_fig2d_api(qcprog, request):
     datin = _ins["all"]["d"]
 
     qcskmol = qcel.models.Molecule(**datin["molecule"])

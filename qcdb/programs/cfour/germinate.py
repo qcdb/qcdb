@@ -227,6 +227,9 @@ def muster_inherited_keywords(ropts: 'Keywords', verbose: int = 1) -> None:
     damp = int(10 * ropts.scroll['QCDB']['SCF__DAMPING_PERCENTAGE'].value)
     ropts.suggest('CFOUR', 'SCF_DAMPING', damp, **kwgs)
 
+    # qcdb/freeze_core --> cfour/frozen_core
+    ropts.suggest("CFOUR", "FROZEN_CORE", ropts.scroll["QCDB"]["FREEZE_CORE"].value, **kwgs)
+
 
 if __name__ == '__main__':
     extract_basis_from_genbas('qz2p', ['Co', 'H', 'H'])

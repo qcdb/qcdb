@@ -18,6 +18,8 @@ FULL_PG_TOL = 1.0e-8
 ZERO = 1.0E-14
 NOISY_ZERO = 1.0E-8
 
+full_shell_values = [0, 2, 10, 18, 36, 54, 86, 118]
+
 
 class LibmintsMolecule():
     """Class to store the elements, coordinates, fragmentation pattern,
@@ -1644,7 +1646,7 @@ class LibmintsMolecule():
                 (number, self.natom()))
         self.atoms[number].set_shell(bshash, role)
 
-    def nfrozen_core(self, depth=False):
+    def nfrozen_core(self, depth=False) -> int:
         """Number of frozen core for molecule given freezing state.
 
         >>> print(H2OH2O.nfrozen_core())
@@ -1680,6 +1682,65 @@ class LibmintsMolecule():
         else:
             raise ValidationError(
                 "Molecule::nfrozen_core: Frozen core '%s' is not supported, options are {true, false}." % (depth))
+
+    @staticmethod
+    def atom_to_period(Z):
+        if Z > 118:
+            raise ValidationError("Molecule::atom_to_period: Atomic number beyond Oganesson")
+        for period, cummulative_electrons in enumerate(full_shell_values):
+            if cummulative_electrons >= Z:
+                return period
+
+    @staticmethod
+    def period_to_full_shell(p):
+        if p > 7:
+            raise ValidationError("Molecule::period_to_full_shell: Atomic number beyond Oganesson")
+        return full_shell_values[p]
+
+    def n_frozen_core(self, depth: str):
+        local = depth
+        #if (depth.empty()) local = Process::environment.options.get_str("FREEZE_CORE");
+
+        if local in [0, "0", False]:
+            return 0
+        elif local in [1, "1", True]:
+            num_frozen_el = 0
+            mol_valence = -1 * self.molecular_charge()
+            largest_shell = 0
+            # Freeze the number of core electrons corresponding to the
+            # nearest previous noble gas atom.  This means that the 4p block
+            # will still have 3d electrons active.  Alkali earth atoms will
+            # have one valence electron in this scheme.
+            for A in range(self.natom()):
+                Z = self.Z(A)
+                # Exclude ghosted atoms from core-freezing
+                if Z > 0:
+                    # Add ECPs to Z, the number of electrons less ECP-treated electrons
+                    #int ECP = n_ecp_core(mymol->label(A));
+                    ECP = 0  # todo hack
+                    current_shell = self.atom_to_period(Z + ECP);
+                    delta = self.period_to_full_shell(current_shell - 1)
+                    # Keep track of the largest frozen shell, in case its a cationic species
+                    if largest_shell < current_shell:
+                        largest_shell = current_shell
+                    # If center is a post-lanthanide or a post-actinide in Nth period,
+                    # freeze all 14 of its (N-2)f electrons too
+                    if current_shell > 5:
+                        if (Z + ECP - delta) >= 18:
+                            delta += 14
+                    # If this center has an ECP, some electrons are already frozen
+                    if ECP > 0:
+                        delta -= ECP
+                    # Keep track of current valence electrons
+                    mol_valence = mol_valence + Z - delta
+                    num_frozen_el += delta
+
+            # If we are about to end up with no valence electrons,
+            # unfreeze electrons from the largest shell in the molecule
+            if mol_valence <= 0:
+                num_frozen_el -= self.period_to_full_shell(largest_shell - 1) - self.period_to_full_shell(largest_shell - 2)
+            return num_frozen_el / 2
+
 
     # <<< Involved Methods for Frame >>>
 

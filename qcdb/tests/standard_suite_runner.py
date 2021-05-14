@@ -21,7 +21,9 @@ pp = pprint.PrettyPrinter(width=120)
 
 def runner_asserter(inp, subject, method, basis, tnm):
 
-    qc_module = inp["qc_module"]
+    qcprog = inp["qc_module"].split("-")[0]
+    qc_module_in = inp["qc_module"]  # returns "<qcprog>"|"<qcprog>-<module>"  # input-specified routing
+    qc_module_xptd = (qcprog + "-" + inp["xptd"]["qc_module"]) if inp.get("xptd", {}).get("qc_module", None) else None  # expected routing
     driver = inp["driver"]
     reference = inp["reference"]
     fcae = inp["fcae"]
@@ -92,16 +94,25 @@ def runner_asserter(inp, subject, method, basis, tnm):
     print("WFN")
     pp.pprint(wfn)
 
+    qc_module_out = wfn["provenance"]["creator"].lower()
+    if "module" in wfn["provenance"]:
+        qc_module_out += "-" + wfn["provenance"]["module"]  # returns "<qcprog>-<module>"
+    # assert 0, f"{qc_module_xptd=} {qc_module_in=} {qc_module_out=}"  # debug
+
     # <<<  Comparison Tests  >>>
 
-    # assert wfn["success"] is True                                                            <
-    # assert wfn["provenance"]["creator"].lower() == qcprog                                                <
+    assert wfn["success"] is True
+    assert wfn["provenance"]["creator"].lower() == qcprog, f'ENGINE used ({ wfn["provenance"]["creator"].lower()}) != requested ({qcprog})'
+    if qc_module_in != qcprog:
+        assert qc_module_out == qc_module_in, f"QC_MODULE used ({qc_module_out}) != requested ({qc_module_in})"
+    if qc_module_xptd:
+        assert qc_module_out == qc_module_xptd, f"QC_MODULE used ({qc_module_out}) != expected ({qc_module_xptd})"
 
     ref_block = std_suite[chash]
 
     # qcvars
     contractual_args = [
-        qc_module,
+        qc_module_out,
         driver,
         reference,
         method,
