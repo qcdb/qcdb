@@ -24,6 +24,8 @@ pp = pprint.PrettyPrinter(width=120)
 
 def run_gamess(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -> Dict:
 
+    local_options = kwargs.get("local_options", None)
+ 
     resi = AtomicInput(
         **{
             'driver': inspect.stack()[1][3],
@@ -38,7 +40,7 @@ def run_gamess(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -
             'provenance': provenance_stamp(__name__),
         })
 
-    jobrec = qcng.compute(resi, "qcdb-gamess", raise_error=True).dict()
+    jobrec = qcng.compute(resi, "qcdb-gamess", local_options=local_options, raise_error=True).dict()
     hold_qcvars = jobrec['extras'].pop('qcdb:qcvars')
     jobrec['qcvars'] = {key: qcel.Datum(**dval) for key, dval in hold_qcvars.items()}
     return jobrec
@@ -83,6 +85,7 @@ class QcdbGAMESSHarness(GAMESSHarness):
                          template: Optional[str] = None) -> Dict[str, Any]:
         gamessrec = {
             'infiles': {},
+            'scratch_messy': config.scratch_messy,
             'scratch_directory': config.scratch_directory,
         }
 
@@ -90,6 +93,8 @@ class QcdbGAMESSHarness(GAMESSHarness):
         molrecc1 = molrec.copy()
         molrecc1['fix_symmetry'] = 'c1'  # write _all_ atoms to input
         ropts = input_model.extras['qcdb:options']
+
+        ropts.require("QCDB", "MEMORY", f"{config.memory} gib", accession='00000000', verbose=False)
 
         nel = sum([z * int(real) for z, real in zip(molrec['elez'], molrec['real'])]) - molrec['molecular_charge']
         nel = int(nel)
@@ -136,7 +141,12 @@ class QcdbGAMESSHarness(GAMESSHarness):
         optcmd = format_keywords(skma_options)
 
         gamessrec['infiles']['gamess.inp'] = optcmd + molbascmd
-        gamessrec['command'] = [which("rungms"), "gamess"]
+        gamessrec["command"] = [
+            which("rungms"),
+            "gamess",
+            "00",
+            str(config.ncores),
+        ]  # rungms JOB VERNO NCPUS >& JOB.log &
 
         return gamessrec
 

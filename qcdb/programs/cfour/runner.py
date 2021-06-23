@@ -21,6 +21,8 @@ from .germinate import (extract_basis_from_genbas, muster_basisset, muster_inher
 def run_cfour(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -> Dict:
     """QCDB API to QCEngine connection for CFOUR."""
 
+    local_options = kwargs.get("local_options", None)
+
     resi = AtomicInput(
         **{
             'driver': inspect.stack()[1][3],
@@ -35,7 +37,7 @@ def run_cfour(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) ->
             'provenance': provenance_stamp(__name__),
         })
 
-    jobrec = qcng.compute(resi, "qcdb-cfour", raise_error=True).dict()
+    jobrec = qcng.compute(resi, "qcdb-cfour", local_options=local_options, raise_error=True).dict()
 
     hold_qcvars = jobrec['extras'].pop('qcdb:qcvars')
     jobrec['qcvars'] = {key: qcel.Datum(**dval) for key, dval in hold_qcvars.items()}
@@ -79,12 +81,15 @@ class QcdbCFOURHarness(CFOURHarness):
                          template: Optional[str] = None) -> Dict[str, Any]:
         cfourrec = {
             'infiles': {},
+            'scratch_messy': config.scratch_messy,
             'scratch_directory': config.scratch_directory,
         }
 
         molrec = qcel.molparse.from_schema(input_model.molecule.dict())
         molrec['fix_symmetry'] = 'c1'  # write _all_ atoms to GENBAS
         ropts = input_model.extras['qcdb:options']
+
+        ropts.require("QCDB", "MEMORY", f"{config.memory} gib", accession='00000000', verbose=False)
 
         molcmd = muster_molecule(molrec, ropts, verbose=1)
 

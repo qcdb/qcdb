@@ -43,6 +43,8 @@ def cfour_gradient_list() -> List:
     val.append('c4-cc3')
     val.append('c4-ccsd(t)')
     val.append('c4-ccsdt')
+    val.append('c4-ccsdt(q)')
+    val.append('c4-ccsdtq')
     return val
 
 

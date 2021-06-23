@@ -33,6 +33,8 @@ _w2 = ("CCSD CORRELATION ENERGY", "nonstandard answer: GAMESS CCSD ROHF FC energ
 _w3 = ("(T) CORRECTION ENERGY", "nonstandard answer: NWChem CCSD(T) ROHF AE energy")
 _w4 = ("MP2 CORRELATION ENERGY", "nonstandard answer: NWChem TCE MP3 doesn't report singles (affects ROHF), may be off by MP2 singles value")
 _w5 = ("MP2 CORRELATION ENERGY", "nonstandard answer: GAMESS MP2 ROHF gradient ZAPT energies")
+_w6 = ("CCSDTQ CORRELATION ENERGY", "misdirected calc: CFOUR NCC CCSDTQ gradient mixed fc/ae parts")
+_w7 = ("CCSDT CORRELATION ENERGY", "misdirected calc: CFOUR NCC CCSDT & CCSDT(Q) gradient mixed fc/ae parts")
 # yapf: enable
 
 
@@ -105,23 +107,7 @@ def _trans_key(qc, bas, key):
     ],
 )
 def test_hf_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
-    qcprog, method = inp["call"].split("-", 1)
-    qcprog = _trans_qcprog[qcprog.lower()]
-    tnm = request.node.name
-    subject = clsd_open_pmols[subjects[std_refs.index(inp["reference"])]]
-
-    inpcopy = {k: v for k, v in inp.items()}
-    inpcopy["keywords"] = {
-        k: (_trans_key(qcprog, basis, k) if v == "<>" else v) for k, v in inpcopy["keywords"].items()
-    }
-
-    inpcopy["driver"] = "energy"
-    inpcopy["scf_type"] = "pk"
-    inpcopy["corl_type"] = "conv"
-    inpcopy["qc_module"] = "-".join([qcprog, inp["keywords"].get("qc_module", "")]).strip("-")
-    print("INP", inpcopy)
-
-    runner_asserter(inpcopy, subject, method, basis, tnm)
+    runner_asserter(*energy_processor(inp, dertype, basis, subjects, clsd_open_pmols, request))
 
 
 #
@@ -173,33 +159,8 @@ def test_hf_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, reques
     ],
 )
 def test_hf_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
-    qcprog, method = inp["call"].split("-", 1)
-    qcprog = _trans_qcprog[qcprog.lower()]
-    tnm = request.node.name
-    subject = clsd_open_pmols[subjects[std_refs.index(inp["reference"])]]
+    runner_asserter(*gradient_processor(inp, dertype, basis, subjects, clsd_open_pmols, request))
 
-    inpcopy = {k: v for k, v in inp.items() if k != "error"}
-    if inp.get("error", False) and inp["error"].get(dertype, False):
-        inpcopy["error"] = inp["error"][dertype]
-    if inp.get("marks", False) and inp["marks"].get(dertype, False):
-        pytest.xfail(inp["marks"][dertype])
-        # request.node.add_marker(inp["marks"][dertype])
-
-    inpcopy["keywords"] = {
-        k: (_trans_key(qcprog, basis, k) if v == "<>" else v) for k, v in inpcopy["keywords"].items()
-    }
-    inpcopy["driver"] = "gradient"
-    if not any([k.lower() in _basis_keywords for k in inpcopy["keywords"]]):
-        inpcopy["keywords"]["basis"] = basis
-    inpcopy["scf_type"] = "pk"
-    inpcopy["corl_type"] = "conv"
-    inpcopy["qc_module"] = "-".join(
-        [qcprog, inp["keywords"].get("qc_module", inp["keywords"].get("cfour_cc_program", ""))]
-    ).strip("-")
-    inpcopy["keywords"]["function_kwargs"] = {"dertype": dertype}
-    print("INP", inpcopy)
-
-    runner_asserter(inpcopy, subject, method, basis, tnm)
 
 
 #
@@ -281,23 +242,7 @@ def test_hf_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, requ
     ],
 )
 def test_mp2_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
-    qcprog, method = inp["call"].split("-", 1)
-    qcprog = _trans_qcprog[qcprog.lower()]
-    tnm = request.node.name
-    subject = clsd_open_pmols[subjects[std_refs.index(inp["reference"])]]
-
-    inpcopy = {k: v for k, v in inp.items()}
-    inpcopy["keywords"] = {
-        k: (_trans_key(qcprog, basis, k) if v == "<>" else v) for k, v in inpcopy["keywords"].items()
-    }
-
-    inpcopy["driver"] = "energy"
-    inpcopy["scf_type"] = "pk"
-    inpcopy["corl_type"] = "conv"
-    inpcopy["qc_module"] = "-".join([qcprog, inp["keywords"].get("qc_module", "")]).strip("-")
-    print("INP", inpcopy)
-
-    runner_asserter(inpcopy, subject, method, basis, tnm)
+    runner_asserter(*energy_processor(inp, dertype, basis, subjects, clsd_open_pmols, request))
 
 
 #
@@ -364,35 +309,8 @@ def test_mp2_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, reque
     ],
 )
 def test_mp2_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
-    qcprog, method = inp["call"].split("-", 1)
-    qcprog = _trans_qcprog[qcprog.lower()]
-    tnm = request.node.name
-    subject = clsd_open_pmols[subjects[std_refs.index(inp["reference"])]]
+    runner_asserter(*gradient_processor(inp, dertype, basis, subjects, clsd_open_pmols, request))
 
-    inpcopy = {k: v for k, v in inp.items() if k != "error"}
-    if inp.get("error", False) and inp["error"].get(dertype, False):
-        inpcopy["error"] = inp["error"][dertype]
-    if inp.get("wrong", False) and inp["wrong"].get(dertype, False):
-        inpcopy["wrong"] = inp["wrong"][dertype]
-    if inp.get("marks", False) and inp["marks"].get(dertype, False):
-        pytest.xfail(inp["marks"][dertype])
-        # request.node.add_marker(inp["marks"][dertype])
-
-    inpcopy["keywords"] = {
-        k: (_trans_key(qcprog, basis, k) if v == "<>" else v) for k, v in inpcopy["keywords"].items()
-    }
-    inpcopy["driver"] = "gradient"
-    if not any([k.lower() in _basis_keywords for k in inpcopy["keywords"]]):
-        inpcopy["keywords"]["basis"] = basis
-    inpcopy["scf_type"] = "pk"
-    inpcopy["corl_type"] = "conv"
-    inpcopy["qc_module"] = "-".join(
-        [qcprog, inp["keywords"].get("qc_module", inp["keywords"].get("cfour_cc_program", ""))]
-    ).strip("-")
-    inpcopy["keywords"]["function_kwargs"] = {"dertype": dertype}
-    print("INP", inpcopy)
-
-    runner_asserter(inpcopy, subject, method, basis, tnm)
 
 
 #
@@ -450,23 +368,7 @@ def test_mp2_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, req
     ],
 )
 def test_mp3_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
-    qcprog, method = inp["call"].split("-", 1)
-    qcprog = _trans_qcprog[qcprog.lower()]
-    tnm = request.node.name
-    subject = clsd_open_pmols[subjects[std_refs.index(inp["reference"])]]
-
-    inpcopy = {k: v for k, v in inp.items()}
-    inpcopy["keywords"] = {
-        k: (_trans_key(qcprog, basis, k) if v == "<>" else v) for k, v in inpcopy["keywords"].items()
-    }
-
-    inpcopy["driver"] = "energy"
-    inpcopy["scf_type"] = "pk"
-    inpcopy["corl_type"] = "conv"
-    inpcopy["qc_module"] = "-".join([qcprog, inp["keywords"].get("qc_module", "")]).strip("-")
-    print("INP", inpcopy)
-
-    runner_asserter(inpcopy, subject, method, basis, tnm)
+    runner_asserter(*energy_processor(inp, dertype, basis, subjects, clsd_open_pmols, request))
 
 
 #
@@ -553,27 +455,7 @@ def test_mp3_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, reque
     ],
 )
 def test_ccsd_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
-    qcprog, method = inp["call"].split("-", 1)
-    qcprog = _trans_qcprog[qcprog.lower()]
-    tnm = request.node.name
-    subject = clsd_open_pmols[subjects[std_refs.index(inp["reference"])]]
-
-    inpcopy = {k: v for k, v in inp.items()}
-    inpcopy["keywords"] = {
-        k: (_trans_key(qcprog, basis, k) if v == "<>" else v) for k, v in inpcopy["keywords"].items()
-    }
-
-    inpcopy["driver"] = "energy"
-    if not any([k.lower() in _basis_keywords for k in inpcopy["keywords"]]):
-        inpcopy["keywords"]["basis"] = basis
-    inpcopy["scf_type"] = "pk"
-    inpcopy["corl_type"] = "conv"
-    inpcopy["qc_module"] = "-".join(
-        [qcprog, inp["keywords"].get("qc_module", inp["keywords"].get("cfour_cc_program", ""))]
-    ).strip("-")
-    print("INP", inpcopy)
-
-    runner_asserter(inpcopy, subject, method, basis, tnm)
+    runner_asserter(*energy_processor(inp, dertype, basis, subjects, clsd_open_pmols, request))
 
 
 #@pytest.mark.parametrize("mode", ["driver", "sandwich"])
@@ -679,3 +561,318 @@ def test_ccsd_energy_default(inp, dertype, basis, subjects, clsd_open_pmols, req
     print("INP", inpcopy)
 
     runner_asserter(inpcopy, subject, method, basis, tnm)
+
+
+
+#
+#   ,-----. ,-----. ,---.  ,------. ,--------.    ,------.
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--'    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  |    |  |    `.  `-. |  |  \  :  |  |       |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |       |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#   `-----' `-----'`-----' `-------'   `--'       `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                                                               `---' `---'
+#  <<<  CCSDT Energy
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        0,
+    ],
+    ids=["ene0"],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz"),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", "cfour_cc_program": "vcc",},                                                                                                                            }, id="ccsdt  rhf ae: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", "cfour_cc_program": "ecc",},                                                                                                                            }, id="ccsdt  rhf ae: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", "cfour_cc_program": "ncc",},                                                                                                                            }, id="ccsdt  rhf ae: cfour-ncc",  marks=using("cfour")),
+        pytest.param({"call": "nwc-ccsdt", "reference": "rhf",  "fcae": "ae", "keywords": {"qc_module": "tce"},                                                                                                                                                         }, id="ccsdt  rhf ae: nwchem-tce", marks=using("nwchem")),
+
+        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", "cfour_cc_program": "vcc", "cfour_dropmo": 1,},                                                                                                         }, id="ccsdt  rhf fc: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", "cfour_cc_program": "ecc", "cfour_dropmo": 1,},                                                                                                         }, id="ccsdt  rhf fc: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", "cfour_cc_program": "ncc", "cfour_dropmo": 1,},                                                                                                         }, id="ccsdt  rhf fc: cfour-ncc",  marks=using("cfour")),
+        pytest.param({"call": "nwc-ccsdt", "reference": "rhf",  "fcae": "fc", "keywords": {"qc_module": "tce", "nwchem_tce__freeze": 1 },                                                                                                                               }, id="ccsdt  rhf fc: nwchem-tce", marks=using("nwchem")),
+
+        pytest.param({"call": "c4-ccsdt",  "reference": "uhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", "cfour_reference": "uhf", "cfour_SCF_CONV": 12, "cfour_CC_CONV": 12, "cfour_cc_program": "vcc",},                                                       }, id="ccsdt  uhf ae: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "nwc-ccsdt", "reference": "uhf",  "fcae": "ae", "keywords": {"qc_module": "tce", "nwchem_scf__uhf": True},                                                                                                                                }, id="ccsdt  uhf ae: nwchem-tce", marks=using("nwchem")),
+
+        pytest.param({"call": "c4-ccsdt",  "reference": "uhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", "cfour_reference": "uhf", "cfour_SCF_CONV": 12, "cfour_CC_CONV": 12, "cfour_cc_program": "vcc", "cfour_dropmo": 1,},                                    }, id="ccsdt  uhf fc: cfour-vcc",  marks=using("cfour")),
+        # cfour uhf/rohf ecc does not converge, ncc does not run
+        pytest.param({"call": "nwc-ccsdt", "reference": "uhf",  "fcae": "fc", "keywords": {"nwchem_tce__freeze": 1, "qc_module": "tce", "nwchem_scf__uhf": True},                                                                                                       }, id="ccsdt  uhf fc: nwchem-tce", marks=using("nwchem")),
+
+        pytest.param({"call": "c4-ccsdt",  "reference": "rohf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", "cfour_reference": "rohf", "cfour_SCF_CONV": 12, "cfour_CC_CONV": 12, "cfour_cc_program": "vcc",},                                                     }, id="ccsdt rohf ae: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "nwc-ccsdt", "reference": "rohf", "fcae": "ae", "keywords": {"qc_module": "tce", "nwchem_scf__rohf": True},                                                                                                                               }, id="ccsdt rohf ae: nwchem-tce", marks=using("nwchem")),
+
+        pytest.param({"call": "c4-ccsdt",  "reference": "rohf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", "cfour_reference": "rohf", "cfour_SCF_CONV": 12, "cfour_CC_CONV": 12, "cfour_cc_program": "vcc", "cfour_dropmo": 1, "cfour_orbitals": 0},              }, id="ccsdt rohf fc: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "nwc-ccsdt", "reference": "rohf", "fcae": "fc", "keywords": {"nwchem_tce__freeze": 1, "qc_module": "tce", "nwchem_scf__rohf": True},                                                                                                      }, id="ccsdt rohf fc: nwchem-tce", marks=using("nwchem")),
+        # yapf: enable
+    ],
+)
+def test_ccsdt_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*energy_processor(inp, dertype, basis, subjects, clsd_open_pmols, request))
+
+
+#   ,-----. ,-----. ,---.  ,------. ,--------.     ,----.                     ,--.,--.                 ,--.
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--'    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-.
+#  |  |    |  |    `.  `-. |  |  \  :  |  |       |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-'
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |       '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |
+#   `-----' `-----'`-----' `-------'   `--'        `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'
+#
+#  <<<  CCSDT Gradient
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(1, id="grd1"),
+        #    pytest.param(0, id="grd0", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        ######## Are all possible ways of computing <method> working?
+        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_cc_program": "ecc",},                                                                                                                                                                 }, id="ccsdt  rhf ae: cfour-ecc",      marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_cc_program": "ncc",},                                                                                                                                                                 }, id="ccsdt  rhf ae: cfour-ncc",      marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_cc_program": "ecc","cfour_dropmo": 1},                                                                                                                                                }, id="ccsdt  rhf fc: cfour-ecc",      marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_cc_program": "ncc","cfour_dropmo": 1},                                                                                                                               "wrong": {1: _w7}}, id="ccsdt  rhf fc: cfour-ncc",      marks=using("cfour")),
+
+        # vcc turns into ecc
+#        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", "cfour_SCF_CONV": 12, "cfour_CC_CONV": 12, "cfour_cc_program": "ecc",},                                                                      }, id="ccsdt  rhf ae: cfour-ecc",  marks=using("cfour")),
+#        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", "cfour_SCF_CONV": 12, "cfour_CC_CONV": 12, "cfour_cc_program": "ecc", "cfour_dropmo": 1,},                                                   }, id="ccsdt  rhf fc: cfour-ecc",  marks=using("cfour")),
+#        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", "cfour_SCF_CONV": 12, "cfour_CC_CONV": 12, "cfour_cc_program": "ncc",},                                                                      }, id="ccsdt  rhf ae: cfour-ncc",  marks=using("cfour")),
+#        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", "cfour_SCF_CONV": 12, "cfour_CC_CONV": 12, "cfour_cc_program": "ncc", "cfour_dropmo": 1,},                                                   }, id="ccsdt  rhf fc: cfour-ncc",  marks=using("cfour")),
+        # yapf: enable
+    ],
+)
+def test_ccsdt_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*gradient_processor(inp, dertype, basis, subjects, clsd_open_pmols, request))
+
+
+#   ,-----. ,-----. ,---.  ,------. ,--------. ,-. ,-----.   ,-.      ,------.
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--'/ .''  .-.  '  '. \     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  |    |  |    `.  `-. |  |  \  :  |  |  |  | |  | |  |   |  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |  |  | '  '-'  '-. |  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#   `-----' `-----'`-----' `-------'   `--'   \ '. `-----'--'.' /     `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                              `-'           `-'                                    `---' `---'
+#  <<<  CCSDT(Q) Energy
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        0,
+    ],
+    ids=["ene0"],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz"),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        pytest.param({"call": "c4-ccsdt(q)",  "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                                                                                                                            }, id="ccsdt_q_  rhf ae: cfour",      marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdt(q)",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_dropmo": 1},                                                                                                                                                                           }, id="ccsdt_q_  rhf fc: cfour",      marks=using("cfour")),
+        # yapf: enable
+    ],
+)
+def test_ccsdt_prq_pr_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*energy_processor(inp, dertype, basis, subjects, clsd_open_pmols, request))
+
+
+#   ,-----. ,-----. ,---.  ,------. ,--------. ,-. ,-----.   ,-.       ,----.                     ,--.,--.                 ,--.
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--'/ .''  .-.  '  '. \     '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-.
+#  |  |    |  |    `.  `-. |  |  \  :  |  |  |  | |  | |  |   |  |    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-'
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |  |  | '  '-'  '-. |  |    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |
+#   `-----' `-----'`-----' `-------'   `--'   \ '. `-----'--'.' /      `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'
+#                                              `-'           `-'
+#  <<<  CCSDT(Q) Gradient
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(1, id="grd1"),
+        #    pytest.param(0, id="grd0", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        ######## Are all possible ways of computing <method> working?
+        pytest.param({"call": "c4-ccsdt(q)",  "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                                                                                                                               }, id="ccsdt_q_  rhf ae: cfour",      marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdt(q)",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_dropmo": 1},                                                                                                                                                             "wrong": {1: _w7}}, id="ccsdt_q_  rhf fc: cfour",      marks=using("cfour")),
+        # yapf: enable
+    ],
+)
+def test_ccsdt_prq_pr_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*gradient_processor(inp, dertype, basis, subjects, clsd_open_pmols, request))
+
+
+#
+#   ,-----. ,-----. ,---.  ,------. ,--------. ,-----.       ,------.
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--''  .-.  '      |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   |  | |  |      |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |   '  '-'  '-.    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#   `-----' `-----'`-----' `-------'   `--'    `-----'--'    `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                                                                          `---' `---'
+#  <<<  CCSDTQ Energy
+
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        0,
+    ],
+    ids=["ene0"],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz"),
+        # pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        # ecc/vcc sent to cfour, but it switches to ncc
+        # adz only converges to cc_conv=9
+        pytest.param({"call": "c4-ccsdtq",  "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                                                                                                                            }, id="ccsdtq  rhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdtq",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_dropmo": 1},                                                                                                                                                                           }, id="ccsdtq  rhf fc: cfour",      marks=using("cfour")),
+        # yapf: enable
+    ],
+)
+def test_ccsdtq_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*energy_processor(inp, dertype, basis, subjects, clsd_open_pmols, request))
+
+
+#
+#   ,-----. ,-----. ,---.  ,------. ,--------. ,-----.        ,----.                     ,--.,--.                 ,--.
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--''  .-.  '      '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-.
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   |  | |  |      |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-'
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |   '  '-'  '-.    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |
+#   `-----' `-----'`-----' `-------'   `--'    `-----'--'     `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'
+#
+#  <<<  CCSDTQ Gradient
+
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(1, id="grd1"),
+        #    pytest.param(0, id="grd0", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        ######## Are all possible ways of computing <method> working?
+
+        # vcc/ecc error out
+        pytest.param({"call": "c4-ccsdtq",  "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                                                                                                                               }, id="ccsdtq  rhf ae: cfour",      marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdtq",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_dropmo": 1},                                                                                                                                                             "wrong": {1: _w6}}, id="ccsdtq  rhf fc: cfour",      marks=using("cfour")),
+        # yapf: enable
+    ],
+)
+def test_ccsdtq_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*gradient_processor(inp, dertype, basis, subjects, clsd_open_pmols, request))
+
+
+def energy_processor(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    qcprog, method = inp["call"].split("-", 1)
+    qcprog = _trans_qcprog[qcprog.lower()]
+    tnm = request.node.name
+    subject = clsd_open_pmols[subjects[std_refs.index(inp["reference"])]]
+
+    inpcopy = {k: v for k, v in inp.items()}
+    inpcopy["keywords"] = {
+        k: (_trans_key(qcprog, basis, k) if v == "<>" else v) for k, v in inpcopy["keywords"].items()
+    }
+
+    inpcopy["driver"] = "energy"
+    if not any([k.lower() in _basis_keywords for k in inpcopy["keywords"]]):
+        inpcopy["keywords"]["basis"] = basis
+    inpcopy["scf_type"] = "pk"
+    inpcopy["corl_type"] = "conv"
+    inpcopy["qc_module"] = "-".join(
+        [qcprog, inp["keywords"].get("qc_module", inp["keywords"].get("cfour_cc_program", ""))]
+    ).strip("-")
+    print("INP", inpcopy)
+
+    return inpcopy, subject, method, basis, tnm
+
+
+def gradient_processor(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    qcprog, method = inp["call"].split("-", 1)
+    qcprog = _trans_qcprog[qcprog.lower()]
+    tnm = request.node.name
+    subject = clsd_open_pmols[subjects[std_refs.index(inp["reference"])]]
+
+    inpcopy = {k: v for k, v in inp.items() if k != "error"}
+    if inp.get("error", False) and inp["error"].get(dertype, False):
+        inpcopy["error"] = inp["error"][dertype]
+    if inp.get("wrong", False) and inp["wrong"].get(dertype, False):
+        inpcopy["wrong"] = inp["wrong"][dertype]
+    if inp.get("marks", False) and inp["marks"].get(dertype, False):
+        pytest.xfail(inp["marks"][dertype])
+        # request.node.add_marker(inp["marks"][dertype])
+
+    inpcopy["keywords"] = {
+        k: (_trans_key(qcprog, basis, k) if v == "<>" else v) for k, v in inpcopy["keywords"].items()
+    }
+    inpcopy["driver"] = "gradient"
+    if not any([k.lower() in _basis_keywords for k in inpcopy["keywords"]]):
+        inpcopy["keywords"]["basis"] = basis
+    inpcopy["scf_type"] = "pk"
+    inpcopy["corl_type"] = "conv"
+    inpcopy["qc_module"] = "-".join(
+        [qcprog, inp["keywords"].get("qc_module", inp["keywords"].get("cfour_cc_program", ""))]
+    ).strip("-")
+    inpcopy["keywords"]["function_kwargs"] = {"dertype": dertype}
+    print("INP", inpcopy)
+
+    return inpcopy, subject, method, basis, tnm

@@ -24,6 +24,8 @@ pp = pprint.PrettyPrinter(width=120)
 def run_nwchem(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -> Dict:
     """QCDB API to QCEngine connection for NWChem."""
 
+    local_options = kwargs.get("local_options", None)
+
     resi = AtomicInput(
         **{
             'driver': inspect.stack()[1][3],
@@ -38,7 +40,7 @@ def run_nwchem(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -
             'provenance': provenance_stamp(__name__),
         })
 
-    jobrec = qcng.compute(resi, "qcdb-nwchem", raise_error=True).dict()
+    jobrec = qcng.compute(resi, "qcdb-nwchem", local_options=local_options, raise_error=True).dict()
 
     hold_qcvars = jobrec['extras'].pop('qcdb:qcvars')
     jobrec['qcvars'] = {key: qcel.Datum(**dval) for key, dval in hold_qcvars.items()}
@@ -94,6 +96,7 @@ class QcdbNWChemHarness(NWChemHarness):
 
         nwchemrec = {
             'infiles': {},
+            'scratch_messy': config.scratch_messy,
             'scratch_directory': config.scratch_directory,
         }
 
@@ -101,6 +104,8 @@ class QcdbNWChemHarness(NWChemHarness):
         molrecc1 = molrec.copy()
         molrecc1['fix_symmetry'] = 'c1'  # write _all_ atoms to input
         ropts = input_model.extras['qcdb:options']
+
+        ropts.require("QCDB", "MEMORY", f"{config.memory} gib", accession='00000000', verbose=False)
 
         molcmd = muster_molecule(molrec, ropts, verbose=1)
 

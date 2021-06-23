@@ -193,13 +193,13 @@ def muster_inherited_keywords(ropts: 'Keywords', verbose: int = 1) -> None:
     kwgs = {'accession': accession, 'verbose': verbose}
     do_translate = ropts.scroll['QCDB']['TRANSLATE_QCDB'].value
 
-    # qcdb/memory [B] --> cfour/memory_size [MB]
+    # qcdb/memory [B] --> cfour/memory_size [QW]
     qopt = ropts.scroll['QCDB']['MEMORY']
     if do_translate or qopt.is_required():
-        mem = int(0.000001 * qopt.value)
-        print('\n\nMEMORY', mem, '\n\n')
+        mem = int(qopt.value / 8.0)
+        print('\n\nMEMORY', qopt.value, mem, '\n\n')
         ropts.suggest('CFOUR', 'MEMORY_SIZE', mem, **kwgs)
-        ropts.suggest('CFOUR', 'MEM_UNIT', 'MB', **kwgs)
+        ropts.suggest('CFOUR', 'MEM_UNIT', "INTEGERWORDS", **kwgs)
 
     # qcdb/puream --> cfour/spherical
     ropts.suggest('CFOUR', 'SPHERICAL', ropts.scroll['QCDB']['PUREAM'].value, **kwgs)
