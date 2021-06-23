@@ -428,11 +428,10 @@ def muster_inherited_keywords(ropts: 'Keywords', verbose: int = 1) -> None:
 
     do_translate = ropts.scroll['QCDB']['TRANSLATE_QCDB'].value
 
-    # REVISIT MEMORY
-    # qcdb/memory [B] --> nwchem/total_memory [MB]
+    # qcdb/memory [B] --> nwchem/total_memory [B]
     qopt = ropts.scroll['QCDB']['MEMORY']
     if do_translate or qopt.is_required():
-        mem = str(int(0.000001 * qopt.value)) + ' mb'
+        mem = qopt.value
         ropts.suggest('NWCHEM', 'memory', mem, **kwgs)
 
     # qcdb/reference --> nwchem/scf_[r|u|ro]hf

@@ -247,10 +247,12 @@ def test_fig2c_api(qcprog, request):
 
 
 @pytest.mark.parametrize("qcprog", ["cfour", "gamess", "nwchem", "psi4"])
-def wanted_test_fig2c_json(qcprog, request):
+def test_fig2c_json(qcprog, request):
     datin = _ins[qcprog]["c"]
 
     atres = qcdb.compute(datin, qcprog)
+    pprint.pprint(atres.dict(), width=200)
+
     assert compare_values(_the_energy, atres.return_result, atol=1.0e-6, label=request.node.name)
 
 

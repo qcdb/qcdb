@@ -8,6 +8,9 @@ from qcengine.programs.tests.standard_suite_contracts import (
     contractual_mp3,
     contractual_ccsd,
     contractual_ccsd_prt_pr,
+    contractual_ccsdt,
+    contractual_ccsdt_prq_pr,
+    contractual_ccsdtq,
     contractual_current,
     query_has_qcvar,
     query_qcvar,
@@ -39,7 +42,10 @@ def runner_asserter(inp, subject, method, basis, tnm):
         "mp2": mp2_type,
         "mp3": mp_type,
         "ccsd": cc_type,
-        "ccsd(t)": cc_type
+        "ccsd(t)": cc_type,
+        "ccsdt": cc_type,
+        "ccsdt(q)": cc_type,
+        "ccsdtq": cc_type,
     }
     corl_type = corl_natural_values[method]
 
@@ -145,6 +151,16 @@ def runner_asserter(inp, subject, method, basis, tnm):
 #            _asserter(asserter_args, contractual_args, contractual_mp2)
 #            _asserter(asserter_args, contractual_args, contractual_ccsd)
 #            _asserter(asserter_args, contractual_args, contractual_ccsd_prt_pr)
+        elif method == "ccsdt":
+            _asserter(asserter_args, contractual_args, contractual_mp2)
+            _asserter(asserter_args, contractual_args, contractual_ccsdt)
+        elif method == "ccsdt(q)":
+            _asserter(asserter_args, contractual_args, contractual_mp2)
+            _asserter(asserter_args, contractual_args, contractual_ccsdt)
+            _asserter(asserter_args, contractual_args, contractual_ccsdt_prq_pr)
+        elif method == "ccsdtq":
+            _asserter(asserter_args, contractual_args, contractual_mp2)
+            _asserter(asserter_args, contractual_args, contractual_ccsdtq)
 
     if "wrong" in inp:
         errmsg, reason = inp["wrong"]

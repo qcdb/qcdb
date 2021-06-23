@@ -175,6 +175,40 @@ def wfn_qcvars() -> List[Dict[str, Any]]:
         _solve_in_turn(args=['CCSD[T] CORRELATION ENERGY', 'CCSD CORRELATION ENERGY', '[T] CORRECTION ENERGY'],
                        coeff=[-1, 1, 1]))
 
+    # CCSDT
+    pv0.extend(
+        _solve_in_turn(args=['CCSDT TOTAL ENERGY', 'HF TOTAL ENERGY', 'CCSDT CORRELATION ENERGY'], coeff=[-1, 1, 1]))
+
+    # CCSDT(Q)
+    pv0.extend(
+        _solve_in_turn(args=['CCSDT(Q) CORRELATION ENERGY', 'CCSDT CORRELATION ENERGY', '(Q) CORRECTION ENERGY'],
+                       coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(args=['CCSDT(Q) TOTAL ENERGY', 'HF TOTAL ENERGY', 'CCSDT(Q) CORRELATION ENERGY'],
+                       coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(args=['CCSDT(Q) CORRELATION ENERGY', 'CCSDT CORRELATION ENERGY', '(Q) CORRECTION ENERGY'],
+                       coeff=[-1, 1, 1]))  # duplicate of first so that all minimal combinations covered
+
+    # CCSDT[Q]
+    pv0.extend(
+        _solve_in_turn(args=['CCSDT[Q] TOTAL ENERGY', 'HF TOTAL ENERGY', 'CCSDT[Q] CORRELATION ENERGY'],
+                       coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(args=['CCSDT[Q] CORRELATION ENERGY', 'CCSDT CORRELATION ENERGY', '[Q] CORRECTION ENERGY'],
+                       coeff=[-1, 1, 1]))
+
+    # CCSDTQ
+    pv0.extend(
+        _solve_in_turn(args=['CCSDTQ TOTAL ENERGY', 'HF TOTAL ENERGY', 'CCSDTQ CORRELATION ENERGY'], coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(
+            args=['CCSDTQ DOUBLES ENERGY', 'CCSDTQ SAME-SPIN CORRELATION ENERGY', 'CCSDTQ OPPOSITE-SPIN CORRELATION ENERGY'],
+            coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(args=['CCSDTQ CORRELATION ENERGY', 'CCSDTQ DOUBLES ENERGY', 'CCSDTQ SINGLES ENERGY'],
+                       coeff=[-1, 1, 1]))
+
     # FCI
     pv0.extend(_solve_in_turn(args=['FCI TOTAL ENERGY', 'HF TOTAL ENERGY', 'FCI CORRELATION ENERGY'], coeff=[-1, 1,
                                                                                                              1]))
