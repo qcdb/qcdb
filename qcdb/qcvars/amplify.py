@@ -44,7 +44,7 @@ def build_out(rawvars: Dict[str, Datum], verbose: int = 1) -> None:
 
     Parameters
     ----------
-    verbose : int, optional
+    verbose
         Controls print level. Per-var printing with >=2.
 
     Returns

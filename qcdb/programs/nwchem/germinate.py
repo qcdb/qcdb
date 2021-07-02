@@ -4,6 +4,7 @@ from typing import Dict
 
 import qcelemental as qcel
 
+from ...exceptions import ValidationError
 from ...util import conv_float2negexp
 
 def muster_molecule(molrec: Dict, ropts: 'Keywords', verbose: int = 1) -> str:
@@ -71,19 +72,24 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
             ropts.require('NWCHEM', 'tce__mp2', True, **kwgs)
         else:
             mdccmd = f'task mp2 {runtyp} \n\n'
+
     elif lowername == 'nwc-mp3':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp}\n\n'
             ropts.require('NWCHEM', 'tce__mp3', True, **kwgs)
+
     elif lowername == 'nwc-mp4':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp}\n\n'
             ropts.require('NWCHEM', 'tce__mp4', True, **kwgs)
+
     elif lowername == 'nwc-direct_mp2':
         mdccmd = f'task direct_mp2 {runtyp} \n\n'
+
     elif lowername == 'nwc-rimp2':
         #rimp2 requires fitting basis meaning topline must be <basis "ri-mp2 basis">
         mdccmd = f'task rimp2 {runtyp} \n\n'
+
     #CC options
     elif lowername == 'nwc-ccd':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':

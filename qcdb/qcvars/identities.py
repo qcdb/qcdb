@@ -145,6 +145,39 @@ def wfn_qcvars() -> List[Dict[str, Any]]:
     pv0.extend(_solve_in_turn(args=['MP2.5 SINGLES ENERGY', 'MP2 SINGLES ENERGY', 'MP3 SINGLES ENERGY'], coeff=[-1, Dm(0.5), Dm(0.5)]))
     pv0.extend(_solve_in_turn(args=['MP2.5 DOUBLES ENERGY', 'MP2 DOUBLES ENERGY', 'MP3 DOUBLES ENERGY'], coeff=[-1, Dm(0.5), Dm(0.5)]))
 
+    # LCCD
+    pv0.extend(
+        _solve_in_turn(args=['LCCD TOTAL ENERGY', 'HF TOTAL ENERGY', 'LCCD CORRELATION ENERGY'], coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(
+            args=['LCCD DOUBLES ENERGY', 'LCCD SAME-SPIN CORRELATION ENERGY', 'LCCD OPPOSITE-SPIN CORRELATION ENERGY'],
+            coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(args=['LCCD CORRELATION ENERGY', 'LCCD DOUBLES ENERGY', 'LCCD SINGLES ENERGY'],
+                       coeff=[-1, 1, 1]))
+
+    # LCCSD
+    pv0.extend(
+        _solve_in_turn(args=['LCCSD TOTAL ENERGY', 'HF TOTAL ENERGY', 'LCCSD CORRELATION ENERGY'], coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(
+            args=['LCCSD DOUBLES ENERGY', 'LCCSD SAME-SPIN CORRELATION ENERGY', 'LCCSD OPPOSITE-SPIN CORRELATION ENERGY'],
+            coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(args=['LCCSD CORRELATION ENERGY', 'LCCSD DOUBLES ENERGY', 'LCCSD SINGLES ENERGY'],
+                       coeff=[-1, 1, 1]))
+
+    # CCD
+    pv0.extend(
+        _solve_in_turn(args=['CCD TOTAL ENERGY', 'HF TOTAL ENERGY', 'CCD CORRELATION ENERGY'], coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(
+            args=['CCD DOUBLES ENERGY', 'CCD SAME-SPIN CORRELATION ENERGY', 'CCD OPPOSITE-SPIN CORRELATION ENERGY'],
+            coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(args=['CCD CORRELATION ENERGY', 'CCD DOUBLES ENERGY', 'CCD SINGLES ENERGY'],
+                       coeff=[-1, 1, 1]))
+
     # CCSD
     pv0.extend(
         _solve_in_turn(args=['CCSD TOTAL ENERGY', 'HF TOTAL ENERGY', 'CCSD CORRELATION ENERGY'], coeff=[-1, 1, 1]))

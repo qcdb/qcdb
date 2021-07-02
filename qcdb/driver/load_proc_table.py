@@ -77,7 +77,7 @@ if which('nwchem'):
     procedures['hessian']['nwchem'] = {}
     for mtd in nwchem_hessian_list():
         procedures['hessian']['nwchem'][mtd.lower()] = run_nwchem
-    
+
    # procedures['properties']['nwchem'] = {}
    # for mtd in nwchem_properties_list():
    #     procedures['properties']['nwchem'][mtd.lower()] = run_nwchem
