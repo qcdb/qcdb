@@ -3,6 +3,7 @@ from typing import Dict
 
 import qcelemental as qcel
 
+from ...exceptions import ValidationError
 from ...molecule import Molecule
 from ...util import conv_float2negexp
 
@@ -97,6 +98,16 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', sysinfo: Dict, 
         ropts.require('GAMESS', 'contrl__cityp', 'none', accession=accession, verbose=verbose)
         ropts.require('GAMESS', 'contrl__cctyp', 'none', accession=accession, verbose=verbose)
 
+    elif lowername == 'gms-lccd':
+        ropts.require('GAMESS', 'contrl__mplevl', 0, accession=accession, verbose=verbose)
+        ropts.require('GAMESS', 'contrl__cityp', 'none', accession=accession, verbose=verbose)
+        ropts.require('GAMESS', 'contrl__cctyp', 'lccd', accession=accession, verbose=verbose)
+
+    elif lowername == 'gms-ccd':
+        ropts.require('GAMESS', 'contrl__mplevl', 0, accession=accession, verbose=verbose)
+        ropts.require('GAMESS', 'contrl__cityp', 'none', accession=accession, verbose=verbose)
+        ropts.require('GAMESS', 'contrl__cctyp', 'ccd', accession=accession, verbose=verbose)
+
     elif lowername == 'gms-ccsd':
         ropts.require('GAMESS', 'contrl__mplevl', 0, accession=accession, verbose=verbose)
         ropts.require('GAMESS', 'contrl__cityp', 'none', accession=accession, verbose=verbose)
@@ -175,7 +186,7 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', sysinfo: Dict, 
 #            options ['GAMESS']['GAMESS_CONTRL_COORD']['value']  = 'fragonly'
 
     else:
-        raise ValidationError("""Requested GAMESS computational methods %d is not available.""" % (lowername))
+        raise ValidationError(f"""Requested GAMESS computational methods {lowername} is not available.""")
 
 
 def muster_inherited_keywords(ropts: 'Keywords', sysinfo: Dict, verbose: int = 1) -> None:

@@ -33,7 +33,7 @@ def compute(
         driver_call = {"energy": qcdb.energy, "gradient": qcdb.gradient}
         qmol = qcdb.Molecule.from_schema(input_model.molecule.dict())
 
-        # keywords = {(qcprog + "_" + k): v for k, v in input_model.keywords.items()}
+        # keywords = {(program + "_" + k): v for k, v in input_model.keywords.items()}
         keywords = input_model.keywords
         mtd_call = prefixpkg[program.lower()] + input_model.model.method + "/" + input_model.model.basis
 

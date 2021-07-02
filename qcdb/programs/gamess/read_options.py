@@ -106,6 +106,13 @@ def load_gamess_keywords(options: Keywords) -> None:
                 validator=parsers.enum("STO N21 N31 N311 G3L G3LX"),
                 glossary=""""""))
 
+    options.add(
+        "gamess",
+        Keyword(keyword="contrl__numgrd",
+                default=False,
+                validator=parsers.boolean,
+                glossary="""Flag to allow numerical differentiation of the energy."""))
+
     # $SCF
 
     options.add(
@@ -234,3 +241,15 @@ def load_gamess_keywords(options: Keywords) -> None:
             default=2,  #None,
             validator=parsers.positive_integer,
             glossary="""Total number of active electrons."""))
+
+
+    # <<< FORCE
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="force__method",
+            default="analytic",
+            validator=parsers.enum("ANALYTIC SEMINUM FULLNUM"),
+            glossary="""Chooses between fully analytic, numerical differention of analytic first derivatives, or double differentiation of energies."""))
+

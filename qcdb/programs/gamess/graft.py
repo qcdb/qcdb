@@ -10,6 +10,8 @@ def gamess_list() -> List:
     val.append('gms-scf')
     val.append('gms-hf')
     val.append('gms-mp2')
+    val.append("gms-lccd")
+    val.append("gms-ccd")
     val.append('gms-ccsd')
     val.append('gms-ccsd(t)')
     val.append('gms-cr-ccl')
@@ -38,6 +40,7 @@ def gamess_hessian_list() -> List:
     to procedures['hessian'].
         """
     val = []
+    val.append('gms-hf')
 
     return val
 

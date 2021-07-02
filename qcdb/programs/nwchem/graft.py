@@ -71,6 +71,7 @@ def nwchem_gradient_list() -> List:
     val.append('nwc-direct_mp2') #untested
     val.append('nwc-rimp2') #untested
     val.append('nwc-dft')
+    val.append("nwc-ccd")
     val.append('nwc-ccsd')
     val.append('nwc-ccsdt')
     val.append('nwc-ccsdtq')
@@ -94,7 +95,7 @@ def nwchem_hessian_list() -> List:
     val.append('nwc-hf')
     val.append('nwc-dft')
 
-    return []
+    return val
 
 def nwchem_properties_list() -> List:
     """Return an array of NWChem methods with energies. Appended to procedures ['properties']"""

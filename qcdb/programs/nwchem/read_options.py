@@ -1724,3 +1724,23 @@ def load_nwchem_keywords(options: Keywords) -> None:
                 default=1,
                 validator=parsers.positive_integer,
                 glossary='Tile size in Tensor Contraction Engine (TCE).'))
+
+    options.add(
+        'nwchem',
+        Keyword(
+            keyword='tce__print',
+            default='medium',
+            validator=parsers.enum('debug high medium low none'),
+            glossary=
+            'TCE level print options which can be divided from most specific to least: debug, high, low, and none. Default is medium.'
+        ))
+
+    # Hessian
+    options.add(
+        "nwchem",
+        Keyword(keyword="hessian__thresh",
+                default=1.e-6,
+                validator=parsers.parse_convergence,
+                glossary=
+                "Wavefunction convergence for analytic Hessians."
+        ))

@@ -1,11 +1,15 @@
 import pprint
 
 import pytest
+import numpy as np
 from qcengine.programs.tests.standard_suite_contracts import (
     contractual_hf,
     contractual_mp2,
     contractual_mp2p5,
     contractual_mp3,
+    contractual_lccd,
+    contractual_lccsd,
+    contractual_ccd,
     contractual_ccsd,
     contractual_ccsd_prt_pr,
     contractual_ccsdt,
@@ -26,7 +30,9 @@ def runner_asserter(inp, subject, method, basis, tnm):
 
     qcprog = inp["qc_module"].split("-")[0]
     qc_module_in = inp["qc_module"]  # returns "<qcprog>"|"<qcprog>-<module>"  # input-specified routing
-    qc_module_xptd = (qcprog + "-" + inp["xptd"]["qc_module"]) if inp.get("xptd", {}).get("qc_module", None) else None  # expected routing
+    qc_module_xptd = (
+        (qcprog + "-" + inp["xptd"]["qc_module"]) if inp.get("xptd", {}).get("qc_module", None) else None
+    )  # expected routing
     driver = inp["driver"]
     reference = inp["reference"]
     fcae = inp["fcae"]
@@ -41,6 +47,9 @@ def runner_asserter(inp, subject, method, basis, tnm):
         "hf": "conv",  # dummy to assure df/cd/conv scf_type refs available
         "mp2": mp2_type,
         "mp3": mp_type,
+        "lccd": cc_type,
+        "lccsd": cc_type,
+        "ccd": cc_type,
         "ccsd": cc_type,
         "ccsd(t)": cc_type,
         "ccsdt": cc_type,
@@ -54,15 +63,28 @@ def runner_asserter(inp, subject, method, basis, tnm):
     natural_values = {"pk": "pk", "direct": "pk", "df": "df", "mem_df": "df", "disk_df": "df", "cd": "cd"}
     scf_type = natural_values[scf_type]
 
-    atol = 1.0e-6
+    atol_e, atol_g, atol_h = 1.e-6, 2.e-6, 5.e-6
+    if inp.get("xptd", {}).get("fd", False):
+        # relax atol for qcprog internal findif since 3-pt is crude and arrays less precise
+        atol_g, atol_h = 2.e-5, 8.e-5
     chash = answer_hash(
-        system=subject.name(), basis=basis, fcae=fcae, scf_type=scf_type, reference=reference, corl_type=corl_type,
+        system=subject.name(),
+        basis=basis,
+        fcae=fcae,
+        scf_type=scf_type,
+        reference=reference,
+        corl_type=corl_type,
     )
 
     # check all calcs against conventional reference to looser tolerance
     atol_conv = 1.0e-4
     chash_conv = answer_hash(
-        system=subject.name(), basis=basis, fcae=fcae, reference=reference, corl_type="conv", scf_type="pk",
+        system=subject.name(),
+        basis=basis,
+        fcae=fcae,
+        reference=reference,
+        corl_type="conv",
+        scf_type="pk",
     )
     ref_block_conv = std_suite[chash_conv]
 
@@ -70,7 +92,8 @@ def runner_asserter(inp, subject, method, basis, tnm):
 
     import qcdb
 
-    driver_call = {"energy": qcdb.energy, "gradient": qcdb.gradient}
+    driver_call = {"energy": qcdb.energy, "gradient": qcdb.gradient, "hessian": qcdb.hessian}
+    local_options = {"nnodes": 1, "ncores": 1, "scratch_messy": False}
 
     qcdb.set_options(
         {
@@ -90,12 +113,14 @@ def runner_asserter(inp, subject, method, basis, tnm):
     if "error" in inp:
         errtype, errmsg = inp["error"]
         with pytest.raises(errtype) as e:
-            driver_call[driver](inp["call"], molecule=subject, **extra_kwargs)
+            driver_call[driver](inp["call"], molecule=subject, local_options=local_options, **extra_kwargs)
 
-        assert errmsg in str(e.value)
+        assert errmsg in str(e.value), f"Not found: {errtype} '{errmsg}' in {e.value}"
         return
 
-    ret, wfn = driver_call[driver](inp["call"], molecule=subject, return_wfn=True, **extra_kwargs)
+    ret, wfn = driver_call[driver](
+        inp["call"], molecule=subject, return_wfn=True, local_options=local_options, **extra_kwargs
+    )
 
     print("WFN")
     pp.pprint(wfn)
@@ -108,7 +133,9 @@ def runner_asserter(inp, subject, method, basis, tnm):
     # <<<  Comparison Tests  >>>
 
     assert wfn["success"] is True
-    assert wfn["provenance"]["creator"].lower() == qcprog, f'ENGINE used ({ wfn["provenance"]["creator"].lower()}) != requested ({qcprog})'
+    assert (
+        wfn["provenance"]["creator"].lower() == qcprog
+    ), f'ENGINE used ({ wfn["provenance"]["creator"].lower()}) != requested ({qcprog})'
     if qc_module_in != qcprog:
         assert qc_module_out == qc_module_in, f"QC_MODULE used ({qc_module_out}) != requested ({qc_module_in})"
     if qc_module_xptd:
@@ -128,7 +155,7 @@ def runner_asserter(inp, subject, method, basis, tnm):
     asserter_args = [
         [qcdb, wfn["qcvars"]],
         ref_block,
-        atol,
+        [atol_e, atol_g, atol_h],
         ref_block_conv,
         atol_conv,
         tnm,
@@ -144,6 +171,9 @@ def runner_asserter(inp, subject, method, basis, tnm):
             _asserter(asserter_args, contractual_args, contractual_mp2)
             _asserter(asserter_args, contractual_args, contractual_mp2p5)
             _asserter(asserter_args, contractual_args, contractual_mp3)
+        elif method == "ccd":
+            _asserter(asserter_args, contractual_args, contractual_mp2)
+            _asserter(asserter_args, contractual_args, contractual_ccd)
         elif method == "ccsd":
             _asserter(asserter_args, contractual_args, contractual_mp2)
             _asserter(asserter_args, contractual_args, contractual_ccsd)
@@ -179,22 +209,32 @@ def runner_asserter(inp, subject, method, basis, tnm):
     # returns
     if driver == "energy":
         assert compare_values(
-            ref_block[f"{method.upper()} TOTAL ENERGY"], wfn["return_result"], tnm + " wfn", atol=atol
+            ref_block[f"{method.upper()} TOTAL ENERGY"], wfn["return_result"], tnm + " wfn", atol=atol_e
         )
         assert compare_values(
-            ref_block[f"{method.upper()} TOTAL ENERGY"], wfn["properties"]["return_energy"], tnm + " prop", atol=atol
+            ref_block[f"{method.upper()} TOTAL ENERGY"], wfn["properties"]["return_energy"], tnm + " prop", atol=atol_e
         )
         assert compare_values(ref_block[f"{method.upper()} TOTAL ENERGY"], ret, tnm + " return")
 
     elif driver == "gradient":
         assert compare_values(
-            ref_block[f"{method.upper()} TOTAL GRADIENT"], wfn["return_result"], tnm + " grad wfn", atol=atol
+            ref_block[f"{method.upper()} TOTAL GRADIENT"], wfn["return_result"], tnm + " grad wfn", atol=atol_g
         )
         assert compare_values(
-            ref_block[f"{method.upper()} TOTAL ENERGY"], wfn["properties"]["return_energy"], tnm + " prop", atol=atol
+            ref_block[f"{method.upper()} TOTAL ENERGY"], wfn["properties"]["return_energy"], tnm + " prop", atol=atol_e
         )
-        # assert compare_values(ref_block[f"{method.upper()} TOTAL GRADIENT"], wfn["properties"]["return_gradient"], tnm + " grad prop", atol=atol)
-        assert compare_values(ref_block[f"{method.upper()} TOTAL GRADIENT"], ret, tnm + " grad return", atol=atol)
+        # assert compare_values(ref_block[f"{method.upper()} TOTAL GRADIENT"], wfn["properties"]["return_gradient"], tnm + " grad prop", atol=atol_g)
+        assert compare_values(ref_block[f"{method.upper()} TOTAL GRADIENT"], ret, tnm + " grad return", atol=atol_g)
+
+    elif driver == "hessian":
+        assert compare_values(
+            ref_block[f"{method.upper()} TOTAL HESSIAN"], wfn["return_result"], tnm + " hess wfn", atol=atol_h
+        )
+        # assert compare_values(ref_block[f"{method.upper()} TOTAL GRADIENT"], wfn["properties"]["return_gradient"], tnm + " grad prop", atol=atol_g)
+        assert compare_values(
+            ref_block[f"{method.upper()} TOTAL ENERGY"], wfn["properties"]["return_energy"], tnm + " prop", atol=atol_e
+        )
+        assert compare_values(ref_block[f"{method.upper()} TOTAL HESSIAN"], ret, tnm + " hess return", atol=atol_h)
 
     # generics
     # yapf: disable
@@ -208,11 +248,12 @@ def runner_asserter(inp, subject, method, basis, tnm):
 def _asserter(asserter_args, contractual_args, contractual_fn):
     """For expectations in `contractual_fn`, check that the QCVars are present in P::e.globals and wfn and match expected ref_block."""
 
-    qcvar_stores, ref_block, atol, ref_block_conv, atol_conv, tnm = asserter_args
+    qcvar_stores, ref_block, atol_egh, ref_block_conv, atol_conv, tnm = asserter_args
 
     for obj in qcvar_stores:
         for rpv, pv, present in contractual_fn(*contractual_args):
             label = tnm + " " + pv
+            atol = atol_egh["EGH".index(rpv.split()[-1][0])]
 
             if present:
                 # verify exact match to method (may be df) and near match to conventional (non-df) method
