@@ -20,6 +20,7 @@ def nwchem_list() -> List:
     val.append('nwc-ccsd')
     val.append('nwc-ccsdt')
     val.append('nwc-ccsdtq')
+    val.append('nwc-ccsd+t(ccsd)')
     val.append('nwc-ccsd[t]')
     val.append('nwc-ccsd(t)')
     val.append('nwc-ccsd(2)_t') #untested

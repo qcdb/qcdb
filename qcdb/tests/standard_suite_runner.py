@@ -11,6 +11,7 @@ from qcengine.programs.tests.standard_suite_contracts import (
     contractual_lccsd,
     contractual_ccd,
     contractual_ccsd,
+    contractual_ccsdpt_prccsd_pr,
     contractual_ccsd_prt_pr,
     contractual_ccsdt,
     contractual_ccsdt_prq_pr,
@@ -51,6 +52,7 @@ def runner_asserter(inp, subject, method, basis, tnm):
         "lccsd": cc_type,
         "ccd": cc_type,
         "ccsd": cc_type,
+        "ccsd+t(ccsd)": cc_type,
         "ccsd(t)": cc_type,
         "ccsdt": cc_type,
         "ccsdt(q)": cc_type,
@@ -181,6 +183,10 @@ def runner_asserter(inp, subject, method, basis, tnm):
 #            _asserter(asserter_args, contractual_args, contractual_mp2)
 #            _asserter(asserter_args, contractual_args, contractual_ccsd)
 #            _asserter(asserter_args, contractual_args, contractual_ccsd_prt_pr)
+        elif method == "ccsd+t(ccsd)":
+            _asserter(asserter_args, contractual_args, contractual_mp2)
+            _asserter(asserter_args, contractual_args, contractual_ccsd)
+            _asserter(asserter_args, contractual_args, contractual_ccsdpt_prccsd_pr)
         elif method == "ccsdt":
             _asserter(asserter_args, contractual_args, contractual_mp2)
             _asserter(asserter_args, contractual_args, contractual_ccsdt)

@@ -20,10 +20,18 @@ qcvardefs['(T) CORRECTION ENERGY'] = {
 """
 }
 
-qcvardefs['[T] CORRECTION ENERGY'] = {
+#qcvardefs['[T] CORRECTION ENERGY'] = {
+#    'units': 'Eh',
+#    'glossary': """
+#   The coupled-cluster bracket perturbative triples correction.
+#"""
+#}
+
+qcvardefs['T(CCSD) CORRECTION ENERGY'] = {
     'units': 'Eh',
     'glossary': """
-   The coupled-cluster bracket perturbative triples correction.
+   The coupled-cluster triples correction evaluated with CCSD amplitudes.
+   Identical to the "[T]" bracket T correction.
 """
 }
 
@@ -2102,7 +2110,7 @@ qcvardefs['TWO-ELECTRON ENERGY'] = {
 }
 
 qcvardefs['N ALPHA ELECTRONS'] = {
-    'units': ""
+    'units': "",
     'glossary':
     r"""
 The number of alpha electrons.
@@ -2110,7 +2118,7 @@ The number of alpha electrons.
 }
 
 qcvardefs['N BETA ELECTRONS'] = {
-    'units': ""
+    'units': "",
     'glossary':
     r"""
   The number of beta electrons.
@@ -2323,4 +2331,5 @@ define_spin_qcvars("CEPA(0)", description="coupled electron pair approximation, 
 define_spin_qcvars("CCD", description="coupled cluster doubles", do_spin=True, do_grad=True)
 define_spin_qcvars("MP3", description="3rd-order Moller--Plesset perturbation theory", do_spin=True, do_grad=True)
 define_spin_qcvars("MP4(SDQ)", description="4rd-order Moller--Plesset perturbation theory without triples excitations", do_spin=False, do_grad=False)
+define_spin_qcvars("CCSD+T(CCSD)", description="coupled cluster singles and doubles with triples evaluated at converged CCSD amplitudes", do_spin=False, do_grad=False)
 
