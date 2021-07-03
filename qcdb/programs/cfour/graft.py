@@ -21,6 +21,7 @@ def cfour_list() -> List:
     val.append('c4-ccsd')
     val.append('c4-ccsd-dboc')
     val.append('c4-cc3')
+    val.append("c4-ccsd+t(ccsd)")
     val.append('c4-ccsd(t)')
     val.append('c4-ccsdt')
     val.append('c4-ccsdt(q)')

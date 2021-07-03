@@ -108,18 +108,28 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
             #    ropts.suggest('NWCHEM', 'tce__ccsd', True, **kwgs)
             #    mdccmd = f'task tce {runtyp}\n\n'
 
+    elif lowername == 'nwc-ccsd+t(ccsd)':
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
+            pass
+            mdccmd = f'task tce {runtyp} \n\n'
+            ropts.require('NWCHEM', 'tce__ccsd(t)', True, **kwgs)
+        else:
+            mdccmd = f'task ccsd+t(ccsd) {runtyp}\n\n'
+
     elif lowername == 'nwc-ccsdt':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp} \n\n'
             ropts.require('NWCHEM', 'tce__ccsdt', True, **kwgs)
         else:
             mdccmd = f'task ccsdt {runtyp}\n\n'
+
     elif lowername == 'nwc-ccsd(t)':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp} \n\n'
             ropts.require('NWCHEM', 'tce__ccsd(t)', True, **kwgs)
         else:
             mdccmd = f'task ccsd(t) {runtyp}\n\n'
+
     elif lowername == 'nwc-ccsdtq':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
             mdccmd = f'task tce {runtyp} \n\n'

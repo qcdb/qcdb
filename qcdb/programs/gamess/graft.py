@@ -13,6 +13,7 @@ def gamess_list() -> List:
     val.append("gms-lccd")
     val.append("gms-ccd")
     val.append('gms-ccsd')
+    val.append('gms-ccsd+t(ccsd)')
     val.append('gms-ccsd(t)')
     val.append('gms-cr-ccl')
     val.append('gms-ccsd(tq)')

@@ -113,6 +113,11 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', sysinfo: Dict, 
         ropts.require('GAMESS', 'contrl__cityp', 'none', accession=accession, verbose=verbose)
         ropts.require('GAMESS', 'contrl__cctyp', 'ccsd', accession=accession, verbose=verbose)
 
+    elif lowername == 'gms-ccsd+t(ccsd)':
+        ropts.require('GAMESS', 'contrl__mplevl', 0, accession=accession, verbose=verbose)
+        ropts.require('GAMESS', 'contrl__cityp', 'none', accession=accession, verbose=verbose)
+        ropts.require('GAMESS', 'contrl__cctyp', 'ccsd(t)', accession=accession, verbose=verbose)
+
     elif lowername == 'gms-ccsd(t)':
         ropts.require('GAMESS', 'contrl__mplevl', 0, accession=accession, verbose=verbose)
         ropts.require('GAMESS', 'contrl__cityp', 'none', accession=accession, verbose=verbose)

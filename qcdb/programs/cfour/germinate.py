@@ -168,6 +168,12 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
     elif lowername == 'c4-cc3':
         ropts.require('CFOUR', 'CALC_LEVEL', 'CC3', accession=accession, verbose=verbose)
 
+    elif lowername == 'c4-ccsd+t(ccsd)':
+        if ropts.scroll['CFOUR']['CC_PROGRAM'].value == 'ECC':
+            ropts.require('CFOUR', 'CALC_LEVEL', 'CCSD[T]', accession=accession, verbose=verbose)
+        else:
+            ropts.require('CFOUR', 'CALC_LEVEL', 'CCSD+T(CCSD)', accession=accession, verbose=verbose)
+
     elif lowername == 'c4-ccsd(t)':
         # Can't use (T) b/c bug in xsymcor lops it off
         ropts.require('CFOUR', 'CALC_LEVEL', 'CCSD[T]', accession=accession, verbose=verbose)
