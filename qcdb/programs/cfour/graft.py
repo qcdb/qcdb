@@ -23,6 +23,10 @@ def cfour_list() -> List:
     val.append('c4-cc3')
     val.append("c4-ccsd+t(ccsd)")
     val.append('c4-ccsd(t)')
+    val.append('c4-ccsdt-1a')
+    val.append('c4-ccsdt-1b')
+    val.append('c4-ccsdt-2')
+    val.append('c4-ccsdt-3')
     val.append('c4-ccsdt')
     val.append('c4-ccsdt(q)')
     val.append('c4-ccsdtq')
@@ -47,6 +51,10 @@ def cfour_gradient_list() -> List:
     val.append('c4-ccsd')
     val.append('c4-cc3')
     val.append('c4-ccsd(t)')
+    val.append('c4-ccsdt-1a')
+    val.append('c4-ccsdt-1b')
+    val.append('c4-ccsdt-2')
+    val.append('c4-ccsdt-3')
     val.append('c4-ccsdt')
     val.append('c4-ccsdt(q)')
     val.append('c4-ccsdtq')
@@ -66,6 +74,11 @@ def cfour_hessian_list() -> List:
     val.append('c4-ccd')
     val.append('c4-ccsd')
     val.append('c4-ccsd(t)')
+    val.append('c4-ccsdt-1a')
+    val.append('c4-ccsdt-1b')
+    val.append('c4-ccsdt-2')
+    val.append('c4-ccsdt-3')
+    val.append('c4-ccsdt')
     return val
 
 

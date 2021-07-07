@@ -13,6 +13,10 @@ from qcengine.programs.tests.standard_suite_contracts import (
     contractual_ccsd,
     contractual_ccsdpt_prccsd_pr,
     contractual_ccsd_prt_pr,
+    contractual_ccsdt1a,
+    contractual_ccsdt1b,
+    contractual_ccsdt2,
+    contractual_ccsdt3,
     contractual_ccsdt,
     contractual_ccsdt_prq_pr,
     contractual_ccsdtq,
@@ -54,6 +58,10 @@ def runner_asserter(inp, subject, method, basis, tnm):
         "ccsd": cc_type,
         "ccsd+t(ccsd)": cc_type,
         "ccsd(t)": cc_type,
+        "ccsdt-1a": cc_type,
+        "ccsdt-1b": cc_type,
+        "ccsdt-2": cc_type,
+        "ccsdt-3": cc_type,
         "ccsdt": cc_type,
         "ccsdt(q)": cc_type,
         "ccsdtq": cc_type,
@@ -187,6 +195,18 @@ def runner_asserter(inp, subject, method, basis, tnm):
             _asserter(asserter_args, contractual_args, contractual_mp2)
             _asserter(asserter_args, contractual_args, contractual_ccsd)
             _asserter(asserter_args, contractual_args, contractual_ccsdpt_prccsd_pr)
+        elif method == "ccsdt-1a":
+            _asserter(asserter_args, contractual_args, contractual_mp2)
+            _asserter(asserter_args, contractual_args, contractual_ccsdt1a)
+        elif method == "ccsdt-1b":
+            _asserter(asserter_args, contractual_args, contractual_mp2)
+            _asserter(asserter_args, contractual_args, contractual_ccsdt1b)
+        elif method == "ccsdt-2":
+            _asserter(asserter_args, contractual_args, contractual_mp2)
+            _asserter(asserter_args, contractual_args, contractual_ccsdt2)
+        elif method == "ccsdt-3":
+            _asserter(asserter_args, contractual_args, contractual_mp2)
+            _asserter(asserter_args, contractual_args, contractual_ccsdt3)
         elif method == "ccsdt":
             _asserter(asserter_args, contractual_args, contractual_mp2)
             _asserter(asserter_args, contractual_args, contractual_ccsdt)
