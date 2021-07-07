@@ -39,6 +39,14 @@ _q15 = (qcng.exceptions.UnknownError, "select_mp3: Method 'mp3' with MP_TYPE 'CO
 _q16 = (qcdb.exceptions.ValidationError, "Derivative method 'name' (gms-mp3) and derivative level 'dertype' (1) are not available.")  # no gms mp3 grad
 _q17 = (qcdb.exceptions.ValidationError, "Derivative method 'name' (p4-ccd) and derivative level")  # no psi4 ccd
 _q18 = (qcng.exceptions.InputError, "Frozen core is not available for the CC gradients.")  # psi ccenergy
+_q19 = (qcng.exceptions.UnknownError, "UHF/ROHF gradients not implemented for this level of theory")  # cfour ccsdt
+_q20 = (KeyError, "p4-ccsd+t(ccsd)")
+_q21 = (KeyError, "gms-ccsdt")
+_q22 = (KeyError, "p4-ccsdt")
+_q23 = (KeyError, "ccsdt-3")  # gamess, nwchem, psi4
+_q24 = (KeyError, "ccsdt-1a")  # gamess, nwchem, psi4
+_q25 = (KeyError, "ccsdt-1b")  # gamess, nwchem, psi4
+_q26 = (KeyError, "ccsdt-2")  # gamess, nwchem, psi4
 
 
 _w1 = ("MP2 CORRELATION ENERGY", "nonstandard answer: NWChem TCE MP2 doesn't report singles (affects ROHF)")
@@ -53,6 +61,18 @@ _w9 = ("CCD CORRELATION ENERGY", "misdirected calc: CFOUR NCC CCD gradient mixed
 _w10 = ("MP2.5 CORRELATION ENERGY", "misdirected calc: CFOUR NCC MP3 gradient mixed fc/ae parts")
 _w11 = ("MP3 TOTAL GRADIENT", "nonstandard answer: CFOUR MP3 RHF FC doesn't match findif")
 _w12 = ("MP2 CORRELATION ENERGY", "nonstandard answer: CFOUR CCSD ROHF FC gradient right but energies wrong")
+_w13 = ("CCSDT-3 CORRELATION ENERGY", "misdirected calc: CFOUR NCC CCSDT-3 gradient mixed fc/ae parts")
+_w14 = ("CCSDT-3 TOTAL GRADIENT", "nonstandard answer: CFOUR CCSDT-3 FC doesn't match findif")
+_w15 = ("CCSDT-3 TOTAL HESSIAN", "nonstandard answer: CFOUR CCSDT-3 FC doesn't match findif")
+_w16 = ("CCSDT-1A TOTAL GRADIENT", "nonstandard answer: CFOUR CCSDT-1A FC doesn't match findif")
+_w17 = ("CCSDT-1A TOTAL HESSIAN", "nonstandard answer: CFOUR CCSDT-1A FC doesn't match findif")
+_w18 = ("CCSDT-1B TOTAL GRADIENT", "nonstandard answer: CFOUR CCSDT-1B FC doesn't match findif")
+_w19 = ("CCSDT-1B TOTAL HESSIAN", "nonstandard answer: CFOUR CCSDT-1B FC doesn't match findif")
+_w20 = ("CCSDT-2 TOTAL GRADIENT", "nonstandard answer: CFOUR CCSDT-2 FC doesn't match findif")
+_w21 = ("CCSDT-2 TOTAL HESSIAN", "nonstandard answer: CFOUR CCSDT-2 FC doesn't match findif")
+_w22 = ("CCSDT-1A CORRELATION ENERGY", "misdirected calc: CFOUR NCC CCSDT-1a gradient mixed fc/ae parts")
+_w23 = ("CCSDT-1B CORRELATION ENERGY", "misdirected calc: CFOUR NCC CCSDT-1b gradient mixed fc/ae parts")
+_w24 = ("CCSDT-2 CORRELATION ENERGY", "misdirected calc: CFOUR NCC CCSDT-2 gradient mixed fc/ae parts")
 # yapf: enable
 
 # <<<  Notes
@@ -1131,6 +1151,595 @@ def test_ccsdpt_prccsd_pr_energy_module(inp, dertype, basis, subjects, clsd_open
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
 
 
+
+#                                                                                                                                 
+#   ,-----. ,-----. ,---.  ,------. ,--------.        ,--.            ,------.                                                    
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----./   | ,--,--.    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.               
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'`|  |' ,-.  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /                
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |           |  |\ '-'  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '                 
+#   `-----' `-----'`-----' `-------'   `--'           `--' `--`--'    `------'`--''--' `----'`--'   .`-  /.-'  /                  
+#                                                                                                   `---' `---'                   
+#  <<<  CCSDT-1a Energy
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(0, id="ene0"),
+    ]
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz"),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        pytest.param({"call": "c4-ccsdt-1a",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "vcc",},                                                                                                               }, id="ccsdt-1a  rhf ae: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-1a",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc",},                                                                                                               }, id="ccsdt-1a  rhf ae: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-1a",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ncc",},                                                                                                               }, id="ccsdt-1a  rhf ae: cfour-ncc",  marks=using("cfour")),
+        pytest.param({"call": "gms-ccsdt-1a", "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                                                                                         "error": {0: _q24}}, id="ccsdt-1a  rhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-ccsdt-1a", "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                                                                                         "error": {0: _q24}}, id="ccsdt-1a  rhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-ccsdt-1a",  "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                                                                                         "error": {0: _q24}}, id="ccsdt-1a  rhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-ccsdt-1a",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "vcc", "cfour_dropmo": 1,},                                                                                            }, id="ccsdt-1a  rhf fc: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-1a",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc", "cfour_dropmo": 1,},                                                                                            }, id="ccsdt-1a  rhf fc: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-1a",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ncc", "cfour_dropmo": 1,},                                                                                            }, id="ccsdt-1a  rhf fc: cfour-ncc",  marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdt-1a",  "reference": "uhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf", "cfour_cc_program": "vcc",},                                                                                     }, id="ccsdt-1a  uhf ae: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-1a",  "reference": "uhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf", "cfour_cc_program": "ecc",},                                                                                     }, id="ccsdt-1a  uhf ae: cfour-ecc",  marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdt-1a",  "reference": "uhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf", "cfour_cc_program": "vcc", "cfour_dropmo": 1},                                                                   }, id="ccsdt-1a  uhf fc: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-1a",  "reference": "uhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf", "cfour_cc_program": "ecc", "cfour_dropmo": 1},                                                                   }, id="ccsdt-1a  uhf fc: cfour-ecc",  marks=using("cfour")),
+        # yapf: enable
+    ],
+)
+def test_ccsdt1a_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
+
+
+#
+#   ,-----. ,-----. ,---.  ,------. ,--------.        ,--.             ,----.                     ,--.,--.                 ,--.   
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----./   | ,--,--.    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-. 
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'`|  |' ,-.  |    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-' 
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |           |  |\ '-'  |    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |   
+#   `-----' `-----'`-----' `-------'   `--'           `--' `--`--'     `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'   
+#
+#  <<<  CCSDT-1a Gradient
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(1, id="grd1"),
+        # pytest.param(0, id="grd0", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        # * vcc turns into ecc
+        pytest.param({"call": "c4-ccsdt-1a",  "reference": "rhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc",},                                                     }, id="ccsdt-1a  rhf ae: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-1a",  "reference": "rhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ncc",},                                                     }, id="ccsdt-1a  rhf ae: cfour-ncc",  marks=using("cfour")),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt-1a", "reference": "rhf", "fcae": "ae", "keywords": {**_p4c4_fd, "psi4_cfour_reference": "rhf", "psi4_cfour_cc_program": "ecc"},                                                      }, id="ccsdt-1a  rhf ae: psi4-cfour-ecc"),
+        # DEBUG pytest.param({"call": "p4-mrccsdt-1a", "reference": "rhf", "fcae": "ae", "keywords": {**_p4c4_fd, "psi4_reference": "rhf"},                                                                                             }, id="ccsdt-1a  rhf ae: psi4-mrcc"),
+
+        pytest.param({"call": "c4-ccsdt-1a",  "reference": "rhf",  "fcae": "fc",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc", "cfour_dropmo": 1,},                "wrong": {1: _w16}}, id="ccsdt-1a  rhf fc: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-1a",  "reference": "rhf",  "fcae": "fc",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ncc", "cfour_dropmo": 1,},                "wrong": {1: _w22}}, id="ccsdt-1a  rhf fc: cfour-ncc",  marks=using("cfour")),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt-1a",  "reference": "rhf",  "fcae": "fc", "keywords": {**_p4c4_fd, "psi4_cfour_cc_program": "ecc", "psi4_cfour_dropmo": [1],},                                                        }, id="ccsdt-1a  rhf fc: psi4-cfour-ecc"),
+        # DEBUG pytest.param({"call": "p4-mrccsdt-1a", "reference": "rhf", "fcae": "fc", "keywords": {**_p4c4_fd, "psi4_reference": "rhf", "psi4_freeze_core": True},                                                                   }, id="ccsdt-1a  rhf fc: psi4-mrcc"),
+
+        pytest.param({"call": "c4-ccsdt-1a",  "reference": "uhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf"},                                     "error": {1: _q19}}, id="ccsdt-1a  uhf ae: cfour",      marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdt-1a",  "reference": "rohf", "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "rohf"},                                    "error": {1: _q19}}, id="ccsdt-1a rohf ae: cfour",      marks=using("cfour")),
+        # yapf: enable
+    ],
+)
+def test_ccsdt1a_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "gradient"))
+
+
+#
+#   ,-----. ,-----. ,---.  ,------. ,--------.        ,--.            ,--.  ,--.                     ,--.                         
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----./   | ,--,--.    |  '--'  | ,---.  ,---.  ,---. `--' ,--,--.,--,--,          
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'`|  |' ,-.  |    |  .--.  || .-. :(  .-' (  .-' ,--.' ,-.  ||      \         
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |           |  |\ '-'  |    |  |  |  |\   --..-'  `).-'  `)|  |\ '-'  ||  ||  |         
+#   `-----' `-----'`-----' `-------'   `--'           `--' `--`--'    `--'  `--' `----'`----' `----' `--' `--`--'`--''--'         
+#                               
+#  <<<  CCSDT-1a Hessian
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(2, id="hes2"),
+        # pytest.param(1, id="hes1", marks=pytest.mark.long),
+        # pytest.param(0, id="hes0", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        pytest.param({"call": "c4-ccsdt-1a",  "reference": "rhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc",},                                                     }, id="ccsdt-1a  rhf ae: cfour-ecc",  marks=using("cfour")),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt-1a", "reference": "rhf", "fcae": "ae", "keywords": {**_p4c4_fd, "psi4_cfour_reference": "rhf", "psi4_cfour_cc_program": "ecc"},                                                      }, id="ccsdt-1a  rhf ae: psi4-cfour-ecc"),
+        # DEBUG pytest.param({"call": "p4-mrccsdt-1a", "reference": "rhf", "fcae": "ae", "keywords": {**_p4c4_fd, "psi4_reference": "rhf"},                                                                                             }, id="ccsdt-1a  rhf ae: psi4-mrcc"),
+
+        pytest.param({"call": "c4-ccsdt-1a",  "reference": "rhf",  "fcae": "fc",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc", "cfour_dropmo": 1,},                "wrong": {2: _w17}}, id="ccsdt-1a  rhf fc: cfour-ecc",  marks=using("cfour")),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt-1a", "reference": "rhf", "fcae": "fc", "keywords": {**_p4c4_fd, "psi4_cfour_reference": "rhf", "psi4_cfour_dropmo": [1], "psi4_cfour_cc_program": "ecc"},                            }, id="ccsdt-1a  rhf fc: psi4-cfour-ecc"),
+        # DEBUG pytest.param({"call": "p4-mrccsdt-1a", "reference": "rhf", "fcae": "fc", "keywords": {**_p4c4_fd, "psi4_reference": "rhf", "psi4_freeze_core": True},                                                                   }, id="ccsdt-1a  rhf fc: psi4-mrcc"),
+
+        pytest.param({"call": "c4-ccsdt-1a",  "reference": "uhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf"},                                     "error": {2: _q19}}, id="ccsdt-1a  uhf ae: cfour",      marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdt-1a",  "reference": "rohf", "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "rohf"},                                    "error": {2: _q19}}, id="ccsdt-1a rohf ae: cfour",      marks=using("cfour")),
+        # yapf: enable
+    ],
+)
+def test_ccsdt1a_hessian_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "hessian"))
+
+
+#                                                                                                                                
+#   ,-----. ,-----. ,---.  ,------. ,--------.        ,--.,--.       ,------.                                                    
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----./   ||  |-.     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.               
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'`|  || .-. '    |  `--, |      \| .-. :|  .--'| .-. |\  '  /                
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |           |  || `-' |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '                 
+#   `-----' `-----'`-----' `-------'   `--'           `--' `---'     `------'`--''--' `----'`--'   .`-  /.-'  /                  
+#                                                                                                  `---' `---'                   
+#  <<<  CCSDT-1b Energy
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(0, id="ene0"),
+    ]
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz"),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        pytest.param({"call": "c4-ccsdt-1b",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "vcc",},                                                                                                               }, id="ccsdt-1b  rhf ae: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-1b",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc",},                                                                                                               }, id="ccsdt-1b  rhf ae: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-1b",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ncc",},                                                                                                               }, id="ccsdt-1b  rhf ae: cfour-ncc",  marks=using("cfour")),
+        pytest.param({"call": "gms-ccsdt-1b", "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                                                                                         "error": {0: _q25}}, id="ccsdt-1b  rhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-ccsdt-1b", "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                                                                                         "error": {0: _q25}}, id="ccsdt-1b  rhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-ccsdt-1b",  "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                                                                                         "error": {0: _q25}}, id="ccsdt-1b  rhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-ccsdt-1b",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "vcc", "cfour_dropmo": 1,},                                                                                            }, id="ccsdt-1b  rhf fc: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-1b",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc", "cfour_dropmo": 1,},                                                                                            }, id="ccsdt-1b  rhf fc: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-1b",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ncc", "cfour_dropmo": 1,},                                                                                            }, id="ccsdt-1b  rhf fc: cfour-ncc",  marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdt-1b",  "reference": "uhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf", "cfour_cc_program": "vcc",},                                                                                     }, id="ccsdt-1b  uhf ae: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-1b",  "reference": "uhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf", "cfour_cc_program": "ecc",},                                                                                     }, id="ccsdt-1b  uhf ae: cfour-ecc",  marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdt-1b",  "reference": "uhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf", "cfour_cc_program": "vcc", "cfour_dropmo": 1},                                                                   }, id="ccsdt-1b  uhf fc: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-1b",  "reference": "uhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf", "cfour_cc_program": "ecc", "cfour_dropmo": 1},                                                                   }, id="ccsdt-1b  uhf fc: cfour-ecc",  marks=using("cfour")),
+        # yapf: enable
+    ],
+)
+def test_ccsdt1b_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
+
+
+#
+#   ,-----. ,-----. ,---.  ,------. ,--------.        ,--.,--.        ,----.                     ,--.,--.                 ,--.   
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----./   ||  |-.     '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-. 
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'`|  || .-. '    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-' 
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |           |  || `-' |    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |   
+#   `-----' `-----'`-----' `-------'   `--'           `--' `---'      `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'   
+#
+#  <<<  CCSDT-1b Gradient
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(1, id="grd1"),
+        # pytest.param(0, id="grd0", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        # * vcc turns into ecc
+        pytest.param({"call": "c4-ccsdt-1b",  "reference": "rhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc",},                                                     }, id="ccsdt-1b  rhf ae: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-1b",  "reference": "rhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ncc",},                                                     }, id="ccsdt-1b  rhf ae: cfour-ncc",  marks=using("cfour")),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt-1b", "reference": "rhf", "fcae": "ae", "keywords": {**_p4c4_fd, "psi4_cfour_reference": "rhf", "psi4_cfour_cc_program": "ecc"},                                                      }, id="ccsdt-1b  rhf ae: psi4-cfour-ecc"),
+        # DEBUG pytest.param({"call": "p4-mrccsdt-1b", "reference": "rhf", "fcae": "ae", "keywords": {**_p4c4_fd, "psi4_reference": "rhf"},                                                                                             }, id="ccsdt-1b  rhf ae: psi4-mrcc"),
+
+        pytest.param({"call": "c4-ccsdt-1b",  "reference": "rhf",  "fcae": "fc",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc", "cfour_dropmo": 1,},                "wrong": {1: _w18}}, id="ccsdt-1b  rhf fc: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-1b",  "reference": "rhf",  "fcae": "fc",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ncc", "cfour_dropmo": 1,},                "wrong": {1: _w23}}, id="ccsdt-1b  rhf fc: cfour-ncc",  marks=using("cfour")),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt-1b",  "reference": "rhf",  "fcae": "fc", "keywords": {**_p4c4_fd, "psi4_cfour_cc_program": "ecc", "psi4_cfour_dropmo": [1],},                                                        }, id="ccsdt-1b  rhf fc: psi4-cfour-ecc"),
+        # DEBUG pytest.param({"call": "p4-mrccsdt-1b", "reference": "rhf", "fcae": "fc", "keywords": {**_p4c4_fd, "psi4_reference": "rhf", "psi4_freeze_core": True},                                                                   }, id="ccsdt-1b  rhf fc: psi4-mrcc"),
+
+        pytest.param({"call": "c4-ccsdt-1b",  "reference": "uhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf"},                                     "error": {1: _q19}}, id="ccsdt-1b  uhf ae: cfour",      marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdt-1b",  "reference": "rohf", "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "rohf"},                                    "error": {1: _q19}}, id="ccsdt-1b rohf ae: cfour",      marks=using("cfour")),
+        # yapf: enable
+    ],
+)
+def test_ccsdt1b_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "gradient"))
+
+
+#
+#   ,-----. ,-----. ,---.  ,------. ,--------.        ,--.,--.       ,--.  ,--.                     ,--.                         
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----./   ||  |-.     |  '--'  | ,---.  ,---.  ,---. `--' ,--,--.,--,--,          
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'`|  || .-. '    |  .--.  || .-. :(  .-' (  .-' ,--.' ,-.  ||      \         
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |           |  || `-' |    |  |  |  |\   --..-'  `).-'  `)|  |\ '-'  ||  ||  |         
+#   `-----' `-----'`-----' `-------'   `--'           `--' `---'     `--'  `--' `----'`----' `----' `--' `--`--'`--''--'         
+#                                                                             
+#  <<<  CCSDT-1b Hessian
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(2, id="hes2"),
+        # pytest.param(1, id="hes1", marks=pytest.mark.long),
+        # pytest.param(0, id="hes0", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        # * adz ae the two debugs don't match to 1e-5 - went with p4c4 to pass
+        pytest.param({"call": "c4-ccsdt-1b",  "reference": "rhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc",},                                                     }, id="ccsdt-1b  rhf ae: cfour-ecc",  marks=using("cfour")),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt-1b", "reference": "rhf", "fcae": "ae", "keywords": {**_p4c4_fd, "psi4_cfour_reference": "rhf", "psi4_cfour_cc_program": "ecc"},                                                      }, id="ccsdt-1b  rhf ae: psi4-cfour-ecc"),
+        # DEBUG pytest.param({"call": "p4-mrccsdt-1b", "reference": "rhf", "fcae": "ae", "keywords": {**_p4c4_fd, "psi4_reference": "rhf"},                                                                                             }, id="ccsdt-1b  rhf ae: psi4-mrcc"),
+
+        # * fc is wrong wrt the two debugs for adz - commented b/c not filling in ref for other bases
+        # pytest.param({"call": "c4-ccsdt-1b",  "reference": "rhf",  "fcae": "fc",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc", "cfour_dropmo": 1,},                "wrong": {2: _w17}}, id="ccsdt-1b  rhf fc: cfour-ecc",  marks=using("cfour")),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt-1b", "reference": "rhf", "fcae": "fc", "keywords": {**_p4c4_fd, "psi4_cfour_reference": "rhf", "psi4_cfour_dropmo": [1], "psi4_cfour_cc_program": "ecc"},                            }, id="ccsdt-1b  rhf fc: psi4-cfour-ecc"),
+        # DEBUG pytest.param({"call": "p4-mrccsdt-1b", "reference": "rhf", "fcae": "fc", "keywords": {**_p4c4_fd, "psi4_reference": "rhf", "psi4_freeze_core": True},                                                                   }, id="ccsdt-1b  rhf fc: psi4-mrcc"),
+
+        pytest.param({"call": "c4-ccsdt-1b",  "reference": "uhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf"},                                     "error": {2: _q19}}, id="ccsdt-1b  uhf ae: cfour",      marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdt-1b",  "reference": "rohf", "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "rohf"},                                    "error": {2: _q19}}, id="ccsdt-1b rohf ae: cfour",      marks=using("cfour")),
+        # yapf: enable
+    ],
+)
+def test_ccsdt1b_hessian_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "hessian"))
+
+
+#                                                                                                                           
+#   ,-----. ,-----. ,---.  ,------. ,--------.        ,---.     ,------.                                                    
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----.'.-.  \    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.               
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----' .-' .'    |  `--, |      \| .-. :|  .--'| .-. |\  '  /                
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |          /   '-.    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '                 
+#   `-----' `-----'`-----' `-------'   `--'          '-----'    `------'`--''--' `----'`--'   .`-  /.-'  /                  
+#                                                                                             `---' `---'                   
+#  <<<  CCSDT-2 Energy
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(0, id="ene0"),
+    ]
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz"),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        pytest.param({"call": "c4-ccsdt-2",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "vcc",},                                                                                                               }, id="ccsdt-2  rhf ae: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-2",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc",},                                                                                                               }, id="ccsdt-2  rhf ae: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-2",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ncc",},                                                                                                               }, id="ccsdt-2  rhf ae: cfour-ncc",  marks=using("cfour")),
+        pytest.param({"call": "gms-ccsdt-2", "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                                                                                         "error": {0: _q26}}, id="ccsdt-2  rhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-ccsdt-2", "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                                                                                         "error": {0: _q26}}, id="ccsdt-2  rhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-ccsdt-2",  "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                                                                                         "error": {0: _q26}}, id="ccsdt-2  rhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-ccsdt-2",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "vcc", "cfour_dropmo": 1,},                                                                                            }, id="ccsdt-2  rhf fc: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-2",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc", "cfour_dropmo": 1,},                                                                                            }, id="ccsdt-2  rhf fc: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-2",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ncc", "cfour_dropmo": 1,},                                                                                            }, id="ccsdt-2  rhf fc: cfour-ncc",  marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdt-2",  "reference": "uhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf", "cfour_cc_program": "vcc",},                                                                                     }, id="ccsdt-2  uhf ae: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-2",  "reference": "uhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf", "cfour_cc_program": "ecc",},                                                                                     }, id="ccsdt-2  uhf ae: cfour-ecc",  marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdt-2",  "reference": "uhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf", "cfour_cc_program": "vcc", "cfour_dropmo": 1},                                                                   }, id="ccsdt-2  uhf fc: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-2",  "reference": "uhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf", "cfour_cc_program": "ecc", "cfour_dropmo": 1},                                                                   }, id="ccsdt-2  uhf fc: cfour-ecc",  marks=using("cfour")),
+        # yapf: enable
+    ],
+)
+def test_ccsdt2_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
+
+
+#
+#   ,-----. ,-----. ,---.  ,------. ,--------.        ,---.      ,----.                     ,--.,--.                 ,--.   
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----.'.-.  \    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-. 
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----' .-' .'    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-' 
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |          /   '-.    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |   
+#   `-----' `-----'`-----' `-------'   `--'          '-----'     `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'   
+#
+#  <<<  CCSDT-2 Gradient
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(1, id="grd1"),
+        # pytest.param(0, id="grd0", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        # * ccsdt-2 not available in mrcc
+        # * vcc turns into ecc
+        pytest.param({"call": "c4-ccsdt-2",  "reference": "rhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc",},                                                     }, id="ccsdt-2  rhf ae: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-2",  "reference": "rhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ncc",},                                                     }, id="ccsdt-2  rhf ae: cfour-ncc",  marks=using("cfour")),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt-2", "reference": "rhf", "fcae": "ae", "keywords": {**_p4c4_fd, "psi4_cfour_reference": "rhf", "psi4_cfour_cc_program": "ecc"},                                                      }, id="ccsdt-2  rhf ae: psi4-cfour-ecc"),
+
+        pytest.param({"call": "c4-ccsdt-2",  "reference": "rhf",  "fcae": "fc",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc", "cfour_dropmo": 1,},                "wrong": {1: _w20}}, id="ccsdt-2  rhf fc: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-2",  "reference": "rhf",  "fcae": "fc",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ncc", "cfour_dropmo": 1,},                "wrong": {1: _w24}}, id="ccsdt-2  rhf fc: cfour-ncc",  marks=using("cfour")),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt-2",  "reference": "rhf",  "fcae": "fc", "keywords": {**_p4c4_fd, "psi4_cfour_cc_program": "ecc", "psi4_cfour_dropmo": [1],},                                                        }, id="ccsdt-2  rhf fc: psi4-cfour-ecc"),
+
+        pytest.param({"call": "c4-ccsdt-2",  "reference": "uhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf"},                                     "error": {1: _q19}}, id="ccsdt-2  uhf ae: cfour",      marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdt-2",  "reference": "rohf", "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "rohf"},                                    "error": {1: _q19}}, id="ccsdt-2 rohf ae: cfour",      marks=using("cfour")),
+        # yapf: enable
+    ],
+)
+def test_ccsdt2_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "gradient"))
+
+
+
+#
+#   ,-----. ,-----. ,---.  ,------. ,--------.        ,---.     ,--.  ,--.                     ,--.                         
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----.'.-.  \    |  '--'  | ,---.  ,---.  ,---. `--' ,--,--.,--,--,          
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----' .-' .'    |  .--.  || .-. :(  .-' (  .-' ,--.' ,-.  ||      \         
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |          /   '-.    |  |  |  |\   --..-'  `).-'  `)|  |\ '-'  ||  ||  |         
+#   `-----' `-----'`-----' `-------'   `--'          '-----'    `--'  `--' `----'`----' `----' `--' `--`--'`--''--'         
+#                                                                                       
+#  <<<  CCSDT-2 Hessian
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(2, id="hes2"),
+        # pytest.param(1, id="hes1", marks=pytest.mark.long),
+        # pytest.param(0, id="hes0", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        # * ccsdt-2 not available in mrcc
+        # * adz has 7e-6 sized discrepancies from debug - adding false fd marking to pass it
+        pytest.param({"call": "c4-ccsdt-2",  "reference": "rhf",  "fcae": "ae", "xptd": {"fd": True},  "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc",},                                                     }, id="ccsdt-2  rhf ae: cfour-ecc",  marks=using("cfour")),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt-2", "reference": "rhf", "fcae": "ae", "keywords": {**_p4c4_fd, "psi4_cfour_reference": "rhf", "psi4_cfour_cc_program": "ecc"},                                                      }, id="ccsdt-2  rhf ae: psi4-cfour-ecc"),
+
+        # * no use testing hes if grad wrong
+        # pytest.param({"call": "c4-ccsdt-2",  "reference": "rhf",  "fcae": "fc",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc", "cfour_dropmo": 1,},              "wrong": {2: _w17}}, id="ccsdt-2  rhf fc: cfour-ecc",  marks=using("cfour")),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt-2", "reference": "rhf", "fcae": "fc", "keywords": {**_p4c4_fd, "psi4_cfour_reference": "rhf", "psi4_cfour_dropmo": [1], "psi4_cfour_cc_program": "ecc"},                            }, id="ccsdt-2  rhf fc: psi4-cfour-ecc"),
+
+        pytest.param({"call": "c4-ccsdt-2",  "reference": "uhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf"},                                     "error": {2: _q19}}, id="ccsdt-2  uhf ae: cfour",      marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdt-2",  "reference": "rohf", "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "rohf"},                                    "error": {2: _q19}}, id="ccsdt-2 rohf ae: cfour",      marks=using("cfour")),
+        # yapf: enable
+    ],
+)
+def test_ccsdt2_hessian_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "hessian"))
+
+
+#                                                                                                                           
+#   ,-----. ,-----. ,---.  ,------. ,--------.       ,----.     ,------.                                                    
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----.'.-.  |    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.               
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'  .' <     |  `--, |      \| .-. :|  .--'| .-. |\  '  /                
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |          /'-'  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '                 
+#   `-----' `-----'`-----' `-------'   `--'          `----'     `------'`--''--' `----'`--'   .`-  /.-'  /                  
+#                                                                                             `---' `---'                   
+#  <<<  CCSDT-3 Energy
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(0, id="ene0"),
+    ]
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz"),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        pytest.param({"call": "c4-ccsdt-3",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "vcc",},                                                                                                               }, id="ccsdt-3  rhf ae: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-3",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc",},                                                                                                               }, id="ccsdt-3  rhf ae: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-3",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ncc",},                                                                                                               }, id="ccsdt-3  rhf ae: cfour-ncc",  marks=using("cfour")),
+        pytest.param({"call": "gms-ccsdt-3", "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                                                                                         "error": {0: _q23}}, id="ccsdt-3  rhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-ccsdt-3", "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                                                                                         "error": {0: _q23}}, id="ccsdt-3  rhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-ccsdt-3",  "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                                                                                         "error": {0: _q23}}, id="ccsdt-3  rhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-ccsdt-3",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "vcc", "cfour_dropmo": 1,},                                                                                            }, id="ccsdt-3  rhf fc: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-3",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc", "cfour_dropmo": 1,},                                                                                            }, id="ccsdt-3  rhf fc: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-3",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ncc", "cfour_dropmo": 1,},                                                                                            }, id="ccsdt-3  rhf fc: cfour-ncc",  marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdt-3",  "reference": "uhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf", "cfour_cc_program": "vcc",},                                                                                     }, id="ccsdt-3  uhf ae: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-3",  "reference": "uhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf", "cfour_cc_program": "ecc",},                                                                                     }, id="ccsdt-3  uhf ae: cfour-ecc",  marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdt-3",  "reference": "uhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf", "cfour_cc_program": "vcc", "cfour_dropmo": 1},                                                                   }, id="ccsdt-3  uhf fc: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-3",  "reference": "uhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf", "cfour_cc_program": "ecc", "cfour_dropmo": 1},                                                                   }, id="ccsdt-3  uhf fc: cfour-ecc",  marks=using("cfour")),
+        # yapf: enable
+    ],
+)
+def test_ccsdt3_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
+
+
+#
+#   ,-----. ,-----. ,---.  ,------. ,--------.       ,----.      ,----.                     ,--.,--.                 ,--.   
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----.'.-.  |    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-. 
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'  .' <     |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-' 
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |          /'-'  |    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |   
+#   `-----' `-----'`-----' `-------'   `--'          `----'      `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'   
+#
+#  <<<  CCSDT-3 Gradient
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(1, id="grd1"),
+        # pytest.param(0, id="grd0", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        # * vcc turns into ecc
+        pytest.param({"call": "c4-ccsdt-3",  "reference": "rhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc",},                                                     }, id="ccsdt-3  rhf ae: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-3",  "reference": "rhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ncc",},                                                     }, id="ccsdt-3  rhf ae: cfour-ncc",  marks=using("cfour")),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt-3", "reference": "rhf", "fcae": "ae", "keywords": {**_p4c4_fd, "psi4_cfour_reference": "rhf", "psi4_cfour_cc_program": "ecc"},                                                      }, id="ccsdt-3  rhf ae: psi4-cfour-ecc"),
+        # DEBUG pytest.param({"call": "p4-mrccsdt-3", "reference": "rhf", "fcae": "ae", "keywords": {**_p4c4_fd, "psi4_reference": "rhf"},                                                                                             }, id="ccsdt-3  rhf ae: psi4-mrcc"),
+
+        # p4c4 by psi findif or mrcc by psi findif differ from ecc analytic by 1e-6
+        pytest.param({"call": "c4-ccsdt-3",  "reference": "rhf",  "fcae": "fc",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc", "cfour_dropmo": 1,},                "wrong": {1: _w14}}, id="ccsdt-3  rhf fc: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt-3",  "reference": "rhf",  "fcae": "fc",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ncc", "cfour_dropmo": 1,},                "wrong": {1: _w13}}, id="ccsdt-3  rhf fc: cfour-ncc",  marks=using("cfour")),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt-3",  "reference": "rhf",  "fcae": "fc", "keywords": {**_p4c4_fd, "psi4_cfour_cc_program": "ecc", "psi4_cfour_dropmo": [1],},                                                        }, id="ccsdt-3  rhf fc: psi4-cfour-ecc"),
+        # DEBUG pytest.param({"call": "p4-mrccsdt-3", "reference": "rhf", "fcae": "fc", "keywords": {**_p4c4_fd, "psi4_reference": "rhf", "psi4_freeze_core": True},                                                                   }, id="ccsdt-3  rhf fc: psi4-mrcc"),
+
+        pytest.param({"call": "c4-ccsdt-3",  "reference": "uhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf"},                                     "error": {1: _q19}}, id="ccsdt-3  uhf ae: cfour",      marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdt-3",  "reference": "rohf", "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "rohf"},                                    "error": {1: _q19}}, id="ccsdt-3 rohf ae: cfour",      marks=using("cfour")),
+        # yapf: enable
+    ],
+)
+def test_ccsdt3_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "gradient"))
+
+
+#
+#   ,-----. ,-----. ,---.  ,------. ,--------.       ,----.     ,--.  ,--.                     ,--.                         
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----.'.-.  |    |  '--'  | ,---.  ,---.  ,---. `--' ,--,--.,--,--,          
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'  .' <     |  .--.  || .-. :(  .-' (  .-' ,--.' ,-.  ||      \         
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |          /'-'  |    |  |  |  |\   --..-'  `).-'  `)|  |\ '-'  ||  ||  |         
+#   `-----' `-----'`-----' `-------'   `--'          `----'     `--'  `--' `----'`----' `----' `--' `--`--'`--''--'         
+#                                                                                                                           
+#  <<<  CCSDT-3 Hessian
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(2, id="hes2"),
+        # pytest.param(1, id="hes1", marks=pytest.mark.long),
+        # pytest.param(0, id="hes0", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        pytest.param({"call": "c4-ccsdt-3",  "reference": "rhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc",},                                                     }, id="ccsdt-3  rhf ae: cfour-ecc",  marks=using("cfour")),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt-3", "reference": "rhf", "fcae": "ae", "keywords": {**_p4c4_fd, "psi4_cfour_reference": "rhf", "psi4_cfour_cc_program": "ecc"},                                                      }, id="ccsdt-3  rhf ae: psi4-cfour-ecc"),
+        # DEBUG pytest.param({"call": "p4-mrccsdt-3", "reference": "rhf", "fcae": "ae", "keywords": {**_p4c4_fd, "psi4_reference": "rhf"},                                                                                             }, id="ccsdt-3  rhf ae: psi4-mrcc"),
+
+        # p4c4 by psi findif or mrcc by psi findif differ from ecc analytic gradient by 1e-4
+        pytest.param({"call": "c4-ccsdt-3",  "reference": "rhf",  "fcae": "fc",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc", "cfour_dropmo": 1,},                "wrong": {2: _w15}}, id="ccsdt-3  rhf fc: cfour-ecc",  marks=using("cfour")),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt-3", "reference": "rhf", "fcae": "fc", "keywords": {**_p4c4_fd, "psi4_cfour_reference": "rhf", "psi4_cfour_dropmo": [1], "psi4_cfour_cc_program": "ecc"},                            }, id="ccsdt-3  rhf fc: psi4-cfour-ecc"),
+        # DEBUG pytest.param({"call": "p4-mrccsdt-3", "reference": "rhf", "fcae": "fc", "keywords": {**_p4c4_fd, "psi4_reference": "rhf", "psi4_freeze_core": True},                                                                   }, id="ccsdt-3  rhf fc: psi4-mrcc"),
+
+        pytest.param({"call": "c4-ccsdt-3",  "reference": "uhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf"},                                     "error": {2: _q19}}, id="ccsdt-3  uhf ae: cfour",      marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdt-3",  "reference": "rohf", "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "rohf"},                                    "error": {2: _q19}}, id="ccsdt-3 rohf ae: cfour",      marks=using("cfour")),
+        # yapf: enable
+    ],
+)
+def test_ccsdt3_hessian_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "hessian"))
+
+
 #
 #   ,-----. ,-----. ,---.  ,------. ,--------.    ,------.
 #  '  .--./'  .--./'   .-' |  .-.  \'--.  .--'    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
@@ -1162,7 +1771,9 @@ def test_ccsdpt_prccsd_pr_energy_module(inp, dertype, basis, subjects, clsd_open
         pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", "cfour_cc_program": "vcc",},                                                                                                                            }, id="ccsdt  rhf ae: cfour-vcc",  marks=using("cfour")),
         pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", "cfour_cc_program": "ecc",},                                                                                                                            }, id="ccsdt  rhf ae: cfour-ecc",  marks=using("cfour")),
         pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", "cfour_cc_program": "ncc",},                                                                                                                            }, id="ccsdt  rhf ae: cfour-ncc",  marks=using("cfour")),
+        pytest.param({"call": "gms-ccsdt", "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                                                                                         "error": {0: _q21}}, id="ccsdt  rhf ae: gamess",     marks=using("gamess")),
         pytest.param({"call": "nwc-ccsdt", "reference": "rhf",  "fcae": "ae", "keywords": {"qc_module": "tce"},                                                                                                                                                         }, id="ccsdt  rhf ae: nwchem-tce", marks=using("nwchem")),
+        pytest.param({"call": "p4-ccsdt",  "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                                                                                         "error": {0: _q22}}, id="ccsdt  rhf ae: psi4",       marks=using("psi4")),
 
         pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", "cfour_cc_program": "vcc", "cfour_dropmo": 1,},                                                                                                         }, id="ccsdt  rhf fc: cfour-vcc",  marks=using("cfour")),
         pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", "cfour_cc_program": "ecc", "cfour_dropmo": 1,},                                                                                                         }, id="ccsdt  rhf fc: cfour-ecc",  marks=using("cfour")),
@@ -1216,25 +1827,75 @@ def test_ccsdt_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, req
     "inp",
     [
         # yapf: disable
-        ######## Are all possible ways of computing <method> working?
-        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_cc_program": "ecc",},                                                                                                                                                                 }, id="ccsdt  rhf ae: cfour-ecc",      marks=using("cfour")),
-        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_cc_program": "ncc",},                                                                                                                                                                 }, id="ccsdt  rhf ae: cfour-ncc",      marks=using("cfour")),
+        # * vcc turns into ecc
+        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc",},                                                     }, id="ccsdt  rhf ae: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ncc",},                                                     }, id="ccsdt  rhf ae: cfour-ncc",  marks=using("cfour")),
+        # VLONG pytest.param({"call": "nwc-ccsdt", "reference": "rhf",  "fcae": "ae", "xptd": {"fd": True},  "keywords": {"basis": "<>", "qc_module": "tce"},                                                                        }, id="ccsdt  rhf ae: nwchem-tce", marks=using("nwchem")),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt", "reference": "rhf", "fcae": "ae", "keywords": {**_p4c4_fd, "psi4_cfour_reference": "rhf", "psi4_cfour_cc_program": "ecc"},                                                      }, id="ccsdt  rhf ae: psi4-cfour-ecc"),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt", "reference": "rhf", "fcae": "ae", "keywords": {**_p4c4_fd, "psi4_cfour_reference": "rhf", "psi4_cfour_cc_program": "ncc"},                                                      }, id="ccsdt  rhf ae: psi4-cfour-ncc"),
 
-        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_cc_program": "ecc","cfour_dropmo": 1},                                                                                                                                                }, id="ccsdt  rhf fc: cfour-ecc",      marks=using("cfour")),
-        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_cc_program": "ncc","cfour_dropmo": 1},                                                                                                                               "wrong": {1: _w7}}, id="ccsdt  rhf fc: cfour-ncc",      marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "fc",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc", "cfour_dropmo": 1,},                                  }, id="ccsdt  rhf fc: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "fc",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ncc", "cfour_dropmo": 1,},                "wrong": {1: _w7} }, id="ccsdt  rhf fc: cfour-ncc",  marks=using("cfour")),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt", "reference": "rhf", "fcae": "fc", "keywords": {**_p4c4_fd, "psi4_cfour_reference": "rhf", "psi4_cfour_dropmo": [1], "psi4_cfour_cc_program": "ecc"},                            }, id="ccsdt  rhf fc: psi4-cfour-ecc"),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt", "reference": "rhf", "fcae": "fc", "keywords": {**_p4c4_fd, "psi4_cfour_reference": "rhf", "psi4_cfour_dropmo": [1], "psi4_cfour_cc_program": "ncc"},                            }, id="ccsdt  rhf fc: psi4-cfour-ncc"),
 
-        # vcc turns into ecc
-#        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", "cfour_SCF_CONV": 12, "cfour_CC_CONV": 12, "cfour_cc_program": "ecc",},                                                                      }, id="ccsdt  rhf ae: cfour-ecc",  marks=using("cfour")),
-#        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", "cfour_SCF_CONV": 12, "cfour_CC_CONV": 12, "cfour_cc_program": "ecc", "cfour_dropmo": 1,},                                                   }, id="ccsdt  rhf fc: cfour-ecc",  marks=using("cfour")),
-#        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", "cfour_SCF_CONV": 12, "cfour_CC_CONV": 12, "cfour_cc_program": "ncc",},                                                                      }, id="ccsdt  rhf ae: cfour-ncc",  marks=using("cfour")),
-#        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", "cfour_SCF_CONV": 12, "cfour_CC_CONV": 12, "cfour_cc_program": "ncc", "cfour_dropmo": 1,},                                                   }, id="ccsdt  rhf fc: cfour-ncc",  marks=using("cfour")),
+        pytest.param({"call": "c4-ccsdt",  "reference": "uhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf"},                                     "error": {1: _q19}}, id="ccsdt  uhf ae: cfour",      marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdt",  "reference": "rohf", "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "rohf"},                                    "error": {1: _q19}}, id="ccsdt rohf ae: cfour",      marks=using("cfour")),
         # yapf: enable
     ],
 )
 def test_ccsdt_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
-    runner_asserter(*gradient_processor(inp, dertype, basis, subjects, clsd_open_pmols, request))
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "gradient"))
 
 
+#                                                                                                     
+#   ,-----. ,-----. ,---.  ,------. ,--------.    ,--.  ,--.                     ,--.                 
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--'    |  '--'  | ,---.  ,---.  ,---. `--' ,--,--.,--,--,  
+#  |  |    |  |    `.  `-. |  |  \  :  |  |       |  .--.  || .-. :(  .-' (  .-' ,--.' ,-.  ||      \ 
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |       |  |  |  |\   --..-'  `).-'  `)|  |\ '-'  ||  ||  | 
+#   `-----' `-----'`-----' `-------'   `--'       `--'  `--' `----'`----' `----' `--' `--`--'`--''--' 
+# 
+#  <<<  CCSDT Hessian
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(2, id="hes2"),
+        # pytest.param(1, id="hes1", marks=pytest.mark.long),
+        # pytest.param(0, id="hes0", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        # * ncc errors
+        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc",},                                                     }, id="ccsdt  rhf ae: cfour-ecc",  marks=using("cfour")),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt", "reference": "rhf", "fcae": "ae", "keywords": {**_p4c4_fd, "psi4_cfour_reference": "rhf", "psi4_cfour_cc_program": "ecc"},                                                      }, id="ccsdt  rhf ae: psi4-cfour-ecc"),
+
+        pytest.param({"call": "c4-ccsdt",  "reference": "rhf",  "fcae": "fc",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc", "cfour_dropmo": 1,},                                  }, id="ccsdt  rhf fc: cfour-ecc",  marks=using("cfour")),
+        # DEBUG pytest.param({"call": "p4-c4-ccsdt", "reference": "rhf", "fcae": "fc", "keywords": {**_p4c4_fd, "psi4_cfour_reference": "rhf", "psi4_cfour_dropmo": [1], "psi4_cfour_cc_program": "ecc"},                            }, id="ccsdt  rhf fc: psi4-cfour-ecc"),
+
+        pytest.param({"call": "c4-ccsdt",  "reference": "uhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf"},                                     "error": {2: _q19}}, id="ccsdt  uhf ae: cfour",      marks=using("cfour")),
+
+        pytest.param({"call": "c4-ccsdt",  "reference": "rohf", "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "rohf"},                                    "error": {2: _q19}}, id="ccsdt rohf ae: cfour",      marks=using("cfour")),
+        # yapf: enable
+    ],
+)
+def test_ccsdt_hessian_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "hessian"))
+
+
+#
 #   ,-----. ,-----. ,---.  ,------. ,--------. ,-. ,-----.   ,-.      ,------.
 #  '  .--./'  .--./'   .-' |  .-.  \'--.  .--'/ .''  .-.  '  '. \     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
 #  |  |    |  |    `.  `-. |  |  \  :  |  |  |  | |  | |  |   |  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /

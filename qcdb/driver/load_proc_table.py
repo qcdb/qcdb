@@ -96,3 +96,6 @@ if which('rungms'):
     procedures['hessian']['gamess'] = {}
     for mtd in gamess_hessian_list():
         procedures['hessian']['gamess'][mtd.lower()] = run_gamess
+
+#import pprint
+#pprint.pprint(procedures, width=200)

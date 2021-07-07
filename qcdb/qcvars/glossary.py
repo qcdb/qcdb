@@ -1697,77 +1697,6 @@ qcvardefs['CR-CCSD(T) CORRELATION ENERGY'] = {
 """
 }
 
-qcvardefs['CCSDT TOTAL ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    r"""
-   The total electronic energy
-   for the coupled cluster singles and doubles and triples level of theory.
-"""
-}
-
-qcvardefs['CCSDT TOTAL GRADIENT'] = {
-    'units': 'Eh/a0',
-    'dimension': '({nat}, 3)',
-    'glossary': """
-   The total electronic gradient
-   for the coupled cluster singles, doubles, and triples level of theory.
-"""
-}
-qcvardefs['CCSDT CORRELATION ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    r"""
-   The correlation energy component
-   for the coupled cluster singles and doubles and triples level of theory.
-"""
-}
-
-qcvardefs['CCSDT SAME-SPIN CORRELATION ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    r"""
-   The unscaled portion of the CCSDT correlation energy
-   from same-spin or triplet doubles correlations.
-"""
-}
-
-qcvardefs['CCSDT OPPOSITE-SPIN CORRELATION ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    r"""
-   The unscaled portion of the CCSDT correlation energy
-   from opposite-spin or singlet doubles correlations.
-"""
-}
-
-qcvardefs['CCSDT SINGLES ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    r"""
-   The singles portion of the CCSDT correlation energy.
-   Zero except in ROHF.
-   :math:`E_{\text{S}}` in Eq. :eq:`CCSDTQcorl`.
-"""
-}
-
-qcvardefs['CCSDT DOUBLES ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    r"""
-   The doubles portion of the CCSDT correlation energy
-   including same-spin and opposite-spin correlations.
-   :math:`E_{\text{D}}` in Eq. :eq:`CCSDTQcorl`.
-"""
-}
-
-
 qcvardefs['CCSD[T] TOTAL ENERGY'] = {
     'units':
     'Eh',
@@ -2332,4 +2261,9 @@ define_spin_qcvars("CCD", description="coupled cluster doubles", do_spin=True, d
 define_spin_qcvars("MP3", description="3rd-order Moller--Plesset perturbation theory", do_spin=True, do_grad=True)
 define_spin_qcvars("MP4(SDQ)", description="4rd-order Moller--Plesset perturbation theory without triples excitations", do_spin=False, do_grad=False)
 define_spin_qcvars("CCSD+T(CCSD)", description="coupled cluster singles and doubles with triples evaluated at converged CCSD amplitudes", do_spin=False, do_grad=False)
+define_spin_qcvars("CCSDT", description="coupled cluster singles, doubles, and triples excitations", do_spin=True, do_grad=True)
+define_spin_qcvars("CCSDT-1A", description="coupled cluster singles, doubles, and triples excitations at approximation 1a", do_spin=False, do_grad=True)
+define_spin_qcvars("CCSDT-1B", description="coupled cluster singles, doubles, and triples excitations at approximation 1b", do_spin=False, do_grad=True)
+define_spin_qcvars("CCSDT-2", description="coupled cluster singles, doubles, and triples excitations at approximation 2", do_spin=False, do_grad=True)
+define_spin_qcvars("CCSDT-3", description="coupled cluster singles, doubles, and triples excitations at approximation 3", do_spin=False, do_grad=True)
 
