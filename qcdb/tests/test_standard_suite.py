@@ -47,6 +47,9 @@ _q23 = (KeyError, "ccsdt-3")  # gamess, nwchem, psi4
 _q24 = (KeyError, "ccsdt-1a")  # gamess, nwchem, psi4
 _q25 = (KeyError, "ccsdt-1b")  # gamess, nwchem, psi4
 _q26 = (KeyError, "ccsdt-2")  # gamess, nwchem, psi4
+_q27 = (KeyError, "a-ccsd(t)")  # gamess, nwchem
+_q28 = (qcng.exceptions.UnknownError, "UHF has not been implemented for CCSD(2)_T")  # cfour a-ccsd(t)
+_q29 = (qcng.exceptions.UnknownError, "select_ccsd_at_: Method 'a-ccsd(t)' with CC_TYPE 'CONV' and REFERENCE 'UHF' not available")  # psi
 
 
 _w1 = ("MP2 CORRELATION ENERGY", "nonstandard answer: NWChem TCE MP2 doesn't report singles (affects ROHF)")
@@ -56,7 +59,7 @@ _w4 = ("MP2 CORRELATION ENERGY", "nonstandard answer: NWChem TCE MP3 doesn't rep
 _w5 = ("MP2 CORRELATION ENERGY", "nonstandard answer: GAMESS MP2 ROHF gradient ZAPT energies")
 _w6 = ("CCSDTQ CORRELATION ENERGY", "misdirected calc: CFOUR NCC CCSDTQ gradient mixed fc/ae parts")
 _w7 = ("CCSDT CORRELATION ENERGY", "misdirected calc: CFOUR NCC CCSDT & CCSDT(Q) gradient mixed fc/ae parts")
-_w8 = ("CCSD CORRELATION ENERGY", "misdirected calc: CFOUR NCC CCSD gradient mixed fc/ae parts")
+_w8 = ("CCSD CORRELATION ENERGY", "misdirected calc: CFOUR NCC CCSD & A-CCSD(T) gradient mixed fc/ae parts")
 _w9 = ("CCD CORRELATION ENERGY", "misdirected calc: CFOUR NCC CCD gradient mixed fc/ae parts")
 _w10 = ("MP2.5 CORRELATION ENERGY", "misdirected calc: CFOUR NCC MP3 gradient mixed fc/ae parts")
 _w11 = ("MP3 TOTAL GRADIENT", "nonstandard answer: CFOUR MP3 RHF FC doesn't match findif")
@@ -73,6 +76,7 @@ _w21 = ("CCSDT-2 TOTAL HESSIAN", "nonstandard answer: CFOUR CCSDT-2 FC doesn't m
 _w22 = ("CCSDT-1A CORRELATION ENERGY", "misdirected calc: CFOUR NCC CCSDT-1a gradient mixed fc/ae parts")
 _w23 = ("CCSDT-1B CORRELATION ENERGY", "misdirected calc: CFOUR NCC CCSDT-1b gradient mixed fc/ae parts")
 _w24 = ("CCSDT-2 CORRELATION ENERGY", "misdirected calc: CFOUR NCC CCSDT-2 gradient mixed fc/ae parts")
+_w25 = ("A-CCSD(T) TOTAL GRADIENT", "nonstandard answer: CFOUR ECC A-CCSD(T) AE doesn't match findif")
 # yapf: enable
 
 # <<<  Notes
@@ -1151,6 +1155,94 @@ def test_ccsdpt_prccsd_pr_energy_module(inp, dertype, basis, subjects, clsd_open
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
 
 
+#                                                                                                                                       
+#                  ,-----. ,-----. ,---.  ,------.    ,-.,--------.,-.      ,------.                                                    
+#   ,--,--.,-----.'  .--./'  .--./'   .-' |  .-.  \  / .''--.  .--''. \     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.               
+#  ' ,-.  |'-----'|  |    |  |    `.  `-. |  |  \  :|  |    |  |    |  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /                
+#  \ '-'  |       '  '--'\'  '--'\.-'    ||  '--'  /|  |    |  |    |  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '                 
+#   `--`--'        `-----' `-----'`-----' `-------'  \ '.   `--'   .' /     `------'`--''--' `----'`--'   .`-  /.-'  /                  
+#                                                     `-'          `-'                                    `---' `---'                   
+#  <<<  a-CCSD(T) Energy aka Lambda-CCSD(T) aka CCSD(aT) aka CCSD(T)_L
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(0, id="ene0"),
+    ]
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz"),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        # vcc stops prematurely
+        #pytest.param({"call": "c4-a-ccsd(t)",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "vcc",},                                                                                                               }, id="a-ccsd_t_  rhf ae: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-a-ccsd(t)",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc",},                                                                                                               }, id="a-ccsd_t_  rhf ae: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-a-ccsd(t)",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ncc",},                                                                                                               }, id="a-ccsd_t_  rhf ae: cfour-ncc",  marks=using("cfour")),
+        pytest.param({"call": "gms-a-ccsd(t)", "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                                                                                         "error": {0: _q27}}, id="a-ccsd_t_  rhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-a-ccsd(t)", "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                                                                                         "error": {0: _q27}}, id="a-ccsd_t_  rhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-a-ccsd(t)",  "reference": "rhf",  "fcae": "ae", "keywords": {"qc_module": "ccenergy"},                                                                                                                                                    }, id="a-ccsd_t_  rhf ae: psi4-cc",    marks=using("psi4")),
+
+        pytest.param({"call": "c4-a-ccsd(t)",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_dropmo": 1, "cfour_cc_program": "ecc",},                                                                                            }, id="a-ccsd_t_  rhf fc: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-a-ccsd(t)",  "reference": "rhf",  "fcae": "fc", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_dropmo": 1, "cfour_cc_program": "ncc",},                                                                                            }, id="a-ccsd_t_  rhf fc: cfour-ncc",  marks=using("cfour")),
+        pytest.param({"call": "p4-a-ccsd(t)",  "reference": "rhf",  "fcae": "fc", "keywords": {"qc_module": "ccenergy", "psi4_freeze_core": True},                                                                                                                          }, id="a-ccsd_t_  rhf fc: psi4-cc",    marks=using("psi4")),
+
+        pytest.param({"call": "c4-a-ccsd(t)",  "reference": "uhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_reference": "uhf", "cfour_cc_program": "ecc",},                                                                   "error": {0: _q28}}, id="a-ccsd_t_  uhf ae: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "p4-a-ccsd(t)",  "reference": "uhf",  "fcae": "ae", "keywords": {"psi4_reference": "uhf"},                                                                                                                                  "error": {0: _q29}}, id="a-ccsd_t_  uhf ae: psi4",       marks=using("psi4")),
+        # yapf: enable
+    ],
+)
+def test_accsd_prt_pr_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
+
+
+#                  ,-----. ,-----. ,---.  ,------.    ,-.,--------.,-.       ,----.                     ,--.,--.                 ,--.   
+#   ,--,--.,-----.'  .--./'  .--./'   .-' |  .-.  \  / .''--.  .--''. \     '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-. 
+#  ' ,-.  |'-----'|  |    |  |    `.  `-. |  |  \  :|  |    |  |    |  |    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-' 
+#  \ '-'  |       '  '--'\'  '--'\.-'    ||  '--'  /|  |    |  |    |  |    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |   
+#   `--`--'        `-----' `-----'`-----' `-------'  \ '.   `--'   .' /      `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'   
+#                                                     `-'          `-'                                                                  
+#  <<<  a-CCSD(T) Gradient aka Lambda-CCSD(T) aka CCSD(aT) aka CCSD(T)_L
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(1, id="grd1"),
+        # pytest.param(0, id="grd0", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        pytest.param({"call": "c4-a-ccsd(t)",  "reference": "rhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc",},                               "wrong": {1: _w25}}, id="a-ccsd_t_  rhf ae: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-a-ccsd(t)",  "reference": "rhf",  "fcae": "ae",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ncc",},                                                 }, id="a-ccsd_t_  rhf ae: cfour-ncc",  marks=using("cfour")),
+        pytest.param({"call": "p4-a-ccsd(t)",  "reference": "rhf", "fcae": "ae",                         "keywords": {**_p4c4_fd,},                                                                                                  }, id="a-ccsd_t_  rhf ae: psi4-cc",    marks=using("psi4")),
+
+        pytest.param({"call": "c4-a-ccsd(t)",  "reference": "rhf",  "fcae": "fc",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_dropmo": 1, "cfour_cc_program": "ecc",},            "wrong": {1: _w25}}, id="a-ccsd_t_  rhf fc: cfour-ecc",  marks=using("cfour")),
+        pytest.param({"call": "c4-a-ccsd(t)",  "reference": "rhf",  "fcae": "fc",                        "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_dropmo": 1, "cfour_cc_program": "ncc",},            "wrong": {1: _w8} }, id="a-ccsd_t_  rhf fc: cfour-ncc",  marks=using("cfour")),
+        pytest.param({"call": "p4-a-ccsd(t)",  "reference": "rhf",  "fcae": "fc",                        "keywords": {**_p4c4_fd, "psi4_freeze_core": True,},                                                                        }, id="a-ccsd_t_  rhf fc: psi4-cc"),
+        # yapf: enable
+    ],
+)
+def test_accsd_prt_pr_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "gradient"))
+
 
 #                                                                                                                                 
 #   ,-----. ,-----. ,---.  ,------. ,--------.        ,--.            ,------.                                                    
@@ -1210,6 +1302,7 @@ def test_ccsdt1a_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, r
 #   `-----' `-----'`-----' `-------'   `--'           `--' `--`--'     `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'   
 #
 #  <<<  CCSDT-1a Gradient
+
 @pytest.mark.parametrize(
     "dertype",
     [

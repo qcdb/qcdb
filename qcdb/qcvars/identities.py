@@ -211,6 +211,17 @@ def wfn_qcvars() -> List[Dict[str, Any]]:
         _solve_in_turn(args=['CCSD(T) CORRELATION ENERGY', 'CCSD CORRELATION ENERGY', '(T) CORRECTION ENERGY'],
                        coeff=[-1, 1, 1]))  # duplicate of first so that all minimal combinations covered
 
+    # A-CCSD(T)
+    pv0.extend(
+        _solve_in_turn(args=['A-CCSD(T) CORRELATION ENERGY', 'CCSD CORRELATION ENERGY', 'A-(T) CORRECTION ENERGY'],
+                       coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(args=['A-CCSD(T) TOTAL ENERGY', 'HF TOTAL ENERGY', 'A-CCSD(T) CORRELATION ENERGY'],
+                       coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(args=['A-CCSD(T) CORRELATION ENERGY', 'CCSD CORRELATION ENERGY', 'A-(T) CORRECTION ENERGY'],
+                       coeff=[-1, 1, 1]))  # duplicate of first so that all minimal combinations covered
+
     # CCSD[T]
     pv0.extend(
         _solve_in_turn(args=['CCSD[T] TOTAL ENERGY', 'HF TOTAL ENERGY', 'CCSD[T] CORRELATION ENERGY'],
