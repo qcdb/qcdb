@@ -20,12 +20,13 @@ qcvardefs['(T) CORRECTION ENERGY'] = {
 """
 }
 
-#qcvardefs['[T] CORRECTION ENERGY'] = {
-#    'units': 'Eh',
-#    'glossary': """
-#   The coupled-cluster bracket perturbative triples correction.
-#"""
-#}
+qcvardefs['A-(T) CORRECTION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': """
+   The coupled-cluster asymmetric perturbative triples correction.
+   Identical to the "(AT)" and the "Lambda-CCSD(T)" correction.
+"""
+}
 
 qcvardefs['T(CCSD) CORRECTION ENERGY'] = {
     'units': 'Eh',
@@ -49,10 +50,6 @@ qcvardefs['[Q] CORRECTION ENERGY'] = {
 """
 }
 
-#.. qcvar:: A-(T) CORRECTION ENERGY
-#
-#   The coupled-cluster asymmetric perturbative triples correction [H].
-#
 #.. qcvar:: MP4(T) CORRECTION ENERGY
 #
 #   The MP4 triples component [H]. Quantity is second right-hand term in
@@ -2266,4 +2263,5 @@ define_spin_qcvars("CCSDT-1A", description="coupled cluster singles, doubles, an
 define_spin_qcvars("CCSDT-1B", description="coupled cluster singles, doubles, and triples excitations at approximation 1b", do_spin=False, do_grad=True)
 define_spin_qcvars("CCSDT-2", description="coupled cluster singles, doubles, and triples excitations at approximation 2", do_spin=False, do_grad=True)
 define_spin_qcvars("CCSDT-3", description="coupled cluster singles, doubles, and triples excitations at approximation 3", do_spin=False, do_grad=True)
+define_spin_qcvars("A-CCSD(T)", description="coupled cluster singles, doubles, and asymmetric perturbative triples excitations. Also known as Lambda-CCSD(T) or CCSD(AT).", do_spin=False, do_grad=True)
 

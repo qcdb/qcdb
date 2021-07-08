@@ -179,6 +179,9 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
         ropts.require('CFOUR', 'CALC_LEVEL', 'CCSD[T]', accession=accession, verbose=verbose)
         ropts.suggest('CFOUR', 'CC_PROGRAM', 'ECC', accession=accession, verbose=verbose)
 
+    elif lowername == 'c4-a-ccsd(t)':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'CCSD(T)_L', accession=accession, verbose=verbose)
+
     elif lowername == 'c4-ccsdt-1a':
         ropts.require('CFOUR', 'CALC_LEVEL', 'CCSDT-1', accession=accession, verbose=verbose)
 
