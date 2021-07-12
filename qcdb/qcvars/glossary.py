@@ -50,11 +50,6 @@ qcvardefs['[Q] CORRECTION ENERGY'] = {
 """
 }
 
-#.. qcvar:: MP4(T) CORRECTION ENERGY
-#
-#   The MP4 triples component [H]. Quantity is second right-hand term in
-#   Eq. :eq:`MP4terms`.
-#
 #.. qcvar:: AAA (T) CORRECTION ENERGY
 #   AAB (T) CORRECTION ENERGY
 #   ABB (T) CORRECTION ENERGY
@@ -1303,34 +1298,6 @@ qcvardefs['MP2.5 OPPOSITE-SPIN CORRELATION ENERGY'] = {
 """
 }
 
-#.. qcvar:: MP4(SDQ) TOTAL ENERGY
-#   MP4(SDQ) CORRELATION ENERGY
-#
-#   The total electronic energy [H] and correlation energy component [H]
-#   for the MP4 singles, doubles, quadruples level of theory.  Quantity
-#   :qcvar:`MP4(SDQ) CORRELATION ENERGY` is
-#   first right-hand term in Eq. :eq:`MP4terms`.
-#
-#.. qcvar:: MP4 TOTAL ENERGY
-#   MP4 CORRELATION ENERGY
-#   MP4(SDTQ) TOTAL ENERGY
-#   MP4(SDTQ) CORRELATION ENERGY
-#
-#   The total electronic energy [H] and correlation energy component [H]
-#   for the full MP4 level of theory. Quantity :qcvar:`MP4 CORRELATION
-#   ENERGY` / :qcvar:`MP4(SDTQ) CORRELATION ENERGY`
-#   is left-hand term in Eq. :eq:`MP4terms`.
-#
-#   .. math:: E_{\text{MP4}} = E_{\text{MP4(SDQ)}} + E_{\text{MP4(T)}}
-#      :label: MP4terms
-#
-#.. qcvar:: MPn TOTAL ENERGY
-#   MPn CORRELATION ENERGY
-#
-#   The total electronic energy [H] and correlation energy component [H]
-#   for the labeled |MollerPlesset| perturbation theory level.
-#   *n* is MP perturbation order.
-
 qcvardefs['MP3 CORRECTION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
@@ -1356,6 +1323,13 @@ qcvardefs['MP4 CORRECTION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    The correlation energy difference between 3rd and 4th-order Perturbation theory.
+"""
+}
+
+qcvardefs["MP4(T) CORRECTION ENERGY"] = {
+    "units": "Eh",
+    "glossary": r"""
+   The MP4 triples component. Difference between MP4 and MP4(SDQ).
 """
 }
 
