@@ -22,8 +22,8 @@ def clsd_open_pmols():
 
 # yapf: disable
 _q1 = (qcng.exceptions.InputError, "unknown SCFTYPE")  # no rohf reference for nwc mp2
-_q2 = (qcng.exceptions.InputError, "CCTYP IS PROGRAMMED ONLY FOR SCFTYP=RHF OR ROHF")
-_q3 = (qcng.exceptions.InputError, "ccsd: nopen is not zero")
+_q2 = (qcng.exceptions.InputError, "CCTYP IS PROGRAMMED ONLY FOR SCFTYP=RHF OR ROHF")  # gms
+_q3 = (qcng.exceptions.InputError, "ccsd: nopen is not zero")  # nwc
 _q4 = (qcng.exceptions.InputError, "ROHF'S CCTYP MUST BE CCSD OR CR-CCL")  # No (T) w/ rohf in gms
 _q5 = (qcdb.exceptions.ValidationError, "Derivative method 'name' (gms-ccsd) and derivative level 'dertype' (1) are not available.")  # no gms cc grad
 _q6 = (qcng.exceptions.InputError, "Only RHF/UHF Hessians are currently implemented.")  # no rohf hess for psi4 hf
@@ -50,12 +50,18 @@ _q26 = (KeyError, "ccsdt-2")  # gamess, nwchem, psi4
 _q27 = (KeyError, "a-ccsd(t)")  # gamess, nwchem
 _q28 = (qcng.exceptions.UnknownError, "UHF has not been implemented for CCSD(2)_T")  # cfour a-ccsd(t)
 _q29 = (qcng.exceptions.UnknownError, "select_ccsd_at_: Method 'a-ccsd(t)' with CC_TYPE 'CONV' and REFERENCE 'UHF' not available")  # psi
+_q30 = (KeyError, "gms-mp4(sdq)")  # no mp4 in gms
+_q31 = (KeyError, "nwc-mp4(sdq)")  # no specialty mp4(sdq) in nwc
+_q32 = (qcng.exceptions.InputError, "mp4(sdq) requires 'reference rhf'")  # psi
+_q33 = (KeyError, "gms-mp4")  # no mp4 in gms
+_q34 = (qcng.exceptions.UnknownError, "select_mp4: Method 'mp4' with MP_TYPE 'CONV' and REFERENCE")  # only detci for conv rohf mp4 in psi4, and it's already peculiar for mp2. no uhf for conv
+
 
 
 _w1 = ("MP2 CORRELATION ENERGY", "nonstandard answer: NWChem TCE MP2 doesn't report singles (affects ROHF)")
 _w2 = ("CCSD CORRELATION ENERGY", "nonstandard answer: GAMESS CCSD ROHF FC energy")
-_w3 = ("(T) CORRECTION ENERGY", "nonstandard answer: NWChem CCSD(T) ROHF AE energy")
-_w4 = ("MP2 CORRELATION ENERGY", "nonstandard answer: NWChem TCE MP3 doesn't report singles (affects ROHF), may be off by MP2 singles value")
+_w3 = ("(T) CORRECTION ENERGY", "nonstandard answer: NWChem CCSD(T) ROHF AE energy")  # and FC
+_w4 = ("MP2 CORRELATION ENERGY", "nonstandard answer: NWChem TCE MP3 & MP4 doesn't report singles (affects ROHF), may be off by MP2 singles value")
 _w5 = ("MP2 CORRELATION ENERGY", "nonstandard answer: GAMESS MP2 ROHF gradient ZAPT energies")
 _w6 = ("CCSDTQ CORRELATION ENERGY", "misdirected calc: CFOUR NCC CCSDTQ gradient mixed fc/ae parts")
 _w7 = ("CCSDT CORRELATION ENERGY", "misdirected calc: CFOUR NCC CCSDT & CCSDT(Q) gradient mixed fc/ae parts")
@@ -551,6 +557,155 @@ def test_mp3_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, reque
 )
 def test_mp3_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "gradient"))
+
+#
+#  ,--.   ,--.,------. ,----.     ,--.  ,--.                     ,--.
+#  |   `.'   ||  .--. ''.-.  |    |  '--'  | ,---.  ,---.  ,---. `--' ,--,--.,--,--,
+#  |  |'.'|  ||  '--' |  .' <     |  .--.  || .-. :(  .-' (  .-' ,--.' ,-.  ||      \
+#  |  |   |  ||  | --' /'-'  |    |  |  |  |\   --..-'  `).-'  `)|  |\ '-'  ||  ||  |
+#  `--'   `--'`--'     `----'     `--'  `--' `----'`----' `----' `--' `--`--'`--''--'
+#
+#  <<<  MP3 Hessian -- NYI
+
+
+#                                                                                                                        
+#  ,--.   ,--.,------.   ,---.  ,-. ,---.  ,------.   ,-----.   ,-.      ,------.                                        
+#  |   `.'   ||  .--. ' /    | / .''   .-' |  .-.  \ '  .-.  '  '. \     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.   
+#  |  |'.'|  ||  '--' |/  '  ||  | `.  `-. |  |  \  :|  | |  |   |  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /    
+#  |  |   |  ||  | --' '--|  ||  | .-'    ||  '--'  /'  '-'  '-. |  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '     
+#  `--'   `--'`--'        `--' \ '.`-----' `-------'  `-----'--'.' /     `------'`--''--' `----'`--'   .`-  /.-'  /      
+#                               `-'                             `-'                                    `---' `---'       
+#  <<<  MP4(SDQ) Energy
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(0, id="ene0"),
+    ]
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz"),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p"),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # GAMESS doesn't do mp3. Psi4 only does rohf mp3 with detci, which is already non-std for mp2.
+        # yapf: disable
+        # ecc doesn't compute mp4
+        pytest.param({"call": "c4-mp4(sdq)",  "reference": "rhf",  "fcae": "ae", "keywords": {**_c4_tight, "cfour_scf_conv": 12, "cfour_cc_program": "vcc"},                                                }, id="mp4_sdq_  rhf ae: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-mp4(sdq)",  "reference": "rhf",  "fcae": "ae", "keywords": {**_c4_tight, "cfour_scf_conv": 12, "cfour_cc_program": "ncc"},                                                }, id="mp4_sdq_  rhf ae: cfour-ncc",  marks=using("cfour")),
+        pytest.param({"call": "gms-mp4(sdq)", "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                          "error": {0: _q30}}, id="mp4_sdq_  rhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-mp4(sdq)", "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                          "error": {0: _q31}}, id="mp4_sdq_  rhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-mp4(sdq)",  "reference": "rhf",  "fcae": "ae", "keywords": {"psi4_mp_type": "conv", "psi4_qc_module": "fnocc"},                                                           }, id="mp4_sdq_  rhf ae: psi4-fnocc", marks=using("psi4")),
+
+        pytest.param({"call": "c4-mp4(sdq)",  "reference": "rhf",  "fcae": "fc", "keywords": {**_c4_tight, "cfour_dropmo": 1, "cfour_cc_program": "vcc"},                                                   }, id="mp4_sdq_  rhf fc: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-mp4(sdq)",  "reference": "rhf",  "fcae": "fc", "keywords": {**_c4_tight, "cfour_dropmo": 1, "cfour_cc_program": "ncc"},                                                   }, id="mp4_sdq_  rhf fc: cfour-ncc",  marks=using("cfour")),
+        pytest.param({"call": "p4-mp4(sdq)",  "reference": "rhf",  "fcae": "fc", "keywords": {"psi4_freeze_core": True, "psi4_mp_type": "conv", "psi4_qc_module": "fnocc"},                                 }, id="mp4_sdq_  rhf fc: psi4-fnocc", marks=using("psi4")),
+
+        pytest.param({"call": "c4-mp4(sdq)",  "reference": "uhf",  "fcae": "ae", "keywords": {**_c4_tight, "cfour_reference": "uhf", "cfour_cc_program": "vcc"},                                            }, id="mp4_sdq_  uhf ae: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "p4-mp4(sdq)",  "reference": "uhf",  "fcae": "ae", "keywords": {"reference": "uhf", "psi4_mp_type": "conv"},                                                "error": {0: _q32}}, id="mp4_sdq_  uhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-mp4(sdq)",  "reference": "uhf",  "fcae": "fc", "keywords": {**_c4_tight, "cfour_reference": "uhf", "cfour_dropmo": 1, "cfour_cc_program": "vcc"},                         }, id="mp4_sdq_  uhf fc: cfour-vcc",  marks=using("cfour")),
+
+        pytest.param({"call": "c4-mp4(sdq)",  "reference": "rohf", "fcae": "ae", "keywords": {**_c4_tight, "cfour_reference": "rohf", "cfour_cc_program": "vcc"},                                           }, id="mp4_sdq_ rohf ae: cfour-vcc",  marks=using("cfour")),
+
+        pytest.param({"call": "c4-mp4(sdq)",  "reference": "rohf", "fcae": "fc", "keywords": {**_c4_tight, "cfour_reference": "rohf", "cfour_dropmo": 1, "cfour_cc_program": "vcc"},                        }, id="mp4_sdq_ rohf fc: cfour-vcc",  marks=using("cfour")),
+        # yapf: enable
+    ],
+)
+def test_mp4_prsdq_pr_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
+
+
+#                                                                                             
+#  ,--.   ,--.,------.   ,---.    ,------.                                                    
+#  |   `.'   ||  .--. ' /    |    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.               
+#  |  |'.'|  ||  '--' |/  '  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /                
+#  |  |   |  ||  | --' '--|  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '                 
+#  `--'   `--'`--'        `--'    `------'`--''--' `----'`--'   .`-  /.-'  /                  
+#                                                               `---' `---'                   
+#  <<<  MP4 Energy
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(0, id="ene0"),
+    ]
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz"),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p"),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+#        # GAMESS doesn't do mp3. Psi4 only does rohf mp3 with detci, which is already non-std for mp2.
+        # yapf: disable
+        pytest.param({"call": "c4-mp4",  "reference": "rhf",  "fcae": "ae", "keywords": {**_c4_tight, "cfour_cc_program": "vcc"},                                                            }, id="mp4  rhf ae: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-mp4",  "reference": "rhf",  "fcae": "ae", "keywords": {**_c4_tight, "cfour_cc_program": "ncc"},                                                            }, id="mp4  rhf ae: cfour-ncc",  marks=using("cfour")),
+        pytest.param({"call": "gms-mp4", "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                "error": {0: _q33}}, id="mp4  rhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-mp4", "reference": "rhf",  "fcae": "ae", "keywords": {"qc_module": "tce"},                                                                                }, id="mp4  rhf ae: nwchem-tce", marks=using("nwchem")),
+        pytest.param({"call": "p4-mp4",  "reference": "rhf",  "fcae": "ae", "keywords": {"psi4_mp_type": "conv", "psi4_qc_module": "fnocc"},                                                 }, id="mp4  rhf ae: psi4-fnocc", marks=using("psi4")),
+
+        pytest.param({"call": "c4-mp4",  "reference": "rhf",  "fcae": "fc", "keywords": {**_c4_tight, "cfour_dropmo": 1, "cfour_cc_program": "vcc"},                                         }, id="mp4  rhf fc: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "c4-mp4",  "reference": "rhf",  "fcae": "fc", "keywords": {**_c4_tight, "cfour_dropmo": 1, "cfour_cc_program": "ncc"},                                         }, id="mp4  rhf fc: cfour-ncc",  marks=using("cfour")),
+        pytest.param({"call": "gms-mp4", "reference": "rhf",  "fcae": "fc", "keywords": {},                                                                                "error": {0: _q33}}, id="mp4  rhf fc: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-mp4", "reference": "rhf",  "fcae": "fc", "keywords": {"nwchem_tce__freeze": 1, "qc_module": "tce"},                                                       }, id="mp4  rhf fc: nwchem-tce", marks=using("nwchem")),
+        pytest.param({"call": "p4-mp4",  "reference": "rhf",  "fcae": "fc", "keywords": {"psi4_mp_type": "conv", "psi4_freeze_core": True, "psi4_qc_module": "fnocc"},                       }, id="mp4  rhf fc: psi4-fnocc", marks=using("psi4")),
+
+        pytest.param({"call": "c4-mp4",  "reference": "uhf",  "fcae": "ae", "keywords": {**_c4_tight, "cfour_reference": "uhf", "cfour_cc_program": "vcc"},                                  }, id="mp4  uhf ae: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "gms-mp4", "reference": "uhf",  "fcae": "ae", "keywords": {"gamess_contrl__scftyp": "uhf"},                                                  "error": {0: _q33}}, id="mp4  uhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-mp4", "reference": "uhf",  "fcae": "ae", "keywords": {"nwchem_scf__uhf": True, "qc_module": "tce"},                                                       }, id="mp4  uhf ae: nwchem-tce", marks=using("nwchem")),
+        pytest.param({"call": "p4-mp4",  "reference": "uhf",  "fcae": "ae", "keywords": {"reference": "uhf", "psi4_mp_type": "conv"},                                      "error": {0: _q34}}, id="mp4  uhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-mp4",  "reference": "uhf",  "fcae": "fc", "keywords": {**_c4_tight, "cfour_reference": "uhf", "cfour_dropmo": 1, "cfour_cc_program": "vcc"},               }, id="mp4  uhf fc: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "gms-mp4", "reference": "uhf",  "fcae": "fc", "keywords": {"gamess_contrl__scftyp": "uhf"},                                                  "error": {0: _q33}}, id="mp4  uhf fc: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-mp4", "reference": "uhf",  "fcae": "fc", "keywords": {"nwchem_scf__uhf": True, "nwchem_tce__freeze": 1, "qc_module": "tce"},                              }, id="mp4  uhf fc: nwchem-tce", marks=using("nwchem")),
+        pytest.param({"call": "p4-mp4",  "reference": "uhf",  "fcae": "fc", "keywords": {"reference": "uhf", "psi4_freeze_core": True, "psi4_mp_type": "conv"},            "error": {0: _q34}}, id="mp4  uhf fc: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-mp4",  "reference": "rohf", "fcae": "ae", "keywords": {**_c4_tight, "cfour_reference": "rohf", "cfour_cc_program": "vcc"},                                 }, id="mp4 rohf ae: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "gms-mp4", "reference": "rohf", "fcae": "ae", "keywords": {"gamess_contrl__scftyp": "rohf"},                                                 "error": {0: _q33}}, id="mp4 rohf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-mp4", "reference": "rohf", "fcae": "ae", "keywords": {"nwchem_scf__rohf": True, "qc_module": "tce"},                                    "wrong": {0: _w4} }, id="mp4 rohf ae: nwchem-tce", marks=using("nwchem")),
+        pytest.param({"call": "p4-mp4",  "reference": "rohf", "fcae": "ae", "keywords": {"reference": "rohf", "psi4_mp_type": "conv"},                                     "error": {0: _q34}}, id="mp4 rohf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-mp4",  "reference": "rohf", "fcae": "fc", "keywords": {**_c4_tight, "cfour_reference": "rohf", "cfour_dropmo": 1, "cfour_cc_program": "vcc"},              }, id="mp4 rohf fc: cfour-vcc",  marks=using("cfour")),
+        pytest.param({"call": "gms-mp4", "reference": "rohf", "fcae": "fc", "keywords": {"gamess_contrl__scftyp": "rohf"},                                                 "error": {0: _q33}}, id="mp4 rohf fc: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-mp4", "reference": "rohf", "fcae": "fc", "keywords": {"nwchem_scf__rohf": True, "nwchem_tce__freeze": 1, "qc_module": "tce"},           "wrong": {0: _w4} }, id="mp4 rohf fc: nwchem-tce", marks=using("nwchem")),
+        pytest.param({"call": "p4-mp4",  "reference": "rohf", "fcae": "fc", "keywords": {"reference": "rohf", "psi4_freeze_core": True, "psi4_mp_type": "conv"},           "error": {0: _q34}}, id="mp4 rohf fc: psi4",       marks=using("psi4")),
+        # yapf: enable
+    ],
+)
+def test_mp4_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
+
+
+#
+#  ,--.   ,--.,------.   ,---.     ,----.                     ,--.,--.                 ,--.   
+#  |   `.'   ||  .--. ' /    |    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-. 
+#  |  |'.'|  ||  '--' |/  '  |    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-' 
+#  |  |   |  ||  | --' '--|  |    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |   
+#  `--'   `--'`--'        `--'     `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'   
+#
+#  <<<  MP4 Gradient -- NYI
+
+#
+#  ,--.   ,--.,------.   ,---.    ,--.  ,--.                     ,--.                         
+#  |   `.'   ||  .--. ' /    |    |  '--'  | ,---.  ,---.  ,---. `--' ,--,--.,--,--,          
+#  |  |'.'|  ||  '--' |/  '  |    |  .--.  || .-. :(  .-' (  .-' ,--.' ,-.  ||      \         
+#  |  |   |  ||  | --' '--|  |    |  |  |  |\   --..-'  `).-'  `)|  |\ '-'  ||  ||  |         
+#  `--'   `--'`--'        `--'    `--'  `--' `----'`----' `----' `--' `--`--'`--''--'         
+#                                             
+#  <<<  MP4 Hessian  -- NYI
+
 
 
 #
@@ -1183,7 +1338,7 @@ def test_ccsdpt_prccsd_pr_energy_module(inp, dertype, basis, subjects, clsd_open
     [
         # yapf: disable
         # vcc stops prematurely
-        #pytest.param({"call": "c4-a-ccsd(t)",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "vcc",},                                                                                                               }, id="a-ccsd_t_  rhf ae: cfour-vcc",  marks=using("cfour")),
+        #pytest.param({"call": "c4-a-ccsd(t)",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "vcc",},                                                                                                              }, id="a-ccsd_t_  rhf ae: cfour-vcc",  marks=using("cfour")),
         pytest.param({"call": "c4-a-ccsd(t)",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ecc",},                                                                                                               }, id="a-ccsd_t_  rhf ae: cfour-ecc",  marks=using("cfour")),
         pytest.param({"call": "c4-a-ccsd(t)",  "reference": "rhf",  "fcae": "ae", "keywords": {"cfour_basis": "<>", **_c4_tight, "cfour_cc_program": "ncc",},                                                                                                               }, id="a-ccsd_t_  rhf ae: cfour-ncc",  marks=using("cfour")),
         pytest.param({"call": "gms-a-ccsd(t)", "reference": "rhf",  "fcae": "ae", "keywords": {},                                                                                                                                                         "error": {0: _q27}}, id="a-ccsd_t_  rhf ae: gamess",     marks=using("gamess")),
@@ -2142,30 +2297,6 @@ def test_ccsdtq_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, re
 )
 def test_ccsdtq_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "gradient"))
-
-
-def energy_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, driver):
-    qcprog, method = inp["call"].split("-", 1)
-    qcprog = _trans_qcprog[qcprog.lower()]
-    tnm = request.node.name
-    subject = clsd_open_pmols[subjects[std_refs.index(inp["reference"])]]
-
-    inpcopy = {k: v for k, v in inp.items()}
-    inpcopy["keywords"] = {
-        k: (_trans_key(qcprog, basis, k) if v == "<>" else v) for k, v in inpcopy["keywords"].items()
-    }
-
-    inpcopy["driver"] = driver
-    if not any([k.lower() in _basis_keywords for k in inpcopy["keywords"]]):
-        inpcopy["keywords"]["basis"] = basis
-    inpcopy["scf_type"] = "pk"
-    inpcopy["corl_type"] = "conv"
-    inpcopy["qc_module"] = "-".join(
-        [qcprog, inp["keywords"].get("qc_module", inp["keywords"].get("cfour_cc_program", ""))]
-    ).strip("-")
-    print("INP", inpcopy)
-
-    return inpcopy, subject, method, basis, tnm
 
 
 def _processor(inp, dertype, basis, subjects, clsd_open_pmols, request, driver):

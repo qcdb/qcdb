@@ -7,6 +7,8 @@ from qcengine.programs.tests.standard_suite_contracts import (
     contractual_mp2,
     contractual_mp2p5,
     contractual_mp3,
+    contractual_mp4_prsdq_pr,
+    contractual_mp4,
     contractual_lccd,
     contractual_lccsd,
     contractual_ccd,
@@ -53,6 +55,8 @@ def runner_asserter(inp, subject, method, basis, tnm):
         "hf": "conv",  # dummy to assure df/cd/conv scf_type refs available
         "mp2": mp2_type,
         "mp3": mp_type,
+        "mp4(sdq)": mp_type,
+        "mp4": mp_type,
         "lccd": cc_type,
         "lccsd": cc_type,
         "ccd": cc_type,
@@ -183,6 +187,17 @@ def runner_asserter(inp, subject, method, basis, tnm):
             _asserter(asserter_args, contractual_args, contractual_mp2)
             _asserter(asserter_args, contractual_args, contractual_mp2p5)
             _asserter(asserter_args, contractual_args, contractual_mp3)
+        elif method == "mp4(sdq)":
+            _asserter(asserter_args, contractual_args, contractual_mp2)
+            _asserter(asserter_args, contractual_args, contractual_mp2p5)
+            _asserter(asserter_args, contractual_args, contractual_mp3)
+            _asserter(asserter_args, contractual_args, contractual_mp4_prsdq_pr)
+        elif method == "mp4":
+            _asserter(asserter_args, contractual_args, contractual_mp2)
+            _asserter(asserter_args, contractual_args, contractual_mp2p5)
+            _asserter(asserter_args, contractual_args, contractual_mp3)
+            _asserter(asserter_args, contractual_args, contractual_mp4_prsdq_pr)
+            _asserter(asserter_args, contractual_args, contractual_mp4)
         elif method == "ccd":
             _asserter(asserter_args, contractual_args, contractual_mp2)
             _asserter(asserter_args, contractual_args, contractual_ccd)

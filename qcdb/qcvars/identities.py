@@ -145,6 +145,21 @@ def wfn_qcvars() -> List[Dict[str, Any]]:
     pv0.extend(_solve_in_turn(args=['MP2.5 SINGLES ENERGY', 'MP2 SINGLES ENERGY', 'MP3 SINGLES ENERGY'], coeff=[-1, Dm(0.5), Dm(0.5)]))
     pv0.extend(_solve_in_turn(args=['MP2.5 DOUBLES ENERGY', 'MP2 DOUBLES ENERGY', 'MP3 DOUBLES ENERGY'], coeff=[-1, Dm(0.5), Dm(0.5)]))
 
+    # MP4(SDQ) & MP4(T)
+    pv0.extend(_solve_in_turn(args=['MP4(SDQ) TOTAL ENERGY', 'HF TOTAL ENERGY', 'MP4(SDQ) CORRELATION ENERGY'], coeff=[-1, 1, 1]))
+    pv0.extend(_solve_in_turn(args=['MP4 CORRELATION ENERGY', 'MP4(T) CORRECTION ENERGY', 'MP4(SDQ) CORRELATION ENERGY'], coeff=[-1, 1, 1]))
+
+    # MPN (part 2)
+    for mpn in range(3, 20):
+        pv0.extend(
+            _solve_in_turn(
+                args=[f"MP{mpn} TOTAL ENERGY", "HF TOTAL ENERGY", f"MP{mpn} CORRELATION ENERGY"],
+                coeff=[-1, 1, 1]))
+        pv0.extend(
+            _solve_in_turn(
+                args=[f"MP{mpn} CORRELATION ENERGY", f"MP{mpn} CORRECTION ENERGY", f"MP{mpn - 1} CORRELATION ENERGY"],
+                coeff=[-1, 1, 1]))
+
     # LCCD
     pv0.extend(
         _solve_in_turn(args=['LCCD TOTAL ENERGY', 'HF TOTAL ENERGY', 'LCCD CORRELATION ENERGY'], coeff=[-1, 1, 1]))
