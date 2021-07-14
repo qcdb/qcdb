@@ -635,7 +635,7 @@ def define_prop_qcvars(mtd, extra=''):
     }
 
 
-def define_scf_qcvars(mtd, is_dft=True, extra='', is_dh=False):
+def define_scf_qcvars(mtd, is_dft=True, extra='', is_dh=False, do_grad=False):
     global qcvardefs
 
     if mtd + ' TOTAL ENERGY' not in qcvardefs:
@@ -646,6 +646,13 @@ def define_scf_qcvars(mtd, is_dft=True, extra='', is_dh=False):
             """
            The total electronic energy for the {} level of theory. {}
         """.format(mtd, extra)
+        }
+
+    if do_grad and mtd + ' TOTAL GRADIENT' not in qcvardefs:
+        qcvardefs[f"{mtd} TOTAL GRADIENT"] = {
+            "units": "Eh/a0",
+            "dimension": "({nat}, 3)",
+            "glossary": f"""The total electronic gradient for the {mtd} DFT level of theory. {extra}""",
         }
 
     if is_dft:
@@ -886,6 +893,13 @@ qcvardefs['DFT TOTAL ENERGY'] = {
    :qcvar:`SCF TOTAL ENERGY`. If the method is neither a
    double-hybrid, nor dispersion corrected, this quantity is equal to
    :qcvar:`DFT FUNCTIONAL TOTAL ENERGY`.
+"""
+}
+
+qcvardefs["DFT TOTAL GRADIENT"] = {
+    "units": "Eh/a0",
+    "glossary": r"""
+    The total electronic gradient for the requested DFT method.
 """
 }
 
@@ -2160,6 +2174,27 @@ qcvardefs["CBS REFERENCE ENERGY"] = {
 """
 }
 
+qcvardefs["GRID ELECTRONS ALPHA"] = {
+    "units": "",
+    "glossary": r"""
+   The number of alpha electrons integrated by the xc quadrature grid.
+"""
+}
+
+qcvardefs["GRID ELECTRONS BETA"] = {
+    "units": "",
+    "glossary": r"""
+   The number of beta electrons integrated by the xc quadrature grid.
+"""
+}
+
+qcvardefs["GRID ELECTRONS TOTAL"] = {
+    "units": "",
+    "glossary": r"""
+   The number of total electrons integrated by the xc quadrature grid.
+"""
+}
+
 
 #.. qcvar:: UNCP-CORRECTED 2-BODY INTERACTION ENERGY
 #
@@ -2176,8 +2211,8 @@ qcvardefs["CBS REFERENCE ENERGY"] = {
 #   for the labeled Z-averaged perturbation theory level.
 #   *n* is ZAPT perturbation order.
 define_scf_qcvars('HF', is_dft=False)
-define_scf_qcvars('B3LYP')
-define_scf_qcvars('B3LYP5')
+define_scf_qcvars('B3LYP', is_dh=False, do_grad=True)
+define_scf_qcvars('B3LYP5', is_dh=False, do_grad=True)
 define_scf_qcvars('SCF',
                   is_dft=False,
                   extra=' This is a generic HF/DFT quantity and not necessarily aligned across different calcs.')
@@ -2185,7 +2220,7 @@ define_scf_qcvars('B2PLYP', is_dh=True)
 define_scf_qcvars('DSD-PBEP86', is_dh=True)
 define_scf_qcvars('WPBE', is_dh=False)
 define_scf_qcvars('WB97', is_dh=False)
-define_scf_qcvars('PBE', is_dh=False)
+define_scf_qcvars('PBE', is_dh=False, do_grad=True)
 define_scf_qcvars('CAM-B3LYP', is_dh=False)
 define_scf_qcvars('DLDF+D09', is_dh=False)
 define_scf_qcvars('WB97X', is_dh=False)

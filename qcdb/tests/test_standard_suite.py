@@ -55,6 +55,10 @@ _q31 = (KeyError, "nwc-mp4(sdq)")  # no specialty mp4(sdq) in nwc
 _q32 = (qcng.exceptions.InputError, "mp4(sdq) requires 'reference rhf'")  # psi
 _q33 = (KeyError, "gms-mp4")  # no mp4 in gms
 _q34 = (qcng.exceptions.UnknownError, "select_mp4: Method 'mp4' with MP_TYPE 'CONV' and REFERENCE")  # only detci for conv rohf mp4 in psi4, and it's already peculiar for mp2. no uhf for conv
+#_q35 = (KeyError, "c4-pbe")  # no dft in cfour
+_q35 = (KeyError, r"c4-(pbe|b3lyp)")  # no dft in cfour
+_q36 = (qcng.exceptions.InputError, "ROHF reference for DFT is not available.")  # psi
+_q37 = (qcdb.exceptions.ValidationError, r"Derivative method 'name' \(c4-(pbe|b3lyp|b3lyp5)\) and derivative level 'dertype' \(1\) are not available.")  # no dft in cfour
 
 
 
@@ -2297,6 +2301,313 @@ def test_ccsdtq_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, re
 )
 def test_ccsdtq_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "gradient"))
+
+
+#                                                                                             
+#  ,------. ,-----.  ,------.    ,------.                                                     
+#  |  .--. '|  |) /_ |  .---'    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.                
+#  |  '--' ||  .-.  \|  `--,     |  `--, |      \| .-. :|  .--'| .-. |\  '  /                 
+#  |  | --' |  '--' /|  `---.    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '                  
+#  `--'     `------' `------'    `------'`--''--' `----'`--'   .`-  /.-'  /                   
+#                                                              `---' `---'                    
+#  <<<  PBE Energy
+
+#_gms_grid = {"gamess_dft__nrad": 99, "gamess_dft__nleb": 590, "gamess_dft__thresh": 1.e-15}  #, "gamess_dft__gthre": 10, "gamess_scf__conv": 1.e-9}
+_gms_grid = {"gamess_dft__nrad": 99, "gamess_dft__nleb": 590}
+_psi_grid = {"psi4_dft_radial_points": 99, "psi4_dft_spherical_points": 590}
+_nwc_grid = {"nwchem_dft__grid__lebedev": (99, 14)}
+
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(0, id="ene0"),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        pytest.param({"call": "c4-pbe",  "reference": "rhf",  "fcae": "ae", "keywords": {**_c4_tight},                                                                    "error": {0: _q35}}, id="pbe  rhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-pbe", "reference": "rhf",  "fcae": "ae", "keywords": {**_gms_grid},                                                                                      }, id="pbe  rhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-pbe", "reference": "rhf",  "fcae": "ae", "keywords": {**_nwc_grid},                                                                                      }, id="pbe  rhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-pbe",  "reference": "rhf",  "fcae": "ae", "keywords": {**_psi_grid, "psi4_scf_type": "pk"},                                                               }, id="pbe  rhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-pbe",  "reference": "uhf",  "fcae": "ae", "keywords": {**_c4_tight, "cfour_reference": "uhf"},                                          "error": {0: _q35}}, id="pbe  uhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-pbe", "reference": "uhf",  "fcae": "ae", "keywords": {**_gms_grid, "gamess_contrl__scftyp": "uhf"},                                                      }, id="pbe  uhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-pbe", "reference": "uhf",  "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__uhf": True},                                                             }, id="pbe  uhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-pbe",  "reference": "uhf",  "fcae": "ae", "keywords": {**_psi_grid, "reference": "uhf", "psi4_scf_type": "pk"},                                           }, id="pbe  uhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-pbe",  "reference": "rohf", "fcae": "ae", "keywords": {**_c4_tight, "cfour_reference": "rohf"},                                         "error": {0: _q35}}, id="pbe rohf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-pbe", "reference": "rohf", "fcae": "ae", "keywords": {**_gms_grid, "gamess_contrl__scftyp": "rohf"},                                                     }, id="pbe rohf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-pbe", "reference": "rohf", "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__rohf": True, "nwchem_dft__rodft": True},                                 }, id="pbe rohf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-pbe",  "reference": "rohf", "fcae": "ae", "keywords": {**_psi_grid, "reference": "rohf", "psi4_scf_type": "pk"},                        "error": {0: _q36}}, id="pbe rohf ae: psi4",       marks=using("psi4")),
+
+        #pytest.param({"call": "nwc-pbe", "reference": "rohf", "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__rohf": True, "nwchem_dft__rodft": True, "nwchem_dft__convergence__energy": 1.e-9, "nwchem_dft__convergence__gradient": 1.e-7},                    }, id="pbe rohf ae: nwchem",     marks=using("nwchem")),
+        # yapf: enable
+    ],
+)
+def test_pbe_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
+
+
+#
+#  ,------. ,-----.  ,------.     ,----.                     ,--.,--.                 ,--.   
+#  |  .--. '|  |) /_ |  .---'    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-. 
+#  |  '--' ||  .-.  \|  `--,     |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-' 
+#  |  | --' |  '--' /|  `---.    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |   
+#  `--'     `------' `------'     `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'   
+#
+#  <<<  PBE Gradient
+
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(1, id="grd1"),
+        # pytest.param(0, id="grd0", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        pytest.param({"call": "c4-pbe",  "reference": "rhf",  "fcae": "ae", "keywords": {**_c4_tight},                                                                                                  "error": {1: _q37}}, id="pbe  rhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-pbe", "reference": "rhf",  "fcae": "ae", "keywords": {**_gms_grid},                                                                                                                    }, id="pbe  rhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-pbe", "reference": "rhf",  "fcae": "ae", "keywords": {**_nwc_grid},                                                                                                                    }, id="pbe  rhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-pbe",  "reference": "rhf",  "fcae": "ae", "keywords": {**_psi_grid, "psi4_scf_type": "pk"},                                                                                             }, id="pbe  rhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-pbe",  "reference": "uhf",  "fcae": "ae", "keywords": {**_c4_tight, "cfour_reference": "uhf"},                                                                        "error": {1: _q37}}, id="pbe  uhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-pbe", "reference": "uhf",  "fcae": "ae", "keywords": {**_gms_grid, "gamess_contrl__scftyp": "uhf"},                                                                                    }, id="pbe  uhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-pbe", "reference": "uhf",  "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__uhf": True},                                                                                           }, id="pbe  uhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-pbe",  "reference": "uhf",  "fcae": "ae", "keywords": {**_psi_grid, "reference": "uhf", "psi4_scf_type": "pk"},                                                                         }, id="pbe  uhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-pbe",  "reference": "rohf", "fcae": "ae", "keywords": {**_c4_tight, "cfour_reference": "rohf"},                                                                       "error": {1: _q37}}, id="pbe rohf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-pbe", "reference": "rohf", "fcae": "ae", "keywords": {**_gms_grid, "gamess_contrl__scftyp": "rohf", "gamess_dft__gthre": 10},                                                          }, id="pbe rohf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-pbe", "reference": "rohf", "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__rohf": True, "nwchem_dft__rodft": True, "nwchem_dft__convergence__gradient": 1.e-5},                   }, id="pbe rohf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-pbe",  "reference": "rohf", "fcae": "ae", "keywords": {**_psi_grid, "reference": "rohf", "psi4_scf_type": "pk"},                                                      "error": {1: _q36}}, id="pbe rohf ae: psi4",       marks=using("psi4")),
+
+        #pytest.param({"call": "nwc-pbe", "reference": "rohf", "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__rohf": True, "nwchem_dft__rodft": True, "nwchem_dft__convergence__energy": 1.e-9, "nwchem_dft__convergence__gradient": 1.e-7},                    }, id="pbe rohf ae: nwchem",     marks=using("nwchem")),
+        # yapf: enable
+    ],
+)
+def test_pbe_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "gradient"))
+
+
+#                                                                                                                 
+#  ,-----.  ,----. ,--.,--.   ,--.,------.     ,------.                                                    
+#  |  |) /_ '.-.  ||  | \  `.'  / |  .--. '    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.               
+#  |  .-.  \  .' < |  |  '.    /  |  '--' |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /                
+#  |  '--' //'-'  ||  '--. |  |   |  | --'     |  `---.|  ||  |\   --.|  |   ' '-' ' \   '                 
+#  `------' `----' `-----' `--'   `--'         `------'`--''--' `----'`--'   .`-  /.-'  /                  
+#                                                                            `---' `---'                   
+#  <<<  B3LYP Energy
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(0, id="ene0"),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        pytest.param({"call": "c4-b3lyp",  "reference": "rhf",  "fcae": "ae", "keywords": {**_c4_tight},                                                                    "error": {0: _q35}}, id="b3lyp  rhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-b3lyp", "reference": "rhf",  "fcae": "ae", "keywords": {**_gms_grid},                                                                                      }, id="b3lyp  rhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-b3lyp", "reference": "rhf",  "fcae": "ae", "keywords": {**_nwc_grid},                                                                                      }, id="b3lyp  rhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-b3lyp",  "reference": "rhf",  "fcae": "ae", "keywords": {**_psi_grid, "psi4_scf_type": "pk"},                                                               }, id="b3lyp  rhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-b3lyp",  "reference": "uhf",  "fcae": "ae", "keywords": {**_c4_tight, "cfour_reference": "uhf"},                                          "error": {0: _q35}}, id="b3lyp  uhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-b3lyp", "reference": "uhf",  "fcae": "ae", "keywords": {**_gms_grid, "gamess_contrl__scftyp": "uhf"},                                                      }, id="b3lyp  uhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-b3lyp", "reference": "uhf",  "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__uhf": True},                                                             }, id="b3lyp  uhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-b3lyp",  "reference": "uhf",  "fcae": "ae", "keywords": {**_psi_grid, "reference": "uhf", "psi4_scf_type": "pk"},                                           }, id="b3lyp  uhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-b3lyp",  "reference": "rohf", "fcae": "ae", "keywords": {**_c4_tight, "cfour_reference": "rohf"},                                         "error": {0: _q35}}, id="b3lyp rohf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-b3lyp", "reference": "rohf", "fcae": "ae", "keywords": {**_gms_grid, "gamess_contrl__scftyp": "rohf"},                                                     }, id="b3lyp rohf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-b3lyp", "reference": "rohf", "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__rohf": True, "nwchem_dft__rodft": True},                                 }, id="b3lyp rohf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-b3lyp",  "reference": "rohf", "fcae": "ae", "keywords": {**_psi_grid, "reference": "rohf", "psi4_scf_type": "pk"},                        "error": {0: _q36}}, id="b3lyp rohf ae: psi4",       marks=using("psi4")),
+        # DEBUG pytest.param({"call": "nwc-b3lyp", "reference": "rohf", "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__rohf": True, "nwchem_dft__rodft": True, "nwchem_dft__convergence__energy": 1.e-9, "nwchem_dft__convergence__gradient": 1.e-7},                    }, id="b3lyp rohf ae: nwchem",     marks=using("nwchem")),
+        # yapf: enable
+    ],
+)
+def test_b3lyp_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
+
+
+#                                                                                                                 
+#  ,-----.  ,----. ,--.,--.   ,--.,------. ,-----.    ,------.                                                    
+#  |  |) /_ '.-.  ||  | \  `.'  / |  .--. '|  .--'    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.               
+#  |  .-.  \  .' < |  |  '.    /  |  '--' |'--. `\    |  `--, |      \| .-. :|  .--'| .-. |\  '  /                
+#  |  '--' //'-'  ||  '--. |  |   |  | --' .--'  /    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '                 
+#  `------' `----' `-----' `--'   `--'     `----'     `------'`--''--' `----'`--'   .`-  /.-'  /                  
+#                                                                                   `---' `---'       
+#  <<<  B3LYP5 Energy
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(0, id="ene0"),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        pytest.param({"call": "c4-b3lyp5",  "reference": "rhf",  "fcae": "ae", "keywords": {**_c4_tight},                                                                    "error": {0: _q35}}, id="b3lyp5  rhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-b3lyp5", "reference": "rhf",  "fcae": "ae", "keywords": {**_gms_grid},                                                                                      }, id="b3lyp5  rhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-b3lyp5", "reference": "rhf",  "fcae": "ae", "keywords": {**_nwc_grid},                                                                                      }, id="b3lyp5  rhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-b3lyp5",  "reference": "rhf",  "fcae": "ae", "keywords": {**_psi_grid, "psi4_scf_type": "pk"},                                                               }, id="b3lyp5  rhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-b3lyp5",  "reference": "uhf",  "fcae": "ae", "keywords": {**_c4_tight, "cfour_reference": "uhf"},                                          "error": {0: _q35}}, id="b3lyp5  uhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-b3lyp5", "reference": "uhf",  "fcae": "ae", "keywords": {**_gms_grid, "gamess_contrl__scftyp": "uhf"},                                                      }, id="b3lyp5  uhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-b3lyp5", "reference": "uhf",  "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__uhf": True},                                                             }, id="b3lyp5  uhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-b3lyp5",  "reference": "uhf",  "fcae": "ae", "keywords": {**_psi_grid, "reference": "uhf", "psi4_scf_type": "pk"},                                           }, id="b3lyp5  uhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-b3lyp5",  "reference": "rohf", "fcae": "ae", "keywords": {**_c4_tight, "cfour_reference": "rohf"},                                         "error": {0: _q35}}, id="b3lyp5 rohf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-b3lyp5", "reference": "rohf", "fcae": "ae", "keywords": {**_gms_grid, "gamess_contrl__scftyp": "rohf"},                                                     }, id="b3lyp5 rohf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-b3lyp5", "reference": "rohf", "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__rohf": True, "nwchem_dft__rodft": True},                                 }, id="b3lyp5 rohf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-b3lyp5",  "reference": "rohf", "fcae": "ae", "keywords": {**_psi_grid, "reference": "rohf", "psi4_scf_type": "pk"},                        "error": {0: _q36}}, id="b3lyp5 rohf ae: psi4",       marks=using("psi4")),
+        # DEBUG pytest.param({"call": "nwc-b3lyp5", "reference": "rohf", "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__rohf": True, "nwchem_dft__rodft": True, "nwchem_dft__convergence__energy": 1.e-9, "nwchem_dft__convergence__gradient": 1.e-7},                    }, id="b3lyp5 rohf ae: nwchem",     marks=using("nwchem")),
+        # yapf: enable
+    ],
+)
+def test_b3lyp5_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
+
+
+#
+#  ,-----.  ,----. ,--.,--.   ,--.,------.      ,----.                     ,--.,--.                 ,--.   
+#  |  |) /_ '.-.  ||  | \  `.'  / |  .--. '    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-. 
+#  |  .-.  \  .' < |  |  '.    /  |  '--' |    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-' 
+#  |  '--' //'-'  ||  '--. |  |   |  | --'     '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |   
+#  `------' `----' `-----' `--'   `--'          `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'   
+#                     
+#  <<<  B3LYP Gradient -- NYI
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(1, id="grd1"),
+        # pytest.param(0, id="grd0", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        pytest.param({"call": "c4-b3lyp",  "reference": "rhf",  "fcae": "ae", "keywords": {**_c4_tight},                                                                                                  "error": {1: _q37}}, id="b3lyp  rhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-b3lyp", "reference": "rhf",  "fcae": "ae", "keywords": {**_gms_grid},                                                                                                                    }, id="b3lyp  rhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-b3lyp", "reference": "rhf",  "fcae": "ae", "keywords": {**_nwc_grid},                                                                                                                    }, id="b3lyp  rhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-b3lyp",  "reference": "rhf",  "fcae": "ae", "keywords": {**_psi_grid, "psi4_scf_type": "pk"},                                                                                             }, id="b3lyp  rhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-b3lyp",  "reference": "uhf",  "fcae": "ae", "keywords": {**_c4_tight, "cfour_reference": "uhf"},                                                                        "error": {1: _q37}}, id="b3lyp  uhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-b3lyp", "reference": "uhf",  "fcae": "ae", "keywords": {**_gms_grid, "gamess_contrl__scftyp": "uhf"},                                                                                    }, id="b3lyp  uhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-b3lyp", "reference": "uhf",  "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__uhf": True},                                                                                           }, id="b3lyp  uhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-b3lyp",  "reference": "uhf",  "fcae": "ae", "keywords": {**_psi_grid, "reference": "uhf", "psi4_scf_type": "pk"},                                                                         }, id="b3lyp  uhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-b3lyp",  "reference": "rohf", "fcae": "ae", "keywords": {**_c4_tight, "cfour_reference": "rohf"},                                                                       "error": {1: _q37}}, id="b3lyp rohf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-b3lyp", "reference": "rohf", "fcae": "ae", "keywords": {**_gms_grid, "gamess_contrl__scftyp": "rohf", "gamess_dft__gthre": 10},                                                          }, id="b3lyp rohf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-b3lyp", "reference": "rohf", "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__rohf": True, "nwchem_dft__rodft": True, "nwchem_dft__convergence__gradient": 1.e-5},                   }, id="b3lyp rohf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-b3lyp",  "reference": "rohf", "fcae": "ae", "keywords": {**_psi_grid, "reference": "rohf", "psi4_scf_type": "pk"},                                                      "error": {1: _q36}}, id="b3lyp rohf ae: psi4",       marks=using("psi4")),
+        # DEBUG pytest.param({"call": "nwc-b3lyp", "reference": "rohf", "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__rohf": True, "nwchem_dft__rodft": True, "nwchem_dft__convergence__energy": 1.e-9, "nwchem_dft__convergence__gradient": 1.e-7},                    }, id="b3lyp rohf ae: nwchem",     marks=using("nwchem")),
+        # yapf: enable
+    ],
+)
+def test_b3lyp_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "gradient"))
+
+
+#
+#  ,-----.  ,----. ,--.,--.   ,--.,------. ,-----.     ,----.                     ,--.,--.                 ,--.   
+#  |  |) /_ '.-.  ||  | \  `.'  / |  .--. '|  .--'    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-. 
+#  |  .-.  \  .' < |  |  '.    /  |  '--' |'--. `\    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-' 
+#  |  '--' //'-'  ||  '--. |  |   |  | --' .--'  /    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |   
+#  `------' `----' `-----' `--'   `--'     `----'      `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'  
+#
+#  <<<  B3LYP5 Gradient
+
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(1, id="grd1"),
+        # pytest.param(0, id="grd0", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+        pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        pytest.param({"call": "c4-b3lyp5",  "reference": "rhf",  "fcae": "ae", "keywords": {**_c4_tight},                                                                                                  "error": {1: _q37}}, id="b3lyp5  rhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-b3lyp5", "reference": "rhf",  "fcae": "ae", "keywords": {**_gms_grid},                                                                                                                    }, id="b3lyp5  rhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-b3lyp5", "reference": "rhf",  "fcae": "ae", "keywords": {**_nwc_grid},                                                                                                                    }, id="b3lyp5  rhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-b3lyp5",  "reference": "rhf",  "fcae": "ae", "keywords": {**_psi_grid, "psi4_scf_type": "pk"},                                                                                             }, id="b3lyp5  rhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-b3lyp5",  "reference": "uhf",  "fcae": "ae", "keywords": {**_c4_tight, "cfour_reference": "uhf"},                                                                        "error": {1: _q37}}, id="b3lyp5  uhf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-b3lyp5", "reference": "uhf",  "fcae": "ae", "keywords": {**_gms_grid, "gamess_contrl__scftyp": "uhf"},                                                                                    }, id="b3lyp5  uhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-b3lyp5", "reference": "uhf",  "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__uhf": True},                                                                                           }, id="b3lyp5  uhf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-b3lyp5",  "reference": "uhf",  "fcae": "ae", "keywords": {**_psi_grid, "reference": "uhf", "psi4_scf_type": "pk"},                                                                         }, id="b3lyp5  uhf ae: psi4",       marks=using("psi4")),
+
+        pytest.param({"call": "c4-b3lyp5",  "reference": "rohf", "fcae": "ae", "keywords": {**_c4_tight, "cfour_reference": "rohf"},                                                                       "error": {1: _q37}}, id="b3lyp5 rohf ae: cfour",      marks=using("cfour")),
+        pytest.param({"call": "gms-b3lyp5", "reference": "rohf", "fcae": "ae", "keywords": {**_gms_grid, "gamess_contrl__scftyp": "rohf", "gamess_dft__gthre": 10},                                                          }, id="b3lyp5 rohf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "nwc-b3lyp5", "reference": "rohf", "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__rohf": True, "nwchem_dft__rodft": True, "nwchem_dft__convergence__gradient": 1.e-5},                   }, id="b3lyp5 rohf ae: nwchem",     marks=using("nwchem")),
+        pytest.param({"call": "p4-b3lyp5",  "reference": "rohf", "fcae": "ae", "keywords": {**_psi_grid, "reference": "rohf", "psi4_scf_type": "pk"},                                                      "error": {1: _q36}}, id="b3lyp5 rohf ae: psi4",       marks=using("psi4")),
+        # DEBUG pytest.param({"call": "nwc-b3lyp5", "reference": "rohf", "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__rohf": True, "nwchem_dft__rodft": True, "nwchem_dft__convergence__energy": 1.e-9, "nwchem_dft__convergence__gradient": 1.e-7},                    }, id="b3lyp5 rohf ae: nwchem",     marks=using("nwchem")),
+        # yapf: enable
+    ],
+)
+def test_b3lyp5_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "gradient"))
+
 
 
 def _processor(inp, dertype, basis, subjects, clsd_open_pmols, request, driver):

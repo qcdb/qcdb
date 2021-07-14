@@ -143,8 +143,17 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', sysinfo: Dict, 
         ropts.suggest('GAMESS', 'cidet__nels', sysinfo["fc"]['nels'], accession=accession, verbose=verbose)
         # TODO FC hack!!!
 
-    # unused from Nuwan
+    elif lowername == "gms-pbe":
+        ropts.require("GAMESS", "contrl__dfttyp", "pbe", accession=accession, verbose=verbose)
 
+    elif lowername == "gms-b3lyp":
+        ropts.require("GAMESS", "contrl__dfttyp", "b3lypv1r", accession=accession, verbose=verbose)
+
+    elif lowername == "gms-b3lyp5":
+        ropts.require("GAMESS", "contrl__dfttyp", "b3lyp", accession=accession, verbose=verbose)
+
+
+    # unused from Nuwan
 
 #    elif lowername == 'gms-dft':
 #        if dertype == 0:

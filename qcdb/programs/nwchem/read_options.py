@@ -1281,6 +1281,14 @@ def load_nwchem_keywords(options: Keywords) -> None:
             case) and tuple values. See table at link for decoding iangquad index into angular points.
             Density-Functional-Theory-for-Molecules#lebedev-angular-grid"""))
 
+    options.add(
+        "nwchem",
+        Keyword(
+            keyword="dft__rodft",
+            default=False,
+            validator=parsers.boolean,
+            glossary="""The rodft keyword will perform restricted open-shell calculations. This keyword can only be used with the CGMIN keyword."""))
+
     #CCSD block
     options.add(
         'nwchem',
