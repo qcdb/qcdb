@@ -36,7 +36,7 @@ def load_gamess_keywords(options: Keywords) -> None:
 
     options.add(
         'gamess',
-        Keyword(keyword='contrl__dfttyp', default='none', validator=parsers.enum("NONE B3LYP PBE0"), glossary=""""""))
+        Keyword(keyword='contrl__dfttyp', default='none', validator=parsers.enum("NONE B3LYP PBE0 PBE B3LYPV1R B3LYPV3"), glossary=""""""))
 
     options.add('gamess',
                 Keyword(keyword='contrl__mplevl', default=2, validator=parsers.intenum("0 2"), glossary=""""""))
@@ -215,6 +215,33 @@ def load_gamess_keywords(options: Keywords) -> None:
             validator=parsers.intenum("86 110 146 170 194 302 350 434 590 770 974 1202 1454 1730 2030"),
             glossary="""Number of angular points in the Lebedev grids."""))
 
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="dft__thresh",
+            default=1.e-10,  # approx
+            validator=lambda x: float(x),
+            glossary="""threshold for ignoring small contributions to the                      
+         Fock matrix.  The default is designed to produce                       
+         no significant energy loss, even when the grid is                      
+         as good as "army grade".  If for some reason you                       
+         want to turn all threshhold tests off, of course                       
+         requiring more CPU, enter 1.0e-15.                                     
+         default: 1.0e-4/Natoms/NRAD/NTHE/NPHI"""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="dft__gthre",
+            default=1,
+            validator=lambda x: float(x),
+            glossary="""threshold applied to gradients, similar to THRESH.                     
+         < 1 assign this value to all thresholds                                
+         = 1 use the default thresholds (default).                              
+         > 1 divide default thresholds by this value.                           
+         If you wish to increase accuracy, set GTHRE=10.                        
+         The default introduces an error of roughly 1e-7                        
+         (a.u./bohr) in the gradient."""))
     #options.add_int("GAMESS_EOMINP_NSTATE", 1);
 
     # $CIDET

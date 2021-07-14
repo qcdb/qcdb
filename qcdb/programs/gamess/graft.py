@@ -21,6 +21,10 @@ def gamess_list() -> List:
     #        val.append('gms-dft')
     #        val.append('gms-efp')
 
+    val.append("gms-pbe")
+    val.append("gms-b3lyp")
+    val.append("gms-b3lyp5")
+
     return val
 
 
@@ -32,6 +36,10 @@ def gamess_gradient_list() -> List:
     val.append('gms-hf')
     val.append('gms-scf')
     val.append('gms-mp2')
+
+    val.append("gms-pbe")
+    val.append("gms-b3lyp")
+    val.append("gms-b3lyp5")
 
     return val
 

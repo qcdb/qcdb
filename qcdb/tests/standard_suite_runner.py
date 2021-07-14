@@ -1,3 +1,4 @@
+import re
 import pprint
 
 import pytest
@@ -23,6 +24,7 @@ from qcengine.programs.tests.standard_suite_contracts import (
     contractual_ccsdt,
     contractual_ccsdt_prq_pr,
     contractual_ccsdtq,
+    contractual_dft_current,
     contractual_current,
     query_has_qcvar,
     query_qcvar,
@@ -71,6 +73,10 @@ def runner_asserter(inp, subject, method, basis, tnm):
         "ccsdt": cc_type,
         "ccsdt(q)": cc_type,
         "ccsdtq": cc_type,
+
+        "pbe": "conv",
+        "b3lyp": "conv",
+        "b3lyp5": "conv",
     }
     corl_type = corl_natural_values[method]
 
