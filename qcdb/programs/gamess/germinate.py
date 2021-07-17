@@ -1,3 +1,4 @@
+import math
 import uuid
 from typing import Dict
 
@@ -97,6 +98,40 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', sysinfo: Dict, 
         ropts.require('GAMESS', 'contrl__mplevl', 2, accession=accession, verbose=verbose)
         ropts.require('GAMESS', 'contrl__cityp', 'none', accession=accession, verbose=verbose)
         ropts.require('GAMESS', 'contrl__cctyp', 'none', accession=accession, verbose=verbose)
+
+    elif lowername == 'gms-cisd':
+        # todo qc_module CITYP
+        ropts.require('GAMESS', 'contrl__mplevl', 0, accession=accession, verbose=verbose)
+        ropts.require('GAMESS', 'contrl__cctyp', 'none', accession=accession, verbose=verbose)
+
+        qopt = ropts.scroll["QCDB"]["FREEZE_CORE"]
+        #if qopt.disputed():
+        if True:
+            if qopt.value is True:
+                fcae = "fc"
+            elif qopt.value is False:
+                fcae = "ae"
+        nocc = int(math.ceil(sysinfo[fcae]["nels"]/2))
+        nbeta = int(math.floor(sysinfo[fcae]["nels"]/2))
+
+        if ropts.scroll['QCDB']['QC_MODULE'].value == 'fsoci':
+            ropts.require('GAMESS', 'contrl__cityp', 'fsoci', accession=accession, verbose=verbose)
+            ropts.suggest('GAMESS', 'cidet__ncore', sysinfo[fcae]['ncore'], accession=accession, verbose=verbose)
+            ropts.suggest('GAMESS', 'cidet__nact', nocc, accession=accession, verbose=verbose)
+            ropts.suggest('GAMESS', 'cidet__nels', sysinfo[fcae]['nels'], accession=accession, verbose=verbose)
+        elif ropts.scroll['QCDB']['QC_MODULE'].value == 'guga':
+            ropts.require('GAMESS', 'contrl__cityp', 'guga', accession=accession, verbose=verbose)
+            ropts.require('GAMESS', 'cidrt__iexcit', 2, accession=accession, verbose=verbose)
+            ropts.suggest('GAMESS', 'cidrt__nfzc', sysinfo[fcae]['ncore'], accession=accession, verbose=verbose)
+            ropts.suggest('GAMESS', 'cidrt__group', "C1", accession=accession, verbose=verbose)  # TODO tailor to mol
+            #ropts.suggest('GAMESS', 'cidrt__ndoc', nocc, accession=accession, verbose=verbose)
+
+            ropts.suggest('GAMESS', 'cidrt__ndoc', nbeta, accession=accession, verbose=verbose)
+            ropts.suggest('GAMESS', 'cidrt__nalp', nocc-nbeta, accession=accession, verbose=verbose)
+            ropts.suggest('GAMESS', 'cidrt__nval', sysinfo[fcae]["nact"] - nocc, accession=accession, verbose=verbose)
+            #ropts.suggest('GAMESS', 'cidrt__intact', True, accession=accession, verbose=verbose)
+ #$cidrt  GROUP=C2V IEXCIT=4 NFZC=0 NDOC=5 NVAL=9 $END
+
 
     elif lowername == 'gms-lccd':
         ropts.require('GAMESS', 'contrl__mplevl', 0, accession=accession, verbose=verbose)

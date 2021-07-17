@@ -10,6 +10,9 @@ from qcengine.programs.tests.standard_suite_contracts import (
     contractual_mp3,
     contractual_mp4_prsdq_pr,
     contractual_mp4,
+    contractual_cisd,
+    contractual_qcisd,
+    contractual_qcisd_prt_pr,
     contractual_lccd,
     contractual_lccsd,
     contractual_ccd,
@@ -52,6 +55,7 @@ def runner_asserter(inp, subject, method, basis, tnm):
     # ? precedence on next two
     mp2_type = inp.get("corl_type", inp["keywords"].get("mp2_type", "df"))  # hard-code of read_options.cc MP2_TYPE
     mp_type = inp.get("corl_type", inp["keywords"].get("mp_type", "conv"))  # hard-code of read_options.cc MP_TYPE
+    ci_type = inp.get("corl_type", inp["keywords"].get("ci_type", "conv"))  # hard-code of read_options.cc CI_TYPE
     cc_type = inp.get("corl_type", inp["keywords"].get("cc_type", "conv"))  # hard-code of read_options.cc CC_TYPE
     corl_natural_values = {
         "hf": "conv",  # dummy to assure df/cd/conv scf_type refs available
@@ -59,6 +63,9 @@ def runner_asserter(inp, subject, method, basis, tnm):
         "mp3": mp_type,
         "mp4(sdq)": mp_type,
         "mp4": mp_type,
+        "cisd": ci_type,
+        "qcisd": ci_type,
+        "qcisd(t)": ci_type,
         "lccd": cc_type,
         "lccsd": cc_type,
         "ccd": cc_type,
@@ -86,6 +93,7 @@ def runner_asserter(inp, subject, method, basis, tnm):
     scf_type = natural_values[scf_type]
 
     atol_e, atol_g, atol_h = 1.e-6, 2.e-6, 5.e-6
+    using_fd = "xptd" in inp and "fd" in inp["xptd"]  # val is T/F
     if inp.get("xptd", {}).get("fd", False):
         # relax atol for qcprog internal findif since 3-pt is crude and arrays less precise
         atol_g, atol_h = 2.e-5, 8.e-5
@@ -133,11 +141,12 @@ def runner_asserter(inp, subject, method, basis, tnm):
     qcdb.set_options(inp["keywords"])
 
     if "error" in inp:
-        errtype, errmsg = inp["error"]
+        errtype, errmatch, reason = inp["error"]
         with pytest.raises(errtype) as e:
             driver_call[driver](inp["call"], molecule=subject, local_options=local_options, **extra_kwargs)
 
-        assert errmsg in str(e.value), f"Not found: {errtype} '{errmsg}' in {e.value}"
+        assert re.search(errmatch, str(e.value)), f"Not found: {errtype} '{errmatch}' in {e.value}"
+        _recorder(qcprog, qc_module_in, driver, method, reference, fcae, scf_type, corl_type, "error", "nyi: " + reason)
         return
 
     ret, wfn = driver_call[driver](
@@ -204,6 +213,18 @@ def runner_asserter(inp, subject, method, basis, tnm):
             _asserter(asserter_args, contractual_args, contractual_mp3)
             _asserter(asserter_args, contractual_args, contractual_mp4_prsdq_pr)
             _asserter(asserter_args, contractual_args, contractual_mp4)
+        elif method == "cisd":
+            _asserter(asserter_args, contractual_args, contractual_cisd)
+        elif method == "qcisd":
+            _asserter(asserter_args, contractual_args, contractual_mp2)
+            _asserter(asserter_args, contractual_args, contractual_qcisd)
+        elif method == "qcisd(t)":
+            _asserter(asserter_args, contractual_args, contractual_mp2)
+            _asserter(asserter_args, contractual_args, contractual_qcisd)
+            _asserter(asserter_args, contractual_args, contractual_qcisd_prt_pr)
+        elif method == "lccd":
+            _asserter(asserter_args, contractual_args, contractual_mp2)
+            _asserter(asserter_args, contractual_args, contractual_lccd)
         elif method == "ccd":
             _asserter(asserter_args, contractual_args, contractual_mp2)
             _asserter(asserter_args, contractual_args, contractual_ccd)
@@ -246,14 +267,15 @@ def runner_asserter(inp, subject, method, basis, tnm):
             _asserter(asserter_args, contractual_args, contractual_ccsdtq)
 
     if "wrong" in inp:
-        errmsg, reason = inp["wrong"]
+        errmatch, reason = inp["wrong"]
         with pytest.raises(AssertionError) as e:
             qcvar_assertions()
 
-        # print("WRONG", errmsg, reason, str(e.value), "ENDW")
-        assert errmsg in str(e.value)
+        assert errmatch in str(e.value), f"Not found: AssertionError '{errmatch}' for '{reason}' in {e.value}"
+        _recorder(qcprog, qc_module_out, driver, method, reference, fcae, scf_type, corl_type, "wrong", reason + f" First wrong at `{errmatch}`.")
         pytest.xfail(reason)
 
+    # primary label checks
     qcvar_assertions()
 
     # aliases
@@ -289,13 +311,18 @@ def runner_asserter(inp, subject, method, basis, tnm):
         )
         assert compare_values(ref_block[f"{method.upper()} TOTAL HESSIAN"], ret, tnm + " hess return", atol=atol_h)
 
-    # generics
+    # generics checks
     # yapf: disable
     assert compare(ref_block["N BASIS FUNCTIONS"], wfn["properties"]["calcinfo_nbasis"], tnm + " nbasis wfn"), f"nbasis {wfn.properties.calcinfo_nbasis} != {ref_block['N BASIS FUNCTIONS']}"
     assert compare(ref_block["N MOLECULAR ORBITALS"], wfn["properties"]["calcinfo_nmo"], tnm + " nmo wfn"), f"nmo {wfn.properties.calcinfo_nmo} != {ref_block['N MOLECULAR ORBITALS']}"
     assert compare(ref_block["N ALPHA ELECTRONS"], wfn["properties"]["calcinfo_nalpha"], tnm + " nalpha wfn"), f"nalpha {wfn.properties.calcinfo_nalpha} != {ref_block['N ALPHA ELECTRONS']}"
     assert compare(ref_block["N BETA ELECTRONS"], wfn["properties"]["calcinfo_nbeta"], tnm + " nbeta wfn"), f"nbeta {wfn.properties.calcinfo_nbeta} != {ref_block['N BETA ELECTRONS']}"
     # yapf: enable
+
+    # record
+    _recorder(qcprog, qc_module_out, driver, method, reference, fcae, scf_type, corl_type, "fd" if using_fd else "pass", "")
+
+    # assert 0
 
 
 def _asserter(asserter_args, contractual_args, contractual_fn):
@@ -325,3 +352,9 @@ def _asserter(asserter_args, contractual_args, contractual_fn):
             else:
                 # verify and forgive known contract violations
                 assert compare(False, query_has_qcvar(obj, pv), label + " SKIP"), f"{label} wrongly present"
+
+
+def _recorder(engine, module, driver, method, reference, fcae, scf_type, corl_type, status, note):
+    with open("stdsuite_qcng.txt", "a") as fp:
+        stuff = {"module": module, "driver": driver, "method": method, "reference": reference, "fcae": fcae, "scf_type": scf_type, "corl_type": corl_type, "status": status, "note": note}
+        fp.write(f"{stuff!r}\n")

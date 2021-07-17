@@ -63,6 +63,8 @@ def build_out(rawvars: Dict[str, Datum], verbose: int = 1) -> None:
             if isinstance(pv, str):
                 if pv in rawvars:
                     data_rich_args.append(rawvars[pv])
+                    if verbose >= 3:
+                        print(f"{pv=} {rawvars[pv]}")
                 else:
                     if verbose >= 2:
                         print("""{}EMPTY, missing {}""".format(buildline, pv))
@@ -71,6 +73,8 @@ def build_out(rawvars: Dict[str, Datum], verbose: int = 1) -> None:
                 data_rich_args.append(pv)
         else:
             result = action['func'](data_rich_args)
+            if verbose >= 3:
+                print(f"{result=}")
             #rawvars[pvar] = result
             # with data coming from file --> variable, looks more precise than it is. hack
             rawvars.__setitem__(pvar, result, 6)

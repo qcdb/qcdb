@@ -36,6 +36,13 @@ qcvardefs['T(CCSD) CORRECTION ENERGY'] = {
 """
 }
 
+qcvardefs["QCISD(T) CORRECTION ENERGY"] = {
+    "units": "Eh",
+    'glossary': """
+   The quadratice configuration interaction singles and doubles triples correction.
+"""
+}
+
 qcvardefs['(Q) CORRECTION ENERGY'] = {
     'units': 'Eh',
     'glossary': """
@@ -467,23 +474,23 @@ qcvardefs['CI CORRELATION ENERGY'] = {
 #
 #   .. math:: E_{\text{IE}} = E_{dimer} - \sum_{monomer}^{n}{E_{monomer}^{\text{CP}}}
 
-qcvardefs['CISD TOTAL ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    """
-        The total energy for a configuration interaction with singles and doubles calculation.
-        """
-}
-
-qcvardefs['CISD CORRELATION ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    """
-        The correlation energy corresponding to configuration interaction with single and doubles calculation.
-        """
-}
+#qcvardefs['CISD TOTAL ENERGY'] = {
+#    'units':
+#    'Eh',
+#    'glossary':
+#    """
+#        The total energy for a configuration interaction with singles and doubles calculation.
+#        """
+#}
+#
+#qcvardefs['CISD CORRELATION ENERGY'] = {
+#    'units':
+#    'Eh',
+#    'glossary':
+#    """
+#        The correlation energy corresponding to configuration interaction with single and doubles calculation.
+#        """
+#}
 
 qcvardefs['CISDT TOTAL ENERGY'] = {
     'units':
@@ -521,23 +528,23 @@ qcvardefs['CISDTQ CORRELATION ENERGY'] = {
         """
 }
 
-qcvardefs['QCISD TOTAL ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    """
-        The total energy for a quadratic configuration interaction with singles and doubles calculation.
-        """
-}
-
-qcvardefs['QCISD CORRELATION ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    """
-        The correlation energy for a quadratic configuration interaction with singles and doubles calculation.
-        """
-}
+#qcvardefs['QCISD TOTAL ENERGY'] = {
+#    'units':
+#    'Eh',
+#    'glossary':
+#    """
+#        The total energy for a quadratic configuration interaction with singles and doubles calculation.
+#        """
+#}
+#
+#qcvardefs['QCISD CORRELATION ENERGY'] = {
+#    'units':
+#    'Eh',
+#    'glossary':
+#    """
+#        The correlation energy for a quadratic configuration interaction with singles and doubles calculation.
+#        """
+#}
 
 qcvardefs['CURRENT CORRELATION ENERGY'] = {
     'units': 'Eh',
@@ -2260,7 +2267,7 @@ define_ex_transition_qcvars(4, 'ccsd', ['B1', 'A1', 'A2', 'B2'])
 define_tddft_roots_qcvars(10, ['B1U' , 'AG','B2U', 'B3U', 'AU'])
 define_prop_qcvars('ccsd')
 define_prop_qcvars('cc')  # TODO reconsider
-define_spin_qcvars("LCCD", description="linearized coupled cluster doubles", do_spin=True)
+define_spin_qcvars("LCCD", description="linearized coupled cluster doubles", do_spin=True, do_grad=True)
 define_spin_qcvars("LCCSD", description="linearized coupled cluster singles and doubles", do_spin=True)
 define_spin_qcvars("CEPA(0)", description="coupled electron pair approximation, variant 0", do_spin=True)
 define_spin_qcvars("CCD", description="coupled cluster doubles", do_spin=True, do_grad=True)
@@ -2273,4 +2280,7 @@ define_spin_qcvars("CCSDT-1B", description="coupled cluster singles, doubles, an
 define_spin_qcvars("CCSDT-2", description="coupled cluster singles, doubles, and triples excitations at approximation 2", do_spin=False, do_grad=True)
 define_spin_qcvars("CCSDT-3", description="coupled cluster singles, doubles, and triples excitations at approximation 3", do_spin=False, do_grad=True)
 define_spin_qcvars("A-CCSD(T)", description="coupled cluster singles, doubles, and asymmetric perturbative triples excitations. Also known as Lambda-CCSD(T) or CCSD(AT).", do_spin=False, do_grad=True)
-
+define_spin_qcvars("CCSD(T)", description="coupled cluster singles, doubles, and perturbative triples excitations.", do_spin=False, do_grad=True)
+define_spin_qcvars("CISD", description="configuration interaction with singles and doubles", do_spin=True, do_grad=False)
+define_spin_qcvars("QCISD", description="quadratic configuration interaction singles and doubles", do_spin=True, do_grad=False)
+define_spin_qcvars("QCISD(T)", description="quadratic configuration interaction singles and doubles with perturbative triples", do_spin=False, do_grad=False)

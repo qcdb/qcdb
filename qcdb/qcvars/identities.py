@@ -150,7 +150,8 @@ def wfn_qcvars() -> List[Dict[str, Any]]:
     pv0.extend(_solve_in_turn(args=['MP4 CORRELATION ENERGY', 'MP4(T) CORRECTION ENERGY', 'MP4(SDQ) CORRELATION ENERGY'], coeff=[-1, 1, 1]))
 
     # MPN (part 2)
-    for mpn in range(3, 20):
+    #for mpn in range(3, 20):  # todo for now or forever
+    for mpn in range(4, 20):
         pv0.extend(
             _solve_in_turn(
                 args=[f"MP{mpn} TOTAL ENERGY", "HF TOTAL ENERGY", f"MP{mpn} CORRELATION ENERGY"],
@@ -159,6 +160,25 @@ def wfn_qcvars() -> List[Dict[str, Any]]:
             _solve_in_turn(
                 args=[f"MP{mpn} CORRELATION ENERGY", f"MP{mpn} CORRECTION ENERGY", f"MP{mpn - 1} CORRELATION ENERGY"],
                 coeff=[-1, 1, 1]))
+
+    # CISD
+    pv0.extend(
+        _solve_in_turn(args=['CISD TOTAL ENERGY', 'HF TOTAL ENERGY', 'CISD CORRELATION ENERGY'], coeff=[-1, 1, 1]))
+
+    # QCISD
+    pv0.extend(
+        _solve_in_turn(args=['QCISD TOTAL ENERGY', 'HF TOTAL ENERGY', 'QCISD CORRELATION ENERGY'], coeff=[-1, 1, 1]))
+
+    # QCISD(T)
+    pv0.extend(
+        _solve_in_turn(args=['QCISD(T) CORRELATION ENERGY', 'QCISD CORRELATION ENERGY', 'QCISD(T) CORRECTION ENERGY'],
+                       coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(args=['QCISD(T) TOTAL ENERGY', 'HF TOTAL ENERGY', 'QCISD(T) CORRELATION ENERGY'],
+                       coeff=[-1, 1, 1]))
+    pv0.extend(
+        _solve_in_turn(args=['QCISD(T) CORRELATION ENERGY', 'QCISD CORRELATION ENERGY', 'QCISD(T) CORRECTION ENERGY'],
+                       coeff=[-1, 1, 1]))  # duplicate of first so that all minimal combinations covered
 
     # LCCD
     pv0.extend(

@@ -1,5 +1,7 @@
 import copy
 import inspect
+import sys
+import traceback
 from typing import Any, Dict, Optional
 from decimal import Decimal
 
@@ -7,6 +9,7 @@ import qcelemental as qcel
 from qcelemental.models import AtomicInput
 
 import qcengine as qcng
+from qcengine.exceptions import InputError
 from qcengine.programs.cfour import CFOURHarness
 from qcengine.programs.cfour.keywords import format_keyword, format_keywords
 from qcengine.programs.util import PreservingDict
