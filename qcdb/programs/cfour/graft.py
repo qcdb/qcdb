@@ -14,6 +14,9 @@ def cfour_list() -> List:
     val.append('c4-mp3')
     val.append('c4-mp4(sdq)')
     val.append('c4-mp4')
+    val.append("c4-cisd")
+    val.append("c4-qcisd")
+    val.append("c4-qcisd(t)")
     val.append("c4-lccd")
     val.append("c4-lccsd")
     val.append('c4-cc2')
@@ -47,6 +50,7 @@ def cfour_gradient_list() -> List:
     val.append('c4-mp3')
     val.append('c4-mp4(sdq)')
     val.append('c4-mp4')
+    val.append("c4-lccd") # nyi
     val.append('c4-cc2')
     val.append("c4-ccd")
     val.append('c4-ccsd')

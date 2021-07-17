@@ -10,6 +10,7 @@ def gamess_list() -> List:
     val.append('gms-scf')
     val.append('gms-hf')
     val.append('gms-mp2')
+    val.append("gms-cisd")
     val.append("gms-lccd")
     val.append("gms-ccd")
     val.append('gms-ccsd')

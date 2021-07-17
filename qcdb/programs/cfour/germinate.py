@@ -143,6 +143,15 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
     elif lowername == 'c4-mp4':
         ropts.require('CFOUR', 'CALC_LEVEL', 'MP4', accession=accession, verbose=verbose)
 
+    elif lowername == 'c4-cisd':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'CISD', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-qcisd':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'QCISD', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-qcisd(t)':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'QCISD(T)', accession=accession, verbose=verbose)
+
     elif lowername == 'c4-lccd':
         ropts.require('CFOUR', 'CALC_LEVEL', 'LCCD', accession=accession, verbose=verbose)
 

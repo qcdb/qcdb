@@ -270,6 +270,142 @@ def load_gamess_keywords(options: Keywords) -> None:
             glossary="""Total number of active electrons."""))
 
 
+    # $SODET
+
+    options.add(
+        'gamess',
+        Keyword(
+            keyword='sodet__next',
+            default=1,  #None,
+            validator=parsers.positive_integer,
+            glossary="""the number of external orbitals to be included.                        
+         The default is the entire virtual MO space."""))
+
+    options.add(
+        'gamess',
+        Keyword(
+            keyword='sodet__orbs',
+            default="MOS",
+            validator=parsers.enum("MOS NOS"),
+            glossary="""
+         MOS means use the MCSCF orbitals, which should be                      
+             allowed to undergo canonicalization (see the                       
+             CANONC keyword in $MCSCF), or the input $VEC                       
+             group in case SCFTYP=NONE. (default)                               
+         NOS means to instead use the natural orbitals of                       
+             the MCSCF.  
+    """))
+
+    # $CIDRT
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__iexcit",
+        default=100,  # usually by program
+                validator=parsers.nonnegative_integer,
+        glossary="""electron excitation level, for example 2 will                           
+        lead to a singles and doubles CI.  This variable                        
+        is computed by the program if FORS, FOCI, or                            
+        SOCI is chosen, otherwise it must be entered."""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__ndoc",
+            default=0,
+            validator=parsers.nonnegative_integer,
+            glossary="""number of doubly occupied MOs in the reference."""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__naos",
+            default=0,
+            validator=parsers.nonnegative_integer,
+            glossary="""number of alpha occupied MOs in the reference which are singlet coupled with a corresponding number of NBOS orbitals."""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__nbos",
+            default=0,
+            validator=parsers.nonnegative_integer,
+            glossary="""number of beta singly occupied MOs."""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__nval",
+            default=0,
+            validator=parsers.nonnegative_integer,
+            glossary="""number of empty MOs in the reference."""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__nfzc",
+            default=0,
+            validator=parsers.nonnegative_integer,
+            glossary="""number of CI frozen core MOs."""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__nalp",
+            default=0,
+            validator=parsers.nonnegative_integer,
+            glossary="""NALP = number of alpha spin singly occupied MOs in the                          
+       reference, which are coupled high spin."""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__intact",
+            default=False,
+            validator=parsers.boolean,
+            glossary="""flag to select the interacting space option.  See                       
+        C.F.Bender, H.F.Schaefer  J.Chem.Phys. 55,                              
+        4798-4803(1971).  The CI will include only those                        
+        CSFs which have non-vanishing spin couplings with                       
+        the reference configuration.  Note that when the                        
+        Schaefer group uses this option for high spin                           
+        ROHF references, they use Guest/Saunders orbital                        
+        canonicalization."""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__group",
+            default="C1",
+            validator=parsers.enum("C1 C2 CI CS C2V C2H D2 D2H C4V D4 D4H"),
+            glossary="""the name of the point group to be used.  This is                        
+        usually the same as that in $DATA, except for                           
+        RUNTYP=HESSIAN, when it must be C1.  Choose from                        
+        the following: C1, C2, CI, CS, C2V, C2H, D2, D2H,                       
+        C4V, D4, D4H.  If your $DATA's group is not listed,                     
+        choose only C1 here."""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__mxnint",
+            default=20000,
+            validator=parsers.nonnegative_integer,
+            glossary="""Buffer size for sorted integrals. (default=20000)                      
+         Adjust this upwards if the program tells you to,                       
+         which may occur in cases with large numbers of                         
+         external orbitals."""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__mxneme",
+            default=10000,
+            validator=parsers.nonnegative_integer,
+            glossary="""MXNEME = Buffer size for energy matrix.  (default=10000)                        """))
+
+
     # <<< FORCE
 
     options.add(
