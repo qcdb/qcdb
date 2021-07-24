@@ -162,6 +162,15 @@ def load_gamess_keywords(options: Keywords) -> None:
             glossary="""Selects open shell spin-restricted perturbation. Only applies when gamess_mp2__scftype=ROHF."""
         ))
 
+    options.add(
+    "gamess",
+    Keyword(
+            keyword="mp2__cutoff",
+            default=1.e-8,
+            validator=lambda x: float(x),
+            glossary="""transformed integral retention threshold, the                        
+           default is 1.0d-9 (1.0d-12 in FMO runs)."""))
+
     # $CCINP
 
     options.add(

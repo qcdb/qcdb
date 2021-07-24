@@ -1,6 +1,7 @@
 import copy
 import pprint
 import inspect
+import re
 from typing import Any, Dict, Optional
 from decimal import Decimal
 
@@ -162,7 +163,34 @@ class QcdbNWChemHarness(NWChemHarness):
         #zmat = molcmd + optcmd + bascmd
         nwchemrec['infiles']['nwchem.nw'] = 'echo\n' + molcmd + bascmd + optcmd + mdccmd
         #OLD    nwchemrec['nwchem.nw'] = write_input(jobrec['method'], jobrec['dertype'], jobrec['molecule'], jobrec['options']) #molecule)
-        #    print('<<< ZMAT||\n{}\n||>>>\n'.format(nwchemrec['nwchem.nw']))
+
+        # For gradient methods, add a Python command to save the gradients in higher precision
+        #  Note: The Hessian is already stored in high precision in a file named "*.hess"
+        if input_model.driver == "gradient":
+            # Get the name of the theory used for computing the gradients
+            theory = re.search(r"^task\s+(.+)\s+grad", mdccmd, re.MULTILINE).group(1)
+            #logger.debug(f"Adding a Python task to retrieve gradients. Theory: {theory}")
+            print(f"Adding a Python task to retrieve gradients. Theory: {theory}")
+
+            # Create a Python function to get the gradient from NWChem's checkpoint file (rtdb)
+            #  and save it to a JSON file. The stdout for NWChem only prints 6 _decimal places_
+            #  (not 6 significant figures)
+            pycmd = f"""
+python
+   try:  
+      grad = rtdb_get('{theory}:gradient')
+      if ga_nodeid() == 0:
+          import json
+          with open('nwchem.grad', 'w') as fp:
+              json.dump(grad, fp)
+   except NWChemError, message:  
+        pass
+end
+
+task python
+            """
+            nwchemrec["infiles"]["nwchem.nw"] += pycmd
+
         nwchemrec['command'] = ['nwchem']  # subnw?
 
         return nwchemrec
