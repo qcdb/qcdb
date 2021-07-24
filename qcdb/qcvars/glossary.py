@@ -1649,26 +1649,6 @@ qcvardefs['CCD CORRELATION ENERGY'] = {
 """
 }
 
-qcvardefs['CCSD(T) TOTAL ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    r"""
-   The total electronic energy
-   for the coupled cluster singles and doubles plus perturbative triples level of theory.
-"""
-}
-
-qcvardefs['CCSD(T) CORRELATION ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    r"""
-   The correlation energy component
-   for the coupled cluster singles and doubles plus perturbative triples level of theory.
-"""
-}
-
 qcvardefs['CR-CCSD(T) TOTAL ENERGY'] = {
     'units':
     'Eh',
@@ -1689,25 +1669,25 @@ qcvardefs['CR-CCSD(T) CORRELATION ENERGY'] = {
 """
 }
 
-qcvardefs['CCSD[T] TOTAL ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    r"""
-   The total electronic energy
-   for the coupled cluster singles and doubles plus bracket perturbative triples level of theory.
-"""
-}
-
-qcvardefs['CCSD[T] CORRELATION ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    r"""
-   The correlation energy component
-   for the coupled cluster singles and doubles plus bracket perturbative triples level of theory.
-"""
-}
+#qcvardefs['CCSD[T] TOTAL ENERGY'] = {
+#    'units':
+#    'Eh',
+#    'glossary':
+#    r"""
+#   The total electronic energy
+#   for the coupled cluster singles and doubles plus bracket perturbative triples level of theory.
+#"""
+#}
+#
+#qcvardefs['CCSD[T] CORRELATION ENERGY'] = {
+#    'units':
+#    'Eh',
+#    'glossary':
+#    r"""
+#   The correlation energy component
+#   for the coupled cluster singles and doubles plus bracket perturbative triples level of theory.
+#"""
+#}
 
 qcvardefs['CR-CCSD[T] TOTAL ENERGY'] = {
     'units':

@@ -28,7 +28,6 @@ def fcell(winnowed):
             cell = u'\u2717'
         elif status == "wrong":
             cell = "bad"
-            cell = bcolors.FAIL + '\u26A0' + bcolors.ENDC
             cell = '💥 '
 
         if note:
@@ -105,6 +104,7 @@ methods = [
 "cisd",
 "qcisd",
 "qcisd(t)",
+"fci",
 "lccd",
 "lccsd",
 "ccd",
