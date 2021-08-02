@@ -1449,17 +1449,19 @@ class Molecule(LibmintsMolecule):
         return rmsd, solution, amol
 
     def scramble(ref_mol: "Molecule",
+                 *,
                  do_shift: Union[bool, np.ndarray, List] = True,
                  do_rotate: Union[bool, np.ndarray, List[List]] = True,
                  do_resort: Union[bool, List] = True,
                  deflection: float = 1.0,
                  do_mirror: bool = False,
                  do_plot: bool = False,
+                 do_test: bool = True,
                  run_to_completion: bool = False,
                  run_resorting: bool = False,
                  verbose: int = 1):
-        """Tester for B787 by shifting, rotating, and atom shuffling `ref_mol` and
-        checking that the aligner returns the opposite transformation.
+        r"""Generate a Molecule with random or directed translation, rotation, and atom shuffling.
+        Optionally, check that the aligner returns the opposite transformation.
 
         Parameters
         ----------
@@ -1482,6 +1484,9 @@ class Molecule(LibmintsMolecule):
             Whether to construct the mirror image structure by inverting y-axis.
         do_plot
             Pops up a mpl plot showing before, after, and ref geometries.
+        do_test
+            Additionally, run the aligner on the returned Molecule and check that
+            opposite transformations obtained.
         run_to_completion
             By construction, scrambled systems are fully alignable (final RMSD=0).
             Even so, `True` turns off the mechanism to stop when RMSD reaches zero
@@ -1493,7 +1498,13 @@ class Molecule(LibmintsMolecule):
 
         Returns
         -------
-        None
+        mol : Molecule
+        data : Dict[key, Any]
+            Molecule is scrambled copy of `ref_mol` (self).
+            `data['rmsd']` is RMSD [A] between `ref_mol` and the scrambled geometry.
+            `data['mill']` is a AlignmentMill with fields
+            (shift, rotation, atommap, mirror) that prescribe the transformation
+            from `ref_mol` to the returned geometry.
 
         """
         rgeom, rmass, relem, relez, runiq = ref_mol.to_arrays()
@@ -1515,33 +1526,38 @@ class Molecule(LibmintsMolecule):
             units='Bohr',
             molecular_charge=ref_mol.molecular_charge(),
             molecular_multiplicity=ref_mol.multiplicity(),
-            fix_com=True,
-            fix_orientation=True)
+            name=ref_mol.name(),
+            # copying fix_* vals rather than outright True. neither way great
+            fix_com=ref_mol.com_fixed(),
+            fix_orientation=ref_mol.orientation_fixed())
 
         rmsd = np.linalg.norm(cgeom - rgeom) * qcel.constants.bohr2angstroms / np.sqrt(nat)
         if verbose >= 1:
             print('Start RMSD = {:8.4f} [A]'.format(rmsd))
 
-        rmsd, solution, amol = cmol.B787(
-            ref_mol,
-            do_plot=do_plot,
-            atoms_map=(not do_resort),
-            run_resorting=run_resorting,
-            mols_align=True,
-            run_to_completion=run_to_completion,
-            run_mirror=do_mirror,
-            verbose=verbose)
+        if do_test:
+            final_rmsd, solution, amol = cmol.B787(
+                ref_mol,
+                do_plot=do_plot,
+                atoms_map=(not do_resort),
+                run_resorting=run_resorting,
+                mols_align=True,
+                run_to_completion=run_to_completion,
+                run_mirror=do_mirror,
+                verbose=verbose)
 
-        compare(
-            True, np.allclose(solution.shift, perturbation.shift, atol=6), 'shifts equiv', quiet=(verbose < 2))
-        if not do_resort:
             compare(
-                True,
-                np.allclose(solution.rotation.T, perturbation.rotation),
-                'rotations transpose',
-                quiet=(verbose < 2))
-        if solution.mirror:
-            compare(True, do_mirror, 'mirror allowed', quiet=(verbose < 2))
+                True, np.allclose(solution.shift, perturbation.shift, atol=1.e-6), 'shifts equiv', quiet=(verbose < 2))
+            if not do_resort:
+                compare(
+                    True,
+                    np.allclose(solution.rotation.T, perturbation.rotation),
+                    'rotations transpose',
+                    quiet=(verbose < 2))
+            if solution.mirror:
+                compare(True, do_mirror, 'mirror allowed', quiet=(verbose < 2))
+
+        return cmol, {"rmsd": rmsd, "mill": perturbation}
 
     def set_fragment_pattern(self, frl, frt, frc, frm):
         """Set fragment member data through public method analogous to psi4.core.Molecule"""

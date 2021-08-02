@@ -171,6 +171,34 @@ def load_gamess_keywords(options: Keywords) -> None:
             glossary="""transformed integral retention threshold, the                        
            default is 1.0d-9 (1.0d-12 in FMO runs)."""))
 
+    options.add(
+        "gamess",
+        Keyword(keyword="mp2__code",
+                default="SERIAL", # complex
+                validator=parsers.enum("SERIAL DDI IMS RIMP2 RICCHEM"),
+                glossary="""
+CODE  =    the program implementation to use, choose from                       
+           SERIAL, DDI, IMS, RIMP2, or RICCHEM according                        
+           to the following chart, depending on SCFTYP and                      
+           if the run involves nuclear gradients,                               
+                                                                                
+ RHF     RHF        UHF    UHF       ROHF    ROHF    ROHF                       
+energy gradient   energy gradient   energy gradient energy                      
+                                OSPT=ZAPT    ZAPT    RMP                        
+SERIAL  SERIAL    SERIAL  SERIAL    SERIAL    -     SERIAL                      
+DDI      DDI       DDI     DDI       DDI     DDI      -                         
+IMS      IMS        -       -         -       -       -                         
+RIMP2     -       RIMP2     -         -       -       -                         
+RICCHEM RICCHEM    -        -      RICCHEM    -       -                         
+                                                                                
+The default for serial runs (p=1) is CODE=IMS for RHF, and                      
+CODE=SERIAL for UHF or ROHF (provided PARALL is .FALSE. in                      
+$SYSTEM).  When p>1 (or PARALL=.TRUE.), the default becomes                     
+CODE=DDI.  However, if FMO is in use, the default for                           
+closed shell parallel runs is CODE=IMS.  The "SERIAL" code                      
+for OSPT=RMP will run with modest scalability when p>1.                         
+"""))
+
     # $CCINP
 
     options.add(

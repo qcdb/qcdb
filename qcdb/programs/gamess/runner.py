@@ -71,6 +71,7 @@ class QcdbGAMESSHarness(GAMESSHarness):
 
         dexe["outfiles"]["stdout"] = dexe["stdout"]
         dexe["outfiles"]["stderr"] = dexe["stderr"]
+        dexe["outfiles"]["dsl_input"] = job_inputs["infiles"]["gamess.inp"]  # full DSL input not available in stdout, so stash the file
         output_model = self.parse_output(dexe["outfiles"], input_model)
 
         print_jobrec(f'[4a] {self.name} RESULT POST-HARVEST', output_model.dict(), verbose >= 5)
@@ -134,6 +135,49 @@ class QcdbGAMESSHarness(GAMESSHarness):
 
         # Handle calc type and quantum chemical method
         muster_modelchem(input_model.model.method, input_model.driver.derivative_int(), ropts, sysinfo)
+
+        ropts.require("QCDB", "MEMORY", f"{config.memory} gib", accession='00000000', verbose=False)
+
+        # Handle memory
+        # * [GiB] --> [M QW]
+        # * docs on mwords: "This is given in units of 1,000,000 words (as opposed to 1024*1024 words)"
+        # * docs: "the memory required on each processor core for a run using p cores is therefore MEMDDI/p + MWORDS."
+        # * int() rounds down
+        mwords_total = int(config.memory * (1024 ** 3) / 8e6)
+
+        asdf = "mem trials\n"
+        for mem_frac_replicated in (1, 0.5, 0.1, 0.75):
+            mwords, memddi = self._partition(mwords_total, mem_frac_replicated, config.ncores)
+            asdf += f"loop {mwords_total=} {mem_frac_replicated=} {config.ncores=} -> repl: {mwords=} dist: {memddi=} -> percore={memddi/config.ncores + mwords} tot={memddi + config.ncores * mwords}\n"
+            trial_opts = {key: ropt.value for key, ropt in sorted(ropts.scroll['GAMESS'].items()) if ropt.disputed()}
+            trial_opts["contrl__exetyp"] = "check"
+            trial_opts["system__parall"] = not (config.ncores == 1)
+            trial_opts["system__mwords"] = mwords
+            trial_opts["system__memddi"] = memddi
+            trial_gamessrec = {
+                "infiles": {"trial_gamess.inp": format_keywords(trial_opts) + molbascmd},
+                "command": [which("rungms"), "trial_gamess", "00", str(config.ncores)],
+                "scratch_messy": False,
+                "scratch_directory": config.scratch_directory,
+            }
+            success, dexe = self.execute(trial_gamessrec)
+
+            # this would be a lot cleaner if there was a unique or list of memory error strings
+            if (
+                ("ERROR: ONLY CCTYP=CCSD OR CCTYP=CCSD(T) CAN RUN IN PARALLEL." in dexe["stdout"])
+                or ("ERROR: ROHF'S CCTYP MUST BE CCSD OR CR-CCL, WITH SERIAL EXECUTION" in dexe["stdout"])
+                or ("CI PROGRAM CITYP=FSOCI    DOES NOT RUN IN PARALLEL." in dexe["stdout"])
+            ):
+                config.ncores = 1
+            elif "INPUT HAS AT LEAST ONE SPELLING OR LOGIC MISTAKE" in dexe["stdout"]:
+                raise InputError(dexe["stdout"])
+            elif "EXECUTION OF GAMESS TERMINATED -ABNORMALLY-" in dexe["stdout"]:
+                pass
+            else:
+                ropts.suggest("GAMESS", "SYSTEM__MWORDS", mwords, accession='12341234', verbose=True)
+                ropts.suggest("GAMESS", "SYSTEM__MEMDDI", mwords, accession='12341234', verbose=True)
+                asdf += f"breaking {mwords=} {memddi=}\n"
+                break
 
         # Handle conversion of qcsk keyword structure into program format
         skma_options = {key: ropt.value for key, ropt in sorted(ropts.scroll['GAMESS'].items()) if ropt.disputed()}

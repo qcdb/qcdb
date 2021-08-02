@@ -40,7 +40,7 @@ def kwargs_lower(kwargs):
             elif der2nd.match(str(lvalue)):
                 caseless_kwargs[lkey] = 2
             else:
-                raise KeyError('Derivative type key ({}) was not recognized'.format(key))
+                raise KeyError(f"Derivative type key ({key}={value}) was not recognized")
 
         elif yes.match(str(lvalue)):
             caseless_kwargs[lkey] = True
