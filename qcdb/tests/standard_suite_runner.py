@@ -1,8 +1,10 @@
 import re
 import pprint
+from typing import Any, Dict
 
 import pytest
 import numpy as np
+from qcelemental.molutil import compute_scramble
 from qcengine.programs.tests.standard_suite_contracts import (
     contractual_hf,
     contractual_mp2,
@@ -39,7 +41,7 @@ from .utils import compare, compare_values
 pp = pprint.PrettyPrinter(width=120)
 
 
-def runner_asserter(inp, subject, method, basis, tnm):
+def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, fixed):
 
     qcprog = inp["qc_module"].split("-")[0]
     qc_module_in = inp["qc_module"]  # returns "<qcprog>"|"<qcprog>-<module>"  # input-specified routing
@@ -49,6 +51,22 @@ def runner_asserter(inp, subject, method, basis, tnm):
     driver = inp["driver"]
     reference = inp["reference"]
     fcae = inp["fcae"]
+
+    # <<<  Molecule  >>>
+
+    # 1. ref mol: `ref_subject` nicely oriented mol taken from standard_suite_ref.py
+    ref_subject.update_geometry()
+    min_nonzero_coords = np.count_nonzero(np.abs(ref_subject.geometry(np_out=True)) > 1.e-10)
+
+    if scramble is None:
+        subject = ref_subject
+        ref2in_mill = compute_scramble(subject.natom(), do_resort=False, do_shift=False, do_rotate=False, do_mirror=False)  # identity AlignmentMill
+
+    else:
+        subject, scramble_data = ref_subject.scramble(**scramble, do_test=False)
+        ref2in_mill = scramble_data["mill"]
+
+    # 2. input mol: `subject` now ready for `atin.molecule`. may have been scrambled away from nice ref orientation
 
     # <<<  Reference Values  >>>
 
@@ -123,6 +141,7 @@ def runner_asserter(inp, subject, method, basis, tnm):
         reference=reference,
         corl_type=corl_type,
     )
+    ref_block = std_suite[chash]
 
     # check all calcs against conventional reference to looser tolerance
     atol_conv = 1.0e-4
@@ -180,14 +199,30 @@ def runner_asserter(inp, subject, method, basis, tnm):
         qc_module_out += "-" + wfn["provenance"]["module"]  # returns "<qcprog>-<module>"
     # assert 0, f"{qc_module_xptd=} {qc_module_in=} {qc_module_out=}"  # debug
 
+    # 3. output mol: `wfn.molecule` after calc. orientation for nonscalar quantities may be different from `subject` if fix_=False
+    wfn_molecule = qcdb.Molecule.from_schema(wfn["molecule"])
+
+    _, ref2out_mill, _ = ref_subject.B787(wfn_molecule, atoms_map=False, mols_align=True, verbose=0)
+    if subject.com_fixed() and subject.orientation_fixed():
+        with np.printoptions(precision=3, suppress=True):
+            assert compare_values(subject.geometry(), wfn_molecule.geometry(), atol=5.e-8), f"coords: atres ({wfn_molecule.geometry(np_out=True)}) != atin ({subject.geometry(np_out=True)})"  # 10 too much
+
+        ref_block = _mill_qcvars(ref2in_mill, ref_block)
+        ref_block_conv = _mill_qcvars(ref2in_mill, ref_block_conv)
+
+    else:
+        with np.printoptions(precision=3, suppress=True):
+            assert compare(min_nonzero_coords, np.count_nonzero(np.abs(wfn_molecule.geometry(np_out=True)) > 1.e-10), tnm + " !0 coords wfn"), f"ncoords {wfn_molecule.geometry()} != {min_nonzero_coords}"
+
+        ref_block = _mill_qcvars(ref2out_mill, ref_block)
+        ref_block_conv = _mill_qcvars(ref2out_mill, ref_block_conv)
+
     # <<<  Comparison Tests  >>>
 
     assert wfn["success"] is True
     assert (
         wfn["provenance"]["creator"].lower() == qcprog
     ), f'ENGINE used ({ wfn["provenance"]["creator"].lower()}) != requested ({qcprog})'
-
-    ref_block = std_suite[chash]
 
     # qcvars
     contractual_args = [
@@ -393,3 +428,18 @@ def _recorder(engine, module, driver, method, reference, fcae, scf_type, corl_ty
     with open("stdsuite_qcng.txt", "a") as fp:
         stuff = {"module": module, "driver": driver, "method": method, "reference": reference, "fcae": fcae, "scf_type": scf_type, "corl_type": corl_type, "status": status, "note": note}
         fp.write(f"{stuff!r}\n")
+
+
+def _mill_qcvars(mill: "AlignmentMill", qcvars: Dict[str, Any]) -> Dict[str, Any]:
+    """Apply translation, rotation, atom shuffle defined in ``mill`` to the nonscalar quantities in ``qcvars``."""
+
+    milled = {}
+    for k, v in qcvars.items():
+        if k.endswith("GRADIENT"):
+            milled[k] = mill.align_gradient(v)
+        elif k.endswith("HESSIAN"):
+            milled[k] = mill.align_hessian(v)
+        else:
+            milled[k] = v
+
+    return milled

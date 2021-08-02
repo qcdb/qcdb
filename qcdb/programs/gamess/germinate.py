@@ -48,7 +48,8 @@ def muster_molecule_and_basisset(molrec: Dict, ropts: 'Keywords', qbs: 'BasisSet
 
     uniq_atombas_lines = gamess_data_record_cart.splitlines()[:2]  # $data and card -1-
     uniq_atombas_lines.append(f""" {pgn} {naxis}""")  # card -2-
-    uniq_atombas_lines.append('')  # empty cards -3- and -4-
+    if pgn != "C1":
+        uniq_atombas_lines.append('')  # empty cards -3- and -4-
 
     for iat in range(qmol.natom()):
         if iat == qmol.unique(qmol.atom_to_unique(iat)):
@@ -148,12 +149,7 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', sysinfo: Dict, 
         ropts.require('GAMESS', 'contrl__cityp', 'none', accession=accession, verbose=verbose)
         ropts.require('GAMESS', 'contrl__cctyp', 'ccsd', accession=accession, verbose=verbose)
 
-    elif lowername == 'gms-ccsd+t(ccsd)':
-        ropts.require('GAMESS', 'contrl__mplevl', 0, accession=accession, verbose=verbose)
-        ropts.require('GAMESS', 'contrl__cityp', 'none', accession=accession, verbose=verbose)
-        ropts.require('GAMESS', 'contrl__cctyp', 'ccsd(t)', accession=accession, verbose=verbose)
-
-    elif lowername == 'gms-ccsd(t)':
+    elif lowername in ["gms-ccsd+t(ccsd)", "gms-ccsd(t)"]:
         ropts.require('GAMESS', 'contrl__mplevl', 0, accession=accession, verbose=verbose)
         ropts.require('GAMESS', 'contrl__cityp', 'none', accession=accession, verbose=verbose)
         ropts.require('GAMESS', 'contrl__cctyp', 'ccsd(t)', accession=accession, verbose=verbose)
