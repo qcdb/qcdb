@@ -36,7 +36,7 @@ def run_cfour(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) ->
                 'method': name,
                 'basis': '(auto)',
             },
-            'molecule': molecule.to_schema(dtype=2),
+            "molecule": molecule.to_schema(dtype=2) | {"fix_com": True, "fix_orientation": True},
             'provenance': provenance_stamp(__name__),
         })
 
@@ -44,6 +44,8 @@ def run_cfour(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) ->
 
     hold_qcvars = jobrec['extras'].pop('qcdb:qcvars')
     jobrec['qcvars'] = {key: qcel.Datum(**dval) for key, dval in hold_qcvars.items()}
+    jobrec["molecule"]["fix_com"] = molecule.com_fixed()
+    jobrec["molecule"]["fix_orientation"] = molecule.orientation_fixed()
 
     return jobrec
 

@@ -5,8 +5,9 @@ import re
 from typing import Any, Dict, Optional
 from decimal import Decimal
 
+import numpy as np
 import qcelemental as qcel
-from qcelemental.models import FailedOperation, AtomicInput
+from qcelemental.models import FailedOperation, AtomicInput, AtomicResult
 
 import qcengine as qcng
 from qcengine.exceptions import InputError
@@ -16,7 +17,7 @@ from qcengine.programs.util import PreservingDict
 
 from ... import qcvars
 from ...basisset import BasisSet
-from ...util import print_jobrec, provenance_stamp
+from ...util import format_error, print_jobrec, provenance_stamp
 from .germinate import muster_basisset, muster_inherited_keywords, muster_modelchem, muster_molecule
 
 pp = pprint.PrettyPrinter(width=120)
@@ -37,7 +38,7 @@ def run_nwchem(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -
                 'method': name,
                 'basis': '(auto)',
             },
-            'molecule': molecule.to_schema(dtype=2),
+            "molecule": molecule.to_schema(dtype=2) | {"fix_com": True, "fix_orientation": True},
             'provenance': provenance_stamp(__name__),
         })
 
@@ -45,6 +46,8 @@ def run_nwchem(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -
 
     hold_qcvars = jobrec['extras'].pop('qcdb:qcvars')
     jobrec['qcvars'] = {key: qcel.Datum(**dval) for key, dval in hold_qcvars.items()}
+    jobrec["molecule"]["fix_com"] = molecule.com_fixed()
+    jobrec["molecule"]["fix_orientation"] = molecule.orientation_fixed()
 
     return jobrec
 
@@ -86,7 +89,7 @@ class QcdbNWChemHarness(NWChemHarness):
             output_model = FailedOperation(success=False,
                                            error={
                                                "error_type": "execution_error",
-                                               "error_message": dexe["stderr"],
+                                               "error_message": format_error(stdout=dexe["stdout"], stderr=dexe["stderr"]),
                                            },
                                            input_data=input_model.dict())
 
@@ -144,8 +147,8 @@ class QcdbNWChemHarness(NWChemHarness):
         #      harvester.nu_muster_modelchem(jobrec['method'], jobrec['dertype'], ropts])
         mdccmd = muster_modelchem(input_model.model.method, input_model.driver.derivative_int(), ropts)
 
-        #PRprint('Touched Keywords')
-        #PRprint(ropts.print_changed(history=False))
+        # DEBUG print('Touched Keywords')
+        # DEBUG print(ropts.print_changed(history=False))
 
         # Handle driver vs input/default keyword reconciliation
 

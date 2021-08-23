@@ -32,6 +32,18 @@ def enum_bool(inputval):
     return closedenum
 
 
+def onoff_boolean(inputval):
+    yes = re.compile(r'^(yes|true|on|1)', re.IGNORECASE)
+    no = re.compile(r'^(no|false|off|0)', re.IGNORECASE)
+
+    if yes.match(str(inputval)):
+        return "on"
+    elif no.match(str(inputval)):
+        return "off"
+    else:
+        raise KeywordValidationError("""Can't interpret into boolean: {}""".format(inputval))
+
+
 def intenum(inputval):
     allowed = [int(x) for x in inputval.split()]
 

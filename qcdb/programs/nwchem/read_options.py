@@ -582,8 +582,8 @@ def load_nwchem_keywords(options: Keywords) -> None:
     options.add(
         'nwchem',
         Keyword(keyword='scf__sym',
-                default=True,
-                validator=parsers.boolean,
+                default="on",
+                validator=parsers.onoff_boolean,
                 glossary='Symmetry specification in SCF for Fock matrix construction on/off'))
 
     options.add(

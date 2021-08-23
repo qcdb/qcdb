@@ -1540,7 +1540,7 @@ def test_ccsd_energy_default(inp, dertype, basis, subjects, clsd_open_pmols, req
     ).strip("-")
     print("INP", inpcopy)
 
-    runner_asserter(inpcopy, subject, method, basis, tnm, scramble=None, fixed="")
+    runner_asserter(inpcopy, subject, method, basis, tnm, scramble=None, frame="")
 
 
 #
@@ -3288,11 +3288,12 @@ def test_b3lyp5_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, 
 
 
 
-def _processor(inp, dertype, basis, subjects, clsd_open_pmols, request, driver, *, scramble=None, fixed=""):
+def _processor(inp, dertype, basis, subjects, clsd_open_pmols, request, driver, *, scramble=None, frame=""):
     qcprog, method = inp["call"].split("-", 1)
     qcprog = _trans_qcprog[qcprog.lower()]
     tnm = request.node.name
-    subject = clsd_open_pmols[subjects[std_refs.index(inp["reference"])] + fixed]
+    suffix = "-fixed" if frame == "fixed" else ""
+    subject = clsd_open_pmols[subjects[std_refs.index(inp["reference"])] + suffix]
 
     inpcopy = {k: v for k, v in inp.items() if k not in ["error", "wrong"]}
     if inp.get("error", False) and inp["error"].get(dertype, False):
@@ -3317,4 +3318,4 @@ def _processor(inp, dertype, basis, subjects, clsd_open_pmols, request, driver, 
     inpcopy["keywords"]["function_kwargs"] = {"dertype": dertype}
     print("INP", inpcopy)
 
-    return inpcopy, subject, method, basis, tnm, scramble, fixed
+    return inpcopy, subject, method, basis, tnm, scramble, frame
