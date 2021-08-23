@@ -1,32 +1,22 @@
+import re
+import itertools
+import pprint
 import math
 import uuid
-from typing import Dict
+from collections import defaultdict
+from typing import Dict, List, Tuple
 
 import qcelemental as qcel
+from qcelemental.util import which
+import qcengine as qcng
 
 from ...exceptions import ValidationError
 from ...molecule import Molecule
 from ...util import conv_float2negexp
 
 
-def muster_molecule_and_basisset(molrec: Dict, ropts: 'Keywords', qbs: 'BasisSet', verbose: int = 1) -> str:
-    kwgs = {'accession': uuid.uuid4(), 'verbose': verbose}
-    units = 'Bohr'
-
-    native_puream = qbs.has_puream()
-    atom_basisset = qbs.print_detail_gamess(return_list=True)
-
-    gamess_data_record_cart = qcel.molparse.to_string(molrec,
-                                                      dtype='gamess',
-                                                      units=units,
-                                                      atom_format=None,
-                                                      ghost_format=None,
-                                                      width=17,
-                                                      prec=12)
-    all_atom_lines = gamess_data_record_cart.splitlines()[3:]
-
-    qmol = Molecule(molrec)
-    qmol.update_geometry()
+def _get_symmetry_card(pg: str, full_pg_n: int) -> Tuple[str, str]:
+    """Assemble card -2- for GAMESS input from ``pg`` (result of Molecule.full_point_group_with_n()) and ``full_pg_n`` (result of Molecule.full_pg_n())."""
 
     # PSI: FullPointGroupList = ["ATOM", "C_inf_v", "D_inf_h", "C1", "Cs", "Ci", "Cn", "Cnv", "Cnh", "Sn", "Dn", "Dnd", "Dnh", "Td", "Oh", "Ih"]
     # GMS:                                                      C1    Cs    Ci    Cn    Cnv    Cnh          Dn    Dnd    Dnh    Td    Oh
@@ -34,30 +24,180 @@ def muster_molecule_and_basisset(molrec: Dict, ropts: 'Keywords', qbs: 'BasisSet
     # GMS:    T, Th, O
     # GAMESS Manual: "For linear molecules, choose either Cnv or Dnh, and enter NAXIS as 4. Enter atoms as Dnh with NAXIS=2."
 
-    pg = qmol.full_point_group_with_n()
-    if pg == 'ATOM':
-        pgn, naxis = 'Dnh', 2
-    elif pg == 'C_inf_v':
-        pgn, naxis = 'Cnv', 2
-    elif pg == 'D_inf_h':
-        pgn, naxis = 'Dnh', 4
-    elif pg == 'Sn':
-        pgn, naxis = 'S2n', qmol.full_pg_n() / 2  # n/2n never tested
+    if pg == "ATOM":
+        return "Dnh", 2
+    elif pg == "C_inf_v":
+        return "Cnv", 2
+    elif pg == "D_inf_h":
+        return "Dnh", 4
+    elif pg == "Sn":
+        return "S2n", int(full_pg_n / 2)
+    elif "n" in pg:
+        return pg, full_pg_n
     else:
-        pgn, naxis = pg, qmol.full_pg_n()
+        return pg, ""
 
-    uniq_atombas_lines = gamess_data_record_cart.splitlines()[:2]  # $data and card -1-
-    uniq_atombas_lines.append(f""" {pgn} {naxis}""")  # card -2-
-    if pgn != "C1":
-        uniq_atombas_lines.append('')  # empty cards -3- and -4-
 
-    for iat in range(qmol.natom()):
-        if iat == qmol.unique(qmol.atom_to_unique(iat)):
-            uniq_atombas_lines.append(all_atom_lines[iat])  # card -5U-
-            uniq_atombas_lines.extend(atom_basisset[iat].splitlines()[1:])  # cards -6U- and -7U-
-            uniq_atombas_lines.append('')  # card -8U-
+def get_master_frame(kmol: "qcelemental.models.Molecule") -> Tuple["qcelemental.models.Molecule", Dict[str, str]]:
+    """Do whatever it takes to figure out the GAMESS master frame by which ``kmol`` can be run with full symmetry."""
 
-    uniq_atombas_lines.append(""" $end""")
+    # want the full frame-independent symmetry, so allow reorientation to Psi4 master frame
+    qmol = Molecule.from_schema(kmol.dict() | {"fix_com": False, "fix_orientation": False})
+    pgn, naxis = _get_symmetry_card(qmol.full_point_group_with_n(), qmol.full_pg_n())
+
+    # run exetyp=check asserting full symmetry to extract master frame from GAMESS
+    # * fix_*=F so harness returns the internal GAMESS frame, not the naive input frame
+    # * uses an arbitrary UHF/6-31G model
+    symmetry_card = f"{pgn} {naxis}".strip()
+    naive_kmol = kmol.copy(update={"fix_symmetry": symmetry_card, "atom_labels": list(range(len(kmol.symbols))),
+            "fix_com": False, "fix_orientation": False})
+
+    atin = qcel.models.AtomicInput(
+        **{
+            "driver": "energy",
+            "keywords": {
+                "contrl__exetyp": "check",
+                "contrl__scftyp": "uhf",
+                "basis__ngauss": 6,
+            },
+            "model": {
+                "method": "hf",
+                "basis": "n31",
+            },
+            "molecule": naive_kmol,
+        })
+
+    try:
+        atres = qcng.compute(atin, "gamess", local_options={"nnodes": 1, "ncores": 1, "memory": 1}, raise_error=True)
+    except qcng.exceptions.UnknownError as e:
+        mobj = re.search(
+            # fmt: off
+            r"^\s+" + r"AFTER PRINCIPAL AXIS TRANSFORMATION, THE PROGRAM" + r"\s*" +
+            r"^\s+" + r"HAS CHOSEN THE FOLLOWING ATOMS AS BEING UNIQUE:" + r"\s*" +
+            r"((?:\s+([A-Za-z]\w*)\s+\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s*\n)+)" +
+            r"^\s+" + r"EXECUTION OF GAMESS TERMINATED -ABNORMALLY-",
+            # fmt: on
+            str(e),
+            re.MULTILINE | re.IGNORECASE,
+        )
+        if mobj:
+            # handle too many atoms here
+            raise e
+        else:
+            raise e
+
+    # `mf_kmol` and `mf_qmol` are now in GAMESS master frame
+    # * all atoms present (as natural for Molecule classes), and we don't know which atoms are unique
+    mf_kmol, _ = kmol.align(atres.molecule, atoms_map=False, mols_align=True, run_mirror=True, verbose=0)
+
+    mf_qmol = Molecule.from_schema(mf_kmol.dict())
+    assert mf_qmol.full_point_group_with_n() == qmol.full_point_group_with_n(), f"{mf_qmol.full_point_group_with_n()} (mf) != {qmol.full_point_group_with_n()} (in)"
+    assert mf_qmol.full_pg_n() == qmol.full_pg_n(), f"{mf_qmol.full_pg_n()} (mf) != {qmol.full_pg_n()} (in)"
+    assert abs(mf_qmol.nuclear_repulsion_energy() - qmol.nuclear_repulsion_energy()) < 1.e-3, "NRE"
+
+    # nunique machinery in psi4/qcdb.Molecule class works within Abelian point groups, so start there
+    d2h_subgroup = qmol.point_group().symbol()
+    d2h_unique = [mf_qmol.unique(i) for i in range(mf_qmol.nunique())]
+
+    if mf_qmol.get_full_point_group() == d2h_subgroup:
+        # Abelian! home free
+        full_pg_unique = d2h_unique
+
+    else:
+        # `possibly_nonunique` are atom indices that could be redundant with post-D2h symmetry operations
+        # * formed from D2h unique less the first index for each element
+        d2h_unique_by_element = defaultdict(list)
+        for i in d2h_unique:
+            d2h_unique_by_element[mf_qmol.symbol(i)].append(i)
+        possibly_nonunique = []
+        for k, v in d2h_unique_by_element.items():
+            possibly_nonunique.extend(v[1:])
+
+        # `trials` are a brute-force set of all possible atom indices, one or more of which must be the post-D2h unique list
+        trials = []
+        for drop in range(len(possibly_nonunique) + 1):
+            for aa in itertools.combinations(possibly_nonunique, drop):
+                trial = sorted(list(set(d2h_unique) - set(aa)))
+                trials.append(trial)
+
+        all_atom_lines = mf_kmol.to_string(dtype="gamess").splitlines()[3:]
+        harness = qcng.get_program("gamess")
+
+        for selected_atoms in trials:
+            selected_atom_lines = "\n".join([ln for iln, ln in enumerate(all_atom_lines) if iln in selected_atoms])
+            inp = _get_exetype_check_input(selected_atoms, symmetry_card, mf_kmol.molecular_charge, mf_kmol.molecular_multiplicity, selected_atom_lines)
+
+            # run exetyp=check asserting full symmetry to find a unique list that doesn't generate overlapping atoms
+            # * can't use AtomicInput into usual harness b/c partial atom list not expressible in Molecule
+            gamessrec = {
+                "infiles": {
+                    "gamess.inp": inp,
+                },
+                "command": [which("rungms"), "gamess", "00", "1"],
+                "scratch_directory": "/tmp/gamess/",  # TODO
+                "scratch_messy": False,
+            }
+            success, dexe = harness.execute(gamessrec)
+            #pprint.pprint(dexe, width=200)
+
+            if "THERE ARE ATOMS LESS THAN   0.100 APART, QUITTING..." not in dexe["stdout"]:
+            #"THE NUCLEAR REPULSION ENERGY IS       12.7621426235"
+                break
+
+        full_pg_unique = selected_atoms
+
+    data = {
+        "unique": full_pg_unique,
+        "symmetry_card": symmetry_card,
+    }
+
+    return mf_kmol, data
+
+
+def _get_exetype_check_input(comment: str, symmetry_card: str, molecular_charge: float, molecular_multiplicity: int, atom_lines: str) -> str:
+    return f"""
+ $basis gbasis=n31 ngauss=6 $end
+ $contrl coord=unique exetyp=check icharg={molecular_charge} mult={molecular_multiplicity} runtyp=energy
+  units=bohr $end
+ $system memddi=0 mwords=100 $end
+ $data
+trial {comment}
+{symmetry_card}
+
+{atom_lines}
+ $end
+
+"""
+
+
+def muster_molecule_and_basisset(molrec: Dict, qbs: "BasisSet", ropts: "Keywords", full_pg_unique: List[int], symmetry_card: str, verbose: int = 1) -> str:
+    kwgs = {'accession': uuid.uuid4(), 'verbose': verbose}
+    units = "Bohr"
+
+    native_puream = qbs.has_puream()
+    all_atom_basisset = qbs.print_detail_gamess(return_list=True)
+
+    data_group_cart = qcel.molparse.to_string(molrec,
+                                                      dtype='gamess',
+                                                      units=units,
+                                                      atom_format=None,
+                                                      ghost_format=None,
+                                                      width=17,
+                                                      prec=12).splitlines()
+    all_atom_lines = data_group_cart[3:]
+
+    data_group_uniq = data_group_cart[:2]  # $data and card -1-
+    data_group_uniq.append(f""" {symmetry_card}""")  # card -2-
+    if symmetry_card != "C1":
+        data_group_uniq.append('')  # empty cards -3- and -4-
+
+    for iat in range(len(molrec["elem"])):
+        if iat in full_pg_unique:
+            data_group_uniq.append(all_atom_lines[iat])  # card -5U-
+            data_group_uniq.extend(all_atom_basisset[iat].splitlines()[1:])  # cards -6U- and -7U-
+            data_group_uniq.append('')  # card -8U-
+
+    data_group_uniq.append(""" $end""")
 
     ropts.require('GAMESS', 'contrl__coord', 'unique', **kwgs)
     ropts.require('GAMESS', 'contrl__units', {'Bohr': 'bohr', 'Angstrom': 'angs'}[units], **kwgs)
@@ -65,7 +205,7 @@ def muster_molecule_and_basisset(molrec: Dict, ropts: 'Keywords', qbs: 'BasisSet
     ropts.require('GAMESS', 'contrl__mult', molrec['molecular_multiplicity'], **kwgs)
     ropts.require('GAMESS', 'contrl__ispher', {True: 1, False: -1}[native_puream], **kwgs)
 
-    return '\n'.join(uniq_atombas_lines)
+    return '\n'.join(data_group_uniq)
 
 
 def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', sysinfo: Dict, verbose: int = 1) -> None:

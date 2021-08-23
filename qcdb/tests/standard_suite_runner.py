@@ -35,13 +35,14 @@ from qcengine.programs.tests.standard_suite_contracts import (
     query_qcvar,
 )
 from qcengine.programs.tests.standard_suite_ref import answer_hash, std_suite
+from qcengine.programs.util import mill_qcvars
 
 from .utils import compare, compare_values
 
 pp = pprint.PrettyPrinter(width=120)
 
 
-def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, fixed):
+def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
 
     qcprog = inp["qc_module"].split("-")[0]
     qc_module_in = inp["qc_module"]  # returns "<qcprog>"|"<qcprog>-<module>"  # input-specified routing
@@ -63,7 +64,7 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, fixed):
         ref2in_mill = compute_scramble(subject.natom(), do_resort=False, do_shift=False, do_rotate=False, do_mirror=False)  # identity AlignmentMill
 
     else:
-        subject, scramble_data = ref_subject.scramble(**scramble, do_test=False)
+        subject, scramble_data = ref_subject.scramble(**scramble, do_test=False, fix_mode="copy")
         ref2in_mill = scramble_data["mill"]
 
     # 2. input mol: `subject` now ready for `atin.molecule`. may have been scrambled away from nice ref orientation
@@ -130,7 +131,7 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, fixed):
         else:
             atol_g = 2.e-5
             atol_h, rtol_h = 5.e-5, 2.e-4
-        
+
 # VIEW    atol_e, atol_g, atol_h, rtol_e, rtol_g, rtol_h = 1.e-9, 1.e-9, 1.e-9, 1.e-16, 1.e-16, 1.e-16
 
     chash = answer_hash(
@@ -202,20 +203,46 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, fixed):
     # 3. output mol: `wfn.molecule` after calc. orientation for nonscalar quantities may be different from `subject` if fix_=False
     wfn_molecule = qcdb.Molecule.from_schema(wfn["molecule"])
 
-    _, ref2out_mill, _ = ref_subject.B787(wfn_molecule, atoms_map=False, mols_align=True, verbose=0)
+    _, ref2out_mill, _ = ref_subject.B787(wfn_molecule, atoms_map=False, mols_align=True, fix_mode="true", verbose=0)
+
     if subject.com_fixed() and subject.orientation_fixed():
+        assert frame == "fixed"
         with np.printoptions(precision=3, suppress=True):
             assert compare_values(subject.geometry(), wfn_molecule.geometry(), atol=5.e-8), f"coords: atres ({wfn_molecule.geometry(np_out=True)}) != atin ({subject.geometry(np_out=True)})"  # 10 too much
+        assert (
+            ref_subject.com_fixed()
+            and ref_subject.orientation_fixed()
+            and subject.com_fixed()
+            and subject.orientation_fixed()
+            and wfn_molecule.com_fixed()
+            and wfn_molecule.orientation_fixed()
+        ), f"fixed, so all T: {ref_subject.com_fixed()} {ref_subject.orientation_fixed()} {subject.com_fixed()} {subject.orientation_fixed()} {wfn_molecule.com_fixed()} {wfn_molecule.orientation_fixed()}"
 
-        ref_block = _mill_qcvars(ref2in_mill, ref_block)
-        ref_block_conv = _mill_qcvars(ref2in_mill, ref_block_conv)
+        ref_block = mill_qcvars(ref2in_mill, ref_block)
+        ref_block_conv = mill_qcvars(ref2in_mill, ref_block_conv)
 
     else:
+        assert frame == "free" or frame == ""  # "": direct from standard_suite_ref.std_molecules
         with np.printoptions(precision=3, suppress=True):
-            assert compare(min_nonzero_coords, np.count_nonzero(np.abs(wfn_molecule.geometry(np_out=True)) > 1.e-10), tnm + " !0 coords wfn"), f"ncoords {wfn_molecule.geometry()} != {min_nonzero_coords}"
+            assert compare(min_nonzero_coords, np.count_nonzero(np.abs(wfn_molecule.geometry(np_out=True)) > 1.e-10), tnm + " !0 coords wfn"), f"ncoords {wfn_molecule.geometry(np_out=True)} != {min_nonzero_coords}"
+        assert (
+            (not ref_subject.com_fixed())
+            and (not ref_subject.orientation_fixed())
+            and (not subject.com_fixed())
+            and (not subject.orientation_fixed())
+            and (not wfn_molecule.com_fixed())
+            and (not wfn_molecule.orientation_fixed())
+        ), f"free, so all F: {ref_subject.com_fixed()} {ref_subject.orientation_fixed()} {subject.com_fixed()} {subject.orientation_fixed()} {wfn_molecule.com_fixed()} {wfn_molecule.orientation_fixed()}"
 
-        ref_block = _mill_qcvars(ref2out_mill, ref_block)
-        ref_block_conv = _mill_qcvars(ref2out_mill, ref_block_conv)
+        if scramble is None:
+            # wfn exactly matches ref_subject and ref_block
+            with np.printoptions(precision=3, suppress=True):
+                assert compare_values(ref_subject.geometry(), wfn_molecule.geometry(), atol=5.e-8), f"coords: atres ({wfn_molecule.geometry(np_out=True)}) != atin ({ref_subject.geometry(np_out=True)})"
+        else:
+            # wfn is "pretty" (max zeros) but likely not exactly ref_block (by axis exchange, phasing, atom shuffling) since Psi4 ref frame is not unique
+            ref_block = mill_qcvars(ref2out_mill, ref_block)
+            ref_block_conv = mill_qcvars(ref2out_mill, ref_block_conv)
+
 
     # <<<  Comparison Tests  >>>
 
@@ -428,18 +455,3 @@ def _recorder(engine, module, driver, method, reference, fcae, scf_type, corl_ty
     with open("stdsuite_qcng.txt", "a") as fp:
         stuff = {"module": module, "driver": driver, "method": method, "reference": reference, "fcae": fcae, "scf_type": scf_type, "corl_type": corl_type, "status": status, "note": note}
         fp.write(f"{stuff!r}\n")
-
-
-def _mill_qcvars(mill: "AlignmentMill", qcvars: Dict[str, Any]) -> Dict[str, Any]:
-    """Apply translation, rotation, atom shuffle defined in ``mill`` to the nonscalar quantities in ``qcvars``."""
-
-    milled = {}
-    for k, v in qcvars.items():
-        if k.endswith("GRADIENT"):
-            milled[k] = mill.align_gradient(v)
-        elif k.endswith("HESSIAN"):
-            milled[k] = mill.align_hessian(v)
-        else:
-            milled[k] = v
-
-    return milled

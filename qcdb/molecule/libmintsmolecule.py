@@ -2276,7 +2276,7 @@ class LibmintsMolecule():
                 A = [geom[i][0], geom[i][1], geom[i][2]]
                 AdotA = dot(A, A)
                 for j in range(i):
-                    if self.Z(at) != self.Z(j):
+                    if self.Z(i) != self.Z(j):
                         continue  # ensure same atomic number
 
                     B = [geom[j][0], geom[j][1], geom[j][2]]  # ensure same distance from com
@@ -3091,18 +3091,18 @@ class LibmintsMolecule():
     #                return False
     #    return True
 
-    def full_point_group_with_n(self):
+    def full_point_group_with_n(self) -> str:
         """Return point group name such as Cnv or Sn."""
         return self.full_pg
 
-    def full_pg_n(self):
+    def full_pg_n(self) -> int:
         """Return n in Cnv, etc.; If there is no n (e.g. Td)
         it's the highest-order rotation axis.
 
         """
         return self.PYfull_pg_n
 
-    def get_full_point_group(self):
+    def get_full_point_group(self) -> str:
         """Return point group name such as C3v or S8.
         (method name in libmints is full_point_group)
 

@@ -17,7 +17,7 @@ from ... import qcvars
 from ...basisset import BasisSet
 from ...molecule import Molecule
 from ...util import print_jobrec, provenance_stamp
-from .germinate import muster_inherited_keywords, muster_modelchem, muster_molecule_and_basisset
+from .germinate import get_master_frame, muster_inherited_keywords, muster_modelchem, muster_molecule_and_basisset
 
 pp = pprint.PrettyPrinter(width=120)
 
@@ -36,13 +36,17 @@ def run_gamess(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -
                 'method': name,
                 'basis': '(auto)',
             },
-            'molecule': molecule.to_schema(dtype=2),
+            "molecule": molecule.to_schema(dtype=2) | {"fix_com": True, "fix_orientation": True},
             'provenance': provenance_stamp(__name__),
         })
 
     jobrec = qcng.compute(resi, "qcdb-gamess", local_options=local_options, raise_error=True).dict()
+
     hold_qcvars = jobrec['extras'].pop('qcdb:qcvars')
     jobrec['qcvars'] = {key: qcel.Datum(**dval) for key, dval in hold_qcvars.items()}
+    jobrec["molecule"]["fix_com"] = molecule.com_fixed()
+    jobrec["molecule"]["fix_orientation"] = molecule.orientation_fixed()
+
     return jobrec
 
 
@@ -90,26 +94,21 @@ class QcdbGAMESSHarness(GAMESSHarness):
             'scratch_directory': config.scratch_directory,
         }
 
-        molrec = qcel.molparse.from_schema(input_model.molecule.dict())
-        molrecc1 = molrec.copy()
-        molrecc1['fix_symmetry'] = 'c1'  # write _all_ atoms to input
         ropts = input_model.extras['qcdb:options']
 
-        ropts.require("QCDB", "MEMORY", f"{config.memory} gib", accession='00000000', verbose=False)
+        mf_mol, mf_data = get_master_frame(input_model.molecule)
 
-        nel = sum([z * int(real) for z, real in zip(molrec['elez'], molrec['real'])]) - molrec['molecular_charge']
-        nel = int(nel)
-        qmol = Molecule(molrecc1)
-        qmol.update_geometry()
-
+        # c1 so _all_ atoms written to BasisSet
+        mf_qmol_c1 = Molecule.from_schema(mf_mol.dict() | {"fix_symmetry": "c1"})
         _qcdb_basis = ropts.scroll['QCDB']['BASIS'].value
         #_gamess_basis = ropts.scroll['GAMESS']['BASIS'].value
-        qbs = BasisSet.pyconstruct(molrecc1, 'BASIS', _qcdb_basis)
+        qbs = BasisSet.pyconstruct(mf_qmol_c1, 'BASIS', _qcdb_basis)
 
         sysinfo = {}
         # forcing nfc above. all these need to be reocmputed together for a consistent cidet input group
         # this will be default FC  # TODO change these values when user sets custom FC
-        nfzc = qmol.n_frozen_core(depth=True)
+        nel = mf_mol.nelectrons()
+        nfzc = mf_qmol_c1.n_frozen_core(depth=True)
         nels = nel - 2 * nfzc
         nact = qbs.nbf() - nfzc
         sysinfo["fc"] = {
@@ -131,7 +130,7 @@ class QcdbGAMESSHarness(GAMESSHarness):
         # Handle qcdb keywords implying gamess keyword values
         muster_inherited_keywords(ropts, sysinfo)
 
-        molbascmd = muster_molecule_and_basisset(molrec, ropts, qbs)
+        molbascmd = muster_molecule_and_basisset(mf_qmol_c1.to_dict(), qbs, ropts, mf_data["unique"], mf_data["symmetry_card"])
 
         # Handle calc type and quantum chemical method
         muster_modelchem(input_model.model.method, input_model.driver.derivative_int(), ropts, sysinfo)

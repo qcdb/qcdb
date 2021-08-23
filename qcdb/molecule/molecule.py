@@ -143,7 +143,7 @@ class Molecule(LibmintsMolecule):
         if 'all_variables' in self.__dict__ and name.upper() in self.__dict__['all_variables']:
             return self.get_variable(name)
         else:
-            raise AttributeError
+            raise AttributeError(name)
 
     @classmethod
     def init_with_xyz(cls, xyzfilename, no_com=False, no_reorient=False, contentsNotFilename=False):
@@ -888,7 +888,7 @@ class Molecule(LibmintsMolecule):
         molrec = self.to_dict(np_out=True)
 
         # flip zeros
-        molrec['geom'][np.abs(molrec['geom']) < 5**(-(ZERO))] = 0
+        molrec['geom'][np.abs(molrec['geom']) < 5**(-(prec))] = 0
 
         smol = qcel.molparse.to_string(
             molrec,
@@ -1410,22 +1410,32 @@ class Molecule(LibmintsMolecule):
             run_mirror=run_mirror,
             uno_cutoff=uno_cutoff)
 
-        ageom, amass, aelem, aelez, auniq = solution.align_system(cgeom, cmass, celem, celez, cuniq, reverse=False)
-        adict = qcel.molparse.from_arrays(
-            geom=ageom,
-            mass=amass,
-            elem=aelem,
-            elez=aelez,
-            units='Bohr',
-            molecular_charge=concern_mol.molecular_charge(),
-            molecular_multiplicity=concern_mol.multiplicity(),
-            fix_com=True,
-            fix_orientation=True)
+        ageom = solution.align_coordinates(cgeom, reverse=False)
+
+        cdict = concern_mol.to_dict()
+        aupdate = {
+            "elem": solution.align_atoms(celem),
+            "geom": solution.align_coordinates(cgeom, reverse=False),
+            "mass": solution.align_atoms(cmass),
+            "real": solution.align_atoms(cdict["real"]),
+            "elbl": solution.align_atoms(cdict["elbl"]),
+            "elez": solution.align_atoms(celez),
+            "elea": solution.align_atoms(cdict["elea"]),
+            # signal to build returned Mol with exactly the aligned Cartesians of "geom" rather than psi std frame
+            "fix_com": True,
+            "fix_orientation": True,
+        }
+        adict = {**cdict, **aupdate, "units": "Bohr"}
+
         if isinstance(concern_mol, Molecule):
             amol = Molecule.from_dict(adict)
         else:
             from psi4 import core
             amol = core.Molecule.from_dict(adict)
+
+        # correct fix_* properties of returned Mol to match self
+        amol.fix_com(concern_mol.com_fixed())
+        amol.fix_orientation(concern_mol.orientation_fixed())
 
         compare_values(
             concern_mol.nuclear_repulsion_energy(),
@@ -1442,7 +1452,7 @@ class Molecule(LibmintsMolecule):
                 quiet=(verbose < 2))
             compare(
                 True,
-                np.allclose(ref_mol.geometry(), amol.geometry(), atol=4),
+                np.allclose(ref_mol.geometry(), amol.geometry(), atol=1.e-4),
                 'Q: concern_mol-->returned_mol geometry matches ref_mol',
                 quiet=(verbose < 2))
 
@@ -1511,25 +1521,34 @@ class Molecule(LibmintsMolecule):
         nat = rgeom.shape[0]
 
         perturbation = qcel.molutil.compute_scramble(
-            rgeom.shape[0],
+            nat,
             do_shift=do_shift,
             do_rotate=do_rotate,
             deflection=deflection,
             do_resort=do_resort,
             do_mirror=do_mirror)
-        cgeom, cmass, celem, celez, cuniq = perturbation.align_system(rgeom, rmass, relem, relez, runiq, reverse=True)
-        cmol = Molecule.from_arrays(
-            geom=cgeom,
-            mass=cmass,
-            elem=celem,
-            elez=celez,
-            units='Bohr',
-            molecular_charge=ref_mol.molecular_charge(),
-            molecular_multiplicity=ref_mol.multiplicity(),
-            name=ref_mol.name(),
-            # copying fix_* vals rather than outright True. neither way great
-            fix_com=ref_mol.com_fixed(),
-            fix_orientation=ref_mol.orientation_fixed())
+
+        rdict = ref_mol.to_dict()
+        cgeom = ref_mol.float_prep(perturbation.align_coordinates(rgeom, reverse=True), 13)
+        cupdate = {
+            "elem": perturbation.align_atoms(relem),
+            "geom": cgeom,
+            "mass": perturbation.align_atoms(rmass),
+            "real": perturbation.align_atoms(rdict["real"]),
+            "elbl": perturbation.align_atoms(rdict["elbl"]),
+            "elez": perturbation.align_atoms(relez),
+            "elea": perturbation.align_atoms(rdict["elea"]),
+            # signal to build returned Mol with exactly the aligned Cartesians of "geom" rather than psi std frame
+            "fix_com": True,
+            "fix_orientation": True,
+        }
+        cdict = {**rdict, **cupdate, "units": "Bohr"}
+
+        cmol = Molecule.from_dict(cdict)
+
+        # correct fix_* properties of returned Mol to match self
+        cmol.fix_com(ref_mol.com_fixed())
+        cmol.fix_orientation(ref_mol.orientation_fixed())
 
         rmsd = np.linalg.norm(cgeom - rgeom) * qcel.constants.bohr2angstroms / np.sqrt(nat)
         if verbose >= 1:
