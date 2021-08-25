@@ -941,8 +941,11 @@ def test_molsymm_calc(subject, qcprog):
     refau = np.array(data[subject]["ref"]) * qcel.constants.conversion_factor(units, "bohr")
     assert compare_values(refau, symmol.full_geometry(), atol=1.0e-6)
 
-    if subject == "Ih" and qcprog in ["cfour", "gamess"]:
-        pytest.xfail("weird hang, probably atom permutations")
+    if subject == "Ih":
+        if qcprog in ["cfour", "gamess"]:
+            pytest.xfail("weird hang, probably atom permutations")
+        elif qcprog == "nwchem":
+            pytest.xfail("weird gradient rotation")
 
     extra_keywords = {
         "cfour": {
