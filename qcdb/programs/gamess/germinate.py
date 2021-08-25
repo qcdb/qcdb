@@ -41,6 +41,8 @@ def _get_symmetry_card(pg: str, full_pg_n: int) -> Tuple[str, str]:
 def get_master_frame(kmol: "qcelemental.models.Molecule") -> Tuple["qcelemental.models.Molecule", Dict[str, str]]:
     """Do whatever it takes to figure out the GAMESS master frame by which ``kmol`` can be run with full symmetry."""
 
+    harness = qcng.get_program("gamess")
+
     # want the full frame-independent symmetry, so allow reorientation to Psi4 master frame
     qmol = Molecule.from_schema(kmol.dict() | {"fix_com": False, "fix_orientation": False})
     pgn, naxis = _get_symmetry_card(qmol.full_point_group_with_n(), qmol.full_pg_n())
@@ -48,43 +50,47 @@ def get_master_frame(kmol: "qcelemental.models.Molecule") -> Tuple["qcelemental.
     # run exetyp=check asserting full symmetry to extract master frame from GAMESS
     # * fix_*=F so harness returns the internal GAMESS frame, not the naive input frame
     # * uses an arbitrary UHF/6-31G model
-    symmetry_card = f"{pgn} {naxis}".strip()
-    naive_kmol = kmol.copy(update={"fix_symmetry": symmetry_card, "atom_labels": list(range(len(kmol.symbols))),
+    # * most common failure mode is high-symmetry or wrong-quadrant geometry when GAMESS generates too many atoms
+    #   * haven't found a reliable programmatic path out that uses full internal symmetry, so fall back to C2v, then C1
+    internal_symmetry_card = f"{pgn} {naxis}".strip()
+    for symmetry_card in [internal_symmetry_card, "Cnv 2", "C1"]:
+        naive_kmol = kmol.copy(update={"fix_symmetry": symmetry_card, "atom_labels": list(range(len(kmol.symbols))),
             "fix_com": False, "fix_orientation": False})
 
-    atin = qcel.models.AtomicInput(
-        **{
-            "driver": "energy",
-            "keywords": {
-                "contrl__exetyp": "check",
-                "contrl__scftyp": "uhf",
-                "basis__ngauss": 6,
-            },
-            "model": {
-                "method": "hf",
-                "basis": "n31",
-            },
-            "molecule": naive_kmol,
-        })
+        atin = qcel.models.AtomicInput(
+            **{
+                "driver": "energy",
+                "keywords": {
+                    "contrl__exetyp": "check",
+                    "contrl__scftyp": "uhf",
+                    "basis__ngauss": 6,
+                },
+                "model": {
+                    "method": "hf",
+                    "basis": "n31",
+                },
+                "molecule": naive_kmol,
+            })
 
-    try:
-        atres = qcng.compute(atin, "gamess", local_options={"nnodes": 1, "ncores": 1, "memory": 1}, raise_error=True)
-    except qcng.exceptions.UnknownError as e:
-        mobj = re.search(
-            # fmt: off
-            r"^\s+" + r"AFTER PRINCIPAL AXIS TRANSFORMATION, THE PROGRAM" + r"\s*" +
-            r"^\s+" + r"HAS CHOSEN THE FOLLOWING ATOMS AS BEING UNIQUE:" + r"\s*" +
-            r"((?:\s+([A-Za-z]\w*)\s+\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s*\n)+)" +
-            r"^\s+" + r"EXECUTION OF GAMESS TERMINATED -ABNORMALLY-",
-            # fmt: on
-            str(e),
-            re.MULTILINE | re.IGNORECASE,
-        )
-        if mobj:
-            # handle too many atoms here
-            raise e
+        try:
+            atres = qcng.compute(atin, "gamess", local_options={"nnodes": 1, "ncores": 1, "memory": 1}, raise_error=True)
+        except qcng.exceptions.UnknownError as e:
+            mobj = re.search(
+                # fmt: off
+                r"^\s+" + r"AFTER PRINCIPAL AXIS TRANSFORMATION, THE PROGRAM" + r"\s*" +
+                r"^\s+" + r"HAS CHOSEN THE FOLLOWING ATOMS AS BEING UNIQUE:" + r"\s*" +
+                r"((?:\s+([A-Za-z]\w*)\s+\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s*\n)+)" +
+                r"^\s+" + r"EXECUTION OF GAMESS TERMINATED -ABNORMALLY-",
+                # fmt: on
+                str(e),
+                re.MULTILINE | re.IGNORECASE,
+            )
+            if mobj:
+                pass
+            else:
+                raise e
         else:
-            raise e
+            break
 
     # `mf_kmol` and `mf_qmol` are now in GAMESS master frame
     # * all atoms present (as natural for Molecule classes), and we don't know which atoms are unique
@@ -121,7 +127,6 @@ def get_master_frame(kmol: "qcelemental.models.Molecule") -> Tuple["qcelemental.
                 trials.append(trial)
 
         all_atom_lines = mf_kmol.to_string(dtype="gamess").splitlines()[3:]
-        harness = qcng.get_program("gamess")
 
         for selected_atoms in trials:
             selected_atom_lines = "\n".join([ln for iln, ln in enumerate(all_atom_lines) if iln in selected_atoms])
