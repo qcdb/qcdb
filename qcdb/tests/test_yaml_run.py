@@ -3,6 +3,8 @@ import qcdb
 from .addons import *
 from .utils import *
 
+# perhaps from pywrap_cbs1 psi4 test case
+
 yamlin_hf3 = """
 molecule: |
   Li

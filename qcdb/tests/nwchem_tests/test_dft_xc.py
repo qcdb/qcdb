@@ -34,9 +34,6 @@ def test_01_pbe0(h2o):
     val = qcdb.energy('nwc-pbe0', molecule=h2o)
     check_pbe0(val)
 
-def check_b3lyp(return_value):
-    b3lyp = -76.420359078705
-    assert compare_values(b3lyp, qcdb.variable('DFT TOTAL ENERGY'), 5, 'dft b3lyp')
 
 @using_nwchem
 def test_02_b3lyp(h2o):
@@ -46,7 +43,9 @@ def test_02_b3lyp(h2o):
     })
     print('Testing dft (b3lyp) energy...')
     val = qcdb.energy('nwc-b3lyp', molecule=h2o)
-    check_b3lyp(val)
+    b3lyp = -76.420359078705
+    assert compare_values(b3lyp, qcdb.variable('DFT TOTAL ENERGY'), 5, 'dft b3lyp')
+
 
 def check_b1b95(return_value):
     b1b95   =   -76.391648839018

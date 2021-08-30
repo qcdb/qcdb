@@ -1,7 +1,9 @@
 import qcelemental as qcel
 
 import qcdb
+from qcdb.driver.driver_util import prefixpkg
 
+import pytest
 from .utils import *
 
 
@@ -69,7 +71,13 @@ def test_mints4():
     assert compare_values(refGEOM, geom_now, 6, "Bz-H3O+: geometry and orientation")
 
 
-def test_scf4():
+@pytest.mark.parametrize("program,keywords", [
+("cfour", {}),
+("gamess", {}),
+("nwchem", {}),
+("psi4", {"psi4_scf_type": "pk"}),
+])
+def test_scf4(program, keywords):
     #! RHF cc-pVDZ energy for water, automatically scanning the symmetric stretch and bending coordinates
     #! using Python's built-in loop mechanisms.  The geometry is apecified using a Z-matrix with variables
     #! that are updated during the potential energy surface scan, and then the same procedure is performed
@@ -80,6 +88,9 @@ def test_scf4():
         9.785885838936569, 9.780670106434425, 8.807297255042920, 8.802603095790996, 8.006633868220828,
         8.002366450719077
     ]
+    refSCF  = [ -76.02132544702374, -76.02170973231352, -76.02148196912412,
+            -76.0214579633461369, -75.99010402473729, -75.98979578728871 ]
+
 
     # Define the points on the potential energy surface using standard Python list functions
     Rvals = [0.9, 1.0, 1.1]
@@ -95,15 +106,22 @@ def test_scf4():
 
     print("\n Testing Z-matrix coordinates\n")
 
+    qcdb.set_keywords(keywords)
+    model = prefixpkg[program] + "scf/cc-pvdz"
+        
     count = 0
     for R in Rvals:
         h2o.set_variable('R', R)  # alternately, h2o.R = R
         for A in Avals:
             h2o.A = A  # alternately, h2o.set_variable('A', A)
             h2o.update_geometry()
+
+            ene, jrec = qcdb.energy(model, molecule=h2o, return_wfn=True)
+            assert compare_values(refSCF[count], ene, 6, f"Reference energy {count}")
             assert compare_values(refENuc[count] * a2a,
-                                  h2o.nuclear_repulsion_energy(), 10, "Nuclear repulsion energy %d" % count)
-            count = count + 1
+                                  h2o.nuclear_repulsion_energy(), 10, f"Nuclear repulsion energy {count}")
+            assert program == jrec["provenance"]["creator"].lower(), "zmat prov"
+            count += 1
 
     # And now the same thing, using Python's trigonometry functions, and Cartesian input.  This time
     # we want to reset the Cartesian positions every time the angles and bond lengths change, so we
@@ -127,6 +145,9 @@ def test_scf4():
             h2o.RSinA = R * math.sin(math.radians(A))
             h2o.update_geometry()
 
+            ene, jrec = qcdb.energy(model, molecule=h2o, return_wfn=True)
+            assert compare_values(refSCF[count], ene, 6, f"Reference energy {count}")
             assert compare_values(refENuc[count] * a2a,
-                                  h2o.nuclear_repulsion_energy(), 10, "Nuclear repulsion energy %d" % count)
-            count = count + 1
+                                  h2o.nuclear_repulsion_energy(), 10, f"Nuclear repulsion energy {count}")
+            assert program == jrec["provenance"]["creator"].lower(), "polar prov"
+            count += 1
