@@ -11,7 +11,6 @@ def mcscf_ch2(return_value):
     hf  =   -38.857160053058
     mcscf   =   -38.913118315963
 
-    assert compare_values(hf, qcdb.variable("HF TOTAL ENERGY"), 5, "hf ref")
     assert compare_values(mcscf, qcdb.variable("MCSCF TOTAL ENERGY"), 5, "mcscf 1a1")
 
 @using_nwchem

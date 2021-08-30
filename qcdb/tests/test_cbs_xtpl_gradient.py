@@ -134,7 +134,7 @@ def test_1c():
     assert compare_arrays(ref_scf_dz, jrec['qcvars']['CURRENT GRADIENT'].data, 6, "[1c] SCF/cc-pVDZ Gradient")
     assert compare_arrays(ref_scf_dz, qcdb.variable('CURRENT GRADIENT'), 6, "[1c] SCF/cc-pVDZ Gradient")
     #assert compare_arrays(ref_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1c] SCF/cc-pVDZ Gradient")
-    assert 'QCDB' == jrec['provenance']['creator'], "[1c] prov" # GAMESS and/or QCDB??
+    assert 'GAMESS' == jrec['provenance']['creator'], "[1c] prov" # GAMESS and/or QCDB??
 
 
 @using_psi4
@@ -209,7 +209,7 @@ def test_1i():
     assert compare_arrays(ref2_scf_dz, jrec['qcvars']['CURRENT GRADIENT'].data, 6, "[1i] SCF/cc-pVDZ Gradient")
     assert compare_arrays(ref2_scf_dz, qcdb.variable('CURRENT GRADIENT'), 6, "[1i] SCF/cc-pVDZ Gradient")
     ##assert compare_arrays(ref_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1i] SCF/cc-pVDZ Gradient")
-    assert 'QCDB' == jrec['provenance']['creator'], "[1i] prov"
+    assert 'GAMESS' == jrec['provenance']['creator'], "[1i] prov"
 
 
 #def hide_test_2():

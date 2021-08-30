@@ -4,6 +4,7 @@ import os
 import sys
 
 import qcdb
+import pytest
 
 from ..addons import *
 from ..utils import *
@@ -32,6 +33,7 @@ def check_uhf_mp2(return_value, is_5050):
     #    assert compare_values(a5050tot, qcdb.variable('CUSTOM SCS-MP2 TOTAL ENERGY'), 5, 'mp2 scstot')
 
 @using_nwchem
+@pytest.mark.xfail(True, reason='scs vars NYI', run=True)
 def test_1_mp2_5050no():
     nh2 = qcdb.set_molecule('''
          N        0.08546       -0.00020       -0.05091

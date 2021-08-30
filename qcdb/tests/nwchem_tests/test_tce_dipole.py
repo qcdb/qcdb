@@ -17,14 +17,13 @@ def check_tce_ccsd(return_value):
     ccsd_corl=   -0.050127321001234
     ccsd_dipole_X   =   0.0000000
     ccsd_dipole_Y   =   0.0000000
-    ccsd_dipole_Z   =  -1.5819795 
+    ccsd_dipole_Z   =  -1.5819795
+    ccsd_dipole = [ccsd_dipole_X, ccsd_dipole_Y, ccsd_dipole_Z]
 
     assert compare_values(hf, qcdb.variable('HF TOTAL ENERGY'), 5, 'hf ref')
     assert compare_values(ccsd_tot, qcdb.variable('CCSD TOTAL ENERGY'), 5, 'ccsd tot')
     assert compare_values(ccsd_corl, qcdb.variable('CCSD CORRELATION ENERGY'), 5, 'ccsd corl')
-    assert compare_values(ccsd_dipole_X, qcdb.variable('CCSD DIPOLE X'), 5, 'ccsd dipole X')
-    assert compare_values(ccsd_dipole_Y, qcdb.variable('CCSD DIPOLE Y'), 5, 'ccsd dipole Y')
-    assert compare_values(ccsd_dipole_Z, qcdb.variable('CCSD DIPOLE Z'), 5, 'ccsd dipole Z')
+    assert compare_values(ccsd_dipole, qcdb.variable("CCSD DIPOLE"), 5, "ccsd dipole")
 
 @using_nwchem
 def test_1_ccsd_dipole():

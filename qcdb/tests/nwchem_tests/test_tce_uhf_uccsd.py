@@ -19,7 +19,7 @@ def tce_uccsd(return_value):
 
     assert compare_values(hf, qcdb.variable('HF TOTAL ENERGY'), 5, 'hf ref')
     assert compare_values(ccsd_tot, qcdb.variable('CCSD TOTAL ENERGY'), 5, 'ccsd tot')
-    assert compare_values(ccsd_corl, qcdb.variable('CCSD CORRELATION'), 5, 'ccsd corl')
+    assert compare_values(ccsd_corl, qcdb.variable('CCSD CORRELATION ENERGY'), 5, 'ccsd corl')
 
 @using_nwchem
 def test_1_uccsd():
@@ -58,5 +58,5 @@ def test_mol_chg_error():
         'nwchem_charge'    : 1,
         })
 
-    with pytest.raises(qcdb.OptionReconciliationError):
+    with pytest.raises(qcdb.KeywordReconciliationError):
         qcdb.energy('nwc-ccsd')
