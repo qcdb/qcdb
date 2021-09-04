@@ -60,7 +60,7 @@ extensions = [
     'sphinx_automodapi.smart_resolver',
     # from Cloud
     'cloud_sptheme.ext.index_styling',
-    'cloud_sptheme.ext.escaped_samp_literals',
+#    'cloud_sptheme.ext.escaped_samp_literals',
     # from Psi4
     'sphinx_psi_theme.ext.psidomain',
     'sphinx_psi_theme.ext.relbar_toc',
