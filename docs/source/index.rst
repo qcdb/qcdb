@@ -14,6 +14,7 @@
    :maxdepth: 2
    
    introduction
+   stdsuite
    autodoc_glossary_qcvars
    api
 
