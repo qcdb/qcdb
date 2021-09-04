@@ -37,19 +37,20 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>scf_xtpl_helgaker_3</title>
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/psi4.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/psi4.css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
     
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     
     
@@ -99,7 +100,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.scf_xtpl_helgaker_3.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g1de8844">0+untagged.1.g1de8844</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g4b8d74d">0+untagged.1.g4b8d74d</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -117,11 +118,11 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="scf-xtpl-helgaker-3">
+  <section id="scf-xtpl-helgaker-3">
 <h1>scf_xtpl_helgaker_3<a class="headerlink" href="#scf-xtpl-helgaker-3" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="qcdb.scf_xtpl_helgaker_3">
-<code class="sig-prename descclassname"><span class="pre">qcdb.</span></code><code class="sig-name descname"><span class="pre">scf_xtpl_helgaker_3</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mtdname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zLO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valueLO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zMD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valueMD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zHI</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valueHI</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/driver/cbs_helpers.html#scf_xtpl_helgaker_3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.scf_xtpl_helgaker_3" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="qcdb.scf_xtpl_helgaker_3">
+<span class="sig-prename descclassname"><span class="pre">qcdb.</span></span><span class="sig-name descname"><span class="pre">scf_xtpl_helgaker_3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mtdname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zLO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valueLO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zMD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valueMD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zHI</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valueHI</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/driver/cbs_helpers.html#scf_xtpl_helgaker_3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.scf_xtpl_helgaker_3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extrapolation scheme for reference energies with three adjacent zeta-level bases.
 Used by <a class="reference internal" href="qcdb.cbs.html#qcdb.cbs" title="qcdb.cbs"><code class="xref py py-func docutils literal notranslate"><span class="pre">qcdb.cbs()</span></code></a>.
 <a class="reference external" href="https://doi.org/10.1016/S0009-2614(99)00179-7">Halkier, Helgaker, Jorgensen, Klopper, &amp; Olsen, Chem. Phys. Lett. 302 (1999) 437-446</a></p>
@@ -132,15 +133,15 @@ Used by <a class="reference internal" href="qcdb.cbs.html#qcdb.cbs" title="qcdb.
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>mtdname</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Method name (e.g., ‘HF’) used in summary printing.</p></li>
 <li><p><strong>zLO</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Zeta number of the smaller basis set in 3-point extrapolation.</p></li>
-<li><p><strong>valueLO</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>]) – Energy, gradient, or Hessian value at the smaller basis set in 3-point
+<li><p><strong>valueLO</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>]) – Energy, gradient, or Hessian value at the smaller basis set in 3-point
 extrapolation.</p></li>
 <li><p><strong>zMD</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Zeta number of the medium basis set in 3-point extrapolation.
 Must be <cite>zLO + 1</cite>.</p></li>
-<li><p><strong>valueMD</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>]) – Energy, gradient, or Hessian value at the medium basis set in 3-point
+<li><p><strong>valueMD</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>]) – Energy, gradient, or Hessian value at the medium basis set in 3-point
 extrapolation.</p></li>
 <li><p><strong>zHI</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Zeta number of the larger basis set in 3-point extrapolation.
 Must be <cite>zLO + 2</cite>.</p></li>
-<li><p><strong>valueHI</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>]) – Energy, gradient, or Hessian value at the larger basis set in 3-point
+<li><p><strong>valueHI</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>]) – Energy, gradient, or Hessian value at the larger basis set in 3-point
 extrapolation.</p></li>
 <li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Controls volume of printing.</p></li>
 </ul>
@@ -149,7 +150,7 @@ extrapolation.</p></li>
 <dd class="field-even"><p>Eponymous function applied to input zetas and values; type from <cite>valueLO</cite>.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -159,7 +160,7 @@ extrapolation.</p></li>
 </div>
 </dd></dl>
 
-</div>
+</section>
 
 
             <div class="clearer"></div>
@@ -257,7 +258,7 @@ extrapolation.</p></li>
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.scf_xtpl_helgaker_3.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g1de8844">0+untagged.1.g1de8844</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g4b8d74d">0+untagged.1.g4b8d74d</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -271,8 +272,8 @@ extrapolation.</p></li>
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2021, The QCDB Project.
-      Last updated on Thursday, 29 April 2021 03:23PM.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+      Last updated on Saturday, 04 September 2021 04:51AM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.1.2.
     </div>
     <!-- cloud_sptheme 1.4 -->
   </body>

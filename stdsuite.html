@@ -1,0 +1,421 @@
+<!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>&lt;no title&gt;</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/psi4.css" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    
+    
+     
+        <script src="_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="_static/cloud.js"></script>
+    
+
+    <link rel="shortcut icon" href="_static/favicon-qcdb.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="QCVariables by Alpha" href="autodoc_glossary_qcvars.html" />
+    <link rel="prev" title="Introduction" href="introduction.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">Index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="autodoc_glossary_qcvars.html" title="QCVariables by Alpha"
+             accesskey="N"><i class="fa fa-long-arrow-right fa-lg"></i></a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="introduction.html" title="Introduction"
+             accesskey="P"><i class="fa fa-long-arrow-left fa-lg"></i></a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="index.html" title="Table Of Contents"
+             accesskey="C"><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="https://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/stdsuite.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g4b8d74d">0+untagged.1.g4b8d74d</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+        <li class="nav-item nav-item-this"><a href="">&lt;no title&gt;</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p class="rubric">Footnotes</p>
+<dl class="footnote brackets">
+<dt class="label" id="f10"><span class="brackets">1</span></dt>
+<dd><p>nyi: no ROHF Hessian for Psi4 HF.</p>
+</dd>
+<dt class="label" id="f11"><span class="brackets">2</span></dt>
+<dd><p>nonstandard answer: CFOUR MP2 ROHF hessian doesn’t match findif. (Paper says NYI, but program does yield a value.) First wrong at <cite>MP2 TOTAL HESSIAN</cite>.</p>
+</dd>
+<dt class="label" id="f12"><span class="brackets">3</span></dt>
+<dd><p>nonstandard answer: CFOUR MP2 ROHF hessian doesn’t match findif, nor FC energy. (Paper says NYI, but program does yield a value.) First wrong at <cite>MP2 CORRELATION ENERGY</cite>.</p>
+</dd>
+<dt class="label" id="f13"><span class="brackets">4</span></dt>
+<dd><p>nonstandard answer: GAMESS MP2 ROHF gradient ZAPT energies. First wrong at <cite>MP2 CORRELATION ENERGY</cite>.</p>
+</dd>
+<dt class="label" id="f14"><span class="brackets">5</span></dt>
+<dd><p>nyi: no ROHF reference for NWChem hand-coded MP2.</p>
+</dd>
+<dt class="label" id="f15"><span class="brackets">6</span></dt>
+<dd><p>nonstandard answer: NWChem TCE MP2 doesn’t report singles (affects ROHF). First wrong at <cite>MP2 CORRELATION ENERGY</cite>.</p>
+</dd>
+<dt class="label" id="f16"><span class="brackets">7</span></dt>
+<dd><p>misdirected calc: CFOUR NCC MP3 gradient mixed fc/ae parts. First wrong at <cite>MP2.5 CORRELATION ENERGY</cite>.</p>
+</dd>
+<dt class="label" id="f17"><span class="brackets">8</span></dt>
+<dd><p>nonstandard answer: CFOUR MP3 RHF FC doesn’t match findif. First wrong at <cite>MP3 TOTAL GRADIENT</cite>.</p>
+</dd>
+<dt class="label" id="f18"><span class="brackets">9</span></dt>
+<dd><p>nyi: no MP3 in GAMESS.</p>
+</dd>
+<dt class="label" id="f19"><span class="brackets">10</span></dt>
+<dd><p>nyi: no MP3 gradients in GAMESS.</p>
+</dd>
+<dt class="label" id="f20"><span class="brackets">11</span></dt>
+<dd><p>nonstandard answer: NWChem TCE MP3 &amp; MP4 doesn’t report singles (affects ROHF), may be off by MP2 singles value. First wrong at <cite>MP2 CORRELATION ENERGY</cite>.</p>
+</dd>
+<dt class="label" id="f21"><span class="brackets">12</span></dt>
+<dd><p>nyi: only detci for conv ROHF MP3 in Psi4, and it’s already peculiar for MP2.</p>
+</dd>
+<dt class="label" id="f22"><span class="brackets">13</span></dt>
+<dd><p>nyi: no MP4(SDQ) in GAMESS.</p>
+</dd>
+<dt class="label" id="f23"><span class="brackets">14</span></dt>
+<dd><p>nyi: no specialty MP4(SDQ) in NWChem.</p>
+</dd>
+<dt class="label" id="f24"><span class="brackets">15</span></dt>
+<dd><p>nyi: no non-RHF MP4(SDQ) in Psi4.</p>
+</dd>
+<dt class="label" id="f25"><span class="brackets">16</span></dt>
+<dd><p>nyi: no full MP4 in GAMESS.</p>
+</dd>
+<dt class="label" id="f26"><span class="brackets">17</span></dt>
+<dd><p>nyi: only detci for conv ROHF MP4 in Psi4, and it’s already peculiar for MP2.</p>
+</dd>
+<dt class="label" id="f27"><span class="brackets">18</span></dt>
+<dd><p>nyi: no UHF CI in GAMESS.</p>
+</dd>
+<dt class="label" id="f28"><span class="brackets">19</span></dt>
+<dd><p>nonstandard answer: ROHF CISD vcc=tce!=guga=detci. First wrong at <cite>CISD CORRELATION ENERGY</cite>.</p>
+</dd>
+<dt class="label" id="f29"><span class="brackets">20</span></dt>
+<dd><p>nyi: no UHF CI in Psi4.</p>
+</dd>
+<dt class="label" id="f30"><span class="brackets">21</span></dt>
+<dd><p>nyi: no QCISD in GAMESS.</p>
+</dd>
+<dt class="label" id="f31"><span class="brackets">22</span></dt>
+<dd><p>nyi: no non-RHF QCISD in Psi4.</p>
+</dd>
+<dt class="label" id="f32"><span class="brackets">23</span></dt>
+<dd><p>nyi: no QCISD(T) in NWChem.</p>
+</dd>
+<dt class="label" id="f33"><span class="brackets">24</span></dt>
+<dd><p>nyi: no LCCD gradient in CFOUR.</p>
+</dd>
+<dt class="label" id="f34"><span class="brackets">25</span></dt>
+<dd><p>nyi: no ROHF LCCD in GAMESS.</p>
+</dd>
+<dt class="label" id="f35"><span class="brackets">26</span></dt>
+<dd><p>nyi: no UHF CC in GAMESS.</p>
+</dd>
+<dt class="label" id="f36"><span class="brackets">27</span></dt>
+<dd><p>nyi: no ROHF LCCD or CCD or (T) in GAMESS.</p>
+</dd>
+<dt class="label" id="f37"><span class="brackets">28</span></dt>
+<dd><p>nyi: no conv ROHF LCCD in Psi4.</p>
+</dd>
+<dt class="label" id="f38"><span class="brackets">29</span></dt>
+<dd><p>uncertain reference: ROHF CISD vcc=tce!=psi4numpy while CFOUR paper says NYI. First wrong at <cite>LCCSD CORRELATION ENERGY</cite>.</p>
+</dd>
+<dt class="label" id="f39"><span class="brackets">30</span></dt>
+<dd><p>nyi: no LCCSD in GAMESS.</p>
+</dd>
+<dt class="label" id="f40"><span class="brackets">31</span></dt>
+<dd><p>nyi: no non-RHF LCCSD in Psi4.</p>
+</dd>
+<dt class="label" id="f41"><span class="brackets">32</span></dt>
+<dd><p>misdirected calc: CFOUR NCC CCD gradient mixed fc/ae parts. First wrong at <cite>CCD CORRELATION ENERGY</cite>.</p>
+</dd>
+<dt class="label" id="f42"><span class="brackets">33</span></dt>
+<dd><p>nyi: no conv CCD in Psi4.</p>
+</dd>
+<dt class="label" id="f43"><span class="brackets">34</span></dt>
+<dd><p>nyi: no CCD Hessian in Psi4.</p>
+</dd>
+<dt class="label" id="f44"><span class="brackets">35</span></dt>
+<dd><p>nonstandard answer: CFOUR CCSD ROHF FC gradient right but energies wrong. (Paper says NYI.) First wrong at <cite>MP2 CORRELATION ENERGY</cite>.</p>
+</dd>
+<dt class="label" id="f45"><span class="brackets">36</span></dt>
+<dd><p>misdirected calc: CFOUR NCC CCSD &amp; A-CCSD(T) gradient mixed fc/ae parts. First wrong at <cite>CCSD CORRELATION ENERGY</cite>.</p>
+</dd>
+<dt class="label" id="f46"><span class="brackets">37</span></dt>
+<dd><p>nonstandard answer: GAMESS CCSD ROHF FC energy. First wrong at <cite>CCSD CORRELATION ENERGY</cite>.</p>
+</dd>
+<dt class="label" id="f47"><span class="brackets">38</span></dt>
+<dd><p>nyi: no non-RHF reference for NWChem hand-coded CC.</p>
+</dd>
+<dt class="label" id="f48"><span class="brackets">39</span></dt>
+<dd><p>nyi: no FC CC gradients in Psi4.</p>
+</dd>
+<dt class="label" id="f49"><span class="brackets">40</span></dt>
+<dd><p>nyi: no CCSD+T(CCSD) in Psi4.</p>
+</dd>
+<dt class="label" id="f50"><span class="brackets">41</span></dt>
+<dd><p>nonstandard answer: NWChem CCSD(T) ROHF AE/FC energy. First wrong at <cite>(T) CORRECTION ENERGY</cite>.</p>
+</dd>
+<dt class="label" id="f51"><span class="brackets">42</span></dt>
+<dd><p>nonstandard answer: CFOUR ECC A-CCSD(T) AE doesn’t match findif. First wrong at <cite>A-CCSD(T) TOTAL GRADIENT</cite>.</p>
+</dd>
+<dt class="label" id="f52"><span class="brackets">43</span></dt>
+<dd><p>nyi: no UHF a-CCSD(T) in CFOUR.</p>
+</dd>
+<dt class="label" id="f53"><span class="brackets">44</span></dt>
+<dd><p>nyi: no a-CCSD(T) in GAMESS or NWChem.</p>
+</dd>
+<dt class="label" id="f54"><span class="brackets">45</span></dt>
+<dd><p>nyi: no UHF a-CCSD(T) in Psi4.</p>
+</dd>
+<dt class="label" id="f55"><span class="brackets">46</span></dt>
+<dd><p>nyi: no non-RHF CCSDT-n or CCSDT gradients in CFOUR.</p>
+</dd>
+<dt class="label" id="f56"><span class="brackets">47</span></dt>
+<dd><p>nonstandard answer: CFOUR CCSDT-1A FC doesn’t match findif. First wrong at <cite>CCSDT-1A TOTAL HESSIAN</cite>.</p>
+</dd>
+<dt class="label" id="f57"><span class="brackets">48</span></dt>
+<dd><p>misdirected calc: CFOUR NCC CCSDT-1a gradient mixed fc/ae parts. First wrong at <cite>CCSDT-1A CORRELATION ENERGY</cite>.</p>
+</dd>
+<dt class="label" id="f58"><span class="brackets">49</span></dt>
+<dd><p>nyi: no CCSDT-1a in GAMESS, NWChem, or Psi4.</p>
+</dd>
+<dt class="label" id="f59"><span class="brackets">50</span></dt>
+<dd><p>misdirected calc: CFOUR NCC CCSDT-1b gradient mixed fc/ae parts. First wrong at <cite>CCSDT-1B CORRELATION ENERGY</cite>.</p>
+</dd>
+<dt class="label" id="f60"><span class="brackets">51</span></dt>
+<dd><p>nyi: no CCSDT-1b in GAMESS, NWChem, or Psi4.</p>
+</dd>
+<dt class="label" id="f61"><span class="brackets">52</span></dt>
+<dd><p>misdirected calc: CFOUR NCC CCSDT-2 gradient mixed fc/ae parts. First wrong at <cite>CCSDT-2 CORRELATION ENERGY</cite>.</p>
+</dd>
+<dt class="label" id="f62"><span class="brackets">53</span></dt>
+<dd><p>nyi: no CCSDT-2 in GAMESS, NWChem, or Psi4.</p>
+</dd>
+<dt class="label" id="f63"><span class="brackets">54</span></dt>
+<dd><p>nonstandard answer: CFOUR CCSDT-3 FC doesn’t match findif. First wrong at <cite>CCSDT-3 TOTAL HESSIAN</cite>.</p>
+</dd>
+<dt class="label" id="f64"><span class="brackets">55</span></dt>
+<dd><p>misdirected calc: CFOUR NCC CCSDT-3 gradient mixed fc/ae parts. First wrong at <cite>CCSDT-3 CORRELATION ENERGY</cite>.</p>
+</dd>
+<dt class="label" id="f65"><span class="brackets">56</span></dt>
+<dd><p>nyi: no CCSDT-3 in GAMESS, NWChem, or Psi4.</p>
+</dd>
+<dt class="label" id="f66"><span class="brackets">57</span></dt>
+<dd><p>misdirected calc: CFOUR NCC CCSDT &amp; CCSDT(Q) gradient mixed fc/ae parts. First wrong at <cite>CCSDT CORRELATION ENERGY</cite>.</p>
+</dd>
+<dt class="label" id="f67"><span class="brackets">58</span></dt>
+<dd><p>nyi: no CCSDT in GAMESS or Psi4.</p>
+</dd>
+<dt class="label" id="f68"><span class="brackets">59</span></dt>
+<dd><p>misdirected calc: CFOUR NCC CCSDTQ gradient mixed fc/ae parts. First wrong at <cite>CCSDTQ CORRELATION ENERGY</cite>.</p>
+</dd>
+<dt class="label" id="f69"><span class="brackets">60</span></dt>
+<dd><p>nyi: no DFT in CFOUR.</p>
+</dd>
+<dt class="label" id="f70"><span class="brackets">61</span></dt>
+<dd><p>nyi: no ROHF DFT in Psi4.</p>
+</dd>
+</dl>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="index.html" title="index">
+          <img class="logo" src="_static/qcdbsquare.png" alt="Logo"/>
+        </a></p><!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+<div id="searchbox" style="display: none" role="search">
+  <!--<h3>Quick search</h3>-->
+    <form class="search" action="search.html" method="get">
+      <!--<div><input type="text" name="q" placeholder="search docs" /></div>-->
+      <div><input type="text" name="q" placeholder="&#xF002;" style="font-family:FontAwesome, Ariel" /></div>
+      <!--<div><input type="submit" value="Go" /></div>-->
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >Index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="autodoc_glossary_qcvars.html" title="QCVariables by Alpha"
+             ><i class="fa fa-long-arrow-right fa-lg"></i></a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="introduction.html" title="Introduction"
+             ><i class="fa fa-long-arrow-left fa-lg"></i></a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="index.html" title="Table Of Contents"
+             ><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="https://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/stdsuite.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g4b8d74d">0+untagged.1.g4b8d74d</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+        <li class="nav-item nav-item-this"><a href="">&lt;no title&gt;</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013-2021, The QCDB Project.
+      Last updated on Saturday, 04 September 2021 04:51AM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.1.2.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

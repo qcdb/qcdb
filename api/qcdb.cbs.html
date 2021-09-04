@@ -37,19 +37,20 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>cbs</title>
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/psi4.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/psi4.css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
     
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     
     
@@ -99,7 +100,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.cbs.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g1de8844">0+untagged.1.g1de8844</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g4b8d74d">0+untagged.1.g4b8d74d</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -117,11 +118,11 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="cbs">
+  <section id="cbs">
 <h1>cbs<a class="headerlink" href="#cbs" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="qcdb.cbs">
-<code class="sig-prename descclassname"><span class="pre">qcdb.</span></code><code class="sig-name descname"><span class="pre">cbs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/driver/cbs_driver.html#cbs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.cbs" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="qcdb.cbs">
+<span class="sig-prename descclassname"><span class="pre">qcdb.</span></span><span class="sig-name descname"><span class="pre">cbs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/driver/cbs_driver.html#cbs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.cbs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to define a multistage energy method from combinations of
 basis set extrapolations and delta corrections and condense the
 components into a minimum number of calculations.</p>
@@ -293,31 +294,31 @@ on a cbs calculation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>scf_basis</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/basissets_byelement.html#apdx-basiselement" title="(in Psi4 v1.4rc2.dev30)"><span class="xref std std-ref">basis string</span></a>) – <p><span class="math notranslate nohighlight">\(\Rightarrow\)</span> <code class="docutils literal notranslate"><span class="pre">corl_basis</span></code> <span class="math notranslate nohighlight">\(\Leftarrow\)</span> || <code class="docutils literal notranslate"><span class="pre">'cc-pV[TQ]Z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'jun-cc-pv[tq5]z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'6-31G*'</span></code> || etc.</p>
+<li><p><strong>scf_basis</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/basissets_byelement.html#apdx-basiselement" title="(in Psi4 v1.5a1.dev43)"><span class="xref std std-ref">basis string</span></a>) – <p><span class="math notranslate nohighlight">\(\Rightarrow\)</span> <code class="docutils literal notranslate"><span class="pre">corl_basis</span></code> <span class="math notranslate nohighlight">\(\Leftarrow\)</span> || <code class="docutils literal notranslate"><span class="pre">'cc-pV[TQ]Z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'jun-cc-pv[tq5]z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'6-31G*'</span></code> || etc.</p>
 <p>Indicates the sequence of basis sets employed for the reference energy.
 If any correlation method is specified, <code class="docutils literal notranslate"><span class="pre">scf_basis</span></code> can default
 to <code class="docutils literal notranslate"><span class="pre">corl_basis</span></code>.</p>
 </p></li>
-<li><p><strong>corl_basis</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/basissets_byelement.html#apdx-basiselement" title="(in Psi4 v1.4rc2.dev30)"><span class="xref std std-ref">basis string</span></a>) – <p><code class="docutils literal notranslate"><span class="pre">'cc-pV[TQ]Z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'jun-cc-pv[tq5]z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'6-31G*'</span></code> || etc.</p>
+<li><p><strong>corl_basis</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/basissets_byelement.html#apdx-basiselement" title="(in Psi4 v1.5a1.dev43)"><span class="xref std std-ref">basis string</span></a>) – <p><code class="docutils literal notranslate"><span class="pre">'cc-pV[TQ]Z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'jun-cc-pv[tq5]z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'6-31G*'</span></code> || etc.</p>
 <p>Indicates the sequence of basis sets employed for the correlation energy.</p>
 </p></li>
-<li><p><strong>delta_basis</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/basissets_byelement.html#apdx-basiselement" title="(in Psi4 v1.4rc2.dev30)"><span class="xref std std-ref">basis string</span></a>) – <p><code class="docutils literal notranslate"><span class="pre">'cc-pV[TQ]Z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'jun-cc-pv[tq5]z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'6-31G*'</span></code> || etc.</p>
+<li><p><strong>delta_basis</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/basissets_byelement.html#apdx-basiselement" title="(in Psi4 v1.5a1.dev43)"><span class="xref std std-ref">basis string</span></a>) – <p><code class="docutils literal notranslate"><span class="pre">'cc-pV[TQ]Z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'jun-cc-pv[tq5]z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'6-31G*'</span></code> || etc.</p>
 <p>Indicates the sequence of basis sets employed for the delta correction
 to the correlation energy.</p>
 </p></li>
-<li><p><strong>delta2_basis</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/basissets_byelement.html#apdx-basiselement" title="(in Psi4 v1.4rc2.dev30)"><span class="xref std std-ref">basis string</span></a>) – <p><code class="docutils literal notranslate"><span class="pre">'cc-pV[TQ]Z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'jun-cc-pv[tq5]z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'6-31G*'</span></code> || etc.</p>
+<li><p><strong>delta2_basis</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/basissets_byelement.html#apdx-basiselement" title="(in Psi4 v1.5a1.dev43)"><span class="xref std std-ref">basis string</span></a>) – <p><code class="docutils literal notranslate"><span class="pre">'cc-pV[TQ]Z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'jun-cc-pv[tq5]z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'6-31G*'</span></code> || etc.</p>
 <p>Indicates the sequence of basis sets employed for the second delta correction
 to the correlation energy.</p>
 </p></li>
-<li><p><strong>delta3_basis</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/basissets_byelement.html#apdx-basiselement" title="(in Psi4 v1.4rc2.dev30)"><span class="xref std std-ref">basis string</span></a>) – <p><code class="docutils literal notranslate"><span class="pre">'cc-pV[TQ]Z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'jun-cc-pv[tq5]z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'6-31G*'</span></code> || etc.</p>
+<li><p><strong>delta3_basis</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/basissets_byelement.html#apdx-basiselement" title="(in Psi4 v1.5a1.dev43)"><span class="xref std std-ref">basis string</span></a>) – <p><code class="docutils literal notranslate"><span class="pre">'cc-pV[TQ]Z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'jun-cc-pv[tq5]z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'6-31G*'</span></code> || etc.</p>
 <p>Indicates the sequence of basis sets employed for the third delta correction
 to the correlation energy.</p>
 </p></li>
-<li><p><strong>delta4_basis</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/basissets_byelement.html#apdx-basiselement" title="(in Psi4 v1.4rc2.dev30)"><span class="xref std std-ref">basis string</span></a>) – <p><code class="docutils literal notranslate"><span class="pre">'cc-pV[TQ]Z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'jun-cc-pv[tq5]z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'6-31G*'</span></code> || etc.</p>
+<li><p><strong>delta4_basis</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/basissets_byelement.html#apdx-basiselement" title="(in Psi4 v1.5a1.dev43)"><span class="xref std std-ref">basis string</span></a>) – <p><code class="docutils literal notranslate"><span class="pre">'cc-pV[TQ]Z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'jun-cc-pv[tq5]z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'6-31G*'</span></code> || etc.</p>
 <p>Indicates the sequence of basis sets employed for the fourth delta correction
 to the correlation energy.</p>
 </p></li>
-<li><p><strong>delta5_basis</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/basissets_byelement.html#apdx-basiselement" title="(in Psi4 v1.4rc2.dev30)"><span class="xref std std-ref">basis string</span></a>) – <p><code class="docutils literal notranslate"><span class="pre">'cc-pV[TQ]Z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'jun-cc-pv[tq5]z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'6-31G*'</span></code> || etc.</p>
+<li><p><strong>delta5_basis</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/basissets_byelement.html#apdx-basiselement" title="(in Psi4 v1.5a1.dev43)"><span class="xref std std-ref">basis string</span></a>) – <p><code class="docutils literal notranslate"><span class="pre">'cc-pV[TQ]Z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'jun-cc-pv[tq5]z'</span></code> || <code class="docutils literal notranslate"><span class="pre">'6-31G*'</span></code> || etc.</p>
 <p>Indicates the sequence of basis sets employed for the fifth delta correction
 to the correlation energy.</p>
 </p></li>
@@ -330,7 +331,7 @@ to the correlation energy.</p>
 stage of the CBS definition. A complaint is generated if number of basis
 sets in stage_basis does not exactly satisfy requirements of stage_scheme.
 An exception is the default, <code class="docutils literal notranslate"><span class="pre">'xtpl_highest_1'</span></code>, which uses the best basis
-set available. See <a class="reference external" href="https://psicode.org/psi4manual/master/cbs.html#sec-cbs-xtpl" title="(in Psi4 v1.4rc2.dev30)"><span>Extrapolation Schemes</span></a> for all available schemes.</p>
+set available. See <a class="reference external" href="https://psicode.org/psi4manual/master/cbs.html#sec-cbs-xtpl" title="(in Psi4 v1.5a1.dev43)"><span>Extrapolation Schemes</span></a> for all available schemes.</p>
 </dd>
 </dl>
 </li>
@@ -379,7 +380,7 @@ to the correlation energy.
 Defaults to <a class="reference internal" href="qcdb.corl_xtpl_helgaker_2.html#qcdb.corl_xtpl_helgaker_2" title="qcdb.corl_xtpl_helgaker_2"><code class="xref py py-func docutils literal notranslate"><span class="pre">corl_xtpl_helgaker_2()</span></code></a> if two valid basis sets
 present in <code class="docutils literal notranslate"><span class="pre">delta5_basis</span></code> and <a class="reference internal" href="qcdb.xtpl_highest_1.html#qcdb.xtpl_highest_1" title="qcdb.xtpl_highest_1"><code class="xref py py-func docutils literal notranslate"><span class="pre">xtpl_highest_1()</span></code></a> otherwise.</p>
 </p></li>
-<li><p><strong>molecule</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/notes_py.html#op-py-molecule" title="(in Psi4 v1.4rc2.dev30)"><span class="xref std std-ref">molecule</span></a>) – <p><code class="docutils literal notranslate"><span class="pre">h2o</span></code> || etc.</p>
+<li><p><strong>molecule</strong> (<a class="reference external" href="https://psicode.org/psi4manual/master/notes_py.html#op-py-molecule" title="(in Psi4 v1.5a1.dev43)"><span class="xref std std-ref">molecule</span></a>) – <p><code class="docutils literal notranslate"><span class="pre">h2o</span></code> || etc.</p>
 <p>The target molecule, if not the last molecule defined.</p>
 </p></li>
 </ul>
@@ -422,7 +423,7 @@ present in <code class="docutils literal notranslate"><span class="pre">delta5_b
 </div>
 </dd></dl>
 
-</div>
+</section>
 
 
             <div class="clearer"></div>
@@ -520,7 +521,7 @@ present in <code class="docutils literal notranslate"><span class="pre">delta5_b
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.cbs.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g1de8844">0+untagged.1.g1de8844</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g4b8d74d">0+untagged.1.g4b8d74d</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -534,8 +535,8 @@ present in <code class="docutils literal notranslate"><span class="pre">delta5_b
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2021, The QCDB Project.
-      Last updated on Thursday, 29 April 2021 03:23PM.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+      Last updated on Saturday, 04 September 2021 04:51AM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.1.2.
     </div>
     <!-- cloud_sptheme 1.4 -->
   </body>
