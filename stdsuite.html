@@ -100,7 +100,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/stdsuite.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g46b7aff">0+untagged.1.g46b7aff</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g7fb3845">0+untagged.1.g7fb3845</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -117,189 +117,2115 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <p class="rubric">Footnotes</p>
+  <span id="table-stdsuite"></span><table class="docutils align-default" id="id237">
+<caption><span class="caption-text">Tested and matching values. “O” is matching. “X” is program promptly reports NYI. Blank is unprobed. “fd” is runs derivative with internal finite difference. “!” is runs to completion but answer doesn’t match; this may be due to alternate implementation choices.</span><a class="headerlink" href="#id237" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 5%" />
+<col style="width: 5%" />
+<col style="width: 5%" />
+<col style="width: 5%" />
+<col style="width: 5%" />
+<col style="width: 5%" />
+<col style="width: 5%" />
+<col style="width: 5%" />
+<col style="width: 5%" />
+<col style="width: 5%" />
+<col style="width: 5%" />
+<col style="width: 5%" />
+<col style="width: 5%" />
+<col style="width: 5%" />
+<col style="width: 5%" />
+<col style="width: 5%" />
+<col style="width: 5%" />
+<col style="width: 5%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head" rowspan="3"></th>
+<th class="head" rowspan="3"></th>
+<th class="head" colspan="6"><p>RHF</p></th>
+<th class="head" colspan="6"><p>UHF</p></th>
+<th class="head" colspan="6"><p>ROHF</p></th>
+</tr>
+<tr class="row-even"><th class="head" colspan="2"><p>Energy</p></th>
+<th class="head" colspan="2"><p>Gradient</p></th>
+<th class="head" colspan="2"><p>Hessian</p></th>
+<th class="head" colspan="2"><p>Energy</p></th>
+<th class="head" colspan="2"><p>Gradient</p></th>
+<th class="head" colspan="2"><p>Hessian</p></th>
+<th class="head" colspan="2"><p>Energy</p></th>
+<th class="head" colspan="2"><p>Gradient</p></th>
+<th class="head" colspan="2"><p>Hessian</p></th>
+</tr>
+<tr class="row-odd"><th class="head"><p>AE</p></th>
+<th class="head"><p>FC</p></th>
+<th class="head"><p>AE</p></th>
+<th class="head"><p>FC</p></th>
+<th class="head"><p>AE</p></th>
+<th class="head"><p>FC</p></th>
+<th class="head"><p>AE</p></th>
+<th class="head"><p>FC</p></th>
+<th class="head"><p>AE</p></th>
+<th class="head"><p>FC</p></th>
+<th class="head"><p>AE</p></th>
+<th class="head"><p>FC</p></th>
+<th class="head"><p>AE</p></th>
+<th class="head"><p>FC</p></th>
+<th class="head"><p>AE</p></th>
+<th class="head"><p>FC</p></th>
+<th class="head"><p>AE</p></th>
+<th class="head"><p>FC</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hf</p></td>
+<td><p>cfour
+gamess
+nwchem
+psi4
+psi4-scf</p></td>
+<td><p>O
+O
+O</p>
+<p>O</p>
+</td>
+<td></td>
+<td><p>O
+O
+O</p>
+<p>O</p>
+</td>
+<td></td>
+<td><p>O
+O
+O</p>
+<p>O</p>
+</td>
+<td></td>
+<td><p>O
+O
+O</p>
+<p>O</p>
+</td>
+<td></td>
+<td><p>O
+O
+O</p>
+<p>O</p>
+</td>
+<td></td>
+<td><p>O
+O
+O</p>
+<p>O</p>
+</td>
+<td></td>
+<td><p>O
+O
+O</p>
+<p>O</p>
+</td>
+<td></td>
+<td><p>O
+O
+O</p>
+<p>O</p>
+</td>
+<td></td>
+<td><blockquote>
+<div><p>O
+O
+O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f10" id="id1">1</a></p>
+</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>mp2</p></td>
+<td><p>cfour
+gamess
+nwchem-directmp2
+nwchem-mp2grad
+nwchem-tce
+psi4-fnocc
+psi4-occ</p></td>
+<td><p>O
+O
+O
+O
+O
+O
+O</p></td>
+<td><p>O
+O
+O
+O
+O
+O
+O</p></td>
+<td><blockquote>
+<div><p>O
+O</p>
+<p>O</p>
+</div></blockquote>
+<p>fd</p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>O
+O</p>
+<p>O</p>
+</div></blockquote>
+<p>fd</p>
+<p>fd</p>
+</td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>fd</p>
+<p>fd</p>
+<p>fd</p>
+</td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>fd</p>
+<p>fd</p>
+<p>fd</p>
+</td>
+<td><p>O
+O</p>
+<p>O
+O</p>
+<p>O</p>
+</td>
+<td><p>O
+O</p>
+<p>O
+O</p>
+<p>O</p>
+</td>
+<td><blockquote>
+<div><p>O
+O</p>
+<p>O</p>
+</div></blockquote>
+<p>fd</p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>O
+O</p>
+<p>O</p>
+</div></blockquote>
+<p>fd</p>
+<p>fd</p>
+</td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>fd</p>
+<p>fd</p>
+<p>fd</p>
+</td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>fd</p>
+<p>fd</p>
+<p>fd</p>
+</td>
+<td><blockquote>
+<div><p>O
+O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f14" id="id2">5</a>
+! <a class="footnote-reference brackets" href="#f15" id="id3">6</a></p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>O
+O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f14" id="id4">5</a>
+! <a class="footnote-reference brackets" href="#f15" id="id5">6</a></p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>! <a class="footnote-reference brackets" href="#f13" id="id6">4</a></p>
+<p>X <a class="footnote-reference brackets" href="#f14" id="id7">5</a>
+! <a class="footnote-reference brackets" href="#f15" id="id8">6</a></p>
+<blockquote>
+<div><p>fd</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>! <a class="footnote-reference brackets" href="#f13" id="id9">4</a></p>
+<p>X <a class="footnote-reference brackets" href="#f14" id="id10">5</a>
+! <a class="footnote-reference brackets" href="#f15" id="id11">6</a></p>
+<blockquote>
+<div><p>fd</p>
+</div></blockquote>
+</td>
+<td><p>! <a class="footnote-reference brackets" href="#f11" id="id12">2</a></p></td>
+<td><p>! <a class="footnote-reference brackets" href="#f12" id="id13">3</a></p></td>
+</tr>
+<tr class="row-even"><td><p>mp3</p></td>
+<td><p>cfour-ncc
+cfour-vcc
+gamess
+nwchem-tce
+psi4
+psi4-fnocc
+psi4-occ</p></td>
+<td><blockquote>
+<div><p>O
+O</p>
+</div></blockquote>
+<dl>
+<dt>X <a class="footnote-reference brackets" href="#f18" id="id14">9</a></dt><dd><p>O</p>
+<p>O
+O</p>
+</dd>
+</dl>
+</td>
+<td><blockquote>
+<div><p>O
+O</p>
+</div></blockquote>
+<dl>
+<dt>X <a class="footnote-reference brackets" href="#f18" id="id15">9</a></dt><dd><p>O</p>
+<p>O
+O</p>
+</dd>
+</dl>
+</td>
+<td><blockquote>
+<div><p>O
+O</p>
+</div></blockquote>
+<dl>
+<dt>X <a class="footnote-reference brackets" href="#f19" id="id16">10</a></dt><dd><p>fd</p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+</dd>
+</dl>
+</td>
+<td><p>!  <a class="footnote-reference brackets" href="#f16" id="id17">7</a>
+!  <a class="footnote-reference brackets" href="#f17" id="id18">8</a></p>
+<blockquote>
+<div><dl>
+<dt>X <a class="footnote-reference brackets" href="#f19" id="id19">10</a></dt><dd><p>fd</p>
+<p>fd</p>
+</dd>
+</dl>
+</div></blockquote>
+</td>
+<td></td>
+<td></td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<dl>
+<dt>X <a class="footnote-reference brackets" href="#f18" id="id20">9</a></dt><dd><p>O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<dl>
+<dt>X <a class="footnote-reference brackets" href="#f18" id="id21">9</a></dt><dd><p>O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<dl>
+<dt>X <a class="footnote-reference brackets" href="#f19" id="id22">10</a></dt><dd><p>fd</p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+</dd>
+</dl>
+</td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<dl>
+<dt>X <a class="footnote-reference brackets" href="#f19" id="id23">10</a></dt><dd><p>fd</p>
+<p>fd</p>
+</dd>
+</dl>
+</td>
+<td></td>
+<td></td>
+<td><blockquote>
+<div><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f18" id="id24">9</a></p>
+</div></blockquote>
+<dl class="simple">
+<dt>!  <a class="footnote-reference brackets" href="#f20" id="id25">11</a></dt><dd><p>X <a class="footnote-reference brackets" href="#f21" id="id26">12</a></p>
+</dd>
+</dl>
+</td>
+<td><blockquote>
+<div><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f18" id="id27">9</a></p>
+</div></blockquote>
+<dl class="simple">
+<dt>!  <a class="footnote-reference brackets" href="#f20" id="id28">11</a></dt><dd><p>X <a class="footnote-reference brackets" href="#f21" id="id29">12</a></p>
+</dd>
+</dl>
+</td>
+<td><blockquote>
+<div><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f19" id="id30">10</a></p>
+</div></blockquote>
+<dl class="simple">
+<dt>!  <a class="footnote-reference brackets" href="#f15" id="id31">6</a></dt><dd><p>X <a class="footnote-reference brackets" href="#f21" id="id32">12</a></p>
+</dd>
+</dl>
+</td>
+<td><blockquote>
+<div><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f19" id="id33">10</a></p>
+</div></blockquote>
+<dl class="simple">
+<dt>!  <a class="footnote-reference brackets" href="#f15" id="id34">6</a></dt><dd><p>X <a class="footnote-reference brackets" href="#f21" id="id35">12</a></p>
+</dd>
+</dl>
+</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>mp4(sdq)</p></td>
+<td><p>cfour-ncc
+cfour-vcc
+gamess
+nwchem
+psi4
+psi4-fnocc</p></td>
+<td><blockquote>
+<div><p>O
+O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f22" id="id36">13</a>
+X <a class="footnote-reference brackets" href="#f23" id="id37">14</a></p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+</td>
+<td><p>O
+O</p>
+<p>O</p>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f24" id="id38">15</a></p>
+</td>
+<td><p>O</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>O</p></td>
+<td><p>O</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>mp4</p></td>
+<td><p>cfour-ncc
+cfour-vcc
+gamess
+nwchem-tce
+psi4
+psi4-fnocc</p></td>
+<td><blockquote>
+<div><p>O
+O</p>
+</div></blockquote>
+<dl>
+<dt>X <a class="footnote-reference brackets" href="#f25" id="id39">16</a></dt><dd><p>O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td><blockquote>
+<div><p>O
+O</p>
+</div></blockquote>
+<dl>
+<dt>X <a class="footnote-reference brackets" href="#f25" id="id40">16</a></dt><dd><p>O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<dl class="simple">
+<dt>X <a class="footnote-reference brackets" href="#f25" id="id41">16</a></dt><dd><p>O</p>
+</dd>
+</dl>
+<p>X <a class="footnote-reference brackets" href="#f26" id="id42">17</a></p>
+</td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<dl class="simple">
+<dt>X <a class="footnote-reference brackets" href="#f25" id="id43">16</a></dt><dd><p>O</p>
+</dd>
+</dl>
+<p>X <a class="footnote-reference brackets" href="#f26" id="id44">17</a></p>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><blockquote>
+<div><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f25" id="id45">16</a></p>
+</div></blockquote>
+<dl class="simple">
+<dt>!  <a class="footnote-reference brackets" href="#f20" id="id46">11</a></dt><dd><p>X <a class="footnote-reference brackets" href="#f26" id="id47">17</a></p>
+</dd>
+</dl>
+</td>
+<td><blockquote>
+<div><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f25" id="id48">16</a></p>
+</div></blockquote>
+<dl class="simple">
+<dt>!  <a class="footnote-reference brackets" href="#f20" id="id49">11</a></dt><dd><p>X <a class="footnote-reference brackets" href="#f26" id="id50">17</a></p>
+</dd>
+</dl>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>cisd</p></td>
+<td><p>cfour-vcc
+gamess-fsoci
+gamess-guga
+nwchem-tce
+psi4
+psi4-detci
+psi4-fnocc</p></td>
+<td><p>O
+O
+O
+O</p>
+<p>O
+O</p>
+</td>
+<td><p>O
+O
+O
+O</p>
+<p>O
+O</p>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f27" id="id51">18</a></p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f29" id="id52">20</a></p>
+</td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f27" id="id53">18</a></p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f29" id="id54">20</a></p>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<dl class="simple">
+<dt>!  <a class="footnote-reference brackets" href="#f28" id="id55">19</a></dt><dd><p>O</p>
+</dd>
+</dl>
+<p>!  <a class="footnote-reference brackets" href="#f28" id="id56">19</a></p>
+</td>
+<td><p>O</p>
+<p>O</p>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>qcisd</p></td>
+<td><p>cfour-ecc
+cfour-vcc
+gamess
+nwchem-tce
+psi4
+psi4-fnocc</p></td>
+<td><blockquote>
+<div><p>O
+O</p>
+</div></blockquote>
+<dl>
+<dt>X <a class="footnote-reference brackets" href="#f30" id="id57">21</a></dt><dd><p>O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td><p>O
+O</p>
+<p>O</p>
+<p>O</p>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><blockquote>
+<div><p>O
+O</p>
+<p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f31" id="id58">22</a></p>
+</td>
+<td><blockquote>
+<div><p>O
+O</p>
+<p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f31" id="id59">22</a></p>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>qcisd(t)</p></td>
+<td><p>cfour-vcc
+gamess
+nwchem
+psi4-fnocc</p></td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f30" id="id60">21</a>
+X <a class="footnote-reference brackets" href="#f32" id="id61">23</a></p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+</td>
+<td><p>O</p>
+<p>O</p>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>O</p></td>
+<td><p>O</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>lccd</p></td>
+<td><p>cfour-ncc
+cfour-vcc
+gamess
+nwchem-tce
+psi4
+psi4-fnocc
+psi4-occ</p></td>
+<td><p>O
+O
+O
+O</p>
+<p>O
+O</p>
+</td>
+<td><p>O
+O
+O
+O</p>
+<p>O
+O</p>
+</td>
+<td><p>X <a class="footnote-reference brackets" href="#f33" id="id62">24</a>
+X <a class="footnote-reference brackets" href="#f33" id="id63">24</a></p>
+<blockquote>
+<div><p>fd
+fd</p>
+<dl class="simple">
+<dt>fd</dt><dd><p>O</p>
+</dd>
+</dl>
+</div></blockquote>
+</td>
+<td><p>X <a class="footnote-reference brackets" href="#f33" id="id64">24</a>
+X <a class="footnote-reference brackets" href="#f33" id="id65">24</a></p>
+<blockquote>
+<div><p>fd
+fd</p>
+<p>fd
+fd</p>
+</div></blockquote>
+</td>
+<td></td>
+<td></td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<dl>
+<dt>X <a class="footnote-reference brackets" href="#f35" id="id66">26</a></dt><dd><p>O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<dl>
+<dt>X <a class="footnote-reference brackets" href="#f35" id="id67">26</a></dt><dd><p>O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td><p>X <a class="footnote-reference brackets" href="#f33" id="id68">24</a>
+X <a class="footnote-reference brackets" href="#f35" id="id69">26</a></p>
+<blockquote>
+<div><p>fd</p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+</div></blockquote>
+</td>
+<td><p>X <a class="footnote-reference brackets" href="#f33" id="id70">24</a>
+X <a class="footnote-reference brackets" href="#f35" id="id71">26</a></p>
+<blockquote>
+<div><p>fd</p>
+<p>fd</p>
+</div></blockquote>
+</td>
+<td></td>
+<td></td>
+<td><p>X <a class="footnote-reference brackets" href="#f34" id="id72">25</a>
+X <a class="footnote-reference brackets" href="#f36" id="id73">27</a></p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f37" id="id74">28</a></p>
+</td>
+<td><p>X <a class="footnote-reference brackets" href="#f34" id="id75">25</a>
+X <a class="footnote-reference brackets" href="#f36" id="id76">27</a></p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f37" id="id77">28</a></p>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>lccsd</p></td>
+<td><p>cfour-ncc
+cfour-vcc
+gamess
+nwchem-tce
+psi4
+psi4-fnocc</p></td>
+<td><blockquote>
+<div><p>O
+O</p>
+</div></blockquote>
+<dl>
+<dt>X <a class="footnote-reference brackets" href="#f39" id="id78">30</a></dt><dd><p>O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td><blockquote>
+<div><p>O
+O</p>
+</div></blockquote>
+<dl>
+<dt>X <a class="footnote-reference brackets" href="#f39" id="id79">30</a></dt><dd><p>O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<dl class="simple">
+<dt>X <a class="footnote-reference brackets" href="#f39" id="id80">30</a></dt><dd><p>O</p>
+</dd>
+</dl>
+<p>X <a class="footnote-reference brackets" href="#f40" id="id81">31</a></p>
+</td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<dl class="simple">
+<dt>X <a class="footnote-reference brackets" href="#f39" id="id82">30</a></dt><dd><p>O</p>
+</dd>
+</dl>
+<p>X <a class="footnote-reference brackets" href="#f40" id="id83">31</a></p>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><dl class="simple">
+<dt>!  <a class="footnote-reference brackets" href="#f38" id="id84">29</a></dt><dd><p>X <a class="footnote-reference brackets" href="#f39" id="id85">30</a></p>
+</dd>
+<dt>!  <a class="footnote-reference brackets" href="#f38" id="id86">29</a></dt><dd><p>X <a class="footnote-reference brackets" href="#f40" id="id87">31</a></p>
+</dd>
+</dl>
+</td>
+<td><dl class="simple">
+<dt>!  <a class="footnote-reference brackets" href="#f38" id="id88">29</a></dt><dd><p>X <a class="footnote-reference brackets" href="#f39" id="id89">30</a></p>
+</dd>
+<dt>!  <a class="footnote-reference brackets" href="#f38" id="id90">29</a></dt><dd><p>X <a class="footnote-reference brackets" href="#f40" id="id91">31</a></p>
+</dd>
+</dl>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>ccd</p></td>
+<td><p>cfour-ecc
+cfour-ncc
+cfour-vcc
+gamess
+nwchem-tce
+psi4</p></td>
+<td><blockquote>
+<div><p>O
+O
+O
+O
+O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f42" id="id92">33</a></p>
+</td>
+<td><blockquote>
+<div><p>O
+O
+O
+O
+O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f42" id="id93">33</a></p>
+</td>
+<td><blockquote>
+<div><blockquote>
+<div><p>O
+O
+O</p>
+</div></blockquote>
+<p>fd
+fd</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f42" id="id94">33</a></p>
+</td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<dl>
+<dt>!  <a class="footnote-reference brackets" href="#f41" id="id95">32</a></dt><dd><blockquote>
+<div><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>fd
+fd</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f42" id="id96">33</a></p>
+</dd>
+</dl>
+</td>
+<td><blockquote>
+<div><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>fd
+fd</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f43" id="id97">34</a></p>
+</td>
+<td></td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<dl class="simple">
+<dt>X <a class="footnote-reference brackets" href="#f35" id="id98">26</a></dt><dd><p>O</p>
+</dd>
+</dl>
+<p>X <a class="footnote-reference brackets" href="#f42" id="id99">33</a></p>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<dl class="simple">
+<dt>X <a class="footnote-reference brackets" href="#f35" id="id100">26</a></dt><dd><p>O</p>
+</dd>
+</dl>
+<p>X <a class="footnote-reference brackets" href="#f42" id="id101">33</a></p>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<dl class="simple">
+<dt>X <a class="footnote-reference brackets" href="#f35" id="id102">26</a></dt><dd><p>fd</p>
+</dd>
+</dl>
+<p>X <a class="footnote-reference brackets" href="#f42" id="id103">33</a></p>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<dl class="simple">
+<dt>X <a class="footnote-reference brackets" href="#f35" id="id104">26</a></dt><dd><p>fd</p>
+</dd>
+</dl>
+<p>X <a class="footnote-reference brackets" href="#f42" id="id105">33</a></p>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<dl class="simple">
+<dt>X <a class="footnote-reference brackets" href="#f35" id="id106">26</a></dt><dd><p>fd</p>
+</dd>
+</dl>
+<p>X <a class="footnote-reference brackets" href="#f43" id="id107">34</a></p>
+</td>
+<td></td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<dl class="simple">
+<dt>X <a class="footnote-reference brackets" href="#f36" id="id108">27</a></dt><dd><p>O</p>
+</dd>
+</dl>
+<p>X <a class="footnote-reference brackets" href="#f42" id="id109">33</a></p>
+</td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<dl class="simple">
+<dt>X <a class="footnote-reference brackets" href="#f36" id="id110">27</a></dt><dd><p>O</p>
+</dd>
+</dl>
+<p>X <a class="footnote-reference brackets" href="#f42" id="id111">33</a></p>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>ccsd</p></td>
+<td><p>cfour-ecc
+cfour-ncc
+cfour-vcc
+gamess
+nwchem
+nwchem-cc
+nwchem-tce
+psi4
+psi4-ccenergy
+psi4-fnocc</p></td>
+<td><p>O
+O
+O
+O</p>
+<p>O
+O</p>
+<p>O
+O</p>
+</td>
+<td><p>O
+O
+O
+O</p>
+<p>O
+O</p>
+<p>O
+O</p>
+</td>
+<td><blockquote>
+<div><p>O
+O
+O</p>
+</div></blockquote>
+<p>fd</p>
+<p>fd
+fd</p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<dl>
+<dt>!  <a class="footnote-reference brackets" href="#f45" id="id112">36</a></dt><dd><blockquote>
+<div><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>fd</p>
+<p>fd
+fd</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f48" id="id113">39</a></p>
+</dd>
+</dl>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>fd</p>
+<p>fd</p>
+<p>fd</p>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>fd</p>
+<p>fd</p>
+<p>fd</p>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f35" id="id114">26</a></p>
+<dl>
+<dt>X <a class="footnote-reference brackets" href="#f47" id="id115">38</a></dt><dd><p>O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f35" id="id116">26</a></p>
+<dl>
+<dt>X <a class="footnote-reference brackets" href="#f47" id="id117">38</a></dt><dd><p>O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f35" id="id118">26</a></p>
+<dl>
+<dt>X <a class="footnote-reference brackets" href="#f47" id="id119">38</a></dt><dd><p>fd</p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+</dd>
+</dl>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f35" id="id120">26</a>
+X <a class="footnote-reference brackets" href="#f47" id="id121">38</a></p>
+<blockquote>
+<div><p>fd</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f48" id="id122">39</a></p>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f35" id="id123">26</a></p>
+<blockquote>
+<div><p>fd</p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f35" id="id124">26</a></p>
+<blockquote>
+<div><p>fd</p>
+<p>fd</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O
+O</p>
+</div></blockquote>
+<dl>
+<dt>X <a class="footnote-reference brackets" href="#f47" id="id125">38</a></dt><dd><p>O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>!  <a class="footnote-reference brackets" href="#f46" id="id126">37</a></p>
+<blockquote>
+<div><dl>
+<dt>X <a class="footnote-reference brackets" href="#f47" id="id127">38</a></dt><dd><p>O</p>
+<p>O</p>
+</dd>
+</dl>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>fd</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f47" id="id128">38</a></p>
+<blockquote>
+<div><p>fd</p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+</div></blockquote>
+</td>
+<td><p>!  <a class="footnote-reference brackets" href="#f44" id="id129">35</a></p>
+<p>!  <a class="footnote-reference brackets" href="#f44" id="id130">35</a>
+!  <a class="footnote-reference brackets" href="#f46" id="id131">37</a></p>
+<blockquote>
+<div><dl class="simple">
+<dt>X <a class="footnote-reference brackets" href="#f47" id="id132">38</a></dt><dd><p>fd</p>
+</dd>
+</dl>
+<p>X <a class="footnote-reference brackets" href="#f48" id="id133">39</a></p>
+</div></blockquote>
+</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>ccsd+t(ccsd)</p></td>
+<td><p>cfour-ecc
+cfour-ncc
+cfour-vcc
+gamess
+nwchem
+nwchem-cc
+nwchem-tce
+psi4
+psi4-ccenergy</p></td>
+<td><blockquote>
+<div><p>O
+O
+O
+O</p>
+<p>O
+O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f49" id="id134">40</a></p>
+</td>
+<td><blockquote>
+<div><p>O
+O
+O
+O</p>
+<p>O
+O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f49" id="id135">40</a></p>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f35" id="id136">26</a>
+X <a class="footnote-reference brackets" href="#f47" id="id137">38</a></p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f49" id="id138">40</a></p>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f35" id="id139">26</a>
+X <a class="footnote-reference brackets" href="#f47" id="id140">38</a></p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f49" id="id141">40</a></p>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>ccsd(t)</p></td>
+<td><p>cfour-ecc
+cfour-ncc
+cfour-vcc
+gamess
+nwchem
+nwchem-cc
+nwchem-tce
+psi4
+psi4-ccenergy
+psi4-fnocc</p></td>
+<td><p>O
+O
+O
+O</p>
+<p>O
+O</p>
+<p>O
+O</p>
+</td>
+<td><p>O
+O
+O
+O</p>
+<p>O
+O</p>
+<p>O
+O</p>
+</td>
+<td><blockquote>
+<div><p>O
+O
+O</p>
+</div></blockquote>
+<p>fd</p>
+<p>fd
+fd</p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<dl>
+<dt>!  <a class="footnote-reference brackets" href="#f45" id="id142">36</a></dt><dd><blockquote>
+<div><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>fd</p>
+<p>fd
+fd</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f48" id="id143">39</a></p>
+</dd>
+</dl>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>fd</p>
+<p>fd</p>
+<p>fd</p>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>fd</p>
+<p>fd</p>
+<p>fd</p>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f35" id="id144">26</a>
+X <a class="footnote-reference brackets" href="#f47" id="id145">38</a></p>
+<blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f35" id="id146">26</a>
+X <a class="footnote-reference brackets" href="#f47" id="id147">38</a></p>
+<blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f35" id="id148">26</a>
+X <a class="footnote-reference brackets" href="#f47" id="id149">38</a></p>
+<blockquote>
+<div><p>fd</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f35" id="id150">26</a>
+X <a class="footnote-reference brackets" href="#f47" id="id151">38</a></p>
+<blockquote>
+<div><p>fd</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f48" id="id152">39</a></p>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f35" id="id153">26</a>
+X <a class="footnote-reference brackets" href="#f47" id="id154">38</a></p>
+<blockquote>
+<div><p>fd</p>
+<p>fd</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f35" id="id155">26</a>
+X <a class="footnote-reference brackets" href="#f47" id="id156">38</a></p>
+<blockquote>
+<div><p>fd</p>
+<p>fd</p>
+</div></blockquote>
+</td>
+<td><blockquote>
+<div><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f36" id="id157">27</a>
+X <a class="footnote-reference brackets" href="#f47" id="id158">38</a></p>
+</div></blockquote>
+<p>!  <a class="footnote-reference brackets" href="#f50" id="id159">41</a></p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+</td>
+<td></td>
+<td><blockquote>
+<div><blockquote>
+<div><p>O</p>
+<p>O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f36" id="id160">27</a>
+X <a class="footnote-reference brackets" href="#f47" id="id161">38</a></p>
+</div></blockquote>
+<p>!  <a class="footnote-reference brackets" href="#f50" id="id162">41</a></p>
+<blockquote>
+<div><p>fd</p>
+</div></blockquote>
+</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>a-ccsd(t)</p></td>
+<td><p>cfour-ecc
+cfour-ncc
+gamess
+nwchem
+psi4
+psi4-ccenergy</p></td>
+<td><blockquote>
+<div><p>O
+O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f53" id="id163">44</a>
+X <a class="footnote-reference brackets" href="#f53" id="id164">44</a></p>
+<blockquote>
+<div><p>O</p>
+</div></blockquote>
+</td>
+<td><p>O
+O</p>
+<p>O</p>
+</td>
+<td><dl class="simple">
+<dt>!  <a class="footnote-reference brackets" href="#f51" id="id165">42</a></dt><dd><p>O</p>
+</dd>
+</dl>
+</td>
+<td><p>!  <a class="footnote-reference brackets" href="#f51" id="id166">42</a>
+!  <a class="footnote-reference brackets" href="#f45" id="id167">36</a></p></td>
+<td></td>
+<td></td>
+<td><p>X <a class="footnote-reference brackets" href="#f52" id="id168">43</a></p>
+<p>X <a class="footnote-reference brackets" href="#f54" id="id169">45</a></p>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>ccsdt-1a</p></td>
+<td><p>cfour
+cfour-ecc
+cfour-ncc
+cfour-vcc
+gamess
+nwchem
+psi4</p></td>
+<td><blockquote>
+<div><p>O
+O
+O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f58" id="id170">49</a>
+X <a class="footnote-reference brackets" href="#f58" id="id171">49</a>
+X <a class="footnote-reference brackets" href="#f58" id="id172">49</a></p>
+</td>
+<td><p>O
+O
+O</p></td>
+<td><p>O
+O</p></td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>!  <a class="footnote-reference brackets" href="#f57" id="id173">48</a></p>
+</td>
+<td><p>O</p></td>
+<td><p>!  <a class="footnote-reference brackets" href="#f56" id="id174">47</a></p></td>
+<td><p>O</p>
+<p>O</p>
+</td>
+<td><p>O</p>
+<p>O</p>
+</td>
+<td><p>X <a class="footnote-reference brackets" href="#f55" id="id175">46</a></p></td>
+<td></td>
+<td><p>X <a class="footnote-reference brackets" href="#f55" id="id176">46</a></p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X <a class="footnote-reference brackets" href="#f55" id="id177">46</a></p></td>
+<td></td>
+<td><p>X <a class="footnote-reference brackets" href="#f55" id="id178">46</a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>ccsdt-1b</p></td>
+<td><p>cfour
+cfour-ecc
+cfour-ncc
+cfour-vcc
+gamess
+nwchem
+psi4</p></td>
+<td><blockquote>
+<div><p>O
+O
+O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f60" id="id179">51</a>
+X <a class="footnote-reference brackets" href="#f60" id="id180">51</a>
+X <a class="footnote-reference brackets" href="#f60" id="id181">51</a></p>
+</td>
+<td><p>O
+O
+O</p></td>
+<td><p>O
+O</p></td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>!  <a class="footnote-reference brackets" href="#f59" id="id182">50</a></p>
+</td>
+<td><p>O</p></td>
+<td></td>
+<td><p>O</p>
+<p>O</p>
+</td>
+<td><p>O</p>
+<p>O</p>
+</td>
+<td><p>X <a class="footnote-reference brackets" href="#f55" id="id183">46</a></p></td>
+<td></td>
+<td><p>X <a class="footnote-reference brackets" href="#f55" id="id184">46</a></p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X <a class="footnote-reference brackets" href="#f55" id="id185">46</a></p></td>
+<td></td>
+<td><p>X <a class="footnote-reference brackets" href="#f55" id="id186">46</a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>ccsdt-2</p></td>
+<td><p>cfour
+cfour-ecc
+cfour-ncc
+cfour-vcc
+gamess
+nwchem
+psi4</p></td>
+<td><blockquote>
+<div><p>O
+O
+O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f62" id="id187">53</a>
+X <a class="footnote-reference brackets" href="#f62" id="id188">53</a>
+X <a class="footnote-reference brackets" href="#f62" id="id189">53</a></p>
+</td>
+<td><p>O
+O
+O</p></td>
+<td><p>O
+O</p></td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>!  <a class="footnote-reference brackets" href="#f61" id="id190">52</a></p>
+</td>
+<td><p>fd</p></td>
+<td></td>
+<td><p>O</p>
+<p>O</p>
+</td>
+<td><p>O</p>
+<p>O</p>
+</td>
+<td><p>X <a class="footnote-reference brackets" href="#f55" id="id191">46</a></p></td>
+<td></td>
+<td><p>X <a class="footnote-reference brackets" href="#f55" id="id192">46</a></p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X <a class="footnote-reference brackets" href="#f55" id="id193">46</a></p></td>
+<td></td>
+<td><p>X <a class="footnote-reference brackets" href="#f55" id="id194">46</a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>ccsdt-3</p></td>
+<td><p>cfour
+cfour-ecc
+cfour-ncc
+cfour-vcc
+gamess
+nwchem
+psi4</p></td>
+<td><blockquote>
+<div><p>O
+O
+O</p>
+</div></blockquote>
+<p>X <a class="footnote-reference brackets" href="#f65" id="id195">56</a>
+X <a class="footnote-reference brackets" href="#f65" id="id196">56</a>
+X <a class="footnote-reference brackets" href="#f65" id="id197">56</a></p>
+</td>
+<td><p>O
+O
+O</p></td>
+<td><p>O
+O</p></td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>!  <a class="footnote-reference brackets" href="#f64" id="id198">55</a></p>
+</td>
+<td><p>O</p></td>
+<td><p>!  <a class="footnote-reference brackets" href="#f63" id="id199">54</a></p></td>
+<td><p>O</p>
+<p>O</p>
+</td>
+<td><p>O</p>
+<p>O</p>
+</td>
+<td><p>X <a class="footnote-reference brackets" href="#f55" id="id200">46</a></p></td>
+<td></td>
+<td><p>X <a class="footnote-reference brackets" href="#f55" id="id201">46</a></p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>X <a class="footnote-reference brackets" href="#f55" id="id202">46</a></p></td>
+<td></td>
+<td><p>X <a class="footnote-reference brackets" href="#f55" id="id203">46</a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>ccsdt</p></td>
+<td><p>cfour
+cfour-ecc
+cfour-ncc
+cfour-vcc
+gamess
+nwchem-tce
+psi4</p></td>
+<td><blockquote>
+<div><p>O
+O
+O</p>
+</div></blockquote>
+<dl class="simple">
+<dt>X <a class="footnote-reference brackets" href="#f67" id="id204">58</a></dt><dd><p>O</p>
+</dd>
+</dl>
+<p>X <a class="footnote-reference brackets" href="#f67" id="id205">58</a></p>
+</td>
+<td><p>O
+O
+O</p>
+<p>O</p>
+</td>
+<td><p>O
+O</p></td>
+<td><blockquote>
+<div><p>O</p>
+</div></blockquote>
+<p>!  <a class="footnote-reference brackets" href="#f66" id="id206">57</a></p>
+</td>
+<td><p>O</p></td>
+<td><p>O</p></td>
+<td><p>O</p>
+<p>O</p>
+</td>
+<td><p>O</p>
+<p>O</p>
+</td>
+<td><p>X <a class="footnote-reference brackets" href="#f55" id="id207">46</a></p></td>
+<td></td>
+<td><p>X <a class="footnote-reference brackets" href="#f55" id="id208">46</a></p></td>
+<td></td>
+<td><p>O</p>
+<p>O</p>
+</td>
+<td><p>O</p>
+<p>O</p>
+</td>
+<td><p>X <a class="footnote-reference brackets" href="#f55" id="id209">46</a></p></td>
+<td></td>
+<td><p>X <a class="footnote-reference brackets" href="#f55" id="id210">46</a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>ccsdt(q)</p></td>
+<td><p>cfour-ncc</p></td>
+<td><p>O</p></td>
+<td><p>O</p></td>
+<td><p>O</p></td>
+<td><p>!  <a class="footnote-reference brackets" href="#f66" id="id211">57</a></p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>ccsdtq</p></td>
+<td><p>cfour-ncc</p></td>
+<td><p>O</p></td>
+<td><p>O</p></td>
+<td><p>O</p></td>
+<td><p>!  <a class="footnote-reference brackets" href="#f68" id="id212">59</a></p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>pbe</p></td>
+<td><p>cfour
+gamess
+nwchem
+psi4
+psi4-scf</p></td>
+<td><dl>
+<dt>X <a class="footnote-reference brackets" href="#f69" id="id213">60</a></dt><dd><p>O
+O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td></td>
+<td><dl>
+<dt>X <a class="footnote-reference brackets" href="#f69" id="id214">60</a></dt><dd><p>O
+O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td><dl>
+<dt>X <a class="footnote-reference brackets" href="#f69" id="id215">60</a></dt><dd><p>O
+O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td></td>
+<td><dl>
+<dt>X <a class="footnote-reference brackets" href="#f69" id="id216">60</a></dt><dd><p>O
+O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td><dl class="simple">
+<dt>X <a class="footnote-reference brackets" href="#f69" id="id217">60</a></dt><dd><p>O
+O</p>
+</dd>
+</dl>
+<p>X <a class="footnote-reference brackets" href="#f70" id="id218">61</a></p>
+</td>
+<td></td>
+<td><dl class="simple">
+<dt>X <a class="footnote-reference brackets" href="#f69" id="id219">60</a></dt><dd><p>O
+O</p>
+</dd>
+</dl>
+<p>X <a class="footnote-reference brackets" href="#f70" id="id220">61</a></p>
+</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>b3lyp</p></td>
+<td><p>cfour
+gamess
+nwchem
+psi4
+psi4-scf</p></td>
+<td><dl>
+<dt>X <a class="footnote-reference brackets" href="#f69" id="id221">60</a></dt><dd><p>O
+O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td></td>
+<td><dl>
+<dt>X <a class="footnote-reference brackets" href="#f69" id="id222">60</a></dt><dd><p>O
+O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td><dl>
+<dt>X <a class="footnote-reference brackets" href="#f69" id="id223">60</a></dt><dd><p>O
+O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td></td>
+<td><dl>
+<dt>X <a class="footnote-reference brackets" href="#f69" id="id224">60</a></dt><dd><p>O
+O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td><dl class="simple">
+<dt>X <a class="footnote-reference brackets" href="#f69" id="id225">60</a></dt><dd><p>O
+O</p>
+</dd>
+</dl>
+<p>X <a class="footnote-reference brackets" href="#f70" id="id226">61</a></p>
+</td>
+<td></td>
+<td><dl class="simple">
+<dt>X <a class="footnote-reference brackets" href="#f69" id="id227">60</a></dt><dd><p>O
+O</p>
+</dd>
+</dl>
+<p>X <a class="footnote-reference brackets" href="#f70" id="id228">61</a></p>
+</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>b3lyp5</p></td>
+<td><p>cfour
+gamess
+nwchem
+psi4
+psi4-scf</p></td>
+<td><dl>
+<dt>X <a class="footnote-reference brackets" href="#f69" id="id229">60</a></dt><dd><p>O
+O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td></td>
+<td><dl>
+<dt>X <a class="footnote-reference brackets" href="#f69" id="id230">60</a></dt><dd><p>O
+O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td><dl>
+<dt>X <a class="footnote-reference brackets" href="#f69" id="id231">60</a></dt><dd><p>O
+O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td></td>
+<td><dl>
+<dt>X <a class="footnote-reference brackets" href="#f69" id="id232">60</a></dt><dd><p>O
+O</p>
+<p>O</p>
+</dd>
+</dl>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td><dl class="simple">
+<dt>X <a class="footnote-reference brackets" href="#f69" id="id233">60</a></dt><dd><p>O
+O</p>
+</dd>
+</dl>
+<p>X <a class="footnote-reference brackets" href="#f70" id="id234">61</a></p>
+</td>
+<td></td>
+<td><dl class="simple">
+<dt>X <a class="footnote-reference brackets" href="#f69" id="id235">60</a></dt><dd><p>O
+O</p>
+</dd>
+</dl>
+<p>X <a class="footnote-reference brackets" href="#f70" id="id236">61</a></p>
+</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Footnotes</p>
 <dl class="footnote brackets">
-<dt class="label" id="f10"><span class="brackets">1</span></dt>
+<dt class="label" id="f10"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
 <dd><p>nyi: no ROHF Hessian for Psi4 HF.</p>
 </dd>
-<dt class="label" id="f11"><span class="brackets">2</span></dt>
+<dt class="label" id="f11"><span class="brackets"><a class="fn-backref" href="#id12">2</a></span></dt>
 <dd><p>nonstandard answer: CFOUR MP2 ROHF hessian doesn’t match findif. (Paper says NYI, but program does yield a value.) First wrong at <cite>MP2 TOTAL HESSIAN</cite>.</p>
 </dd>
-<dt class="label" id="f12"><span class="brackets">3</span></dt>
+<dt class="label" id="f12"><span class="brackets"><a class="fn-backref" href="#id13">3</a></span></dt>
 <dd><p>nonstandard answer: CFOUR MP2 ROHF hessian doesn’t match findif, nor FC energy. (Paper says NYI, but program does yield a value.) First wrong at <cite>MP2 CORRELATION ENERGY</cite>.</p>
 </dd>
-<dt class="label" id="f13"><span class="brackets">4</span></dt>
+<dt class="label" id="f13"><span class="brackets">4</span><span class="fn-backref">(<a href="#id6">1</a>,<a href="#id9">2</a>)</span></dt>
 <dd><p>nonstandard answer: GAMESS MP2 ROHF gradient ZAPT energies. First wrong at <cite>MP2 CORRELATION ENERGY</cite>.</p>
 </dd>
-<dt class="label" id="f14"><span class="brackets">5</span></dt>
+<dt class="label" id="f14"><span class="brackets">5</span><span class="fn-backref">(<a href="#id2">1</a>,<a href="#id4">2</a>,<a href="#id7">3</a>,<a href="#id10">4</a>)</span></dt>
 <dd><p>nyi: no ROHF reference for NWChem hand-coded MP2.</p>
 </dd>
-<dt class="label" id="f15"><span class="brackets">6</span></dt>
+<dt class="label" id="f15"><span class="brackets">6</span><span class="fn-backref">(<a href="#id3">1</a>,<a href="#id5">2</a>,<a href="#id8">3</a>,<a href="#id11">4</a>,<a href="#id31">5</a>,<a href="#id34">6</a>)</span></dt>
 <dd><p>nonstandard answer: NWChem TCE MP2 doesn’t report singles (affects ROHF). First wrong at <cite>MP2 CORRELATION ENERGY</cite>.</p>
 </dd>
-<dt class="label" id="f16"><span class="brackets">7</span></dt>
+<dt class="label" id="f16"><span class="brackets"><a class="fn-backref" href="#id17">7</a></span></dt>
 <dd><p>misdirected calc: CFOUR NCC MP3 gradient mixed fc/ae parts. First wrong at <cite>MP2.5 CORRELATION ENERGY</cite>.</p>
 </dd>
-<dt class="label" id="f17"><span class="brackets">8</span></dt>
+<dt class="label" id="f17"><span class="brackets"><a class="fn-backref" href="#id18">8</a></span></dt>
 <dd><p>nonstandard answer: CFOUR MP3 RHF FC doesn’t match findif. First wrong at <cite>MP3 TOTAL GRADIENT</cite>.</p>
 </dd>
-<dt class="label" id="f18"><span class="brackets">9</span></dt>
+<dt class="label" id="f18"><span class="brackets">9</span><span class="fn-backref">(<a href="#id14">1</a>,<a href="#id15">2</a>,<a href="#id20">3</a>,<a href="#id21">4</a>,<a href="#id24">5</a>,<a href="#id27">6</a>)</span></dt>
 <dd><p>nyi: no MP3 in GAMESS.</p>
 </dd>
-<dt class="label" id="f19"><span class="brackets">10</span></dt>
+<dt class="label" id="f19"><span class="brackets">10</span><span class="fn-backref">(<a href="#id16">1</a>,<a href="#id19">2</a>,<a href="#id22">3</a>,<a href="#id23">4</a>,<a href="#id30">5</a>,<a href="#id33">6</a>)</span></dt>
 <dd><p>nyi: no MP3 gradients in GAMESS.</p>
 </dd>
-<dt class="label" id="f20"><span class="brackets">11</span></dt>
+<dt class="label" id="f20"><span class="brackets">11</span><span class="fn-backref">(<a href="#id25">1</a>,<a href="#id28">2</a>,<a href="#id46">3</a>,<a href="#id49">4</a>)</span></dt>
 <dd><p>nonstandard answer: NWChem TCE MP3 &amp; MP4 doesn’t report singles (affects ROHF), may be off by MP2 singles value. First wrong at <cite>MP2 CORRELATION ENERGY</cite>.</p>
 </dd>
-<dt class="label" id="f21"><span class="brackets">12</span></dt>
+<dt class="label" id="f21"><span class="brackets">12</span><span class="fn-backref">(<a href="#id26">1</a>,<a href="#id29">2</a>,<a href="#id32">3</a>,<a href="#id35">4</a>)</span></dt>
 <dd><p>nyi: only detci for conv ROHF MP3 in Psi4, and it’s already peculiar for MP2.</p>
 </dd>
-<dt class="label" id="f22"><span class="brackets">13</span></dt>
+<dt class="label" id="f22"><span class="brackets"><a class="fn-backref" href="#id36">13</a></span></dt>
 <dd><p>nyi: no MP4(SDQ) in GAMESS.</p>
 </dd>
-<dt class="label" id="f23"><span class="brackets">14</span></dt>
+<dt class="label" id="f23"><span class="brackets"><a class="fn-backref" href="#id37">14</a></span></dt>
 <dd><p>nyi: no specialty MP4(SDQ) in NWChem.</p>
 </dd>
-<dt class="label" id="f24"><span class="brackets">15</span></dt>
+<dt class="label" id="f24"><span class="brackets"><a class="fn-backref" href="#id38">15</a></span></dt>
 <dd><p>nyi: no non-RHF MP4(SDQ) in Psi4.</p>
 </dd>
-<dt class="label" id="f25"><span class="brackets">16</span></dt>
+<dt class="label" id="f25"><span class="brackets">16</span><span class="fn-backref">(<a href="#id39">1</a>,<a href="#id40">2</a>,<a href="#id41">3</a>,<a href="#id43">4</a>,<a href="#id45">5</a>,<a href="#id48">6</a>)</span></dt>
 <dd><p>nyi: no full MP4 in GAMESS.</p>
 </dd>
-<dt class="label" id="f26"><span class="brackets">17</span></dt>
+<dt class="label" id="f26"><span class="brackets">17</span><span class="fn-backref">(<a href="#id42">1</a>,<a href="#id44">2</a>,<a href="#id47">3</a>,<a href="#id50">4</a>)</span></dt>
 <dd><p>nyi: only detci for conv ROHF MP4 in Psi4, and it’s already peculiar for MP2.</p>
 </dd>
-<dt class="label" id="f27"><span class="brackets">18</span></dt>
+<dt class="label" id="f27"><span class="brackets">18</span><span class="fn-backref">(<a href="#id51">1</a>,<a href="#id53">2</a>)</span></dt>
 <dd><p>nyi: no UHF CI in GAMESS.</p>
 </dd>
-<dt class="label" id="f28"><span class="brackets">19</span></dt>
+<dt class="label" id="f28"><span class="brackets">19</span><span class="fn-backref">(<a href="#id55">1</a>,<a href="#id56">2</a>)</span></dt>
 <dd><p>nonstandard answer: ROHF CISD vcc=tce!=guga=detci. First wrong at <cite>CISD CORRELATION ENERGY</cite>.</p>
 </dd>
-<dt class="label" id="f29"><span class="brackets">20</span></dt>
+<dt class="label" id="f29"><span class="brackets">20</span><span class="fn-backref">(<a href="#id52">1</a>,<a href="#id54">2</a>)</span></dt>
 <dd><p>nyi: no UHF CI in Psi4.</p>
 </dd>
-<dt class="label" id="f30"><span class="brackets">21</span></dt>
+<dt class="label" id="f30"><span class="brackets">21</span><span class="fn-backref">(<a href="#id57">1</a>,<a href="#id60">2</a>)</span></dt>
 <dd><p>nyi: no QCISD in GAMESS.</p>
 </dd>
-<dt class="label" id="f31"><span class="brackets">22</span></dt>
+<dt class="label" id="f31"><span class="brackets">22</span><span class="fn-backref">(<a href="#id58">1</a>,<a href="#id59">2</a>)</span></dt>
 <dd><p>nyi: no non-RHF QCISD in Psi4.</p>
 </dd>
-<dt class="label" id="f32"><span class="brackets">23</span></dt>
+<dt class="label" id="f32"><span class="brackets"><a class="fn-backref" href="#id61">23</a></span></dt>
 <dd><p>nyi: no QCISD(T) in NWChem.</p>
 </dd>
-<dt class="label" id="f33"><span class="brackets">24</span></dt>
+<dt class="label" id="f33"><span class="brackets">24</span><span class="fn-backref">(<a href="#id62">1</a>,<a href="#id63">2</a>,<a href="#id64">3</a>,<a href="#id65">4</a>,<a href="#id68">5</a>,<a href="#id70">6</a>)</span></dt>
 <dd><p>nyi: no LCCD gradient in CFOUR.</p>
 </dd>
-<dt class="label" id="f34"><span class="brackets">25</span></dt>
+<dt class="label" id="f34"><span class="brackets">25</span><span class="fn-backref">(<a href="#id72">1</a>,<a href="#id75">2</a>)</span></dt>
 <dd><p>nyi: no ROHF LCCD in GAMESS.</p>
 </dd>
-<dt class="label" id="f35"><span class="brackets">26</span></dt>
+<dt class="label" id="f35"><span class="brackets">26</span><span class="fn-backref">(<a href="#id66">1</a>,<a href="#id67">2</a>,<a href="#id69">3</a>,<a href="#id71">4</a>,<a href="#id98">5</a>,<a href="#id100">6</a>,<a href="#id102">7</a>,<a href="#id104">8</a>,<a href="#id106">9</a>,<a href="#id114">10</a>,<a href="#id116">11</a>,<a href="#id118">12</a>,<a href="#id120">13</a>,<a href="#id123">14</a>,<a href="#id124">15</a>,<a href="#id136">16</a>,<a href="#id139">17</a>,<a href="#id144">18</a>,<a href="#id146">19</a>,<a href="#id148">20</a>,<a href="#id150">21</a>,<a href="#id153">22</a>,<a href="#id155">23</a>)</span></dt>
 <dd><p>nyi: no UHF CC in GAMESS.</p>
 </dd>
-<dt class="label" id="f36"><span class="brackets">27</span></dt>
+<dt class="label" id="f36"><span class="brackets">27</span><span class="fn-backref">(<a href="#id73">1</a>,<a href="#id76">2</a>,<a href="#id108">3</a>,<a href="#id110">4</a>,<a href="#id157">5</a>,<a href="#id160">6</a>)</span></dt>
 <dd><p>nyi: no ROHF LCCD or CCD or (T) in GAMESS.</p>
 </dd>
-<dt class="label" id="f37"><span class="brackets">28</span></dt>
+<dt class="label" id="f37"><span class="brackets">28</span><span class="fn-backref">(<a href="#id74">1</a>,<a href="#id77">2</a>)</span></dt>
 <dd><p>nyi: no conv ROHF LCCD in Psi4.</p>
 </dd>
-<dt class="label" id="f38"><span class="brackets">29</span></dt>
+<dt class="label" id="f38"><span class="brackets">29</span><span class="fn-backref">(<a href="#id84">1</a>,<a href="#id86">2</a>,<a href="#id88">3</a>,<a href="#id90">4</a>)</span></dt>
 <dd><p>uncertain reference: ROHF CISD vcc=tce!=psi4numpy while CFOUR paper says NYI. First wrong at <cite>LCCSD CORRELATION ENERGY</cite>.</p>
 </dd>
-<dt class="label" id="f39"><span class="brackets">30</span></dt>
+<dt class="label" id="f39"><span class="brackets">30</span><span class="fn-backref">(<a href="#id78">1</a>,<a href="#id79">2</a>,<a href="#id80">3</a>,<a href="#id82">4</a>,<a href="#id85">5</a>,<a href="#id89">6</a>)</span></dt>
 <dd><p>nyi: no LCCSD in GAMESS.</p>
 </dd>
-<dt class="label" id="f40"><span class="brackets">31</span></dt>
+<dt class="label" id="f40"><span class="brackets">31</span><span class="fn-backref">(<a href="#id81">1</a>,<a href="#id83">2</a>,<a href="#id87">3</a>,<a href="#id91">4</a>)</span></dt>
 <dd><p>nyi: no non-RHF LCCSD in Psi4.</p>
 </dd>
-<dt class="label" id="f41"><span class="brackets">32</span></dt>
+<dt class="label" id="f41"><span class="brackets"><a class="fn-backref" href="#id95">32</a></span></dt>
 <dd><p>misdirected calc: CFOUR NCC CCD gradient mixed fc/ae parts. First wrong at <cite>CCD CORRELATION ENERGY</cite>.</p>
 </dd>
-<dt class="label" id="f42"><span class="brackets">33</span></dt>
+<dt class="label" id="f42"><span class="brackets">33</span><span class="fn-backref">(<a href="#id92">1</a>,<a href="#id93">2</a>,<a href="#id94">3</a>,<a href="#id96">4</a>,<a href="#id99">5</a>,<a href="#id101">6</a>,<a href="#id103">7</a>,<a href="#id105">8</a>,<a href="#id109">9</a>,<a href="#id111">10</a>)</span></dt>
 <dd><p>nyi: no conv CCD in Psi4.</p>
 </dd>
-<dt class="label" id="f43"><span class="brackets">34</span></dt>
+<dt class="label" id="f43"><span class="brackets">34</span><span class="fn-backref">(<a href="#id97">1</a>,<a href="#id107">2</a>)</span></dt>
 <dd><p>nyi: no CCD Hessian in Psi4.</p>
 </dd>
-<dt class="label" id="f44"><span class="brackets">35</span></dt>
+<dt class="label" id="f44"><span class="brackets">35</span><span class="fn-backref">(<a href="#id129">1</a>,<a href="#id130">2</a>)</span></dt>
 <dd><p>nonstandard answer: CFOUR CCSD ROHF FC gradient right but energies wrong. (Paper says NYI.) First wrong at <cite>MP2 CORRELATION ENERGY</cite>.</p>
 </dd>
-<dt class="label" id="f45"><span class="brackets">36</span></dt>
+<dt class="label" id="f45"><span class="brackets">36</span><span class="fn-backref">(<a href="#id112">1</a>,<a href="#id142">2</a>,<a href="#id167">3</a>)</span></dt>
 <dd><p>misdirected calc: CFOUR NCC CCSD &amp; A-CCSD(T) gradient mixed fc/ae parts. First wrong at <cite>CCSD CORRELATION ENERGY</cite>.</p>
 </dd>
-<dt class="label" id="f46"><span class="brackets">37</span></dt>
+<dt class="label" id="f46"><span class="brackets">37</span><span class="fn-backref">(<a href="#id126">1</a>,<a href="#id131">2</a>)</span></dt>
 <dd><p>nonstandard answer: GAMESS CCSD ROHF FC energy. First wrong at <cite>CCSD CORRELATION ENERGY</cite>.</p>
 </dd>
-<dt class="label" id="f47"><span class="brackets">38</span></dt>
+<dt class="label" id="f47"><span class="brackets">38</span><span class="fn-backref">(<a href="#id115">1</a>,<a href="#id117">2</a>,<a href="#id119">3</a>,<a href="#id121">4</a>,<a href="#id125">5</a>,<a href="#id127">6</a>,<a href="#id128">7</a>,<a href="#id132">8</a>,<a href="#id137">9</a>,<a href="#id140">10</a>,<a href="#id145">11</a>,<a href="#id147">12</a>,<a href="#id149">13</a>,<a href="#id151">14</a>,<a href="#id154">15</a>,<a href="#id156">16</a>,<a href="#id158">17</a>,<a href="#id161">18</a>)</span></dt>
 <dd><p>nyi: no non-RHF reference for NWChem hand-coded CC.</p>
 </dd>
-<dt class="label" id="f48"><span class="brackets">39</span></dt>
+<dt class="label" id="f48"><span class="brackets">39</span><span class="fn-backref">(<a href="#id113">1</a>,<a href="#id122">2</a>,<a href="#id133">3</a>,<a href="#id143">4</a>,<a href="#id152">5</a>)</span></dt>
 <dd><p>nyi: no FC CC gradients in Psi4.</p>
 </dd>
-<dt class="label" id="f49"><span class="brackets">40</span></dt>
+<dt class="label" id="f49"><span class="brackets">40</span><span class="fn-backref">(<a href="#id134">1</a>,<a href="#id135">2</a>,<a href="#id138">3</a>,<a href="#id141">4</a>)</span></dt>
 <dd><p>nyi: no CCSD+T(CCSD) in Psi4.</p>
 </dd>
-<dt class="label" id="f50"><span class="brackets">41</span></dt>
+<dt class="label" id="f50"><span class="brackets">41</span><span class="fn-backref">(<a href="#id159">1</a>,<a href="#id162">2</a>)</span></dt>
 <dd><p>nonstandard answer: NWChem CCSD(T) ROHF AE/FC energy. First wrong at <cite>(T) CORRECTION ENERGY</cite>.</p>
 </dd>
-<dt class="label" id="f51"><span class="brackets">42</span></dt>
+<dt class="label" id="f51"><span class="brackets">42</span><span class="fn-backref">(<a href="#id165">1</a>,<a href="#id166">2</a>)</span></dt>
 <dd><p>nonstandard answer: CFOUR ECC A-CCSD(T) AE doesn’t match findif. First wrong at <cite>A-CCSD(T) TOTAL GRADIENT</cite>.</p>
 </dd>
-<dt class="label" id="f52"><span class="brackets">43</span></dt>
+<dt class="label" id="f52"><span class="brackets"><a class="fn-backref" href="#id168">43</a></span></dt>
 <dd><p>nyi: no UHF a-CCSD(T) in CFOUR.</p>
 </dd>
-<dt class="label" id="f53"><span class="brackets">44</span></dt>
+<dt class="label" id="f53"><span class="brackets">44</span><span class="fn-backref">(<a href="#id163">1</a>,<a href="#id164">2</a>)</span></dt>
 <dd><p>nyi: no a-CCSD(T) in GAMESS or NWChem.</p>
 </dd>
-<dt class="label" id="f54"><span class="brackets">45</span></dt>
+<dt class="label" id="f54"><span class="brackets"><a class="fn-backref" href="#id169">45</a></span></dt>
 <dd><p>nyi: no UHF a-CCSD(T) in Psi4.</p>
 </dd>
-<dt class="label" id="f55"><span class="brackets">46</span></dt>
+<dt class="label" id="f55"><span class="brackets">46</span><span class="fn-backref">(<a href="#id175">1</a>,<a href="#id176">2</a>,<a href="#id177">3</a>,<a href="#id178">4</a>,<a href="#id183">5</a>,<a href="#id184">6</a>,<a href="#id185">7</a>,<a href="#id186">8</a>,<a href="#id191">9</a>,<a href="#id192">10</a>,<a href="#id193">11</a>,<a href="#id194">12</a>,<a href="#id200">13</a>,<a href="#id201">14</a>,<a href="#id202">15</a>,<a href="#id203">16</a>,<a href="#id207">17</a>,<a href="#id208">18</a>,<a href="#id209">19</a>,<a href="#id210">20</a>)</span></dt>
 <dd><p>nyi: no non-RHF CCSDT-n or CCSDT gradients in CFOUR.</p>
 </dd>
-<dt class="label" id="f56"><span class="brackets">47</span></dt>
+<dt class="label" id="f56"><span class="brackets"><a class="fn-backref" href="#id174">47</a></span></dt>
 <dd><p>nonstandard answer: CFOUR CCSDT-1A FC doesn’t match findif. First wrong at <cite>CCSDT-1A TOTAL HESSIAN</cite>.</p>
 </dd>
-<dt class="label" id="f57"><span class="brackets">48</span></dt>
+<dt class="label" id="f57"><span class="brackets"><a class="fn-backref" href="#id173">48</a></span></dt>
 <dd><p>misdirected calc: CFOUR NCC CCSDT-1a gradient mixed fc/ae parts. First wrong at <cite>CCSDT-1A CORRELATION ENERGY</cite>.</p>
 </dd>
-<dt class="label" id="f58"><span class="brackets">49</span></dt>
+<dt class="label" id="f58"><span class="brackets">49</span><span class="fn-backref">(<a href="#id170">1</a>,<a href="#id171">2</a>,<a href="#id172">3</a>)</span></dt>
 <dd><p>nyi: no CCSDT-1a in GAMESS, NWChem, or Psi4.</p>
 </dd>
-<dt class="label" id="f59"><span class="brackets">50</span></dt>
+<dt class="label" id="f59"><span class="brackets"><a class="fn-backref" href="#id182">50</a></span></dt>
 <dd><p>misdirected calc: CFOUR NCC CCSDT-1b gradient mixed fc/ae parts. First wrong at <cite>CCSDT-1B CORRELATION ENERGY</cite>.</p>
 </dd>
-<dt class="label" id="f60"><span class="brackets">51</span></dt>
+<dt class="label" id="f60"><span class="brackets">51</span><span class="fn-backref">(<a href="#id179">1</a>,<a href="#id180">2</a>,<a href="#id181">3</a>)</span></dt>
 <dd><p>nyi: no CCSDT-1b in GAMESS, NWChem, or Psi4.</p>
 </dd>
-<dt class="label" id="f61"><span class="brackets">52</span></dt>
+<dt class="label" id="f61"><span class="brackets"><a class="fn-backref" href="#id190">52</a></span></dt>
 <dd><p>misdirected calc: CFOUR NCC CCSDT-2 gradient mixed fc/ae parts. First wrong at <cite>CCSDT-2 CORRELATION ENERGY</cite>.</p>
 </dd>
-<dt class="label" id="f62"><span class="brackets">53</span></dt>
+<dt class="label" id="f62"><span class="brackets">53</span><span class="fn-backref">(<a href="#id187">1</a>,<a href="#id188">2</a>,<a href="#id189">3</a>)</span></dt>
 <dd><p>nyi: no CCSDT-2 in GAMESS, NWChem, or Psi4.</p>
 </dd>
-<dt class="label" id="f63"><span class="brackets">54</span></dt>
+<dt class="label" id="f63"><span class="brackets"><a class="fn-backref" href="#id199">54</a></span></dt>
 <dd><p>nonstandard answer: CFOUR CCSDT-3 FC doesn’t match findif. First wrong at <cite>CCSDT-3 TOTAL HESSIAN</cite>.</p>
 </dd>
-<dt class="label" id="f64"><span class="brackets">55</span></dt>
+<dt class="label" id="f64"><span class="brackets"><a class="fn-backref" href="#id198">55</a></span></dt>
 <dd><p>misdirected calc: CFOUR NCC CCSDT-3 gradient mixed fc/ae parts. First wrong at <cite>CCSDT-3 CORRELATION ENERGY</cite>.</p>
 </dd>
-<dt class="label" id="f65"><span class="brackets">56</span></dt>
+<dt class="label" id="f65"><span class="brackets">56</span><span class="fn-backref">(<a href="#id195">1</a>,<a href="#id196">2</a>,<a href="#id197">3</a>)</span></dt>
 <dd><p>nyi: no CCSDT-3 in GAMESS, NWChem, or Psi4.</p>
 </dd>
-<dt class="label" id="f66"><span class="brackets">57</span></dt>
+<dt class="label" id="f66"><span class="brackets">57</span><span class="fn-backref">(<a href="#id206">1</a>,<a href="#id211">2</a>)</span></dt>
 <dd><p>misdirected calc: CFOUR NCC CCSDT &amp; CCSDT(Q) gradient mixed fc/ae parts. First wrong at <cite>CCSDT CORRELATION ENERGY</cite>.</p>
 </dd>
-<dt class="label" id="f67"><span class="brackets">58</span></dt>
+<dt class="label" id="f67"><span class="brackets">58</span><span class="fn-backref">(<a href="#id204">1</a>,<a href="#id205">2</a>)</span></dt>
 <dd><p>nyi: no CCSDT in GAMESS or Psi4.</p>
 </dd>
-<dt class="label" id="f68"><span class="brackets">59</span></dt>
+<dt class="label" id="f68"><span class="brackets"><a class="fn-backref" href="#id212">59</a></span></dt>
 <dd><p>misdirected calc: CFOUR NCC CCSDTQ gradient mixed fc/ae parts. First wrong at <cite>CCSDTQ CORRELATION ENERGY</cite>.</p>
 </dd>
-<dt class="label" id="f69"><span class="brackets">60</span></dt>
+<dt class="label" id="f69"><span class="brackets">60</span><span class="fn-backref">(<a href="#id213">1</a>,<a href="#id214">2</a>,<a href="#id215">3</a>,<a href="#id216">4</a>,<a href="#id217">5</a>,<a href="#id219">6</a>,<a href="#id221">7</a>,<a href="#id222">8</a>,<a href="#id223">9</a>,<a href="#id224">10</a>,<a href="#id225">11</a>,<a href="#id227">12</a>,<a href="#id229">13</a>,<a href="#id230">14</a>,<a href="#id231">15</a>,<a href="#id232">16</a>,<a href="#id233">17</a>,<a href="#id235">18</a>)</span></dt>
 <dd><p>nyi: no DFT in CFOUR.</p>
 </dd>
-<dt class="label" id="f70"><span class="brackets">61</span></dt>
+<dt class="label" id="f70"><span class="brackets">61</span><span class="fn-backref">(<a href="#id218">1</a>,<a href="#id220">2</a>,<a href="#id226">3</a>,<a href="#id228">4</a>,<a href="#id234">5</a>,<a href="#id236">6</a>)</span></dt>
 <dd><p>nyi: no ROHF DFT in Psi4.</p>
 </dd>
 </dl>
@@ -400,7 +2326,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/stdsuite.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g46b7aff">0+untagged.1.g46b7aff</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g7fb3845">0+untagged.1.g7fb3845</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -413,7 +2339,7 @@
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2021, The QCDB Project.
-      Last updated on Saturday, 04 September 2021 04:58AM.
+      Last updated on Saturday, 04 September 2021 05:47AM.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.1.2.
     </div>
     <!-- cloud_sptheme 1.4 -->
