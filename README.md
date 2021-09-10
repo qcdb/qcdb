@@ -198,3 +198,10 @@ The accustomed output (and generated input) are also accessible
  '  The final electronic energy is       -76.228475483677684 a.u. \n'
  '  This computation required                            0.33 seconds (walltime).\n')
  ```
+
+Some tutorial tests
+* [test_tu1_ene.py](qcdb/tests/test_tu1_ene.py)
+* [test_tu2_uhf.py](qcdb/tests/test_tu2_uhf.py)
+* [test_tu3_opt.py](qcdb/tests/test_tu3_opt.py)
+* [test_tu4_freq.py](qcdb/tests/test_tu4_freq.py)
+* [test_tu6_cp.py](qcdb/tests/test_tu6_cp.py)
