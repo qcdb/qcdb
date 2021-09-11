@@ -16,7 +16,7 @@ from qcengine.programs.util import PreservingDict
 
 from ... import qcvars
 from ...basisset import BasisSet
-from ...util import print_jobrec, provenance_stamp
+from ...util import print_jobrec, provenance_stamp, accession_stamp
 from .germinate import (extract_basis_from_genbas, muster_basisset, muster_inherited_keywords, muster_modelchem,
                         muster_molecule)
 

@@ -1,7 +1,7 @@
 import os
 import re
 import warnings
-from typing import Dict, Union
+from typing import Any, Dict, Union
 
 import numpy as np
 
@@ -198,10 +198,9 @@ def activate(mol):
     pe.active_molecule = mol
 
 
-def set_options(options_dict):
-    """
-    Sets Psi4 global options from an input dictionary.
-    """
+def set_options(options_dict: Dict[str, Any]) -> None:
+    """Set QCDB keywords from input dictionary."""
+
     optionre = re.compile(
         r'\A((?P<silo>(cfour|psi4|nwchem|gamess|dftd3|resp))_)?(?P<module>\w+__)?(?P<option>[\w\(\)]+)\Z',
         re.IGNORECASE)

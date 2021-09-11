@@ -29,7 +29,7 @@ def kwargs_lower(kwargs):
             except (AttributeError, KeyError):
                 lvalue = value
 
-        if lkey in ['irrep', 'check_bsse', 'linkage', 'bsse_type']:
+        if lkey in ["irrep", "check_bsse", "linkage", "bsse_type", "local_options"]:
             caseless_kwargs[lkey] = lvalue
 
         elif 'dertype' in lkey:

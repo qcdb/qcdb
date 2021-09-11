@@ -130,6 +130,7 @@ def test_5_df_custom_scs_mp2(h2o):
     check_mp2(val, is_df=True, is_5050=True)
 
 
+@pytest.mark.xfail(reason="custom scs NYI")
 @using_psi4
 def test_6_conv_custom_scs_mp2(h2o):
     qcdb.set_molecule(h2o)

@@ -57,11 +57,13 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
 
     # 1. ref mol: `ref_subject` nicely oriented mol taken from standard_suite_ref.py
     ref_subject.update_geometry()
-    min_nonzero_coords = np.count_nonzero(np.abs(ref_subject.geometry(np_out=True)) > 1.e-10)
+    min_nonzero_coords = np.count_nonzero(np.abs(ref_subject.geometry(np_out=True)) > 1.0e-10)
 
     if scramble is None:
         subject = ref_subject
-        ref2in_mill = compute_scramble(subject.natom(), do_resort=False, do_shift=False, do_rotate=False, do_mirror=False)  # identity AlignmentMill
+        ref2in_mill = compute_scramble(
+            subject.natom(), do_resort=False, do_shift=False, do_rotate=False, do_mirror=False
+        )  # identity AlignmentMill
 
     else:
         subject, scramble_data = ref_subject.scramble(**scramble, do_test=False, fix_mode="copy")
@@ -111,28 +113,28 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
     natural_values = {"pk": "pk", "direct": "pk", "df": "df", "mem_df": "df", "disk_df": "df", "cd": "cd"}
     scf_type = natural_values[scf_type]
 
-    is_dft = (method in ["pbe", "b3lyp", "b3lyp5"])
+    is_dft = method in ["pbe", "b3lyp", "b3lyp5"]
 
     # * absolute and relative tolerances function approx as `or` operation. see https://numpy.org/doc/stable/reference/generated/numpy.allclose.html
     # * can't go lower on atol_e because hit digit limits accessible for reference values
     # * dz gradients tend to be less accurate than larger basis sets/mols
     # * analytic Hessian very loose to catch gms/nwc HF Hessian
-    atol_e, rtol_e = 2.e-7, 1.e-16
-    atol_g, rtol_g = 5.e-7, 2.e-5
-    atol_h, rtol_h = 1.e-5, 2.e-5
+    atol_e, rtol_e = 2.0e-7, 1.0e-16
+    atol_g, rtol_g = 5.0e-7, 2.0e-5
+    atol_h, rtol_h = 1.0e-5, 2.0e-5
     if is_dft:
-        atol_g = 6.e-6
+        atol_g = 6.0e-6
     using_fd = "xptd" in inp and "fd" in inp["xptd"]  # T/F: notate fd vs. anal for docs table
     loose_fd = inp.get("xptd", {}).get("fd", False)  # T/F: relax conv crit for 3-pt internal findif fd
     if loose_fd:
         if basis == "cc-pvdz":
-            atol_g = 1.e-4
-            atol_h, rtol_h = 1.e-4, 5.e-4
+            atol_g = 1.0e-4
+            atol_h, rtol_h = 1.0e-4, 5.0e-4
         else:
-            atol_g = 2.e-5
-            atol_h, rtol_h = 5.e-5, 2.e-4
+            atol_g = 2.0e-5
+            atol_h, rtol_h = 5.0e-5, 2.0e-4
 
-# VIEW    atol_e, atol_g, atol_h, rtol_e, rtol_g, rtol_h = 1.e-9, 1.e-9, 1.e-9, 1.e-16, 1.e-16, 1.e-16
+    # VIEW    atol_e, atol_g, atol_h, rtol_e, rtol_g, rtol_h = 1.e-9, 1.e-9, 1.e-9, 1.e-16, 1.e-16, 1.e-16
 
     chash = answer_hash(
         system=subject.name(),
@@ -208,7 +210,9 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
     if subject.com_fixed() and subject.orientation_fixed():
         assert frame == "fixed"
         with np.printoptions(precision=3, suppress=True):
-            assert compare_values(subject.geometry(), wfn_molecule.geometry(), atol=5.e-8), f"coords: atres ({wfn_molecule.geometry(np_out=True)}) != atin ({subject.geometry(np_out=True)})"  # 10 too much
+            assert compare_values(
+                subject.geometry(), wfn_molecule.geometry(), atol=5.0e-8
+            ), f"coords: atres ({wfn_molecule.geometry(np_out=True)}) != atin ({subject.geometry(np_out=True)})"  # 10 too much
         assert (
             ref_subject.com_fixed()
             and ref_subject.orientation_fixed()
@@ -224,7 +228,11 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
     else:
         assert frame == "free" or frame == ""  # "": direct from standard_suite_ref.std_molecules
         with np.printoptions(precision=3, suppress=True):
-            assert compare(min_nonzero_coords, np.count_nonzero(np.abs(wfn_molecule.geometry(np_out=True)) > 1.e-10), tnm + " !0 coords wfn"), f"ncoords {wfn_molecule.geometry(np_out=True)} != {min_nonzero_coords}"
+            assert compare(
+                min_nonzero_coords,
+                np.count_nonzero(np.abs(wfn_molecule.geometry(np_out=True)) > 1.0e-10),
+                tnm + " !0 coords wfn",
+            ), f"ncoords {wfn_molecule.geometry(np_out=True)} != {min_nonzero_coords}"
         assert (
             (not ref_subject.com_fixed())
             and (not ref_subject.orientation_fixed())
@@ -237,7 +245,9 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
         if scramble is None:
             # wfn exactly matches ref_subject and ref_block
             with np.printoptions(precision=3, suppress=True):
-                assert compare_values(ref_subject.geometry(), wfn_molecule.geometry(), atol=5.e-8), f"coords: atres ({wfn_molecule.geometry(np_out=True)}) != atin ({ref_subject.geometry(np_out=True)})"
+                assert compare_values(
+                    ref_subject.geometry(), wfn_molecule.geometry(), atol=5.0e-8
+                ), f"coords: atres ({wfn_molecule.geometry(np_out=True)}) != atin ({ref_subject.geometry(np_out=True)})"
         else:
             # wfn is "pretty" (max zeros) but likely not exactly ref_block (by axis exchange, phasing, atom shuffling) since Psi4 ref frame is not unique
             ref_block = mill_qcvars(ref2out_mill, ref_block)
@@ -359,7 +369,18 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
                 qcvar_assertions()
 
             assert errmatch in str(e.value), f"Not found: AssertionError '{errmatch}' for '{reason}' in {e.value}"
-            _recorder(qcprog, qc_module_out, driver, method, reference, fcae, scf_type, corl_type, "wrong", reason + f" First wrong at `{errmatch}`.")
+            _recorder(
+                qcprog,
+                qc_module_out,
+                driver,
+                method,
+                reference,
+                fcae,
+                scf_type,
+                corl_type,
+                "wrong",
+                reason + f" First wrong at `{errmatch}`.",
+            )
             pytest.xfail(reason)
 
     # primary label checks
@@ -383,29 +404,66 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
             ref_block[f"{method.upper()} TOTAL ENERGY"], wfn["return_result"], tnm + " wfn", atol=atol_e, rtol=rtol_e
         )
         assert compare_values(
-            ref_block[f"{method.upper()} TOTAL ENERGY"], wfn["properties"]["return_energy"], tnm + " prop", atol=atol_e, rtol=rtol_e
+            ref_block[f"{method.upper()} TOTAL ENERGY"],
+            wfn["properties"]["return_energy"],
+            tnm + " prop",
+            atol=atol_e,
+            rtol=rtol_e,
         )
         assert compare_values(ref_block[f"{method.upper()} TOTAL ENERGY"], ret, tnm + " return")
 
     elif driver == "gradient":
         assert compare_values(
-            ref_block[f"{method.upper()} TOTAL GRADIENT"], wfn["return_result"], tnm + " grad wfn", atol=atol_g, rtol=rtol_g
+            ref_block[f"{method.upper()} TOTAL GRADIENT"],
+            wfn["return_result"],
+            tnm + " grad wfn",
+            atol=atol_g,
+            rtol=rtol_g,
         )
         assert compare_values(
-            ref_block[f"{method.upper()} TOTAL ENERGY"], wfn["properties"]["return_energy"], tnm + " prop", atol=atol_e, rtol=rtol_e
+            ref_block[f"{method.upper()} TOTAL ENERGY"],
+            wfn["properties"]["return_energy"],
+            tnm + " prop",
+            atol=atol_e,
+            rtol=rtol_e,
         )
-        # assert compare_values(ref_block[f"{method.upper()} TOTAL GRADIENT"], wfn["properties"]["return_gradient"], tnm + " grad prop", atol=atol_g)
-        assert compare_values(ref_block[f"{method.upper()} TOTAL GRADIENT"], ret, tnm + " grad return", atol=atol_g, rtol=rtol_g)
+        assert compare_values(
+            ref_block[f"{method.upper()} TOTAL GRADIENT"],
+            wfn["properties"]["return_gradient"],
+            tnm + " grad prop",
+            atol=atol_g,
+            rtol=rtol_g,
+        )
+        assert compare_values(
+            ref_block[f"{method.upper()} TOTAL GRADIENT"], ret, tnm + " grad return", atol=atol_g, rtol=rtol_g
+        )
 
     elif driver == "hessian":
         assert compare_values(
-            ref_block[f"{method.upper()} TOTAL HESSIAN"], wfn["return_result"], tnm + " hess wfn", atol=atol_h, rtol=rtol_h
+            ref_block[f"{method.upper()} TOTAL HESSIAN"],
+            wfn["return_result"],
+            tnm + " hess wfn",
+            atol=atol_h,
+            rtol=rtol_h,
         )
-        # assert compare_values(ref_block[f"{method.upper()} TOTAL GRADIENT"], wfn["properties"]["return_gradient"], tnm + " grad prop", atol=atol_g)
         assert compare_values(
-            ref_block[f"{method.upper()} TOTAL ENERGY"], wfn["properties"]["return_energy"], tnm + " prop", atol=atol_e, rtol=rtol_e
+            ref_block[f"{method.upper()} TOTAL ENERGY"],
+            wfn["properties"]["return_energy"],
+            tnm + " prop",
+            atol=atol_e,
+            rtol=rtol_e,
         )
-        assert compare_values(ref_block[f"{method.upper()} TOTAL HESSIAN"], ret, tnm + " hess return", atol=atol_h, rtol=rtol_h)
+        # assert compare_values(ref_block[f"{method.upper()} TOTAL GRADIENT"], wfn["properties"]["return_gradient"], tnm + " grad prop", atol=atol_g, rtol=rtol_g)
+        assert compare_values(
+            ref_block[f"{method.upper()} TOTAL HESSIAN"],
+            wfn["properties"]["return_hessian"],
+            tnm + " hess prop",
+            atol=atol_h,
+            rtol=rtol_h,
+        )
+        assert compare_values(
+            ref_block[f"{method.upper()} TOTAL HESSIAN"], ret, tnm + " hess return", atol=atol_h, rtol=rtol_h
+        )
 
     # generics checks
     # yapf: disable
@@ -416,7 +474,9 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
     # yapf: enable
 
     # record
-    _recorder(qcprog, qc_module_out, driver, method, reference, fcae, scf_type, corl_type, "fd" if using_fd else "pass", "")
+    _recorder(
+        qcprog, qc_module_out, driver, method, reference, fcae, scf_type, corl_type, "fd" if using_fd else "pass", ""
+    )
 
     # assert 0
 
@@ -439,9 +499,17 @@ def _asserter(asserter_args, contractual_args, contractual_fn):
                 )
                 assert compare_values(ref_block[rpv], query_qcvar(obj, pv), label, atol=atol, rtol=rtol), errmsg
                 tf, errmsg = compare_values(
-                    ref_block_conv[rpv], query_qcvar(obj, pv), label, atol=atol_conv, rtol=rtol_conv, return_message=True, quiet=True
+                    ref_block_conv[rpv],
+                    query_qcvar(obj, pv),
+                    label,
+                    atol=atol_conv,
+                    rtol=rtol_conv,
+                    return_message=True,
+                    quiet=True,
                 )
-                assert compare_values(ref_block_conv[rpv], query_qcvar(obj, pv), label, atol=atol_conv, rtol=rtol_conv), errmsg
+                assert compare_values(
+                    ref_block_conv[rpv], query_qcvar(obj, pv), label, atol=atol_conv, rtol=rtol_conv
+                ), errmsg
 
                 # Note that the double compare_values lines are to collect the errmsg in the first for assertion in the second.
                 #   If the errmsg isn't present in the assert, the string isn't accessible through `e.value`.
@@ -453,5 +521,15 @@ def _asserter(asserter_args, contractual_args, contractual_fn):
 
 def _recorder(engine, module, driver, method, reference, fcae, scf_type, corl_type, status, note):
     with open("stdsuite_qcng.txt", "a") as fp:
-        stuff = {"module": module, "driver": driver, "method": method, "reference": reference, "fcae": fcae, "scf_type": scf_type, "corl_type": corl_type, "status": status, "note": note}
+        stuff = {
+            "module": module,
+            "driver": driver,
+            "method": method,
+            "reference": reference,
+            "fcae": fcae,
+            "scf_type": scf_type,
+            "corl_type": corl_type,
+            "status": status,
+            "note": note,
+        }
         fp.write(f"{stuff!r}\n")

@@ -30,7 +30,7 @@ def compute(
 
         import qcdb
 
-        driver_call = {"energy": qcdb.energy, "gradient": qcdb.gradient}
+        driver_call = {"energy": qcdb.energy, "gradient": qcdb.gradient, "hessian": qcdb.hessian}
         qmol = qcdb.Molecule.from_schema(input_model.molecule.dict())
 
         # keywords = {(program + "_" + k): v for k, v in input_model.keywords.items()}

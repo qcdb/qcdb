@@ -642,6 +642,37 @@ def define_prop_qcvars(mtd, extra=''):
     }
 
 
+def define_transition_prop_qcvars(mtd, i, j, extra=''):
+    mtd = mtd.upper()
+
+    qcvardefs[f'{mtd} ROOT {i} -> ROOT {j} DIPOLE'] = {
+            'units':
+            'e a0',
+            'dimension': '(3,)',
+            'glossary':
+            f"""
+           The transition dipole array between roots {i} and {j} for the {mtd} level of theory (number starts at GS = 0). {extra}"""
+    }
+
+    qcvardefs[f'{mtd} ROOT {i} -> ROOT {j} QUADRUPOLE'] = {
+            'units':
+            'e a0^2',
+            'dimension': ('(3,3)'),
+            'glossary':
+            """
+           The redundant transition quadrupole between roots {i} and {j} for the {mtd} level of theory (number starts at GS = 0). {extra}"""
+    }
+
+    qcvardefs[f"{mtd} ROOT {i} -> ROOT {j} OSCILLATOR STRENGTH (LEN)"] = {
+            "units": "",
+            "glossary": 
+   """The oscillator strength in length or velocity gauge of named method
+   from ground state to root m in h symmetry (if available). DFT
+   functional labeled if canonical."""
+    }
+
+
+
 def define_scf_qcvars(mtd, is_dft=True, extra='', is_dh=False, do_grad=False):
     global qcvardefs
 
@@ -822,19 +853,21 @@ def define_ex_transition_qcvars(max_root, mtd, sym):
                 The total energy of EOM-{} in {} symmetry from 0 to root {}""".format(mtd, sym, i)
         }
 
-def define_tddft_roots_qcvars(max_root, sym):
-    sym = []
-
+def define_tddft_roots_qcvars(max_root, syms):
     for i in range(max_root):
-        qcvardefs['TDDFT ROOT {} EXCITATION ENERGY - {} SYMMETRY'.format(i+1, sym)] = {
+        for sym in syms:
+            qcvardefs[f"TDDFT ROOT {i + 1} EXCITATION ENERGY - {sym} SYMMETRY"] = {
                 'units' : 'Eh',
                 'glossary' : """ The excitation energy of time-dependent DFT in {} symmetry from 0 to root {}""".format(sym, i+1)
                 }
 
-        qcvardefs['TDDFT ROOT {} EXCITED STATE ENERGY - {} SYMMETRY'.format(i+1, sym)] = {
+            qcvardefs[f"TDDFT ROOT {i + 1} EXCITED STATE ENERGY - {sym} SYMMETRY"] = {
                 'units' : 'Eh',
                 'glossary' : """The excited state energy of time dependent DFT from root 0 to root {} in {} symmetry""".format(i+1, sym)
                 }
+        #define_prop_qcvars(f"TDDFT ROOT {i + 1}")
+        define_transition_prop_qcvars("TDDFT", 0, i+1)
+
 
 #TRACELESS QUADRUPOLE POLARIZABILITY XZYY
 #.. qcvar:: db_name DATABASE MEAN ABSOLUTE DEVIATION

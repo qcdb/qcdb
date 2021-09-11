@@ -5,6 +5,7 @@ import pytest
 
 import qcelemental as qcel
 import qcengine as qcng
+from qcengine.testing import using
 import qcdb
 
 from .utils import *
@@ -202,6 +203,8 @@ _ins["all"]["d"] = {
 
 @pytest.mark.parametrize("qcprog", ["cfour", "gamess", "nwchem", "psi4"])
 def test_fig2a_txt(qcprog, request):
+    request.node.add_marker(using(qcprog))
+
     sin = _ins[qcprog]["a"]
     from qcelemental.util import which
     from qcengine.util import execute
@@ -222,6 +225,8 @@ def test_fig2a_txt(qcprog, request):
 
 @pytest.mark.parametrize("qcprog", ["cfour", "gamess", "nwchem", "psi4"])
 def test_fig2b_json(qcprog, request):
+    request.node.add_marker(using(qcprog))
+
     datin = _ins[qcprog]["b"]
 
     atres = qcng.compute(datin, qcprog)
@@ -231,6 +236,8 @@ def test_fig2b_json(qcprog, request):
 
 @pytest.mark.parametrize("qcprog", ["cfour", "gamess", "nwchem", "psi4"])
 def test_fig2c_api(qcprog, request):
+    request.node.add_marker(using(qcprog))
+
     datin = _ins[qcprog]["c"]
 
     qcskmol = qcel.models.Molecule(**datin["molecule"])
@@ -248,6 +255,8 @@ def test_fig2c_api(qcprog, request):
 
 @pytest.mark.parametrize("qcprog", ["cfour", "gamess", "nwchem", "psi4"])
 def test_fig2c_json(qcprog, request):
+    request.node.add_marker(using(qcprog))
+
     datin = _ins[qcprog]["c"]
 
     atres = qcdb.compute(datin, qcprog)
@@ -258,6 +267,8 @@ def test_fig2c_json(qcprog, request):
 
 @pytest.mark.parametrize("qcprog", ["cfour", "gamess", "nwchem", "psi4"])
 def test_fig2d_api(qcprog, request):
+    request.node.add_marker(using(qcprog))
+
     datin = _ins["all"]["d"]
 
     qcskmol = qcel.models.Molecule(**datin["molecule"])
@@ -271,3 +282,31 @@ def test_fig2d_api(qcprog, request):
 
     ene = driver(call, molecule=qcdbmol)
     assert compare_values(_the_energy, ene, atol=1.0e-6, label=request.node.name)
+
+
+@using("psi4")
+@using("cfour")
+@pytest.mark.parametrize("bsse, ans", [(None, -229.34491301195257), ("cp", -0.00017499)])
+def test_snippet3(bsse, ans):
+    import qcdb
+
+    nefh = qcdb.set_molecule(
+        """Ne
+           --
+           F 1 R
+           H 2 1.0 1 135.0"""
+    )
+    qcdb.set_options({"e_convergence": 7, "mp2_type": "df"})
+    results = {r / 100: None for r in range(200, 400, 10)}
+    for intra in results:
+        nefh.R = intra
+        results[intra] = qcdb.energy("p4-mp2/jun-cc-pvtz")
+    rmin = min(results, key=results.get)
+    qcdb.set_options({"e_convergence": 9})
+    nefh.R = rmin
+    model = "p4-mp2/aug-cc-pv[tq]z + d:c4-ccsd(t)/aug-cc-pvtz"
+    ene = qcdb.energy(model, bsse_type=bsse)
+    print(f"Ne...FH at optimal dist. {rmin} A has IE {ene} E_h.")
+
+    assert compare_values(3.2, rmin, atol=1.0e-6)
+    assert compare_values(ans, ene, atol=1.0e-6)
