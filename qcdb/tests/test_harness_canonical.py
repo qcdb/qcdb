@@ -53,17 +53,19 @@ def _get_molecule(program, method):
     ]
 )
 @pytest.mark.parametrize("program, model, keywords", _canonical_methods)
-def test_local_options_memory_gib(program, model, keywords, memory_trickery):
+def test_local_options_memory_gib(program, model, keywords, memory_trickery, request):
     """Ensure memory handling implemented in harness (if applicable).
 
-    For available harnesses, run minimal calc at specific total node memory, both through runtime config alone and with
-        clashing (and non-QCEngine-like) keyword spec. Check memory quantity shows up in ``TaskConfig``.
+    For available harnesses, run minimal calc at specific total node memory, both through runtime
+      config alone and with clashing (and non-QCEngine-like) keyword spec. Check memory quantity
+      shows up in ``TaskConfig``.
     For ``managed-memory``-active harnesses, check that memory registers in output.
 
     New Harness Instructions
     ------------------------
     * Make sure minimal calc is in _canonical_methods above.
-    * If ``managed_memory=True`` in harness, add regex to ``stdout_ref`` below to check that memory is specifiable.
+    * If ``managed_memory=True`` in harness, add regex to ``stdout_ref`` below to check that memory
+      is specifiable.
     * If this test doesn't work, implement or adjust ``config.memory`` in your harness.
 
     """
@@ -92,6 +94,12 @@ def test_local_options_memory_gib(program, model, keywords, memory_trickery):
     inp = AtomicInput(molecule=molecule, driver="energy", model=model, keywords=use_keywords)
     ret = qcdb.compute(inp, program, local_options=config.dict())
     pprint.pprint(ret.dict(), width=200)
+
+    if "contra" in request.node.name:
+        assert ret.success is False
+        assert "KeywordReconciliationError" in ret.error.error_message
+        return
+
     assert ret.success is True
 
     #  <<  Reference
@@ -117,15 +125,21 @@ def test_local_options_memory_gib(program, model, keywords, memory_trickery):
 def test_local_options_scratch(program, model, keywords):
     """Ensure scratch handling implemented in harness (if applicable).
 
-    For available harnesses, run minimal calc at specific scratch directory name (randomly generated during test) and skip scratch clean-up. Check scratch settings show up in ``TaskConfig``.
-    For ``scratch``-active harnesses, check that an expected file is written to and left behind in scratch directory. Check any scratch-related printing in output.
+    For available harnesses, run minimal calc at specific scratch directory name (randomly generated
+      during test) and skip scratch clean-up. Check scratch settings show up in ``TaskConfig``.
+    For ``scratch``-active harnesses, check that an expected file is written to and left behind in
+      scratch directory. Check any scratch-related printing in output.
 
     New Harness Instructions
     ------------------------
     * Make sure minimal calc is in _canonical_methods above.
-    * If ``scratch=True`` in harness, add single file (preferrably output) glob to ``scratch_sample`` below to check that program scratch is directable.
-    * If ``scratch=True`` in harness, if scratch directory mentioned in output, add regex to ``stdout_ref`` below to check that program scratch is directable. Otherwise, add an always-passing regex.
-    * If this test doesn't work, implement or adjust ``config.scratch_directory`` and ``config.scratch_messy`` in your harness.
+    * If ``scratch=True`` in harness, add single file (preferrably output) glob to ``scratch_sample``
+      below to check that program scratch is directable.
+    * If ``scratch=True`` in harness, if scratch directory mentioned in output, add regex to
+      ``stdout_ref`` below to check that program scratch is directable. Otherwise, add an
+      always-passing regex.
+    * If this test doesn't work, implement or adjust ``config.scratch_directory`` and
+      ``config.scratch_messy`` in your harness.
 
     """
     if not has_program(program):
@@ -190,15 +204,18 @@ def test_local_options_scratch(program, model, keywords):
 @pytest.mark.parametrize("ncores", [1, 3])
 @pytest.mark.parametrize("program, model, keywords", _canonical_methods)
 def test_local_options_ncores(program, model, keywords, ncores):
-    """Ensure multithreading implemented in harness (if applicable) or multithreaded runs don't break harness (if inapplicable).
+    """Ensure multithreading implemented in harness (if applicable) or multithreaded runs don't
+       break harness (if inapplicable).
 
-    For available harnesses, run minimal calc with single and multiple cores; check ncores count shows up in ``TaskConfig``.
+    For available harnesses, run minimal calc with single and multiple cores; check ncores count
+      shows up in ``TaskConfig``.
     For ``thread_parallel``-active harnesses, check ncores count registers in output.
 
     New Harness Instructions
     ------------------------
     * Make sure minimal calc is in _canonical_methods above.
-    * If ``thread_parallel=True`` in harness, add regex to ``stdout_ref`` below to check ncores the program sees.
+    * If ``thread_parallel=True`` in harness, add regex to ``stdout_ref`` below to check ncores the
+      program sees.
     * If this test doesn't work, implement or adjust ``config.ncores`` in your harness.
 
     """

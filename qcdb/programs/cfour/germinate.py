@@ -7,7 +7,7 @@ import qcelemental as qcel
 
 from ...driver import pe
 from ...exceptions import ValidationError
-from ...util import conv_float2negexp
+from ...util import conv_float2negexp, accession_stamp
 
 
 def muster_molecule(molrec: Dict, ropts: 'Keywords', verbose: int = 1) -> str:
