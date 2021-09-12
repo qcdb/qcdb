@@ -199,9 +199,12 @@ The accustomed output (and generated input) are also accessible
  '  This computation required                            0.33 seconds (walltime).\n')
  ```
 
-Some tutorial tests
+### Some tutorial tests
 * [test_tu1_ene.py](qcdb/tests/test_tu1_ene.py)
 * [test_tu2_uhf.py](qcdb/tests/test_tu2_uhf.py)
 * [test_tu3_opt.py](qcdb/tests/test_tu3_opt.py)
 * [test_tu4_freq.py](qcdb/tests/test_tu4_freq.py)
 * [test_tu6_cp.py](qcdb/tests/test_tu6_cp.py)
+
+### Environment
+A snapshot dev environment is available by mid-September 2021 through `conda create -n qcdbenv python=3.9 psi4 qcdb -c psi4/label/qcdb -c psi4/label/dev -c defaults`. QC programs besides Psi4 are bring-your-own.
