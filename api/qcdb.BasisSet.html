@@ -100,7 +100,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.BasisSet.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g505b4c7">0+untagged.1.g505b4c7</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g3e45af5">0+untagged.1.g3e45af5</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -171,7 +171,7 @@ which can be accessed using molecule().</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.concatenate" title="qcdb.BasisSet.concatenate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">concatenate</span></code></a>(b)</p></td>
 <td><p>Concatenates two basis sets together into a new basis without reordering anything.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.construct" title="qcdb.BasisSet.construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">construct</span></code></a>(parser, mol, key[, deffit, …])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.construct" title="qcdb.BasisSet.construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">construct</span></code></a>(parser, mol, key[, deffit, ...])</p></td>
 <td><p>Returns a new BasisSet object configured from the <em>mol</em> Molecule object for <em>key</em> (generally a Psi4 keyword: BASIS, DF_BASIS_SCF, etc.).</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.constructor_basisset_center" title="qcdb.BasisSet.constructor_basisset_center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">constructor_basisset_center</span></code></a>(bs, center)</p></td>
@@ -180,7 +180,7 @@ which can be accessed using molecule().</p>
 </ul>
 </p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.constructor_role_mol_shellmap" title="qcdb.BasisSet.constructor_role_mol_shellmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">constructor_role_mol_shellmap</span></code></a>(role, mol, …)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.constructor_role_mol_shellmap" title="qcdb.BasisSet.constructor_role_mol_shellmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">constructor_role_mol_shellmap</span></code></a>(role, mol, ...)</p></td>
 <td><p>The most commonly used constructor.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.constructor_zero_ao_basis" title="qcdb.BasisSet.constructor_zero_ao_basis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">constructor_zero_ao_basis</span></code></a>()</p></td>
@@ -193,7 +193,7 @@ which can be accessed using molecule().</p>
 <td><p>From complete BasisSet object, returns array where triplets of elements are each unique atom label, the hash of the string shells entry in gbs format and the shells entry in gbs format for that label.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.function_to_center" title="qcdb.BasisSet.function_to_center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">function_to_center</span></code></a>(i)</p></td>
-<td><p>Given a function what is its atomic center *  &#64;param i Function number *  &#64;return The atomic center for the i’th function.</p></td>
+<td><p>Given a function what is its atomic center *  &#64;param i Function number *  &#64;return The atomic center for the i'th function.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.function_to_shell" title="qcdb.BasisSet.function_to_shell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">function_to_shell</span></code></a>(i)</p></td>
 <td><p>Given a function number what shell does it correspond to.</p></td>
@@ -252,7 +252,7 @@ which can be accessed using molecule().</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.print_detail_cfour" title="qcdb.BasisSet.print_detail_cfour"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_detail_cfour</span></code></a>([out])</p></td>
 <td><p>Returns a string in CFOUR-style of the basis (per-atom) *  Format from <a class="reference external" href="http://slater.chemie.uni-mainz.de/cfour/index.php?n=Main.OldFormatOfAnEntryInTheGENBASFile">http://slater.chemie.uni-mainz.de/cfour/index.php?n=Main.OldFormatOfAnEntryInTheGENBASFile</a></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.print_detail_gamess" title="qcdb.BasisSet.print_detail_gamess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_detail_gamess</span></code></a>([out, numbersonly, …])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.print_detail_gamess" title="qcdb.BasisSet.print_detail_gamess"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_detail_gamess</span></code></a>([out, numbersonly, ...])</p></td>
 <td><p>Prints a detailed PSI3-style summary of the basis (per-atom) *  &#64;param out The file stream to use for printing.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.print_detail_nwchem" title="qcdb.BasisSet.print_detail_nwchem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_detail_nwchem</span></code></a>([out, numbersonly])</p></td>
@@ -261,7 +261,7 @@ which can be accessed using molecule().</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.print_summary" title="qcdb.BasisSet.print_summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_summary</span></code></a>([out])</p></td>
 <td><p>Prints a short string summarizing the basis set *  &#64;param out The file stream to use for printing.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.pyconstruct" title="qcdb.BasisSet.pyconstruct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyconstruct</span></code></a>(mol, key, target[, fitrole, …])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.pyconstruct" title="qcdb.BasisSet.pyconstruct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyconstruct</span></code></a>(mol, key, target[, fitrole, ...])</p></td>
 <td><p>Builds a BasisSet object for <em>mol</em> (either a qcdb.Molecule or a string that can be instantiated into one) from basis set specifications passed in as python functions or as a string that names a basis to be applied to all atoms.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.pyprint" title="qcdb.BasisSet.pyprint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyprint</span></code></a>([out])</p></td>
@@ -274,7 +274,7 @@ which can be accessed using molecule().</p>
 <td><p>Sets the name of this basis set</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.shell" title="qcdb.BasisSet.shell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shell</span></code></a>(si[, center])</p></td>
-<td><p>Return the si’th Gaussian shell on center *  &#64;param i Shell number *  &#64;return A shared pointer to the ShellInfo object for the i’th shell.</p></td>
+<td><p>Return the si'th Gaussian shell on center *  &#64;param i Shell number *  &#64;return A shared pointer to the ShellInfo object for the i'th shell.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.shell_on_center" title="qcdb.BasisSet.shell_on_center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shell_on_center</span></code></a>(center, shell)</p></td>
 <td><p>Return the overall shell number</p></td>
@@ -286,13 +286,13 @@ which can be accessed using molecule().</p>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.shell_to_ao_function" title="qcdb.BasisSet.shell_to_ao_function"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shell_to_ao_function</span></code></a>(i)</p></td>
-<td><p>Given a shell what is its first AO function *  &#64;param i Shell number *  &#64;return The function number for the first function for the i’th shell.</p></td>
+<td><p>Given a shell what is its first AO function *  &#64;param i Shell number *  &#64;return The function number for the first function for the i'th shell.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.shell_to_basis_function" title="qcdb.BasisSet.shell_to_basis_function"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shell_to_basis_function</span></code></a>(i)</p></td>
-<td><p>Given a shell what is its first basis function (spherical) function *  &#64;param i Shell number *  &#64;return The function number for the first function for the i’th shell.</p></td>
+<td><p>Given a shell what is its first basis function (spherical) function *  &#64;param i Shell number *  &#64;return The function number for the first function for the i'th shell.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#qcdb.BasisSet.shell_to_center" title="qcdb.BasisSet.shell_to_center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shell_to_center</span></code></a>(i)</p></td>
-<td><p>Given a shell what is its atomic center *  &#64;param i Shell number *  &#64;return The atomic center for the i’th shell.</p></td>
+<td><p>Given a shell what is its atomic center *  &#64;param i Shell number *  &#64;return The atomic center for the i'th shell.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.test_basis_set" title="qcdb.BasisSet.test_basis_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_basis_set</span></code></a>(max_am)</p></td>
 <td><p>Returns a shell-labeled test basis set object * &#64;param max_am maximum angular momentum to build * &#64;return pair containing shell labels and four-center * test basis for use in benchmarking * See libmints/benchmark.cc for details The libmints version seems not to have been updated along with the classes.</p></td>
@@ -844,7 +844,7 @@ at the origin with an exponent of 0.0 and contraction of 1.0.
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.BasisSet.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g505b4c7">0+untagged.1.g505b4c7</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g3e45af5">0+untagged.1.g3e45af5</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -858,8 +858,8 @@ at the origin with an exponent of 0.0 and contraction of 1.0.
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2021, The QCDB Project.
-      Last updated on Friday, 10 September 2021 02:29PM.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.1.2.
+      Last updated on Sunday, 12 September 2021 05:49PM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.2.0.
     </div>
     <!-- cloud_sptheme 1.4 -->
   </body>
