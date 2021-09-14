@@ -22,21 +22,19 @@ def test_tu4_freq_psi4():
     h2o = qcdb.set_molecule(
         """
       O
-      H 1 0.96
-      H 1 0.96 2 104.5
+      H 1    0.9462932382
+      H 1    0.9462932382      2  104.6566705798
     """
     )
-    h2o.update_geometry()  # only needed for pre-calc NRE check next line
-    assert compare_values(tu3_nre_start, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")
 
-    qcdb.optking("p4-scf/cc-pvdz")
+    qcdb.set_keywords({"basis": "cc-pvdz"})
     ene, wfn = qcdb.frequency("p4-scf/cc-pvdz", return_wfn=True)
     freqs = wfn["frequency_analysis"]["omega"].data
     pprint.pprint(wfn, width=200)  # debug printing
 
     assert compare_values(tu3_nre_opt, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")
     assert compare_values(tu3_scf_ene, qcdb.variable("CURRENT ENERGY"), 4, "opt energy")  # loose check since DF in psi
-    assert compare_values(tu4_scf_freqs, freqs[-3:], atol=0.4, label="freq omegas")  # loose check since DF in psi
+    assert compare_values(tu4_scf_freqs, freqs[-3:], atol=0.5, label="freq omegas")  # loose check since DF in psi
     assert compare("Psi4", wfn["provenance"]["creator"], "harness")
 
 
@@ -45,15 +43,13 @@ def test_tu4_freq_cfour():
     h2o = qcdb.set_molecule(
         """
       O
-      H 1 0.96
-      H 1 0.96 2 104.5
+      H 1    0.9462932382
+      H 1    0.9462932382      2  104.6566705798
     """
     )
-    h2o.update_geometry()  # only needed for pre-calc NRE check next line
-    assert compare_values(tu3_nre_start, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")
 
-    qcdb.optking("c4-scf/cc-pvdz")
-    ene, wfn = qcdb.frequency("c4-scf/cc-pvdz", return_wfn=True)
+    qcdb.set_keywords({"basis": "cc-pvdz"})
+    ene, wfn = qcdb.frequency("c4-scf", return_wfn=True)
     freqs = wfn["frequency_analysis"]["omega"].data
     pprint.pprint(wfn, width=200)  # debug printing
 
@@ -68,14 +64,12 @@ def test_tu4_freq_nwchem():
     h2o = qcdb.set_molecule(
         """
       O
-      H 1 0.96
-      H 1 0.96 2 104.5
+      H 1    0.9462932382
+      H 1    0.9462932382      2  104.6566705798
     """
     )
-    h2o.update_geometry()  # only needed for pre-calc NRE check next line
-    assert compare_values(tu3_nre_start, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")
 
-    qcdb.optking("nwc-scf/cc-pvdz")
+    qcdb.set_keywords({"basis": "cc-pvdz"})
     ene, wfn = qcdb.frequency("nwc-scf/cc-pvdz", return_wfn=True)
     freqs = wfn["frequency_analysis"]["omega"].data
     pprint.pprint(wfn, width=200)  # debug printing
@@ -91,14 +85,12 @@ def test_tu4_freq_gamess():
     h2o = qcdb.set_molecule(
         """
       O
-      H 1 0.96
-      H 1 0.96 2 104.5
+      H 1    0.9462932382
+      H 1    0.9462932382      2  104.6566705798
     """
     )
-    h2o.update_geometry()  # only needed for pre-calc NRE check next line
-    assert compare_values(tu3_nre_start, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")
 
-    qcdb.optking("gms-scf/cc-pvdz")
+    qcdb.set_keywords({"basis": "cc-pvdz"})
     ene, wfn = qcdb.frequency("gms-scf/cc-pvdz", return_wfn=True)
     freqs = wfn["frequency_analysis"]["omega"].data
     pprint.pprint(wfn, width=200)  # debug printing

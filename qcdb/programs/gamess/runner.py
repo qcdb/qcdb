@@ -16,7 +16,7 @@ from qcengine.programs.util import PreservingDict
 from ... import qcvars
 from ...basisset import BasisSet
 from ...molecule import Molecule
-from ...util import print_jobrec, provenance_stamp
+from ...util import print_jobrec, provenance_stamp, accession_stamp
 from .germinate import get_master_frame, muster_inherited_keywords, muster_modelchem, muster_molecule_and_basisset
 
 pp = pprint.PrettyPrinter(width=120)
@@ -94,12 +94,13 @@ class QcdbGAMESSHarness(GAMESSHarness):
             'scratch_directory': config.scratch_directory,
         }
 
+        kwgs = {"accession": accession_stamp(), "verbose": 1}
         ropts = input_model.extras['qcdb:options']
 
         if not all(input_model.molecule.real):
             raise InputError("GAMESS can't handle ghost atoms yet.")
 
-        mf_mol, mf_data = get_master_frame(input_model.molecule)
+        mf_mol, mf_data = get_master_frame(input_model.molecule, config.scratch_directory)
 
         # c1 so _all_ atoms written to BasisSet
         mf_qmol_c1 = Molecule.from_schema(mf_mol.dict() | {"fix_symmetry": "c1"})
@@ -138,7 +139,7 @@ class QcdbGAMESSHarness(GAMESSHarness):
         # Handle calc type and quantum chemical method
         muster_modelchem(input_model.model.method, input_model.driver.derivative_int(), ropts, sysinfo)
 
-        ropts.require("QCDB", "MEMORY", f"{config.memory} gib", accession='00000000', verbose=False)
+        ropts.require("QCDB", "MEMORY", f"{config.memory} gib", **kwgs)
 
         # Handle memory
         # * [GiB] --> [M QW]
@@ -176,10 +177,14 @@ class QcdbGAMESSHarness(GAMESSHarness):
             elif "EXECUTION OF GAMESS TERMINATED -ABNORMALLY-" in dexe["stdout"]:
                 pass
             else:
-                ropts.suggest("GAMESS", "SYSTEM__MWORDS", mwords, accession='12341234', verbose=True)
-                ropts.suggest("GAMESS", "SYSTEM__MEMDDI", mwords, accession='12341234', verbose=True)
+                ropts.require("GAMESS", "SYSTEM__MWORDS", mwords, accession='12341234', verbose=True)
+                ropts.require("GAMESS", "SYSTEM__MEMDDI", mwords, accession='12341234', verbose=True)
                 asdf += f"breaking {mwords=} {memddi=}\n"
                 break
+
+        ropts.print_changed(history=True)
+        # print("Touched Keywords")  # debug
+        # print(ropts.print_changed(history=True))  # debug
 
         # Handle conversion of qcsk keyword structure into program format
         skma_options = {key: ropt.value for key, ropt in sorted(ropts.scroll['GAMESS'].items()) if ropt.disputed()}

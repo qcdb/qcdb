@@ -2215,6 +2215,33 @@ qcvardefs["GRID ELECTRONS TOTAL"] = {
 """
 }
 
+## TODO kill off
+#qcvardefs["-D ENERGY"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-MP2 TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-MP3 TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCD TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-LCCD TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-LCCSD TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSD TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSD(T) TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSDT-1A TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSDT-1B TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSDT-2 TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSDT-3 TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSDT TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["MRCC TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#
+#qcvardefs["C4-MP2 TOTAL HESSIAN"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCD TOTAL HESSIAN"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSD TOTAL HESSIAN"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSD(T) TOTAL HESSIAN"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSDT-1A TOTAL HESSIAN"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSDT-1B TOTAL HESSIAN"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSDT-2 TOTAL HESSIAN"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSDT-3 TOTAL HESSIAN"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSDT TOTAL HESSIAN"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["MRCC TOTAL HESSIAN"] = {"units": "Eh", "glossary": ""}
+## end TODO kill off
 
 #.. qcvar:: UNCP-CORRECTED 2-BODY INTERACTION ENERGY
 #
@@ -2286,6 +2313,7 @@ define_spin_qcvars("CEPA(0)", description="coupled electron pair approximation, 
 define_spin_qcvars("CCD", description="coupled cluster doubles", do_spin=True, do_grad=True)
 define_spin_qcvars("MP3", description="3rd-order Moller--Plesset perturbation theory", do_spin=True, do_grad=True)
 define_spin_qcvars("MP4(SDQ)", description="4rd-order Moller--Plesset perturbation theory without triples excitations", do_spin=False, do_grad=False)
+define_spin_qcvars("MP4(SDTQ)", description="4rd-order Moller--Plesset perturbation theory", do_spin=False, do_grad=False)
 define_spin_qcvars("CCSD+T(CCSD)", description="coupled cluster singles and doubles with triples evaluated at converged CCSD amplitudes", do_spin=False, do_grad=False)
 define_spin_qcvars("CCSDT", description="coupled cluster singles, doubles, and triples excitations", do_spin=True, do_grad=True)
 define_spin_qcvars("CCSDT-1A", description="coupled cluster singles, doubles, and triples excitations at approximation 1a", do_spin=False, do_grad=True)

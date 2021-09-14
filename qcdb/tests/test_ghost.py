@@ -11,7 +11,15 @@ from .utils import *
 tu6_ie_scan = {2.5: 0.757717, 3.0: 0.015685, 4.0: -0.016266}
 
 
-@pytest.mark.parametrize("qcp", ["p4-", "c4-", "nwc-", "gms-"])
+@pytest.mark.parametrize(
+    "qcp",
+    [
+        pytest.param("p4-", marks=using("psi4")),
+        pytest.param("c4-", marks=using("cfour")),
+        pytest.param("nwc-", marks=using("nwchem")),
+        pytest.param("gms-", marks=using("gamess")),
+    ],
+)
 def test_ghost(qcp):
 
     dimer = qcdb.set_molecule(
@@ -46,4 +54,3 @@ def test_ghost(qcp):
     assert compare(32, wfn["properties"]["calcinfo_nbasis"], label="nbas")
     assert compare(32, wfn["properties"]["calcinfo_nmo"], label="nmo")
     assert compare_values(-2.8557143339397539, ene, atol=1.0e-6, label="ene")
-

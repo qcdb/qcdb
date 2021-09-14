@@ -37,6 +37,10 @@ def gamess_gradient_list() -> List:
     val.append('gms-hf')
     val.append('gms-scf')
     val.append('gms-mp2')
+    val.append("gms-lccd")  # fd
+    val.append('gms-ccd')  # fd
+    val.append('gms-ccsd')  # fd
+    val.append('gms-ccsd(t)')  # fd
 
     val.append("gms-pbe")
     val.append("gms-b3lyp")
@@ -51,6 +55,11 @@ def gamess_hessian_list() -> List:
         """
     val = []
     val.append('gms-hf')
+    val.append('gms-scf')
+    val.append('gms-mp2')  # fd
+    val.append('gms-ccd')  # fd
+    val.append('gms-ccsd')  # fd
+    val.append('gms-ccsd(t)')  # fd
 
     return val
 

@@ -42,7 +42,6 @@ def test_1_mp2_5050no():
 
     qcdb.set_options({
         'basis': 'cc-pvdz',
-        'memory': '3000 mb',
         #'scf__e_convergence': 1.0e-8,
         'nwchem_scf__UHF': True,
         'nwchem_scf__nopen': 1,
@@ -50,7 +49,7 @@ def test_1_mp2_5050no():
         'nwchem_scf__thresh': 1.0e-8,
     })
     print('Testing hf...')
-    val = qcdb.energy('nwc-mp2')
+    val = qcdb.energy('nwc-mp2', local_options={"memory": 3})
     check_uhf_mp2(val, is_5050=False)
 
 #@using("nwchem")

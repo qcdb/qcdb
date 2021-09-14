@@ -2,6 +2,8 @@
 import os
 import sys
 
+import pytest
+
 import qcdb
 
 from ..utils import *
@@ -19,7 +21,6 @@ def test_1_cisd():
         'basis' : 'sto-3g',
         'qc_module': 'TCE',
         'nwchem_tce__cisd'    : True,
-        'memory': '1000 mb'
         })
     val = qcdb.energy('nwc-cisd')
 
@@ -44,7 +45,6 @@ def test_2_cisdt():
         'basis' : 'sto-3g',
         'qc_module': 'TCE',
         'nwchem_tce__cisdt'    : True,
-        'memory': '1000 mb'
         })
     val = qcdb.energy('nwc-cisdt')
 
@@ -57,6 +57,7 @@ def test_2_cisdt():
     assert compare_values(cisdt_corl, qcdb.variable('CISDT CORRELATION ENERGY'), 5, 'cisdt corl')
 
 
+@pytest.mark.xfail(reason="cisdtq module not compiled")
 @using("nwchem")
 def test_3_cisdtq():
     h2o = qcdb.set_molecule('''
@@ -69,9 +70,8 @@ def test_3_cisdtq():
         'basis' : 'sto-3g',
         'qc_module': 'TCE',
         'nwchem_tce__cisdtq'    : True,
-        'memory': '1000 mb'
         })
-    val = qcdb.energy('nwc-cisdtq')
+    val = qcdb.energy('nwc-cisdtq', local_options={"memory": 1})
 
     hf           =   -74.506112017320
     cisdtq_tot   =   -74.788955327897597

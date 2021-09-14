@@ -50,7 +50,8 @@ def test_fci_rhf_gamess():
     h2o = system_water()
     qcdb.set_options({
         'basis': '6-31G',
-        'gamess_cidet__ncore': 0,
+        # 'gamess_cidet__ncore': 0,
+        "freeze_core": False,
     })
 
     E = qcdb.energy('gms-fci', molecule=h2o)

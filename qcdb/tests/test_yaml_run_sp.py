@@ -26,7 +26,6 @@ molecule: |
 driver: !!python/name:qcdb.energy
 method: p4-hf
 options:
-  memory: 1gb
   basis: '6-31g**'
   reference: uhf
   puream: cart
@@ -58,7 +57,6 @@ molecule: |
 driver: !!python/name:qcdb.energy
 method: c4-hf
 options:
-  memory: 1gb
   basis: '6-31g**'
   reference: uhf
   puream: cart
@@ -91,7 +89,6 @@ molecule: |
 driver: !!python/name:qcdb.energy
 method: nwc-hf
 options:
-  memory: 1gb
   basis: '6-31g**'
   reference: uhf
   puream: cart
@@ -124,7 +121,6 @@ molecule: |
 driver: !!python/name:qcdb.energy
 method: gms-hf
 options:
-  memory: 1gb
   basis: '6-31g**'
   reference: uhf
   puream: cart

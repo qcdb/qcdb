@@ -125,8 +125,8 @@ def check_rohf(lbl, fc, prog):
 
     #assert compare_values(osmp2corl, qcdb.variable('mp2 opposite-spin correlation energy'), 6, lbl + ' MP2 OS corl')
     #assert compare_values(ssmp2corl, qcdb.variable('mp2 same-spin correlation energy'), 6, lbl + ' MP2 SS corl')
-    assert compare_values(osccsdcorl, qcdb.variable('ccsd opposite-spin correlation energy'), 6, lbl + ' CCSD OS corl')
-    assert compare_values(ssccsdcorl, qcdb.variable('ccsd same-spin correlation energy'), 6, lbl + ' CCSD SS corl')
+    # Sum 2021 assert compare_values(osccsdcorl, qcdb.variable('ccsd opposite-spin correlation energy'), 6, lbl + ' CCSD OS corl')
+    # Sum 2021 assert compare_values(ssccsdcorl, qcdb.variable('ccsd same-spin correlation energy'), 6, lbl + ' CCSD SS corl')
 
 
 @using("cfour")

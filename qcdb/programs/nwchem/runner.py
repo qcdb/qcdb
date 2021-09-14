@@ -17,7 +17,8 @@ from qcengine.programs.util import PreservingDict
 
 from ... import qcvars
 from ...basisset import BasisSet
-from ...util import format_error, print_jobrec, provenance_stamp
+from ...molecule import Molecule
+from ...util import format_error, print_jobrec, provenance_stamp, accession_stamp
 from .germinate import muster_basisset, muster_inherited_keywords, muster_modelchem, muster_molecule
 
 pp = pprint.PrettyPrinter(width=120)
@@ -98,6 +99,8 @@ class QcdbNWChemHarness(NWChemHarness):
     def qcdb_build_input(self, input_model: AtomicInput, config: 'JobConfig',
                          template: Optional[str] = None) -> Dict[str, Any]:
 
+        kwgs = {"accession": accession_stamp(), "verbose": 1}
+
         nwchemrec = {
             'infiles': {},
             'scratch_messy': config.scratch_messy,
@@ -105,13 +108,14 @@ class QcdbNWChemHarness(NWChemHarness):
         }
 
         molrec = qcel.molparse.from_schema(input_model.molecule.dict())
+        qmol = Molecule(molrec)
         molrecc1 = molrec.copy()
         molrecc1['fix_symmetry'] = 'c1'  # write _all_ atoms to input
         ropts = input_model.extras['qcdb:options']
 
-        ropts.require("QCDB", "MEMORY", f"{config.memory} gib", accession='00000000', verbose=False)
+        ropts.require("QCDB", "MEMORY", f"{config.memory} gib", **kwgs)
 
-        molcmd = muster_molecule(molrec, ropts, verbose=1)
+        molcmd = muster_molecule(molrec, qmol, ropts, verbose=1)
 
         # Handle memory
         # I don't think memory belongs in jobrec. it goes in pkgrec (for pbs) and possibly duplicated in options (for prog)
@@ -147,8 +151,8 @@ class QcdbNWChemHarness(NWChemHarness):
         #      harvester.nu_muster_modelchem(jobrec['method'], jobrec['dertype'], ropts])
         mdccmd = muster_modelchem(input_model.model.method, input_model.driver.derivative_int(), ropts)
 
-        # DEBUG print('Touched Keywords')
-        # DEBUG print(ropts.print_changed(history=False))
+        # print("Touched Keywords")  # debug
+        # print(ropts.print_changed(history=True))  # debug
 
         # Handle driver vs input/default keyword reconciliation
 

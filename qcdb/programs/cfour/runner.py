@@ -90,11 +90,12 @@ class QcdbCFOURHarness(CFOURHarness):
             'scratch_directory': config.scratch_directory,
         }
 
+        kwgs = {"accession": accession_stamp(), "verbose": 1}
         molrec = qcel.molparse.from_schema(input_model.molecule.dict())
         molrec['fix_symmetry'] = 'c1'  # write _all_ atoms to GENBAS
         ropts = input_model.extras['qcdb:options']
 
-        ropts.require("QCDB", "MEMORY", f"{config.memory} gib", accession='00000000', verbose=False)
+        ropts.require("QCDB", "MEMORY", f"{config.memory} gib", **kwgs)
 
         molcmd = muster_molecule(molrec, ropts, verbose=1)
 
@@ -126,6 +127,9 @@ class QcdbCFOURHarness(CFOURHarness):
         #print(jobrec['options'].print_changed(history=False))
         # Handle driver vs input/default keyword reconciliation
 
+        # print("Touched Keywords")  # debug
+        # print(ropts.print_changed(history=True))  # debug
+
         # Handle conversion of psi4 keyword structure into cfour format
         skma_options = {key: ropt.value for key, ropt in sorted(ropts.scroll['CFOUR'].items()) if ropt.disputed()}
         optcmd = format_keywords(skma_options)
@@ -153,7 +157,15 @@ class QcdbCFOURHarness(CFOURHarness):
 #                custom_scsmp2_corl += dqcvars["MP2 SINGLES ENERGY"]
 #            dqcvars["CUSTOM SCS-MP2 CORRELATION ENERGY"] = custom_scsmp2_corl
 
-        qcvars.build_out(dqcvars)
+        try:
+            qcvars.build_out(dqcvars)
+        except ValueError as e:
+            raise InputError(
+                "STDOUT:\n"
+                + output_model.stdout
+                + "\nTRACEBACK:\n"
+                + "".join(traceback.format_exception(*sys.exc_info()))
+            )
         calcinfo = qcvars.certify_and_datumize(dqcvars, plump=True, nat=len(output_model.molecule.symbols))
         output_model.extras['qcdb:qcvars'] = calcinfo
 

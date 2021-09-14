@@ -140,7 +140,9 @@ def test_sp_rohf_ccsd(nh2):
     # not printed compare_values(ssmp2corl, qcdb.variable('mp2 same-spin correlation energy'), 6, tnm() + 'MP2 SS corl')
     # not printed compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), 6, tnm() + 'MP2 corl')
     # not printed compare_values(mp2tot, qcdb.variable('mp2 total energy'), 6, tnm() + 'MP2')
-    compare_values(osccsdcorl, qcdb.variable('ccsd opposite-spin correlation energy'), 6, tnm() + 'CCSD OS corl')
+
+    # * Summer 2021: have a value for ccsd opposite-spin correlation below, but probably not collected from current version with ROHF
+    # compare_values(osccsdcorl, qcdb.variable('ccsd opposite-spin correlation energy'), 6, tnm() + 'CCSD OS corl')
     compare_values(ssccsdcorl, qcdb.variable('ccsd same-spin correlation energy'), 6, tnm() + 'CCSD SS corl')
     compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), 6, tnm() + 'CCSD corl')
     compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, tnm() + 'CCSD')

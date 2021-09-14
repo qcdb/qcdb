@@ -32,6 +32,7 @@ del get_versions
 from .driver import energy, properties, hessian, gradient, frequency
 from .driver import optking, geometric, optimize
 from .driver import vpt2
+from .driver import diatomic
 from .driver.cbs_driver import cbs
 from .driver.cbs_helpers import *
 from .driver.driver_helpers import get_variable, has_variable, print_variables, variable
