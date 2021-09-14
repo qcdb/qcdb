@@ -7,6 +7,8 @@ import numpy as np
 import qcelemental as qcel
 from qcelemental.testing import compare, compare_values
 
+from .utils import using
+
 import qcdb
 
 
@@ -923,7 +925,15 @@ def test_molsymm_alone(subject):
 
 
 @pytest.mark.parametrize("subject", [subject for subject in data.keys() if not subject.startswith("iso")])
-@pytest.mark.parametrize("qcprog", ["cfour", "gamess", "nwchem", "psi4"])
+@pytest.mark.parametrize(
+    "qcprog",
+    [
+        pytest.param("cfour", marks=using("cfour")),
+        pytest.param("gamess", marks=using("gamess")),
+        pytest.param("nwchem", marks=using("nwchem")),
+        pytest.param("psi4", marks=using("psi4")),
+    ],
+)
 def test_molsymm_calc(subject, qcprog):
 
     from .data_mints5 import mints5
@@ -946,6 +956,10 @@ def test_molsymm_calc(subject, qcprog):
             pytest.xfail("weird hang, probably atom permutations")
         elif qcprog == "nwchem":
             pytest.xfail("weird gradient rotation")
+    elif subject == "SF6" and qcprog == "nwchem":
+        pytest.xfail(
+            "TODO new bug 'autosym bug : too many atoms:Received an Error in Communication' after fixed basis set for ghosts"
+        )
 
     extra_keywords = {
         "cfour": {

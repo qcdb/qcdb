@@ -240,7 +240,10 @@ class Keyword:
         """
         self._set(True, value, overlap, accession, verbose)
 
-    def _set(self, imperative, value, overlap, accession, verbose=1):
+    def _set(self, imperative: bool, value: Any, overlap: Optional[int], accession: Optional[str], verbose: int = 1) -> None:
+        """Backend to ``suggest()`` and ``require()``. Fills in ``overlap`` and ``accession`` defaults, validates
+        ``value``, and appends entry to ``history``. Prints if ``verbose``."""
+
         if overlap is None:
             overlap = len(self.keyword)
         if accession is None:

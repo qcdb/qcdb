@@ -11,7 +11,7 @@ from ...util import conv_float2negexp, accession_stamp
 
 
 def muster_molecule(molrec: Dict, ropts: 'Keywords', verbose: int = 1) -> str:
-    kwgs = {'accession': uuid.uuid4(), 'verbose': verbose}
+    kwgs = {'accession': accession_stamp(), 'verbose': verbose}
 
     molcmd, moldata = qcel.molparse.to_string(molrec, dtype='cfour', units='Bohr', return_data=True)
 
@@ -28,7 +28,7 @@ def muster_basisset(molrec: Dict, ropts: 'Keywords', native_puream: bool, verbos
     Cfour constraints.
 
     """
-    accession = uuid.uuid4()
+    accession = accession_stamp()
 
     text = [f"""{elem.upper()}:CD_{iat + 1}""" for iat, elem in enumerate(molrec['elem'])]
     text.append('')
@@ -111,7 +111,7 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
 
     """
     lowername = name.lower()
-    accession = 2345
+    accession = accession_stamp()
 
     if dertype == 0:
         if lowername == 'c4-cfour':
@@ -237,9 +237,8 @@ def muster_inherited_keywords(ropts: 'Keywords', verbose: int = 1) -> None:
     qopt = ropts.scroll['QCDB']['MEMORY']
     if do_translate or qopt.is_required():
         mem = int(qopt.value / 8.0)
-        print('\n\nMEMORY', qopt.value, mem, '\n\n')
-        ropts.suggest('CFOUR', 'MEMORY_SIZE', mem, **kwgs)
-        ropts.suggest('CFOUR', 'MEM_UNIT', "INTEGERWORDS", **kwgs)
+        ropts.require("CFOUR", "MEMORY_SIZE", mem, **kwgs)
+        ropts.require("CFOUR", "MEM_UNIT", "INTEGERWORDS", **kwgs)
 
     # qcdb/puream --> cfour/spherical
     ropts.suggest('CFOUR', 'SPHERICAL', ropts.scroll['QCDB']['PUREAM'].value, **kwgs)

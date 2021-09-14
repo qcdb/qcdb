@@ -966,6 +966,32 @@ def test_qcisd_prt_pr_energy_module(inp, dertype, basis, subjects, clsd_open_pmo
 #                                                        `---' `---'    
 #  <<<  FCI Energy -- NYI
 
+@pytest.mark.parametrize(
+    "dertype",
+    [
+        pytest.param(0, id="ene0"),
+    ]
+)
+@pytest.mark.parametrize(
+    "basis, subjects",
+    [
+        pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
+    ],
+)
+@pytest.mark.parametrize(
+    "inp",
+    [
+        # yapf: disable
+        pytest.param({"call": "gms-fci", "reference": "rhf",  "fcae": "ae", "keywords": {"freeze_core": False},                                                                                                                            }, id="fci  rhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "p4-fci",  "reference": "rhf",  "fcae": "ae", "keywords": {"psi4_qc_module": "detci"},                                                                                                                       }, id="fci  rhf ae: psi4-detci",   marks=using("psi4")),
+
+        pytest.param({"call": "gms-fci", "reference": "rhf",  "fcae": "fc", "keywords": {"freeze_core": True},                                                                                                                             }, id="fci  rhf fc: gamess",     marks=using("gamess")),
+        pytest.param({"call": "p4-fci",  "reference": "rhf",  "fcae": "fc", "keywords": {"psi4_freeze_core": True, "psi4_qc_module": "detci"},                                                                                             }, id="fci  rhf fc: psi4-detci", marks=using("psi4")),
+        # yapf: enable
+    ],
+)
+def test_fci_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
+    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
 
 #
 #  ,--.    ,-----. ,-----.,------.      ,------.

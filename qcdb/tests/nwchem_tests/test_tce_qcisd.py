@@ -27,7 +27,6 @@ def test_1_qcisd():
     
     qcdb.set_options({
         'basis' : 'sto-3g',
-        'memory': '1500 mb',
         #'scf__e_convergence':   1.0e-10,
         'nwchem_scf__thresh':   1.0e-10,
         'nwchem_scf__tol2e' :   1.0e-10,

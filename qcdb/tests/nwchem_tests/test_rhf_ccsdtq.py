@@ -2,6 +2,7 @@
 import os
 import sys
 
+import pytest
 import qcdb
 
 from ..utils import *
@@ -18,6 +19,7 @@ def check_ccsdtq(return_value):
     assert compare_values(ccsdtq, qcdb.variable('CCSDTQ TOTAL ENERGY'), 6, 'CCSDTQ')  #TEST
     assert compare_values(ccsdtq_corl, qcdb.variable('CCSDTQ CORRELATION ENERGY'), 6, 'CCSDTQ corl')  #TEST
 
+@pytest.mark.xfail(reason="cisdtq module not compiled")
 @using("nwchem")
 def test_1_ccsdtq():
     h2o= qcdb.set_molecule('''
@@ -28,7 +30,6 @@ def test_1_ccsdtq():
 
     qcdb.set_options({
         'basis': '6-31g*',
-        'memory': '2000 mb',
         #'nwchem_memory': '[total, 2000, global, 1700,mb]',
         #'nwchem_verify'    : True,
         'nwchem_tce__dft': False,
@@ -38,5 +39,5 @@ def test_1_ccsdtq():
         'nwchem_tce__thresh': 1.0e-7
         })
     print('Testing CCSDTQ (df)...')
-    val = qcdb.energy('nwc-ccsdtq')
+    val = qcdb.energy('nwc-ccsdtq', local_options={"memory": 2})
     check_ccsdtq(val)

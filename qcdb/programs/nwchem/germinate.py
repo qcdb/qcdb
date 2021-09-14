@@ -7,9 +7,11 @@ import qcelemental as qcel
 from ...exceptions import ValidationError
 from ...util import conv_float2negexp
 
-def muster_molecule(molrec: Dict, ropts: 'Keywords', verbose: int = 1) -> str:
+def muster_molecule(molrec: Dict, qmol, ropts: 'Keywords', verbose: int = 1) -> str:
     kwgs = {'accession': uuid.uuid4(), 'verbose': verbose}
 
+    elbls = [str(qmol.atom_to_unique(iat) + 1) for iat, lbl in enumerate(molrec["elbl"])]
+    molrec["elbl"] = elbls
     molcmd, moldata = qcel.molparse.to_string(molrec, dtype='nwchem', units='Bohr', return_data=True)
 
     for key, val in moldata['keywords'].items():
@@ -59,7 +61,7 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
     elif lowername in ['nwc-scf', 'nwc-hf']:
         #ropts.require('NWCHEM', 'task__scf', runtyp, **kwgs)
         mdccmd = f'task scf {runtyp}\n\n'
-    
+
     elif lowername == 'nwc-mcscf':
         ropts.suggest('NWCHEM', 'mcscf__active', 1, **kwgs)
         ropts.suggest('NWCHEM', 'mcscf__actelec', 1, **kwgs)
@@ -346,16 +348,18 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
     #Current fix: dft__xc is taking full string
     #end #TODO
     elif lowername == 'nwc-pw91':
-        ropts.suggest('NWCHEM', 'xc', 'xperdew91 perdew91', **kwgs)
+        ropts.suggest('NWCHEM', 'dft__xc', 'xperdew91 perdew91', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-pbe96':
         ropts.suggest('NWCHEM', 'xc', 'xpbe96 perdew91', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
+
     elif lowername == 'nwc-bp91':
         ropts.suggest('NWCHEM', 'xc', 'becke88 perdew91', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
+
     elif lowername == 'nwc-blyp':
-        ropts.suggest('NWCHEM', 'xc', 'becke88 lyp', **kwgs)
+        ropts.suggest('NWCHEM', 'dft__xc', 'becke88 lyp', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
     elif lowername == 'nwc-b97':
         ropts.suggest('NWCHEM', 'xc', 'becke97 hfexch 0.1943', **kwgs)
@@ -379,10 +383,10 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
         ropts.suggest('NWCHEM', 'xc', 'hfexch 0.53 becke88 0.47 lyp 0.73', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
 
-    elif lowername == 'nwc-b3lyp5':
+    elif lowername == "nwc-b3lyp5":
         # ropts.suggest('NWCHEM', 'dft__xc', 'hfexch 0.2 slater 0.8 becke88 0.72 vwn_5 0.190 lyp 0.81', **kwgs)  # ATL
-        ropts.suggest('NWCHEM', 'dft__xc', 'hfexch 0.2 slater 0.8 becke88 nonlocal 0.72 vwn_5 0.190 lyp 0.81', **kwgs)
-        mdccmd = f'task dft {runtyp} \n\n' 
+        ropts.suggest("NWCHEM", "dft__xc", "hfexch 0.2 slater 0.8 becke88 nonlocal 0.72 vwn_5 0.190 lyp 0.81", **kwgs)
+        mdccmd = f"task dft {runtyp}\n\n"
 
     elif lowername == 'nwc-b86bpbe':
         ropts.suggest('NWCHEM', 'xc', 'becke86 cpbe96', **kwgs)
@@ -409,9 +413,9 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
         ropts.suggest('NWCHEM', 'xc', 'xwpbe 0.8 cpbe96 1.0 hfexch 1.0 cam 0.2 cam_alpha 0.20 cam_beta 0.80', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
 
-    elif lowername == 'nwc-pbe':
-        ropts.require('NWCHEM', 'dft__xc', 'xpbe96 cpbe96', **kwgs)  
-        mdccmd = f'task dft {runtyp} \n\n'
+    elif lowername == "nwc-pbe":
+        ropts.require("NWCHEM", "dft__xc", "xpbe96 cpbe96", **kwgs)
+        mdccmd = f"task dft {runtyp}\n\n"
 
     elif lowername == 'nwc-pbe0-13':
         ropts.suggest('NWCHEM', 'xc', 'mpw91 0.95 HFexch 0.05 lyp', **kwgs)
@@ -434,7 +438,7 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
     elif lowername == 'nwc-xlyp':
         ropts.suggest('NWCHEM', 'xc', 'slater -0.0690 becke88 0.722 xperdew91 0.347 lyp', **kwgs)
         mdccmd = f'task dft {runtyp} \n\n'
-    
+
     # TODO dft__xc suggest or require
 
     elif lowername == 'nwc-tddft':
@@ -456,12 +460,12 @@ def muster_inherited_keywords(ropts: 'Keywords', verbose: int = 1) -> None:
     qopt = ropts.scroll['QCDB']['MEMORY']
     if do_translate or qopt.is_required():
         mem = qopt.value
-        ropts.suggest('NWCHEM', 'memory', mem, **kwgs)
+        ropts.require('NWCHEM', 'memory', mem, **kwgs)
 
     # qcdb/reference --> nwchem/scf_[r|u|ro]hf
     # TODO ref or scf__ref?
     qref = ropts.scroll['QCDB']['SCF__REFERENCE'].value
-    print('<<<< QREF {} >>>'.format(qref))
+    # print('<<<< QREF {} >>>'.format(qref))
     if qref in ['RHF', 'UHF', 'ROHF']:
         rhf = (qref == 'RHF')
         uhf = (qref == 'UHF')

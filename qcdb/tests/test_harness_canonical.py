@@ -17,6 +17,9 @@ _canonical_methods = [
     ("cfour", {"method": "hf", "basis": "6-31G"}, {}),
 #    ("dftd3", {"method": "b3lyp-d3"}, {}),
     ("gamess", {"method": "hf", "basis": "6-31g"}, {}),
+    ("gamess", {"method": "mp2", "basis": "aug-cc-pvdz"}, {}),
+    ("gamess", {"method": "ccsd", "basis": "aug-cc-pvdz"}, {}),
+    ("gamess", {"method": "ccsd(t)", "basis": "aug-cc-pvtz"}, {}),
 #    ("gamess", {"method": "hf", "basis": "n31"}, {"basis__NGAUSS": 6}),
 #    ("gamess", {"method": "mp2", "basis": "accd"}, {"contrl__ispher": 1}),
 #    ("gamess", {"method": "ccsd", "basis": "accd"}, {"contrl__ispher": 1}),
@@ -39,17 +42,35 @@ def _get_molecule(program, method):
     "memory_trickery",
     [
         pytest.param({}, id="none"),
-        pytest.param({"memory": "5 gb"}, id="qcdb"),
-        # pytest.param(
-        #     # native keywords that CONTRADICT config.memory below
-        #     {
-        #         "cfour": {"memory_size": "5000"},
-        #         "gamess": {"system__mwords": "5000"},
-        #         "nwchem": {"memory": "5 gb"},
-        #         "psi4": {},  # no contradictory memory keyword in psi
-        #     },
-        #     id="dsl"
-        # ),
+        pytest.param({"memory": "1.555 gib"}, id="qcdb"),
+        pytest.param(
+            {
+                "cfour": {"memory": "5 gb"},
+                "gamess": {"memory": "5 gb"},
+                "nwchem": {"memory": "5 gb"},
+                "psi4": None,
+            },
+            id="qcdb-contra"),
+        pytest.param(
+            # native keywords consistent with config.memory below
+            {
+                "cfour": {"cfour_memory_size": 208708567},
+                "gamess": {"gamess_system__mwords": 208},
+                "nwchem": {"nwchem_memory": 1669668536},
+                "psi4": None,  # no memory keyword in psi
+            },
+            id="dsl"
+        ),
+        pytest.param(
+            # native keywords that CONTRADICT config.memory below
+            {
+                "cfour": {"cfour_memory_size": "5000"},
+                "gamess": {"gamess_system__mwords": 500},
+                "nwchem": {"nwchem_memory": 500000000},
+                "psi4": None,  # no contradictory memory keyword in psi
+            },
+            id="dsl-contra"
+        ),
     ]
 )
 @pytest.mark.parametrize("program, model, keywords", _canonical_methods)
@@ -76,6 +97,8 @@ def test_local_options_memory_gib(program, model, keywords, memory_trickery, req
     molecule = _get_molecule(program, model["method"])
 
     addl_keywords = memory_trickery.get(program, memory_trickery)
+    if addl_keywords is None:
+        pytest.skip(f"Nothing to test for '{program}' id '{request.node.name}'")
     use_keywords = {**keywords, **addl_keywords}
 
     #  <<  Config
@@ -118,7 +141,7 @@ def test_local_options_memory_gib(program, model, keywords, memory_trickery, req
 
     if harness._defaults["managed_memory"] is True:
         assert re.search(stdout_ref[program], ret.stdout), f"Memory pattern not found: {stdout_ref[program]}"
-   # assert 0
+    # assert 0
 
 
 @pytest.mark.parametrize("program, model, keywords", _canonical_methods)

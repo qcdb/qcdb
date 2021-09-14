@@ -59,7 +59,6 @@ def test_1_mp2():
 
     qcdb.set_options({
         'basis': 'cc-pvdz',
-        'memory': '400 mb',
         'scf__e_convergence': 1.0e-4,
         'nwchem_scf__rhf': True,
         #'nwchem_scf__thresh': 1.0e-4,
@@ -82,7 +81,6 @@ def test_2_hf():
 
     qcdb.set_options({
         'basis': 'cc-pvdz',
-        'memory': '400 mb',
         'scf__e_convergence': 1.0e-4,
         'nwchem_scf__rhf': True,
         #'nwchem_scf__thresh': 1.0e-4,
@@ -120,7 +118,6 @@ def test_4_mp2_array():
 
     qcdb.set_options({
         'basis': 'cc-pvdz',
-        'memory': '400 mb',
         'scf__e_convergence': 1.0e-4,
         'nwchem_scf__rhf': True,
         'nwchem_scf__thresh': 1.0e-4,

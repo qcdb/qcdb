@@ -1547,7 +1547,8 @@ class LibmintsMolecule():
         #   correct.  We may want to fix this in the future, but in some cases of
         #   finite-differences the set geometry is not totally symmetric anyway.
         # Symmetrize the molecule to remove any noise
-        self.symmetrize()
+        # caused trouble with nbody Ne2 tu6 scan
+        # self.symmetrize()
         #print("after symmetry:")
         #self.print_full()
 
@@ -1946,6 +1947,7 @@ class LibmintsMolecule():
         (method name in libmints is set_com_fixed)
 
         """
+        # add lock_frame?
         self.PYmove_to_com = not _fix
 
     def orientation_fixed(self):
@@ -1962,6 +1964,7 @@ class LibmintsMolecule():
         (method name in libmints is set_orientation_fixed)
 
         """
+        # add lock_frame?
         if _fix:
             self.PYfix_orientation = True  # tells update_geometry() not to change orientation
             # Compute original cartesian coordinates - code coped from update_geometry()

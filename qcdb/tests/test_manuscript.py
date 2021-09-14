@@ -201,9 +201,16 @@ _ins["all"]["d"] = {
 }
 
 
-@pytest.mark.parametrize("qcprog", ["cfour", "gamess", "nwchem", "psi4"])
-def test_fig2a_txt(qcprog, request):
-    request.node.add_marker(using(qcprog))
+@pytest.mark.parametrize(
+    "qcprog",
+    [
+        pytest.param("cfour", marks=using("cfour")),
+        pytest.param("gamess", marks=using("gamess")),
+        pytest.param("nwchem", marks=using("nwchem")),
+        pytest.param("psi4", marks=using("psi4")),
+    ],
+)
+def test_fig2a_txt(qcprog):
 
     sin = _ins[qcprog]["a"]
     from qcelemental.util import which
@@ -223,10 +230,16 @@ def test_fig2a_txt(qcprog, request):
     assert _the_short_energy in dexe["stdout"]
 
 
-@pytest.mark.parametrize("qcprog", ["cfour", "gamess", "nwchem", "psi4"])
+@pytest.mark.parametrize(
+    "qcprog",
+    [
+        pytest.param("cfour", marks=using("cfour")),
+        pytest.param("gamess", marks=using("gamess")),
+        pytest.param("nwchem", marks=using("nwchem")),
+        pytest.param("psi4", marks=using("psi4")),
+    ],
+)
 def test_fig2b_json(qcprog, request):
-    request.node.add_marker(using(qcprog))
-
     datin = _ins[qcprog]["b"]
 
     atres = qcng.compute(datin, qcprog)
@@ -234,10 +247,16 @@ def test_fig2b_json(qcprog, request):
     assert compare_values(_the_energy, atres.return_result, atol=1.0e-6, label=request.node.name)
 
 
-@pytest.mark.parametrize("qcprog", ["cfour", "gamess", "nwchem", "psi4"])
+@pytest.mark.parametrize(
+    "qcprog",
+    [
+        pytest.param("cfour", marks=using("cfour")),
+        pytest.param("gamess", marks=using("gamess")),
+        pytest.param("nwchem", marks=using("nwchem")),
+        pytest.param("psi4", marks=using("psi4")),
+    ],
+)
 def test_fig2c_api(qcprog, request):
-    request.node.add_marker(using(qcprog))
-
     datin = _ins[qcprog]["c"]
 
     qcskmol = qcel.models.Molecule(**datin["molecule"])
@@ -253,10 +272,16 @@ def test_fig2c_api(qcprog, request):
     assert compare_values(_the_energy, ene, atol=1.0e-6, label=request.node.name)
 
 
-@pytest.mark.parametrize("qcprog", ["cfour", "gamess", "nwchem", "psi4"])
+@pytest.mark.parametrize(
+    "qcprog",
+    [
+        pytest.param("cfour", marks=using("cfour")),
+        pytest.param("gamess", marks=using("gamess")),
+        pytest.param("nwchem", marks=using("nwchem")),
+        pytest.param("psi4", marks=using("psi4")),
+    ],
+)
 def test_fig2c_json(qcprog, request):
-    request.node.add_marker(using(qcprog))
-
     datin = _ins[qcprog]["c"]
 
     atres = qcdb.compute(datin, qcprog)
@@ -265,10 +290,16 @@ def test_fig2c_json(qcprog, request):
     assert compare_values(_the_energy, atres.return_result, atol=1.0e-6, label=request.node.name)
 
 
-@pytest.mark.parametrize("qcprog", ["cfour", "gamess", "nwchem", "psi4"])
+@pytest.mark.parametrize(
+    "qcprog",
+    [
+        pytest.param("cfour", marks=using("cfour")),
+        pytest.param("gamess", marks=using("gamess")),
+        pytest.param("nwchem", marks=using("nwchem")),
+        pytest.param("psi4", marks=using("psi4")),
+    ],
+)
 def test_fig2d_api(qcprog, request):
-    request.node.add_marker(using(qcprog))
-
     datin = _ins["all"]["d"]
 
     qcskmol = qcel.models.Molecule(**datin["molecule"])
@@ -310,3 +341,92 @@ def test_snippet3(bsse, ans):
 
     assert compare_values(3.2, rmin, atol=1.0e-6)
     assert compare_values(ans, ene, atol=1.0e-6)
+
+
+@using("cfour")
+def test_snippet4a():
+    qcdb.set_molecule(
+        """
+     H
+     H 1 0.74
+    """
+    )
+
+    qcdb.set_keywords(
+        {
+            "basis": "6-31g",  # ok, new info
+            "cfour_calc_level": "ccsd",  # clash w/"c4-hf" below
+        }
+    )
+
+    with pytest.raises(qcdb.exceptions.KeywordReconciliationError) as e:
+        qcdb.energy("c4-hf")
+
+    assert "Conflicting option requirements btwn user (CCSD) and driver (SCF) for CALC_LEVEL" in str(e)
+
+
+@using("cfour")
+def test_snippet4b():
+    qcdb.set_molecule(
+        """
+     H
+     H 1 0.74
+    """
+    )
+
+    qcdb.set_keywords(
+        {
+            "basis": "6-31g",  # ok, new info
+            "cfour_deriv_level": "first",  # clash w/energy() below (use gradient())
+        }
+    )
+
+    with pytest.raises(qcdb.exceptions.KeywordReconciliationError) as e:
+        qcdb.energy("c4-hf")
+
+    assert "Conflicting option requirements btwn user (FIRST) and driver (ZERO) for DERIV_LEVEL" in str(e)
+
+
+@using("cfour")
+def test_snippet4c():
+    qcdb.set_molecule(
+        """
+     H
+     H 1 0.74
+    """
+    )
+
+    qcdb.set_keywords(
+        {
+            "basis": "6-31g",  # ok, new info
+            "cfour_multiplicity": 3,  # clash w/implicit singlet of mol above
+            "cfour_units": "angstrom",  # ok, consistent w/mol above
+        }
+    )
+
+    with pytest.raises(qcdb.exceptions.KeywordReconciliationError) as e:
+        qcdb.energy("c4-hf")
+
+    assert "Conflicting option requirements btwn user (3) and driver (1) for MULTIPLICITY" in str(e)
+
+
+@using("cfour")
+def test_snippet4d():
+    qcdb.set_molecule(
+        """
+     H
+     H 1 0.74
+    """
+    )
+
+    qcdb.set_keywords(
+        {
+            "basis": "6-31g",  # ok, new info
+            "cfour_memory_size": 9000000,  # clash w/1 gib below
+        }
+    )
+
+    with pytest.raises(qcdb.exceptions.KeywordReconciliationError) as e:
+        qcdb.energy("c4-hf", local_options={"memory": 1})
+
+    assert "Conflicting option requirements btwn user (9000000) and driver (134217728) for MEMORY_SIZE" in str(e)

@@ -27,7 +27,6 @@ def test_1_ccsd():
 
     qcdb.set_options({
         'basis': 'cc-pvdz',
-        'memory': '600 mb',
         'nwchem_scf__rhf': True,
         'nwchem_scf__thresh': 1.0e-12,
         'nwchem_tce__ccsd': True,

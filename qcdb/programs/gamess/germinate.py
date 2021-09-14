@@ -38,7 +38,7 @@ def _get_symmetry_card(pg: str, full_pg_n: int) -> Tuple[str, str]:
         return pg, ""
 
 
-def get_master_frame(kmol: "qcelemental.models.Molecule") -> Tuple["qcelemental.models.Molecule", Dict[str, str]]:
+def get_master_frame(kmol: "qcelemental.models.Molecule", scratch_directory) -> Tuple["qcelemental.models.Molecule", Dict[str, str]]:
     """Do whatever it takes to figure out the GAMESS master frame by which ``kmol`` can be run with full symmetry."""
 
     harness = qcng.get_program("gamess")
@@ -139,7 +139,7 @@ def get_master_frame(kmol: "qcelemental.models.Molecule") -> Tuple["qcelemental.
                     "gamess.inp": inp,
                 },
                 "command": [which("rungms"), "gamess", "00", "1"],
-                "scratch_directory": "/tmp/gamess/",  # TODO
+                "scratch_directory": scratch_directory,
                 "scratch_messy": False,
             }
             success, dexe = harness.execute(gamessrec)
@@ -314,10 +314,16 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', sysinfo: Dict, 
         ropts.require('GAMESS', 'contrl__cityp', 'aldet', accession=accession, verbose=verbose)
         ropts.require('GAMESS', 'contrl__cctyp', 'none', accession=accession, verbose=verbose)
 
-        ropts.suggest('GAMESS', 'cidet__ncore', sysinfo["fc"]['ncore'], accession=accession, verbose=verbose)
-        ropts.suggest('GAMESS', 'cidet__nact', sysinfo["fc"]['nact'], accession=accession, verbose=verbose)
-        ropts.suggest('GAMESS', 'cidet__nels', sysinfo["fc"]['nels'], accession=accession, verbose=verbose)
-        # TODO FC hack!!!
+        qopt = ropts.scroll["QCDB"]["FREEZE_CORE"]
+        if True:
+            if qopt.value is True:
+                fcae = "fc"
+            elif qopt.value is False:
+                fcae = "ae"
+
+        ropts.suggest('GAMESS', 'cidet__ncore', sysinfo[fcae]['ncore'], accession=accession, verbose=verbose)
+        ropts.suggest('GAMESS', 'cidet__nact', sysinfo[fcae]['nact'], accession=accession, verbose=verbose)
+        ropts.suggest('GAMESS', 'cidet__nels', sysinfo[fcae]['nels'], accession=accession, verbose=verbose)
 
     elif lowername == "gms-pbe":
         ropts.require("GAMESS", "contrl__dfttyp", "pbe", accession=accession, verbose=verbose)

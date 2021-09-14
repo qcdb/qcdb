@@ -28,7 +28,6 @@ def test_1_mp2():
         'basis' : 'cc-pvdz',
         'qc_module': 'TCE',
         'nwchem_tce__mp2'    : True,
-        'memory': '1000 mb'
         })
     val = qcdb.energy('nwc-mp2')
     check_tce_mp2(val)
@@ -58,9 +57,8 @@ def test_2_mp3():
         'basis' : 'cc-pvdz',
         'qc_module': 'TCE',
         'nwchem_tce__mp3'    : True,
-        'memory': '1000 mb'
         })
-    val = qcdb.energy('nwc-mp3')
+    val = qcdb.energy('nwc-mp3', local_options={"memory": 1})
     check_tce_mp3(val)
 
 def check_tce_mp4(return_value):
@@ -92,7 +90,6 @@ def test_3_mp4():
         'basis' : 'cc-pvdz',
         'qc_module': 'TCE',
         'nwchem_tce__mp4'    : True,
-        'memory': '1000 mb'
         })
-    val = qcdb.energy('nwc-mp4')
+    val = qcdb.energy('nwc-mp4', local_options={"memory": 1})
     check_tce_mp4(val)

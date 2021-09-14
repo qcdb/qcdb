@@ -33,7 +33,6 @@ def test_1_dft():
         ''')
 
     qcdb.set_options({
-        'memory': '6000 mb',
         'basis': 'sto-3g',
         #'nwchem_dft__convergence__density': 1.0e-12,
         'nwchem_dft__xc': 'b3lyp',
@@ -44,7 +43,7 @@ def test_1_dft():
         'nwchem_tce__thresh': 1.0e-12,
     })
     print('Testing CCSDT-DFT energy...')
-    val = qcdb.energy('nwc-ccsdt')
+    val = qcdb.energy('nwc-ccsdt', local_options={"memory": 6})
     check_dft(val, is_dft=True)
 
 
@@ -58,7 +57,6 @@ def test_2_scf():
 
     qcdb.set_options({
         'basis': 'sto-3g',
-        'memory': '6000 mb',
         'nwchem_tce__scf': True,
         'qc_module' :   'tce',
         'nwchem_tce__ccsdt': True,
@@ -66,4 +64,5 @@ def test_2_scf():
     })
     print('Test CCSDT-SCF energy ...')
     val = qcdb.energy('nwc-ccsdt')
+    val = qcdb.energy('nwc-ccsdt', local_options={"memory": 6})
     check_dft(val, is_dft=False)
