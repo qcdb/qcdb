@@ -4,7 +4,6 @@ import numpy as np
 
 import qcdb
 
-from .addons import *
 from .utils import *
 
 ##! Various gradients for a strained helium dimer and water molecule
@@ -83,7 +82,7 @@ test6_R = 0.735872194986
 test7_R = 0.740686885481
 
 
-@using_psi4
+@using("psi4")
 def test_1a():
     h2 = system1()
     refene = test1_ene
@@ -100,7 +99,7 @@ def test_1a():
     #print(jrec['provenance'])
 
 
-@using_cfour
+@using("cfour")
 def test_1b():
     h2 = system1()
     refene = test1_ene
@@ -117,7 +116,7 @@ def test_1b():
     #print(jrec['provenance'])
 
 
-@using_psi4
+@using("psi4")
 def test_2a():
     h2 = system1()
     refene = test2_ene
@@ -134,7 +133,7 @@ def test_2a():
     #print(jrec['provenance'])
 
 
-@using_cfour
+@using("cfour")
 def test_2b():
     h2 = system1()
     refene = test2_ene
@@ -151,7 +150,7 @@ def test_2b():
     #print(jrec['provenance'])
 
 
-@using_psi4
+@using("psi4")
 def test_3a():
     h2 = system1()
     refene = test3_ene
@@ -168,7 +167,7 @@ def test_3a():
     #print(jrec['provenance'])
 
 
-@using_cfour
+@using("cfour")
 def test_3b():
     h2 = system1()
     refene = test3_ene
@@ -184,7 +183,7 @@ def test_3b():
     assert compare_values(test3_R, h2.R, 4, lbl)
     #print(jrec['provenance'])
 
-@using_psi4
+@using("psi4")
 def test_4a():
     h2 = system1()
     refene = test4_ene
@@ -201,7 +200,7 @@ def test_4a():
     #print(jrec['provenance'])
 
 
-@using_cfour
+@using("cfour")
 def test_4b():
     h2 = system1()
     refene = test4_ene
@@ -217,7 +216,7 @@ def test_4b():
     assert compare_values(test4_R, h2.R, 4, lbl)
     #print(jrec['provenance'])
 
-@using_psi4
+@using("psi4")
 def test_5a():
     h2 = system1()
     refene = test5_ene
@@ -234,7 +233,7 @@ def test_5a():
     #print(jrec['provenance'])
 
 
-@using_cfour
+@using("cfour")
 def test_5b():
     h2 = system1()
     refene = test5_ene
@@ -250,7 +249,7 @@ def test_5b():
     assert compare_values(test5_R, h2.R, 4, lbl)
     #print(jrec['provenance'])
 
-@using_psi4
+@using("psi4")
 def test_6a():
     h2 = system1()
     refene = test6_ene
@@ -267,7 +266,7 @@ def test_6a():
     #print(jrec['provenance'])
 
 
-@using_cfour
+@using("cfour")
 def test_6b():
     h2 = system1()
     refene = test6_ene

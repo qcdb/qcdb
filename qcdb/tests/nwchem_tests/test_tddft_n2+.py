@@ -5,7 +5,6 @@ import sys
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
@@ -59,7 +58,7 @@ def check_tddft(return_value):
     assert compare_values([-0.30333, -0.05885, 0.00000], qcdb.variable("TDDFT ROOT 0 -> ROOT 2 DIPOLE"), 4, "tddft root 2 transition dipole")
     assert compare_values(0.00254, qcdb.variable("TDDFT ROOT 0 -> ROOT 2 OSCILLATOR STRENGTH (LEN)"), 4, "tddft root 2 osc str")
 
-@using_nwchem
+@using("nwchem")
 def test_1_dft():
     n2_plus = qcdb.set_molecule('''
         1 2 

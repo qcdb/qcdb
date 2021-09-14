@@ -5,7 +5,6 @@ import sys
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
@@ -25,7 +24,7 @@ def check_dft(return_value, is_dft):
     assert compare_values(ccsdt_corl, qcdb.variable('CCSDT CORRELATION ENERGY'), 5, 'ccsdt corl')
 
 
-@using_nwchem
+@using("nwchem")
 def test_1_dft():
     h2o = qcdb.set_molecule('''
         O     0.000000000000    0.000000000000   -0.065638538099
@@ -49,7 +48,7 @@ def test_1_dft():
     check_dft(val, is_dft=True)
 
 
-@using_nwchem
+@using("nwchem")
 def test_2_scf():
     h2o = qcdb.set_molecule('''
         O     0.000000000000    0.000000000000   -0.065638538099

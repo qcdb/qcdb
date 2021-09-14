@@ -6,6 +6,7 @@ import qcelemental as qcel
 import qcengine as qcng
 
 from .driver_util import pkgprefix
+from ..util import program_prefix
 
 prefixpkg = {v: k for k, v in pkgprefix.items()}
 

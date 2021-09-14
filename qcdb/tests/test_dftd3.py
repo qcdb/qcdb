@@ -7,7 +7,6 @@ import qcelemental as qcel
 import qcdb
 from qcdb.programs.dftd3 import runner as dftd3
 
-from .addons import *
 from .utils import *
 
 eneyne = """
@@ -125,7 +124,7 @@ H   0.000000   0.000000   0.627352
 H   0.000000   0.000000   3.963929
 """
 
-@using_dftd3
+@using("dftd3")
 def test_10_qmol():
     eneyne = qcdb.set_molecule(seneyne)
     eneyne.update_geometry()
@@ -134,8 +133,8 @@ def test_10_qmol():
     assert compare_values(ref_d2[0], E, 7, 'Q: Ethene-Ethyne -D2')
 
 
-@using_dftd3
-@using_psi4
+@using("dftd3")
+@using("psi4")
 def test_10_pmol():
     import psi4
     eneyne = psi4.geometry(seneyne)
@@ -144,7 +143,7 @@ def test_10_pmol():
     E, G = eneyne.run_dftd3('b3lyp', 'd2')
     assert compare_values(ref_d2[0], E, 7, 'P: Ethene-Ethyne -D2')
 
-@using_dftd3
+@using("dftd3")
 def test_11_energy():
     eneyne = qcdb.set_molecule(seneyne)
     eneyne.update_geometry()
@@ -154,7 +153,7 @@ def test_11_energy():
     assert compare_values(ref_d2[0], jrec['qcvars']['DISPERSION CORRECTION ENERGY'].data, 7, tnm())
     assert compare_values(ref_d2[0], jrec['qcvars']['B3LYP-D2 DISPERSION CORRECTION ENERGY'].data, 7, tnm())
 
-@using_dftd3
+@using("dftd3")
 def test_11_b():
     eneyne = qcdb.set_molecule(seneyne)
     eneyne.update_geometry()

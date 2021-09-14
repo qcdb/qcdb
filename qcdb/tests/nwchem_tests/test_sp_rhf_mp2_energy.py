@@ -4,7 +4,6 @@ import sys
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
@@ -27,7 +26,7 @@ def check_mp2(return_value, is5050):
     #    assert compare_values(a5050tot, qcdb.variable('CUSTOM SCS-MP2(N) TOTAL ENERGY'), 5, 'custom scs-mp2 tot')
 
 
-@using_nwchem
+@using("nwchem")
 def test_1_a5050_no():
     h2o = qcdb.set_molecule('''
         O     0.000000000000    0.000000000000   -0.065638538099
@@ -50,7 +49,7 @@ def test_1_a5050_no():
     val = qcdb.energy('nwc-mp2')  # return_wfn=True)
     check_mp2(val, is5050=False)
 
-@using_nwchem
+@using("nwchem")
 def test_2_a5050():
     h2o = qcdb.set_molecule('''
         O     0.000000000000    0.000000000000   -0.065638538099

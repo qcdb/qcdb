@@ -3,7 +3,6 @@ import sys
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 import pytest
@@ -22,7 +21,7 @@ def check_dipole(return_value):
     assert compare_values(dip_z, qcdb.variable('CURRENT DIPOLE Z'), 5, 'dip z')
     assert compare_values(dip_grad, qcdb.variable('CURRENT DIPOLE GRADIENT'), 5, 'dip array')
 
-@using_nwchem
+@using("nwchem")
 @pytest.mark.xfail(True, reason='properties() NYI', run=True)
 def test_1_dipole():
     qcdb.set_molecule(''' 

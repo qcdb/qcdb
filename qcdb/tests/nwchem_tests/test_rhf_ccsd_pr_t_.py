@@ -4,7 +4,6 @@ import sys
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
@@ -35,7 +34,7 @@ def check_ccsd_t_(return_value):
     assert compare_values(nre, qcdb.variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
 
 
-@using_nwchem
+@using("nwchem")
 def test_1_ccsd_t_():
     h2o = qcdb.set_molecule('''
         O     0.000000000000    0.000000000000   -0.065638538099

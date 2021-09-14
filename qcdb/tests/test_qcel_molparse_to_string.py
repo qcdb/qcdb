@@ -6,7 +6,6 @@ from qcengine.testing import using
 
 import qcdb
 
-from .addons import *
 from .utils import *
 
 pytestmark = pytest.mark.quick

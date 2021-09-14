@@ -5,13 +5,12 @@ import sys
 import qcdb
 import qcelemental as qcel
 
-from ..addons import *
 from ..utils import *
 
 import numpy as np
 
 
-@using_nwchem
+@using("nwchem")
 def test_1_ccsd():
     h2o = qcdb.set_molecule('''
         O     0.000000000000    0.000000000000   0.22138519

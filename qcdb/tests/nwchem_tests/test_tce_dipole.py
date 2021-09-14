@@ -7,7 +7,6 @@ import pytest
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
@@ -25,7 +24,7 @@ def check_tce_ccsd(return_value):
     assert compare_values(ccsd_corl, qcdb.variable('CCSD CORRELATION ENERGY'), 5, 'ccsd corl')
     assert compare_values(ccsd_dipole, qcdb.variable("CCSD DIPOLE"), 5, "ccsd dipole")
 
-@using_nwchem
+@using("nwchem")
 def test_1_ccsd_dipole():
     h2o = qcdb.set_molecule(
             '''H 0.0   0.5711156805885   0.7803306218431

@@ -5,7 +5,6 @@ import sys
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
@@ -18,7 +17,7 @@ def check_qcisd(return_value):
     assert compare_values(qcisd_tot, qcdb.variable('QCISD TOTAL ENERGY'), 5, 'qcisd tot')
     assert compare_values(qcisd_corl, qcdb.variable('QCISD CORRELATION ENERGY'), 5, 'qcisd corl')
 
-@using_nwchem
+@using("nwchem")
 def test_1_qcisd():
     h2o = qcdb.set_molecule('''
         H    0.000000000000000   1.079252144093028   1.474611055780858

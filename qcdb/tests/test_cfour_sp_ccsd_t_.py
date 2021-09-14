@@ -4,7 +4,6 @@ import pytest
 
 import qcdb
 
-from .addons import *
 from .utils import *
 
 
@@ -130,7 +129,7 @@ def check_rohf(lbl, fc, prog):
     assert compare_values(ssccsdcorl, qcdb.variable('ccsd same-spin correlation energy'), 6, lbl + ' CCSD SS corl')
 
 
-@using_cfour
+@using("cfour")
 def test_sp_rhf_ccsd_t_ao_ecc(h2o):
     """cfour/sp-rhf-ccsd_t_-ao-ecc/input.dat"""
 
@@ -152,7 +151,7 @@ def test_sp_rhf_ccsd_t_ao_ecc(h2o):
 
 
 
-@using_cfour
+@using("cfour")
 def test_sp_rhf_ccsd_t_ao(h2o):
 
     h2o = qcdb.set_molecule(h2o)
@@ -171,7 +170,7 @@ def test_sp_rhf_ccsd_t_ao(h2o):
     assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
 
-@using_cfour
+@using("cfour")
 def test_sp_rhf_ccsd_t_ecc(h2o):
 
     h2o = qcdb.set_molecule(h2o)
@@ -189,7 +188,7 @@ def test_sp_rhf_ccsd_t_ecc(h2o):
     assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['stdout']
 
 
-@using_cfour
+@using("cfour")
 def test_sp_rhf_ccsd_t_(h2o):
 
     h2o = qcdb.set_molecule(h2o)
@@ -207,7 +206,7 @@ def test_sp_rhf_ccsd_t_(h2o):
     assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['stdout']
 
 
-@using_cfour
+@using("cfour")
 def test_sp_rhf_ccsd_t_fc(h2o):
 
     h2o = qcdb.set_molecule(h2o)
@@ -227,7 +226,7 @@ def test_sp_rhf_ccsd_t_fc(h2o):
     assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
 
-@using_cfour
+@using("cfour")
 def test_sp_rhf_ccsd_t_ncc(h2o):
 
     h2o = qcdb.set_molecule(h2o)
@@ -246,7 +245,7 @@ def test_sp_rhf_ccsd_t_ncc(h2o):
     assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
 
-@using_cfour
+@using("cfour")
 def test_sp_uhf_ccsd_t_ao_ecc(nh2):
 
     nh2 = qcdb.set_molecule(nh2)
@@ -267,7 +266,7 @@ def test_sp_uhf_ccsd_t_ao_ecc(nh2):
     assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
 
-@using_cfour
+@using("cfour")
 def test_sp_uhf_ccsd_t_ao(nh2):
 
     nh2 = qcdb.set_molecule(nh2)
@@ -288,7 +287,7 @@ def test_sp_uhf_ccsd_t_ao(nh2):
     assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
 
-@using_cfour
+@using("cfour")
 def test_sp_uhf_ccsd_t_ecc(nh2):
 
     nh2 = qcdb.set_molecule(nh2)
@@ -308,7 +307,7 @@ def test_sp_uhf_ccsd_t_ecc(nh2):
     assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['stdout']
 
 
-@using_cfour
+@using("cfour")
 def test_sp_uhf_ccsd_t_(nh2):
 
     nh2 = qcdb.set_molecule(nh2)
@@ -328,7 +327,7 @@ def test_sp_uhf_ccsd_t_(nh2):
     assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['stdout']
 
 
-@using_cfour
+@using("cfour")
 def test_sp_rohf_ccsd_t_(nh2):
 
     nh2 = qcdb.set_molecule(nh2)
@@ -349,7 +348,7 @@ def test_sp_rohf_ccsd_t_(nh2):
     assert 'ABCDTYPE             IABCDT         STANDARD' in jrec['stdout']
 
 
-@using_cfour
+@using("cfour")
 def test_sp_rohf_ccsd_t_ao(nh2):
 
     nh2 = qcdb.set_molecule(nh2)
@@ -371,7 +370,7 @@ def test_sp_rohf_ccsd_t_ao(nh2):
     assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
 
-@using_cfour
+@using("cfour")
 def test_sp_rohf_ccsd_t_ao_ecc(nh2):
 
     nh2 = qcdb.set_molecule(nh2)
@@ -392,7 +391,7 @@ def test_sp_rohf_ccsd_t_ao_ecc(nh2):
     assert 'ABCDTYPE             IABCDT         AOBASIS' in jrec['stdout']
 
 
-@using_cfour
+@using("cfour")
 def test_sp_rohf_ccsd_t_fc(nh2):
 
     nh2 = qcdb.set_molecule(nh2)

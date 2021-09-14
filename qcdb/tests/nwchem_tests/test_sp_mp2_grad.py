@@ -6,7 +6,6 @@ import numpy as np
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
@@ -50,7 +49,7 @@ def check_mp2(val, is_df, is5050):
    #     assert compare_values(a5050tot, qcdb.variable('CUSTOM SCS-MP2 TOTAL ENERGY'), 5, 'custom scs-mp2 tot')
 
 
-@using_nwchem
+@using("nwchem")
 def test_1_mp2():
     h2o = qcdb.set_molecule('''
         O      0.000000000000 0.000000000000     -0.065638538099
@@ -73,7 +72,7 @@ def test_1_mp2():
     check_mp2(val, is_df=True, is5050=False)
 
 
-@using_nwchem
+@using("nwchem")
 def test_2_hf():
     h2o = qcdb.set_molecule('''
         O      0.000000000000 0.000000000000     -0.065638538099
@@ -95,7 +94,7 @@ def test_2_hf():
     check_mp2(val, is_df=True, is5050=False)
 
 
-#@using_nwchem
+#@using("nwchem")
 #def test_3_mp2_custom():
 #    qcdb.set_options({
 #        'basis': 'cc-pvdz',
@@ -111,7 +110,7 @@ def test_2_hf():
 #    val = qcdb.gradient('nwc-mp2')
 #    check_mp2(val, is_df=False, is5050=True)
 
-@using_nwchem
+@using("nwchem")
 def test_4_mp2_array():
     h2o = qcdb.set_molecule('''
         O      0.000000000000 0.000000000000     -0.065638538099

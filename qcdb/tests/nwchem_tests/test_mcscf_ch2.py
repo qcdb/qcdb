@@ -2,7 +2,6 @@ import os
 import sys
 
 from ..utils import *
-from ..addons import *
 
 import qcdb
 
@@ -13,7 +12,7 @@ def mcscf_ch2(return_value):
 
     assert compare_values(mcscf, qcdb.variable("MCSCF TOTAL ENERGY"), 5, "mcscf 1a1")
 
-@using_nwchem
+@using("nwchem")
 def test_1_1a1():
     h2o = qcdb.set_molecule('''
             C    0   0     0

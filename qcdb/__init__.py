@@ -30,7 +30,7 @@ __version__ = get_versions()['version']
 del get_versions
 
 from .driver import energy, properties, hessian, gradient, frequency
-from .driver import optking, geometric
+from .driver import optking, geometric, optimize
 from .driver import vpt2
 from .driver.cbs_driver import cbs
 from .driver.cbs_helpers import *

@@ -4,7 +4,6 @@ import sys
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
@@ -17,7 +16,7 @@ def check_tce_mp2(return_value):
     assert compare_values(mp2_tot, qcdb.variable('MP2 TOTAL ENERGY'), 5, 'mbpt(2) tot')
     assert compare_values(mp2_corl, qcdb.variable('MP2 CORRELATION ENERGY'), 5, 'mbpt(2) corl')
 
-@using_nwchem
+@using("nwchem")
 def test_1_mp2():
     h2o = qcdb.set_molecule('''
         O      0.000000000000     0.000000000000    -0.123909374404
@@ -47,7 +46,7 @@ def check_tce_mp3(return_value):
     assert compare_values(mp3_tot, qcdb.variable('MP3 TOTAL ENERGY'), 5, 'mp3 tot')
     assert compare_values(mp3_corr, qcdb.variable('MP3 CORRECTION ENERGY'), 5, 'mp3 corr')
 #Check all corls to corr similar to qcng
-@using_nwchem
+@using("nwchem")
 def test_2_mp3():
     h2o = qcdb.set_molecule('''
         O      0.000000000000     0.000000000000    -0.123909374404
@@ -81,7 +80,7 @@ def check_tce_mp4(return_value):
     assert compare_values(mp4_tot, qcdb.variable('MP4 TOTAL ENERGY'), 5, 'mp4 tot')
     assert compare_values(mp4_corr, qcdb.variable('MP4 CORRECTION ENERGY'), 5, 'mp4 corr')
 
-@using_nwchem
+@using("nwchem")
 def test_3_mp4():
     h2o = qcdb.set_molecule('''
         O      0.000000000000     0.000000000000    -0.123909374404

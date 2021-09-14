@@ -8,7 +8,6 @@ import pytest
 
 import qcdb
 
-from .addons import *
 from .utils import *
 
 tu3_nre_start = 9.16819
@@ -18,7 +17,7 @@ tu4_scf_freqs = [1775.33, 4113.46, 4212.16]
 tu4_scf_freqs_df = [1775.65, 4113.38, 4212.18]
 
 
-@using_psi4
+@using("psi4")
 def test_tu4_freq_psi4():
     h2o = qcdb.set_molecule(
         """
@@ -41,7 +40,7 @@ def test_tu4_freq_psi4():
     assert compare("Psi4", wfn["provenance"]["creator"], "harness")
 
 
-@using_cfour
+@using("cfour")
 def test_tu4_freq_cfour():
     h2o = qcdb.set_molecule(
         """
@@ -64,7 +63,7 @@ def test_tu4_freq_cfour():
     assert compare("CFOUR", wfn["provenance"]["creator"], "harness")
 
 
-@using_nwchem
+@using("nwchem")
 def test_tu4_freq_nwchem():
     h2o = qcdb.set_molecule(
         """
@@ -87,7 +86,7 @@ def test_tu4_freq_nwchem():
     assert compare("NWChem", wfn["provenance"]["creator"], "harness")
 
 
-@using_gamess
+@using("gamess")
 def test_tu4_freq_gamess():
     h2o = qcdb.set_molecule(
         """

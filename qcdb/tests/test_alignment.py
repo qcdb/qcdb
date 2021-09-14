@@ -1,6 +1,7 @@
 import pytest
 from qcengine.programs.tests.standard_suite_ref import std_molecules, std_refs
-from qcengine.testing import using
+
+from .utils import using
 
 import qcdb
 
