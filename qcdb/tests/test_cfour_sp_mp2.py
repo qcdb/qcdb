@@ -4,7 +4,6 @@ import pytest
 
 import qcdb
 
-from .addons import *
 from .utils import *
 
 
@@ -31,7 +30,7 @@ R=1.008
 A=105.0
 """
 
-@using_cfour
+@using("cfour")
 def test_sp_rhf_mp2(h2o):
     """cfour/sp-rhf-mp2/input.dat 
     #! single-point MP2/qz2p on water
@@ -56,7 +55,7 @@ def test_sp_rhf_mp2(h2o):
     assert compare_values(mp2tot, jrec['qcvars']['CURRENT ENERGY'].data, 6, tnm())
 
 
-@using_cfour
+@using("cfour")
 def test_sp_uhf_mp2(nh2):
 
     nh2 = qcdb.set_molecule(nh2)
@@ -79,7 +78,7 @@ def test_sp_uhf_mp2(nh2):
     assert compare_values(-0.1539141, qcdb.variable('mp2 opposite-spin correlation energy'), 6, tnm() + ' MP2 OS corl')
 
 
-@using_cfour
+@using("cfour")
 def test_sp_rohf_mp2_sc(nh2):
 
     nh2 = qcdb.set_molecule(nh2)

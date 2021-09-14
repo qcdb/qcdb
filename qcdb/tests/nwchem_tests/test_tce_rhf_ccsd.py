@@ -4,7 +4,6 @@ import sys
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
@@ -18,7 +17,7 @@ def check_ccsd(return_value):
     assert compare_values(ccsd_tot, qcdb.variable('CCSD TOTAL ENERGY'), 5, 'ccsd total')
 
 
-@using_nwchem
+@using("nwchem")
 def test_1_ccsd():
     h2o = qcdb.set_molecule('''
         O     0.000000000000    0.000000000000   -0.065638538099

@@ -4,7 +4,6 @@ import pytest
 
 import qcdb
 
-from .addons import *
 from .utils import *
 
 
@@ -31,7 +30,7 @@ R=1.008
 A=105.0
 """
 
-@using_cfour
+@using("cfour")
 def test_sp_uhf_scf(nh2):
     """cfour/sp-uhf-scf/input.dat
     UHF-SCF energy calculation
@@ -56,7 +55,7 @@ def test_sp_uhf_scf(nh2):
     assert compare_values(ans, qcdb.variable('current reference energy'), 6, tnm() + 'Current ref')  #TEST
 
 
-@using_cfour
+@using("cfour")
 def test_sp_rhf_scf_a(h2o):
     """cfour/sp-rhf-scf/input.dat 
     #! single-point HF/qz2p on water
@@ -78,7 +77,7 @@ def test_sp_rhf_scf_a(h2o):
     assert compare_values(ans, jrec['qcvars']['CURRENT ENERGY'].data, 6, tnm())
 
 
-@using_cfour
+@using("cfour")
 def test_sp_rhf_scf_b(h2o):
     """cfour/sp-rhf-scf/input.dat 
     #! single-point HF/qz2p on water

@@ -3,7 +3,6 @@ import os
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
@@ -15,7 +14,7 @@ def check_uhf_hf(return_value):
     assert compare_values(nre, qcdb.variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
 
 
-@using_nwchem
+@using("nwchem")
 def test_1_hf():
     nh2 = qcdb.set_molecule('''
            N        0.08546       -0.00020       -0.05091

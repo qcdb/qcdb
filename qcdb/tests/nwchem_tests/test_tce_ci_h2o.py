@@ -4,11 +4,10 @@ import sys
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
-@using_nwchem
+@using("nwchem")
 def test_1_cisd():
     h2o = qcdb.set_molecule('''
         O      0.000000000000     0.000000000000    -0.123909374404
@@ -33,7 +32,7 @@ def test_1_cisd():
     assert compare_values(cisd_corl, qcdb.variable('CISD CORRELATION ENERGY'), 5, 'cisd corl')
 
 
-@using_nwchem
+@using("nwchem")
 def test_2_cisdt():
     h2o = qcdb.set_molecule('''
         O      0.000000000000     0.000000000000    -0.123909374404
@@ -58,7 +57,7 @@ def test_2_cisdt():
     assert compare_values(cisdt_corl, qcdb.variable('CISDT CORRELATION ENERGY'), 5, 'cisdt corl')
 
 
-@using_nwchem
+@using("nwchem")
 def test_3_cisdtq():
     h2o = qcdb.set_molecule('''
         O      0.000000000000     0.000000000000    -0.123909374404

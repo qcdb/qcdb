@@ -5,11 +5,10 @@ import numpy as np
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
-@using_nwchem
+@using("nwchem")
 def test_grad():
     h2o = qcdb.set_molecule('''
         O      0.00000000    0.00000000    0.00000000

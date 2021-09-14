@@ -59,6 +59,15 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
     ref_subject.update_geometry()
     min_nonzero_coords = np.count_nonzero(np.abs(ref_subject.geometry(np_out=True)) > 1.0e-10)
 
+    # print(
+    #     "MOL 1/REF: ref_subject",
+    #     ref_subject.com_fixed(),
+    #     ref_subject.orientation_fixed(),
+    #     ref_subject.symmetry_from_input(),
+    # )
+    # with np.printoptions(precision=3, suppress=True):
+    #     print(ref_subject.geometry(np_out=True))
+
     if scramble is None:
         subject = ref_subject
         ref2in_mill = compute_scramble(
@@ -68,6 +77,13 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
     else:
         subject, scramble_data = ref_subject.scramble(**scramble, do_test=False, fix_mode="copy")
         ref2in_mill = scramble_data["mill"]
+
+    # with np.printoptions(precision=12, suppress=True):
+    #     print(f"ref2in scramble mill= {ref2in_mill}")
+
+    # print("MOL 2/IN: subject", subject.com_fixed(), subject.orientation_fixed(), subject.symmetry_from_input())
+    # with np.printoptions(precision=3, suppress=True):
+    #     print(subject.geometry(np_out=True))
 
     # 2. input mol: `subject` now ready for `atin.molecule`. may have been scrambled away from nice ref orientation
 
@@ -203,9 +219,22 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
     # assert 0, f"{qc_module_xptd=} {qc_module_in=} {qc_module_out=}"  # debug
 
     # 3. output mol: `wfn.molecule` after calc. orientation for nonscalar quantities may be different from `subject` if fix_=False
+
     wfn_molecule = qcdb.Molecule.from_schema(wfn["molecule"])
 
+    # print(
+    #     "MOL 3/WFN: wfn.mol",
+    #     wfn_molecule.com_fixed(),
+    #     wfn_molecule.orientation_fixed(),
+    #     wfn_molecule.symmetry_from_input(),
+    # )
+    # with np.printoptions(precision=3, suppress=True):
+    #     print(wfn_molecule.geometry(np_out=True))
+
     _, ref2out_mill, _ = ref_subject.B787(wfn_molecule, atoms_map=False, mols_align=True, fix_mode="true", verbose=0)
+    # print(f"{ref2out_mill=}")
+    # print("PREE REF")
+    # print(ref_block["HF TOTAL GRADIENT"])
 
     if subject.com_fixed() and subject.orientation_fixed():
         assert frame == "fixed"
@@ -253,6 +282,8 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
             ref_block = mill_qcvars(ref2out_mill, ref_block)
             ref_block_conv = mill_qcvars(ref2out_mill, ref_block_conv)
 
+    # print("POST REF")
+    # print(ref_block["HF TOTAL GRADIENT"])
 
     # <<<  Comparison Tests  >>>
 
@@ -360,7 +391,10 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
         # separations here for DFT appropriate when qcvars are labeled by functional
 
     if "wrong" in inp:
-        if basis == "cc-pvdz" and contractual_args in [["cfour-ecc", "gradient", "rhf", mtd, "conv", "fc"] for mtd in ["ccsdt-1a", "ccsdt-1b", "ccsdt-2", "ccsdt-3"]]:
+        if basis == "cc-pvdz" and contractual_args in [
+            ["cfour-ecc", "gradient", "rhf", mtd, "conv", "fc"]
+            for mtd in ["ccsdt-1a", "ccsdt-1b", "ccsdt-2", "ccsdt-3"]
+        ]:
             # these four tests have pass/fail too close for dz to "get it right" with general tolerances
             pass
         else:

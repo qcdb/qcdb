@@ -8,14 +8,13 @@ import pytest
 
 import qcdb
 
-from .addons import *
 from .utils import *
 
 tu2_scf_ene = -38.9250886434
 tu2_scf_ene_df = -38.9253346246
 
 
-@using_psi4
+@using("psi4")
 def test_tu2_uhf_psi4():
     ch2 = qcdb.set_molecule(
         """
@@ -47,7 +46,7 @@ def test_tu2_uhf_psi4():
     assert compare("Psi4", wfn["provenance"]["creator"], "harness")
 
 
-@using_cfour
+@using("cfour")
 def test_tu2_uhf_cfour():
     ch2 = qcdb.set_molecule(
         """
@@ -79,7 +78,7 @@ def test_tu2_uhf_cfour():
     assert compare("CFOUR", wfn["provenance"]["creator"], "harness")
 
 
-@using_nwchem
+@using("nwchem")
 def test_tu2_uhf_nwchem():
     ch2 = qcdb.set_molecule(
         """
@@ -110,7 +109,7 @@ def test_tu2_uhf_nwchem():
     assert compare("NWChem", wfn["provenance"]["creator"], "harness")
 
 
-@using_gamess
+@using("gamess")
 def test_tu2_uhf_gamess():
     ch2 = qcdb.set_molecule(
         """

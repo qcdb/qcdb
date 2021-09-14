@@ -4,7 +4,6 @@ import pytest
 
 import qcdb
 
-from .addons import *
 from .utils import *
 
 
@@ -31,7 +30,7 @@ R=1.008
 A=105.0
 """
 
-@using_cfour
+@using("cfour")
 def test_sp_rhf_ccsd(h2o):
     """cfour/sp-rhf-ccsd/input.dat 
     #! single point CCSD/qz2p on water
@@ -57,7 +56,7 @@ def test_sp_rhf_ccsd(h2o):
     assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, tnm() + 'CCSD')
 
 
-@using_cfour
+@using("cfour")
 def test_sp_rhf_ccsd_ao(h2o):
     """cfour/sp-rhf-ccsd-ao/input.dat 
     #! single point CCSD/qz2p on water
@@ -84,7 +83,7 @@ def test_sp_rhf_ccsd_ao(h2o):
     assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, tnm() + 'CCSD')
 
 
-@using_cfour
+@using("cfour")
 def test_sp_uhf_ccsd(nh2):
     """cfour/sp-uhf-ccsd/input.dat
     #! single-point CCSD/qz2p on NH2
@@ -110,7 +109,7 @@ def test_sp_uhf_ccsd(nh2):
     assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), 6, tnm() + 'CCSD')
 
 
-@using_cfour
+@using("cfour")
 def test_sp_rohf_ccsd(nh2):
 
     nh2 = qcdb.set_molecule(nh2)

@@ -11,12 +11,9 @@ from qcengine.testing import using
 import qcdb
 from qcelemental import constants
 
-from .addons import *
 from .utils import *
 
 tu6_ie_scan = {2.5: 0.757717, 3.0: 0.015685, 4.0: -0.016266}
-
-
 
 
 @using("psi4")
@@ -56,8 +53,6 @@ def test_tu6_cp_psi4():
         print(f"        {R:3.1f}            {e:10.6f}\n")
 
 
-
-
 @using("cfour")
 def test_tu6_cp_cfour():
     dimer = qcdb.set_molecule(
@@ -93,8 +88,6 @@ def test_tu6_cp_cfour():
     for R in Rvals:
         e = ecp[R] * constants.hartree2kcalmol
         print(f"        {R:3.1f}            {e:10.6f}\n")
-
-
 
 
 @using("nwchem")

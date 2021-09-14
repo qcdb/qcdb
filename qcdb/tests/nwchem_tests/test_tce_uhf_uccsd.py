@@ -7,7 +7,6 @@ import pytest
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
@@ -21,7 +20,7 @@ def tce_uccsd(return_value):
     assert compare_values(ccsd_tot, qcdb.variable('CCSD TOTAL ENERGY'), 5, 'ccsd tot')
     assert compare_values(ccsd_corl, qcdb.variable('CCSD CORRELATION ENERGY'), 5, 'ccsd corl')
 
-@using_nwchem
+@using("nwchem")
 def test_1_uccsd():
     h2o = qcdb.set_molecule('''
     1 2
@@ -45,7 +44,7 @@ def test_1_uccsd():
     tce_uccsd(val)
 
 
-@using_nwchem
+@using("nwchem")
 def test_mol_chg_error():
     h2o = qcdb.set_molecule('''
         H

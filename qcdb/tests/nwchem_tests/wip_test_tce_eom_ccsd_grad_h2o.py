@@ -1,7 +1,6 @@
 import os
 import sys
 from ..utils import *
-from ..addons import *
 import qcdb
 import numpy as np
 
@@ -16,7 +15,7 @@ def check_eom_ccsd_grad(return_value):
 
     assert compare_values(eom_ccsd_grad, qcdb.variable('CURRENT GRADIENT'), 5, 'eom ccsd grad')
 
-@using_nwchem
+@using("nwchem")
 def test_1_eom_ccsd_grad():
     h2o =   qcdb.set_molecule('''
             O      0.000000000000     0.000000000000    -0.123909374404

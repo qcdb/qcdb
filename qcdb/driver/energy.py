@@ -11,6 +11,7 @@ from ..keywords import register_kwds
 from . import pe  # keep this at top of imports
 from . import cbs_driver, driver_helpers, driver_util
 from .proc_table import procedures
+from .driver_nbody import nbody_gufunc
 
 pp = pprint.PrettyPrinter(width=120)
 
@@ -340,9 +341,10 @@ def energy(name, **kwargs):
         pe.load_options()
 
 
-#    # Bounce to CP if bsse kwarg
-#    if kwargs.get('bsse_type', None) is not None:
-#        return driver_nbody.nbody_gufunc(energy, name, ptype='energy', **kwargs)
+    # Bounce to CP if bsse kwarg
+    if kwargs.get("bsse_type", None) is not None:
+        #return nbody_driver.nbody_gufunc(energy, name, ptype="energy", molecule=molecule, **kwargs)
+        return nbody_gufunc(energy, name, ptype="energy", molecule=molecule, **kwargs)
 
     # Bounce to CBS if "method/basis" name
     if '/' in lowername:

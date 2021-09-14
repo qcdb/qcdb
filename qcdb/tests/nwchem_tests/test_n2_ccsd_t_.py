@@ -4,7 +4,6 @@ import sys
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
@@ -38,7 +37,7 @@ def check_ccsd_t_(return_value, is5050):
 #        assert compare_values(a5050_tot, qcdb.variable('CUSTOM SCS-CCSD TOTAL ENERGY'), 5, 'custom scs tot')
 
 
-#@using_nwchem
+#@using("nwchem")
 #def test_1_a5050():
 #    qcdb.set_options({
 #        'basis' : 'cc-pvdz',
@@ -49,7 +48,7 @@ def check_ccsd_t_(return_value, is5050):
 #    val = qcdb.energy('nwc-ccsd(t)', molecule=n2)
 #    check_ccsd_t_(val, is5050=True)
 
-@using_nwchem
+@using("nwchem")
 def test_2_a5050_no():
     n2 = qcdb.set_molecule('''
         n 0 0 -0.5

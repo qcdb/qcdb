@@ -6,7 +6,6 @@ import sys
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
@@ -16,7 +15,7 @@ def check_hf(return_value):
     assert compare_values(ref, qcdb.variable('HF TOTAL ENERGY'), 5, 'total scf')
 
 
-@using_nwchem
+@using("nwchem")
 def test_1_hf():
     h2o = qcdb.set_molecule('''
         O     0.000000000000    0.000000000000   -0.065638538099

@@ -1,6 +1,5 @@
 import qcdb
 
-from .addons import *
 from .utils import *
 
 # perhaps from pywrap_cbs1 psi4 test case
@@ -23,7 +22,7 @@ options:
 ans_hf3 = -7.4326961561955551
 
 
-@using_psi4
+@using("psi4")
 def test_hf3_a():
     subject = yamlin_hf3.replace('pkg-', '')
 
@@ -31,7 +30,7 @@ def test_hf3_a():
     assert compare_values(ans_hf3, qcdb.variable('current energy'), 7, '')
 
 
-@using_psi4
+@using("psi4")
 def test_hf3_b():
     subject = yamlin_hf3.replace('pkg', 'p4')
 
@@ -39,7 +38,7 @@ def test_hf3_b():
     assert compare_values(ans_hf3, qcdb.variable('current energy'), 7, '')
 
 
-@using_cfour
+@using("cfour")
 def test_hf3_c():
     subject = yamlin_hf3.replace('pkg', 'c4')
 
@@ -73,7 +72,7 @@ options:
 ans_c2d2 = -1.148287763304
 
 
-@using_cfour
+@using("cfour")
 def test_c2d2_a():
     subject = yamlin_c2d2.replace('pkg-', '')
 
@@ -81,7 +80,7 @@ def test_c2d2_a():
     assert compare_values(ans_c2d2, qcdb.variable('current energy'), 7, '')
 
 
-@using_cfour
+@using("cfour")
 def test_c2d2_b():
     subject = yamlin_c2d2.replace('pkg', 'p4')
 
@@ -89,7 +88,7 @@ def test_c2d2_b():
     assert compare_values(ans_c2d2, qcdb.variable('current energy'), 7, '')
 
 
-@using_cfour
+@using("cfour")
 def test_c2d2_c():
     subject = yamlin_c2d2.replace('pkg', 'c4')
 

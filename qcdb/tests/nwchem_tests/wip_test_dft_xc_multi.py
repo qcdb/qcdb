@@ -6,7 +6,6 @@ import pytest
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
@@ -25,7 +24,7 @@ def check_pw91(return_value):
 
     assert compare_values(pw91, qcdb.variable('DFT TOTAL ENERGY'), 5, 'xc pw91')
 
-@using_nwchem
+@using("nwchem")
 def test_1_pw91(h2o):
     qcdb.set_options({
         'basis' : 'cc-pvdz',
@@ -40,7 +39,7 @@ def check_pbe96(return_value):
 
     assert compare_values(pbe91, qcdb.variable('DFT TOTAL ENERGY'), 5, 'xc pbe96')
 
-@using_nwchem
+@using("nwchem")
 def test_2_pbe96(h2o):
     qcdb.set_options({
         'basis' : 'cc-pvdz',
@@ -55,7 +54,7 @@ def check_bp86(return_value):
 
     assert compare_values(bp86, qcdb.variable('DFT TOTAL ENERGY'), 5, 'xc bp86')
 
-@using_nwchem
+@using("nwchem")
 def test_3_bp86(h2o):
     qcdb.set_options({
         'basis' : 'cc-pvdz',
@@ -70,7 +69,7 @@ def check_bp91(return_value):
 
     assert compare_values(bp91, qcdb.variable('DFT TOTAL ENERGY'), 5, 'xc bp91')
 
-@using_nwchem
+@using("nwchem")
 def test_4_bp91(h2o):
     qcdb.set_options({
         'basis' : 'cc-pvdz',
@@ -85,7 +84,7 @@ def check_blyp(return_value):
 
     assert compare_values(blyp, qcdb.variable('DFT TOTAL ENERGY'), 5, 'xc blyp')
 
-@using_nwchem
+@using("nwchem")
 def test_5_blyp(h2o):
     qcdb.set_options({
         'basis' : 'cc-pvdz',
@@ -100,7 +99,7 @@ def check_b97(return_value):
 
     assert compare_values(bp97, qcdb.variable('DFT TOTAL ENERGY'), 5, 'xc b97')
 
-@using_nwchem
+@using("nwchem")
 def test_6_b97(h2o):
     qcdb.set_options({
         'basis' : 'cc-pvdz',
@@ -115,7 +114,7 @@ def check_mpw1pw(return_value):
 
     assert compare_values(mpw1pw, qcdb.variable('DFT TOTAL ENERGY'), 5, 'mpw1pw')
 
-@using_nwchem
+@using("nwchem")
 def test_7_mpw1pw(h2o):
     qcdb.set_options({
         'basis' : 'cc-pvdz',
@@ -130,7 +129,7 @@ def check_mpwlyp1m(return_value):
 
     assert compare_values(mpwlyp1m, qcdb.variable('DFT TOTAL ENERGY'), 5, 'mpwly1m')
 
-@using_nwchem
+@using("nwchem")
 def test_8_mpwlyp1m(h2o):
     qcdb.set_options({
         'basis' : 'cc-pvdz',
@@ -145,7 +144,7 @@ def check_mpwlyp1w(return_value):
 
     assert compare_values(mpwlyp1w, qcdb.variable('DFT TOTAL ENERGY'), 5, 'mpwlyp1w')
 
-@using_nwchem
+@using("nwchem")
 def test_9_mpwlyp1w(h2o):
     qcdb.set_options({
         'basis' : 'cc-pvdz',
@@ -160,7 +159,7 @@ def check_b1lyp(return_value):
 
     assert compare_values(b1lyp, qcdb.variable('DFT TOTAL ENERGY'), 5, 'b1lyp')
 
-@using_nwchem
+@using("nwchem")
 def test_10_b1lyp(h2o):
     qcdb.set_options({
         'basis' : 'cc-pvdz',
@@ -175,7 +174,7 @@ def check_b1pw91(return_value):
 
     assert compare_values(b1pw91, qcdb.variable('DFT TOTAL ENERGY'), 5, 'b1pw91')
 
-@using_nwchem
+@using("nwchem")
 def test_11_b1pw91(h2o):
     qcdb.set_options({
         'basis' : 'cc-pvdz',
@@ -190,7 +189,7 @@ def check_b2plyp(return_value):
 
     assert compare_values(b2plyp, qcdb.variable('DFT TOTAL ENERGY'), 5, 'b2plyp')
 
-@using_nwchem
+@using("nwchem")
 def test_12_b2plyp(h2o):
     qcdb.set_options({
         'basis' : 'cc-pvdz',
@@ -204,7 +203,7 @@ def check_b3lyp5(return_value):
     b3lyp5    =  -76.384402340966
     assert compare_values(b3lyp5, qcdb.variable('DFT TOTAL ENERGY'), 5, 'xc b97')
 
-@using_nwchem
+@using("nwchem")
 def test_13_b3lyp5(h2o):
     qcdb.set_options({
         'basis' : 'cc-pvdz',
@@ -219,7 +218,7 @@ def check_b86bpbe(return_value):
 
     assert compare_values(b86bpbe, qcdb.variable('DFT TOTAL ENERGY'), 5, 'xc b86cpbe')
 
-@using_nwchem
+@using("nwchem")
 def test_14_b86bpbe(h2o):
     qcdb.set_options({
         'basis' : 'cc-pvdz',
@@ -234,7 +233,7 @@ def check_b97_1(return_value):
 
     assert compare_values(b97_1, qcdb.variable('DFT TOTAL ENERGY'), 5, 'xc b97-1')
 
-@using_nwchem
+@using("nwchem")
 def test_15_b97_1(h2o):
     qcdb.set_options({
         'basis' : 'cc-pvdz',

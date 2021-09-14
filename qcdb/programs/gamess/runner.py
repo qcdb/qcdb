@@ -96,6 +96,9 @@ class QcdbGAMESSHarness(GAMESSHarness):
 
         ropts = input_model.extras['qcdb:options']
 
+        if not all(input_model.molecule.real):
+            raise InputError("GAMESS can't handle ghost atoms yet.")
+
         mf_mol, mf_data = get_master_frame(input_model.molecule)
 
         # c1 so _all_ atoms written to BasisSet

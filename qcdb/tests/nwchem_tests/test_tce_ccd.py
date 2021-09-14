@@ -5,7 +5,6 @@ import sys
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
@@ -25,7 +24,7 @@ def tce_ccd(return_value):
     #assert compare_values(y, qcdb.variable('CURRENT DIPOLE Y'), 5, 'y dipole')
     #assert compare_values(z, qcdb.variable('CURRENT DIPOLE Z'), 5, 'z dipole')
 
-@using_nwchem
+@using("nwchem")
 def test_1_ccd():
     h2o = qcdb.set_molecule('''
         H    0.000000000000000   1.079252144093028   1.474611055780858

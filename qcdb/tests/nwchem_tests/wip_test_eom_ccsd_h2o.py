@@ -4,7 +4,6 @@ import sys
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 

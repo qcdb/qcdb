@@ -8,14 +8,13 @@ import pytest
 
 import qcdb
 
-from .addons import *
 from .utils import *
 
 tu1_scf_ene = -76.02665366
 tu1_scf_ene_df = -76.0266327341
 
 
-@using_psi4
+@using("psi4")
 def test_tu1_ene_psi4():
 
     # memory 600 mb
@@ -46,7 +45,7 @@ def test_tu1_ene_psi4():
     assert compare_values(tu1_scf_ene, ene, 6, "energy")
 
 
-@using_cfour
+@using("cfour")
 def test_tu1_ene_cfour():
     h2o = qcdb.set_molecule(
         """
@@ -61,7 +60,7 @@ def test_tu1_ene_cfour():
     assert compare_values(tu1_scf_ene, ene, 6, "energy")
 
 
-@using_nwchem
+@using("nwchem")
 def test_tu1_ene_nwchem():
     h2o = qcdb.set_molecule(
         """
@@ -76,7 +75,7 @@ def test_tu1_ene_nwchem():
     assert compare_values(tu1_scf_ene, ene, 6, "energy")
 
 
-@using_gamess
+@using("gamess")
 def test_tu1_ene_gamess():
     h2o = qcdb.set_molecule(
         """

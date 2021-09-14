@@ -3,6 +3,8 @@ import pprint
 
 import qcdb
 
+from .addons import has_program, using
+
 pp = pprint.PrettyPrinter(width=120)
 
 
@@ -15,7 +17,9 @@ __all__ = [
     'compare_arrays',
     'compare_recursive',
     'compare_molrecs',
+    "has_program",
     'tnm',
+    "using",
 ]
 
 # CODATA ratio 2014 / 2010 Bohr to Angstroms conversion factor
@@ -49,7 +53,7 @@ compare_recursive = true_false_decorator(qcdb.compare_recursive)
 compare_molrecs = true_false_decorator(qcdb.compare_molrecs)
 
 
-def tnm():
+def tnm() -> str:
     """Returns the name of the calling function, usually name of test case."""
 
     return sys._getframe().f_back.f_code.co_name

@@ -5,7 +5,6 @@ import pytest
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 

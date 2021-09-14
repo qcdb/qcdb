@@ -417,6 +417,7 @@ def optking(name, **kwargs):
 #    optstash.restore()
 #    raise OptimizationConvergenceError("""geometry optimization""", iopt - 1, wfn)
 
+optimize = optking
 
 def geometric(name, **kwargs):
     from . import load_proc_table
