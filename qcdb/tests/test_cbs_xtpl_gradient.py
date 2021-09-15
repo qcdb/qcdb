@@ -5,7 +5,6 @@ import pytest
 
 import qcdb
 
-from .addons import *
 from .utils import *
 
 #! Various gradients for a strained helium dimer and water molecule
@@ -101,7 +100,7 @@ def system3():
 
 # SCF TESTS
 
-@using_psi4
+@using("psi4")
 def test_1a():
     system1()
 
@@ -113,7 +112,7 @@ def test_1a():
     assert 'Psi4' == jrec['provenance']['creator'], "[1a] prov"
 
 
-@using_cfour
+@using("cfour")
 def test_1b():
     system1()
 
@@ -125,7 +124,7 @@ def test_1b():
     assert 'CFOUR' == jrec['provenance']['creator'], "[1b] prov"
 
 
-@using_gamess
+@using("gamess")
 def test_1c():
     system1()
 
@@ -134,10 +133,10 @@ def test_1c():
     assert compare_arrays(ref_scf_dz, jrec['qcvars']['CURRENT GRADIENT'].data, 6, "[1c] SCF/cc-pVDZ Gradient")
     assert compare_arrays(ref_scf_dz, qcdb.variable('CURRENT GRADIENT'), 6, "[1c] SCF/cc-pVDZ Gradient")
     #assert compare_arrays(ref_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1c] SCF/cc-pVDZ Gradient")
-    assert 'QCDB' == jrec['provenance']['creator'], "[1c] prov" # GAMESS and/or QCDB??
+    assert 'GAMESS' == jrec['provenance']['creator'], "[1c] prov" # GAMESS and/or QCDB??
 
 
-@using_psi4
+@using("psi4")
 def test_1d():
     system2()
 
@@ -150,7 +149,7 @@ def test_1d():
     assert 'Psi4' ==  jrec['provenance']['creator'], "[1d] prov"
 
 
-@using_cfour
+@using("cfour")
 def test_1e():
     system2()
 
@@ -163,7 +162,7 @@ def test_1e():
 
 
 # this fails bc of the fixed orientation/com, not compatible with GAMESS's symmetry unique atoms
-#@using_gamess
+#@using("gamess")
 #def test_1f():
 #    system2()
 #
@@ -176,7 +175,7 @@ def test_1e():
 #    assert 'GAMESS' == jrec['provenance']['creator'], "[1f] prov"
 
 
-@using_psi4
+@using("psi4")
 def test_1g():
     system3()
 
@@ -189,7 +188,7 @@ def test_1g():
     assert 'Psi4' ==  jrec['provenance']['creator'], "[1g] prov"
 
 
-@using_cfour
+@using("cfour")
 def test_1h():
     system3()
 
@@ -200,7 +199,7 @@ def test_1h():
     #assert compare_arrays(ref_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1h] SCF/cc-pVDZ Gradient")
     assert 'CFOUR' == jrec['provenance']['creator'], "[1h] prov"
 
-@using_gamess
+@using("gamess")
 def test_1i():
     system3()
 
@@ -209,7 +208,7 @@ def test_1i():
     assert compare_arrays(ref2_scf_dz, jrec['qcvars']['CURRENT GRADIENT'].data, 6, "[1i] SCF/cc-pVDZ Gradient")
     assert compare_arrays(ref2_scf_dz, qcdb.variable('CURRENT GRADIENT'), 6, "[1i] SCF/cc-pVDZ Gradient")
     ##assert compare_arrays(ref_scf_dz, jrec['qcvars']['HF/CC-PVDZ TOTAL GRADIENT'].data, 6, "[1i] SCF/cc-pVDZ Gradient")
-    assert 'QCDB' == jrec['provenance']['creator'], "[1i] prov"
+    assert 'GAMESS' == jrec['provenance']['creator'], "[1i] prov"
 
 
 #def hide_test_2():
@@ -227,7 +226,7 @@ def test_1i():
 
 
 @pytest.mark.xfail(True, reason='Old Driver, Spring 2019', run=True)
-@using_psi4
+@using("psi4")
 def test_4a():
     system1()
 
@@ -237,7 +236,7 @@ def test_4a():
 
 
 @pytest.mark.xfail(True, reason='Old Driver, Spring 2019', run=True)
-@using_cfour
+@using("cfour")
 def test_4b():
     system1()
 
@@ -246,7 +245,7 @@ def test_4b():
     pp.pprint(jrec)
 
 
-@using_psi4
+@using("psi4")
 def test_5a():
     system1()
 
@@ -254,7 +253,7 @@ def test_5a():
     assert compare_arrays(ref_scf_dtqz, scf_dtqz, 6, "[5] SCF/cc-pV[DTQ]Z Gradient")
 
 
-@using_cfour
+@using("cfour")
 def test_5b():
     system1()
 
@@ -262,7 +261,7 @@ def test_5b():
     assert compare_arrays(ref_scf_dtqz, scf_dtqz, 6, "[5] SCF/cc-pV[DTQ]Z Gradient")
 
 
-@using_gamess
+@using("gamess")
 def test_5c():
     system1()
 
@@ -270,7 +269,7 @@ def test_5c():
     assert compare_arrays(ref_scf_dtqz, scf_dtqz, 6, "[5] SCF/cc-pV[DTQ]Z Gradient")
 
 
-@using_psi4
+@using("psi4")
 def test_6a():
     system1()
 
@@ -278,7 +277,7 @@ def test_6a():
     assert compare_arrays(ref_mp2_dtz, mp2_dtz, 6, "[6] MP2/cc-pV[DT]Z Gradient")
 
 
-@using_cfour
+@using("cfour")
 def test_6b():
     system1()
 
@@ -286,7 +285,7 @@ def test_6b():
     assert compare_arrays(ref_mp2_dtz, mp2_dtz, 6, "[6] MP2/cc-pV[DT]Z Gradient")
 
 
-@using_gamess
+@using("gamess")
 def test_6c():
     system1()
 
@@ -294,7 +293,7 @@ def test_6c():
     assert compare_arrays(ref_mp2_dtz, mp2_dtz, 6, "[6] MP2/cc-pV[DT]Z Gradient")
 
 
-@using_psi4
+@using("psi4")
 def test_6c():
     system2()
 
@@ -302,7 +301,7 @@ def test_6c():
     assert compare_arrays(ref_mp2_dtz_y, mp2_dtz, 6, "[6] MP2/cc-pV[DT]Z Gradient")
 
 
-@using_cfour
+@using("cfour")
 def test_6d():
     system2()
 

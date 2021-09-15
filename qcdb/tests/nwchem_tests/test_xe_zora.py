@@ -5,7 +5,6 @@ import sys
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
@@ -14,7 +13,7 @@ def check_zora(return_value):
 
     assert compare_values(dft, qcdb.variable('DFT TOTAL ENERGY'), 5, 'dft total')
 
-@using_nwchem
+@using("nwchem")
 def test_1_xe():
     xe = qcdb.set_molecule('Xe 0 0 0')
 

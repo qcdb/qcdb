@@ -57,3 +57,29 @@ def process_units(molrec):
 def conv_float2negexp(val: float) -> int:
     """Least restrictive negative exponent of base 10 that achieves the floating point convergence criterium `val`."""
     return -1 * int(math.floor(math.log(val, 10)))
+
+
+def program_prefix(hint: str, *, return_program: bool = False, return_prefix: bool = False) -> str:
+    """Translate between CMS package name and method prefix."""
+
+    pkgprefix = {
+        "p4": "Psi4",
+        "c4": "CFOUR",
+        "d3": "DFTD3",
+        "nwc": "NWChem",
+        "gms": "GAMESS",
+    }
+
+    lookup = {}
+    for pfx, prog in pkgprefix.items():
+        dashed_pfx = pfx + "-"
+        lookup[pfx] = (prog, dashed_pfx, prog)
+        lookup[dashed_pfx] = (prog, dashed_pfx, prog)
+        lookup[prog.lower()] = (dashed_pfx, dashed_pfx, prog)
+
+    if return_program:
+        return lookup[hint.lower()][2]
+    elif return_prefix:
+        return lookup[hint.lower()][1]
+    else:
+        return lookup[hint.lower()][0]

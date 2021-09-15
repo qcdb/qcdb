@@ -582,8 +582,8 @@ def load_nwchem_keywords(options: Keywords) -> None:
     options.add(
         'nwchem',
         Keyword(keyword='scf__sym',
-                default=True,
-                validator=parsers.boolean,
+                default="on",
+                validator=parsers.onoff_boolean,
                 glossary='Symmetry specification in SCF for Fock matrix construction on/off'))
 
     options.add(
@@ -1281,6 +1281,14 @@ def load_nwchem_keywords(options: Keywords) -> None:
             case) and tuple values. See table at link for decoding iangquad index into angular points.
             Density-Functional-Theory-for-Molecules#lebedev-angular-grid"""))
 
+    options.add(
+        "nwchem",
+        Keyword(
+            keyword="dft__rodft",
+            default=False,
+            validator=parsers.boolean,
+            glossary="""The rodft keyword will perform restricted open-shell calculations. This keyword can only be used with the CGMIN keyword."""))
+
     #CCSD block
     options.add(
         'nwchem',
@@ -1296,15 +1304,36 @@ def load_nwchem_keywords(options: Keywords) -> None:
                 validator=parsers.parse_convergence,
                 glossary='Convergence threshold for the iterative part of the calculation.'))
 
-    options.add('nwchem',
-                Keyword(keyword='ccsd__freeze',
-                        default=0,
-                        validator=parsers.nonnegative_integer,
-                        glossary='Number of orbitals to freeze'))  # expand to core/atomic/virtual
     # freeze 10 == freeze core 10
     # freeze virtual 5
     # freeze atomic
     # freeze atomic O 1 Si 3
+
+    options.add(
+        'nwchem',
+        Keyword(keyword='ccsd__freeze__core',
+                default=0,
+                validator=parsers.nonnegative_integer,
+                glossary='Number of core orbitals to freeze'))
+
+    options.add_alias('nwchem', AliasKeyword(alias='ccsd__freeze', target='ccsd__freeze__core'))
+
+    options.add(
+        'nwchem',
+        Keyword(keyword='ccsd__freeze__virtual',
+                default=0,
+                validator=parsers.nonnegative_integer,
+                glossary='Number of virtual orbitals to freeze'))
+
+    options.add(
+        'nwchem',
+        Keyword(keyword='ccsd__freeze__atomic',
+                default=False,
+                validator=parsers.bool_or_elem_dict,
+                glossary=
+                """Freeze orbitals by element standard lookup (``True``) or specify in dict ``{'O': 1, 'Si': 3}``"""))
+
+    options.add_alias('nwchem', AliasKeyword(alias='ccsd__freeze__core__atomic', target='ccsd__freeze__atomic'))
 
     #TCE block
     options.add(
@@ -1601,12 +1630,29 @@ def load_nwchem_keywords(options: Keywords) -> None:
 
     options.add(
         'nwchem',
-        Keyword(
-            keyword='tce__freeze',
-            default=0,
-            validator=parsers.nonnegative_integer,
-            glossary=' Freezing orbitals. None are frozen by default. Only capable of freezing core orbitals at moment.'
-        ))
+        Keyword(keyword='tce__freeze__core',
+                default=0,
+                validator=parsers.nonnegative_integer,
+                glossary='Number of core orbitals to freeze'))
+
+    options.add_alias('nwchem', AliasKeyword(alias='tce__freeze', target='tce__freeze__core'))
+
+    options.add(
+        'nwchem',
+        Keyword(keyword='tce__freeze__virtual',
+                default=0,
+                validator=parsers.nonnegative_integer,
+                glossary='Number of virtual orbitals to freeze'))
+
+    options.add(
+        'nwchem',
+        Keyword(keyword='tce__freeze__atomic',
+                default=False,
+                validator=parsers.bool_or_elem_dict,
+                glossary=
+                """Freeze orbitals by element standard lookup (``True``) or specify in dict ``{'O': 1, 'Si': 3}``"""))
+
+    options.add_alias('nwchem', AliasKeyword(alias='tce__freeze__core__atomic', target='tce__freeze__atomic'))
     #need to incorporate virtual/core distinction
     #Array TODO
 
@@ -1686,3 +1732,23 @@ def load_nwchem_keywords(options: Keywords) -> None:
                 default=1,
                 validator=parsers.positive_integer,
                 glossary='Tile size in Tensor Contraction Engine (TCE).'))
+
+    options.add(
+        'nwchem',
+        Keyword(
+            keyword='tce__print',
+            default='medium',
+            validator=parsers.enum('debug high medium low none'),
+            glossary=
+            'TCE level print options which can be divided from most specific to least: debug, high, low, and none. Default is medium.'
+        ))
+
+    # Hessian
+    options.add(
+        "nwchem",
+        Keyword(keyword="hessian__thresh",
+                default=1.e-6,
+                validator=parsers.parse_convergence,
+                glossary=
+                "Wavefunction convergence for analytic Hessians."
+        ))

@@ -5,7 +5,6 @@ import sys
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
@@ -25,7 +24,7 @@ def check_dft(return_value, is_dft):
     assert compare_values(ccsdt_corl, qcdb.variable('CCSDT CORRELATION ENERGY'), 5, 'ccsdt corl')
 
 
-@using_nwchem
+@using("nwchem")
 def test_1_dft():
     h2o = qcdb.set_molecule('''
         O     0.000000000000    0.000000000000   -0.065638538099
@@ -34,7 +33,6 @@ def test_1_dft():
         ''')
 
     qcdb.set_options({
-        'memory': '6000 mb',
         'basis': 'sto-3g',
         #'nwchem_dft__convergence__density': 1.0e-12,
         'nwchem_dft__xc': 'b3lyp',
@@ -45,11 +43,11 @@ def test_1_dft():
         'nwchem_tce__thresh': 1.0e-12,
     })
     print('Testing CCSDT-DFT energy...')
-    val = qcdb.energy('nwc-ccsdt')
+    val = qcdb.energy('nwc-ccsdt', local_options={"memory": 6})
     check_dft(val, is_dft=True)
 
 
-@using_nwchem
+@using("nwchem")
 def test_2_scf():
     h2o = qcdb.set_molecule('''
         O     0.000000000000    0.000000000000   -0.065638538099
@@ -59,7 +57,6 @@ def test_2_scf():
 
     qcdb.set_options({
         'basis': 'sto-3g',
-        'memory': '6000 mb',
         'nwchem_tce__scf': True,
         'qc_module' :   'tce',
         'nwchem_tce__ccsdt': True,
@@ -67,4 +64,5 @@ def test_2_scf():
     })
     print('Test CCSDT-SCF energy ...')
     val = qcdb.energy('nwc-ccsdt')
+    val = qcdb.energy('nwc-ccsdt', local_options={"memory": 6})
     check_dft(val, is_dft=False)

@@ -147,6 +147,10 @@ def test_22c():
     assert subjects.scroll['QCDB']['MEMORY'].value == 8000000000
     assert subjects.scroll['QCDB']['MEMORY'].is_default() is False
 
+    import json
+    s = json.dumps(subjects, sort_keys=True, indent=2, default=lambda x: x.__dict__)
+    print(s)  # all but validator
+
 
 def test_22d():
     subjects = Keywords()

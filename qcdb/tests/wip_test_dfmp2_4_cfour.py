@@ -5,7 +5,6 @@ import pytest
 
 import qcdb
 
-from .addons import *
 from .utils import *
 
 #! conventional and density-fitting mp2 test of mp2 itself and setting scs-mp2
@@ -87,7 +86,7 @@ grad_y = np.array([[ 0.01821547, 0.,  0.02337636],
 
 
 
-@using_cfour
+@using("cfour")
 def test_2_conv_mp2(h2o_z):
     qcdb.set_molecule(h2o_z)
     qcdb.set_options({
@@ -100,7 +99,7 @@ def test_2_conv_mp2(h2o_z):
     check_mp2(val, is_df=False)
 
 
-@using_cfour
+@using("cfour")
 def test_4_conv_scs_mp2(h2o_z):
     qcdb.set_molecule(h2o_z)
     qcdb.set_options({
@@ -115,7 +114,7 @@ def test_4_conv_scs_mp2(h2o_z):
     check_mp2(val, is_df=False)
 
 
-@using_cfour
+@using("cfour")
 def test_scale(h2o_z):
     h2o_z = qcdb.Molecule(h2o_z)
     qcdb.set_options({
@@ -133,7 +132,7 @@ def test_scale(h2o_z):
     assert compare_arrays(grad_z, jrec['qcvars']['CURRENT GRADIENT'].data, 5, tnm() + ' grad')
     assert compare_arrays(dip_z, dip, 5, tnm() + ' dipole')
 
-@using_cfour
+@using("cfour")
 def test_scale_2(h2o_y):
     h2o_y = qcdb.Molecule(h2o_y)
     qcdb.set_options({
@@ -153,7 +152,7 @@ def test_scale_2(h2o_y):
 
 
 
-@using_cfour
+@using("cfour")
 def test_6_conv_custom_scs_mp2(h2o_z):
     qcdb.set_molecule(h2o_z)
     qcdb.set_options({

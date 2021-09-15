@@ -1,10 +1,10 @@
 import os
 
+import pytest
 import numpy as np
 
 import qcdb
 
-from .addons import *
 from .utils import *
 
 ##! Various gradients for a strained helium dimer and water molecule
@@ -38,6 +38,7 @@ from .utils import *
 
 
 
+@pytest.fixture
 def system1():
     h2 = qcdb.set_molecule("""
     H
@@ -83,9 +84,9 @@ test6_R = 0.735872194986
 test7_R = 0.740686885481
 
 
-@using_psi4
-def test_1a():
-    h2 = system1()
+@using("psi4")
+def test_1a(system1):
+    h2 = system1
     refene = test1_ene
     lbl = tnm() + ' [1] SCF/cc-pVDZ Optimized R'
     assert compare_values(0.529177208590000 * a2a, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
@@ -100,9 +101,9 @@ def test_1a():
     #print(jrec['provenance'])
 
 
-@using_cfour
-def test_1b():
-    h2 = system1()
+@using("cfour")
+def test_1b(system1):
+    h2 = system1
     refene = test1_ene
     lbl = tnm() + ' [1] SCF/cc-pVDZ Optimized R'
     assert compare_values(0.529177208590000 * a2a, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
@@ -117,9 +118,9 @@ def test_1b():
     #print(jrec['provenance'])
 
 
-@using_psi4
-def test_2a():
-    h2 = system1()
+@using("psi4")
+def test_2a(system1):
+    h2 = system1
     refene = test2_ene
     lbl = tnm() + ' [2] SCF/cc-pV[DT]Z Optimized R'
     assert compare_values(0.529177208590000 * a2a, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
@@ -134,9 +135,9 @@ def test_2a():
     #print(jrec['provenance'])
 
 
-@using_cfour
-def test_2b():
-    h2 = system1()
+@using("cfour")
+def test_2b(system1):
+    h2 = system1
     refene = test2_ene
     lbl = tnm() + ' [2] SCF/cc-pV[DT]Z Optimized R'
     assert compare_values(0.529177208590000 * a2a, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
@@ -151,9 +152,9 @@ def test_2b():
     #print(jrec['provenance'])
 
 
-@using_psi4
-def test_3a():
-    h2 = system1()
+@using("psi4")
+def test_3a(system1):
+    h2 = system1
     refene = test3_ene
     lbl = tnm() + " [3] SCF/cc-pV[DTQ]Z Optimized R"
     assert compare_values(0.529177208590000 * a2a, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
@@ -168,9 +169,9 @@ def test_3a():
     #print(jrec['provenance'])
 
 
-@using_cfour
-def test_3b():
-    h2 = system1()
+@using("cfour")
+def test_3b(system1):
+    h2 = system1
     refene = test3_ene
     lbl = tnm() + " [3] SCF/cc-pV[DTQ]Z Optimized R"
     assert compare_values(0.529177208590000 * a2a, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
@@ -184,9 +185,9 @@ def test_3b():
     assert compare_values(test3_R, h2.R, 4, lbl)
     #print(jrec['provenance'])
 
-@using_psi4
-def test_4a():
-    h2 = system1()
+@using("psi4")
+def test_4a(system1):
+    h2 = system1
     refene = test4_ene
     lbl = tnm() + " [4] MP2/cc-pVDZ Optimized R"
     assert compare_values(0.529177208590000 * a2a, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
@@ -201,9 +202,9 @@ def test_4a():
     #print(jrec['provenance'])
 
 
-@using_cfour
-def test_4b():
-    h2 = system1()
+@using("cfour")
+def test_4b(system1):
+    h2 = system1
     refene = test4_ene
     lbl = tnm() + " [4] MP2/cc-pVDZ Optimized R"
     assert compare_values(0.529177208590000 * a2a, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
@@ -217,9 +218,9 @@ def test_4b():
     assert compare_values(test4_R, h2.R, 4, lbl)
     #print(jrec['provenance'])
 
-@using_psi4
-def test_5a():
-    h2 = system1()
+@using("psi4")
+def test_5a(system1):
+    h2 = system1
     refene = test5_ene
     lbl = tnm() + " [5] MP2/cc-pV[DT]Z Optimized R"
     assert compare_values(0.529177208590000 * a2a, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
@@ -234,9 +235,9 @@ def test_5a():
     #print(jrec['provenance'])
 
 
-@using_cfour
-def test_5b():
-    h2 = system1()
+@using("cfour")
+def test_5b(system1):
+    h2 = system1
     refene = test5_ene
     lbl = tnm() + " [5] MP2/cc-pV[DT]Z Optimized R"
     assert compare_values(0.529177208590000 * a2a, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
@@ -250,9 +251,9 @@ def test_5b():
     assert compare_values(test5_R, h2.R, 4, lbl)
     #print(jrec['provenance'])
 
-@using_psi4
-def test_6a():
-    h2 = system1()
+@using("psi4")
+def test_6a(system1):
+    h2 = system1
     refene = test6_ene
     lbl = tnm() + " [6] MP2/cc-pV[TQ]Z Optimized R"
     assert compare_values(0.529177208590000 * a2a, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
@@ -267,9 +268,9 @@ def test_6a():
     #print(jrec['provenance'])
 
 
-@using_cfour
-def test_6b():
-    h2 = system1()
+@using("cfour")
+def test_6b(system1):
+    h2 = system1
     refene = test6_ene
     lbl = tnm() + " [6] MP2/cc-pV[TQ]Z Optimized R"
     assert compare_values(0.529177208590000 * a2a, h2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")

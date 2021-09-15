@@ -4,7 +4,6 @@ import sys
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
@@ -20,14 +19,14 @@ def check_ccsd_t_pr_br(return_value):
 
     assert compare_values(ccsd_tot, qcdb.variable('CCSD TOTAL ENERGY'), 5, 'ccsd total')
     assert compare_values(ccsd_corl, qcdb.variable('CCSD CORRELATION ENERGY'), 5, 'ccsd corl')
-    assert compare_values(t_br_corr, qcdb.variable('[T] CORRECTION ENERGY'), 5, '[t] corr')
-    assert compare_values(t_br_corl, qcdb.variable('CCSD[T] CORRELATION ENERGY'), 5, 'ccsd[t] corl')
-    assert compare_values(ccsd_t_br, qcdb.variable('CCSD[T] TOTAL ENERGY'), 5, 'ccsd[t] total')
+    assert compare_values(t_br_corr, qcdb.variable('T(CCSD) CORRECTION ENERGY'), 5, '[t] corr')
+    assert compare_values(t_br_corl, qcdb.variable('CCSD+T(CCSD) CORRELATION ENERGY'), 5, 'ccsd[t] corl')
+    assert compare_values(ccsd_t_br, qcdb.variable('CCSD+T(CCSD) TOTAL ENERGY'), 5, 'ccsd[t] total')
     assert compare_values(t_pr_corr, qcdb.variable('(T) CORRECTION ENERGY'), 5, '(t) corr')
     assert compare_values(t_pr_corl, qcdb.variable('CCSD(T) CORRELATION ENERGY'), 5, 'ccsd(t) corl')
     assert compare_values(ccsd_t_pr, qcdb.variable('CCSD(T) TOTAL ENERGY'), 5, 'ccsd(t) tot')
 
-@using_nwchem
+@using("nwchem")
 def test_1_ccsd_t():
     h2o =   qcdb.set_molecule('''
         O     0.00000000     0.00000000     0.22138519

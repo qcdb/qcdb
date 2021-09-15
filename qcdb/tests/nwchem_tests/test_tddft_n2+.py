@@ -5,7 +5,6 @@ import sys
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
@@ -44,8 +43,8 @@ def check_tddft(return_value):
     assert compare_values(root7_ex, qcdb.variable('TDDFT ROOT 7 EXCITATION ENERGY - AU SYMMETRY'), 5, 'tddft root 7 excitation')
     assert compare_values(root8_ex, qcdb.variable('TDDFT ROOT 8 EXCITATION ENERGY - AU SYMMETRY'), 5, 'tddft root 8 excitation')
     assert compare_values(root9_ex, qcdb.variable('TDDFT ROOT 9 EXCITATION ENERGY - AU SYMMETRY'), 5, 'tddft root 9 excitation')
-    assert compare_values(root10_ex, qcdb.variable('TDDFT ROOT 10 EXCITATION ENERGY - B1U SYMMETRY'), 5, 'tdddft root 10 excitation')
-    assert compare_values(root1_energy, qcdb.variable('TDDFT ROOT 1 EXCITED STATE ENERGY - B2U SYMMETRY'), 5, 'tddftroot 1 excited state')
+    assert compare_values(root10_ex, qcdb.variable('TDDFT ROOT 10 EXCITATION ENERGY - B1U SYMMETRY'), 5, 'tddft root 10 excitation')
+    assert compare_values(root1_energy, qcdb.variable('TDDFT ROOT 1 EXCITED STATE ENERGY - B2U SYMMETRY'), 5, 'tddft root 1 excited state')
     assert compare_values(root2_energy, qcdb.variable('TDDFT ROOT 2 EXCITED STATE ENERGY - B3U SYMMETRY'), 5, 'tddft root 2 excited state')
     assert compare_values(root3_energy, qcdb.variable('TDDFT ROOT 3 EXCITED STATE ENERGY - B1U SYMMETRY'), 5, 'tddft root 3 excited state')
     assert compare_values(root4_energy, qcdb.variable('TDDFT ROOT 4 EXCITED STATE ENERGY - B1U SYMMETRY'), 5, 'tddft root 4 excited state')
@@ -56,7 +55,10 @@ def check_tddft(return_value):
     assert compare_values(root9_energy, qcdb.variable('TDDFT ROOT 9 EXCITED STATE ENERGY - AU SYMMETRY'), 5, 'tddft root 9 excited state')
     assert compare_values(root10_energy, qcdb.variable('TDDFT ROOT 10 EXCITED STATE ENERGY - B1U SYMMETRY'), 5, 'tddft root 10 excited state')
 
-@using_nwchem
+    assert compare_values([-0.30333, -0.05885, 0.00000], qcdb.variable("TDDFT ROOT 0 -> ROOT 2 DIPOLE"), 4, "tddft root 2 transition dipole")
+    assert compare_values(0.00254, qcdb.variable("TDDFT ROOT 0 -> ROOT 2 OSCILLATOR STRENGTH (LEN)"), 4, "tddft root 2 osc str")
+
+@using("nwchem")
 def test_1_dft():
     n2_plus = qcdb.set_molecule('''
         1 2 

@@ -201,9 +201,9 @@ def optking(name, **kwargs):
 #        step_gradients     = []
 #        step_coordinates   = []
 #
-    # For CBS wrapper, need to set retention on INTCO file
-    if custom_gradient or ('/' in lowername):
-        psi4.core.IOManager.shared_object().set_specific_retention(1, True)
+#    # For CBS wrapper, need to set retention on INTCO file
+#    if custom_gradient or ('/' in lowername):
+#        psi4.core.IOManager.shared_object().set_specific_retention(1, True)
 
 #    if kwargs.get('bsse_type', None) is not None:
 #        raise ValidationError("Optimize: Does not currently support 'bsse_type' arguements")
@@ -269,7 +269,8 @@ def optking(name, **kwargs):
 #        if (iopt > 1) and (core.get_option('OPTKING', 'OPT_TYPE') == 'IRC'):
 #            old_thisenergy = core.get_variable('CURRENT ENERGY')
 
-        # Compute the gradient
+        # Compute the gradient - preserve opt data despite core.clean calls in gradient
+#        psi4.core.IOManager.shared_object().set_specific_retention(1, True)
         G, jobrec = gradient(lowername, return_wfn=True, molecule=moleculeclone, **kwargs)
         thisenergy = float(jobrec['qcvars']['CURRENT ENERGY'].data)
 
@@ -366,7 +367,7 @@ def optking(name, **kwargs):
 #
 #            # Cleanup binary file 1
 #            if custom_gradient or ('/' in lowername):
-#                core.IOManager.shared_object().set_specific_retention(1, False)
+#                psi4.core.IOManager.shared_object().set_specific_retention(1, False)
 #
 #            optstash.restore()
 #
@@ -412,11 +413,14 @@ def optking(name, **kwargs):
 #    if core.get_option('OPTKING', 'INTCOS_GENERATE_EXIT') == False:
 #        if core.get_option('OPTKING', 'KEEP_INTCOS') == False:
 #            core.opt_clean()
+    psi4.core.IOManager.shared_object().set_specific_retention(1, False)
+    psi4.core.clean()
     psi4.core.opt_clean()
 
 #    optstash.restore()
 #    raise OptimizationConvergenceError("""geometry optimization""", iopt - 1, wfn)
 
+optimize = optking
 
 def geometric(name, **kwargs):
     from . import load_proc_table

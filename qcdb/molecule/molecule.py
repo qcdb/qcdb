@@ -143,7 +143,7 @@ class Molecule(LibmintsMolecule):
         if 'all_variables' in self.__dict__ and name.upper() in self.__dict__['all_variables']:
             return self.get_variable(name)
         else:
-            raise AttributeError
+            raise AttributeError(name)
 
     @classmethod
     def init_with_xyz(cls, xyzfilename, no_com=False, no_reorient=False, contentsNotFilename=False):
@@ -888,7 +888,7 @@ class Molecule(LibmintsMolecule):
         molrec = self.to_dict(np_out=True)
 
         # flip zeros
-        molrec['geom'][np.abs(molrec['geom']) < 5**(-(ZERO))] = 0
+        molrec['geom'][np.abs(molrec['geom']) < 5**(-(prec))] = 0
 
         smol = qcel.molparse.to_string(
             molrec,
@@ -1336,6 +1336,8 @@ class Molecule(LibmintsMolecule):
 
     def B787(concern_mol: "Molecule",
              ref_mol: "Molecule",
+             *,
+             fix_mode: str,
              do_plot: bool = False,
              verbose: int = 1,
              atoms_map: bool = False,
@@ -1359,6 +1361,18 @@ class Molecule(LibmintsMolecule):
             best coincidence with `ref_mol`.
         ref_mol
             Molecule to match.
+        fix_mode
+            {"copy", "true"}
+            Relevant to the ``fix_com``, ``fix_orientation``, and ``geometry`` state of the returned Molecule.
+            ``fixed_mode="copy"`` uses the ``fix_com`` and ``fix_orientation`` (hereafter fix_) attributes of
+            ``concern_mol`` (self) to create the returned molecule. The perhaps unexpected implication if fix_=F is that
+            the resultant molecule will be in standard orientation (pretty) and *NOT ALIGNED TO REF_MOL*. Nevertheless,
+            this is sometimes useful when imitating the original construction of a molecule. ``fixed_mode="true" sets
+            ``fix_com=True`` and ``fix_orientation=True`` to create the returned molecule. The perhaps unexpected
+            implication if fix_=F is that the resultant molecule will *DIFFER FROM CONCERN_MOL BY MORE THAN GEOMETRY*.
+            Nevertheless, this is the common usage so that the returned molecule actually has the aligned geometry
+            regardless of ``concern_mol`` (self) fix_. Note that a possible compromise of returned molecule always
+            having the aligned geometry and the input fix_ is technically possible but contrary to the Molecule design.
         atoms_map
             Whether atom1 of `ref_mol` corresponds to atom1 of `concern_mol`, etc.
             If true, specifying `True` can save much time.
@@ -1410,17 +1424,29 @@ class Molecule(LibmintsMolecule):
             run_mirror=run_mirror,
             uno_cutoff=uno_cutoff)
 
-        ageom, amass, aelem, aelez, auniq = solution.align_system(cgeom, cmass, celem, celez, cuniq, reverse=False)
-        adict = qcel.molparse.from_arrays(
-            geom=ageom,
-            mass=amass,
-            elem=aelem,
-            elez=aelez,
-            units='Bohr',
-            molecular_charge=concern_mol.molecular_charge(),
-            molecular_multiplicity=concern_mol.multiplicity(),
-            fix_com=True,
-            fix_orientation=True)
+        ageom = solution.align_coordinates(cgeom, reverse=False)
+
+        if fix_mode in ["true", True]:
+            fix_com = True
+            fix_orientation = True
+        elif fix_mode == "copy":
+            fix_com = ref_mol.com_fixed()
+            fix_orientation = ref_mol.orientation_fixed()
+
+        cdict = concern_mol.to_dict()
+        aupdate = {
+            "elem": solution.align_atoms(celem),
+            "geom": solution.align_coordinates(cgeom, reverse=False),
+            "mass": solution.align_atoms(cmass),
+            "real": solution.align_atoms(cdict["real"]),
+            "elbl": solution.align_atoms(cdict["elbl"]),
+            "elez": solution.align_atoms(celez),
+            "elea": solution.align_atoms(cdict["elea"]),
+            "fix_com": fix_com,
+            "fix_orientation": fix_orientation,
+        }
+        adict = {**cdict, **aupdate, "units": "Bohr"}
+
         if isinstance(concern_mol, Molecule):
             amol = Molecule.from_dict(adict)
         else:
@@ -1442,24 +1468,41 @@ class Molecule(LibmintsMolecule):
                 quiet=(verbose < 2))
             compare(
                 True,
-                np.allclose(ref_mol.geometry(), amol.geometry(), atol=4),
+                np.allclose(ref_mol.geometry(), amol.geometry(), atol=1.e-4),
                 'Q: concern_mol-->returned_mol geometry matches ref_mol',
                 quiet=(verbose < 2))
 
         return rmsd, solution, amol
 
+        # Notes
+        #
+        # * doing the illegal (pre fix_mode) amol with aligned geom and concern_mol fix_
+        #   aupdate = {
+        #       ...
+        #       # signal to build returned Mol with exactly the aligned Cartesians of "geom" rather than psi std frame
+        #       "fix_com": True,
+        #       "fix_orientation": True,
+        #   }
+        #   ... amol = Molecule.from_dict(adict)
+        #   # correct fix_* properties of returned Mol to match self
+        #   amol.fix_com(concern_mol.com_fixed())
+        #   amol.fix_orientation(concern_mol.orientation_fixed())
+
     def scramble(ref_mol: "Molecule",
+                 *,
                  do_shift: Union[bool, np.ndarray, List] = True,
                  do_rotate: Union[bool, np.ndarray, List[List]] = True,
                  do_resort: Union[bool, List] = True,
                  deflection: float = 1.0,
                  do_mirror: bool = False,
                  do_plot: bool = False,
+                 do_test: bool = True,
                  run_to_completion: bool = False,
                  run_resorting: bool = False,
+                 fix_mode: str,
                  verbose: int = 1):
-        """Tester for B787 by shifting, rotating, and atom shuffling `ref_mol` and
-        checking that the aligner returns the opposite transformation.
+        r"""Generate a Molecule with random or directed translation, rotation, and atom shuffling.
+        Optionally, check that the aligner returns the opposite transformation.
 
         Parameters
         ----------
@@ -1482,66 +1525,123 @@ class Molecule(LibmintsMolecule):
             Whether to construct the mirror image structure by inverting y-axis.
         do_plot
             Pops up a mpl plot showing before, after, and ref geometries.
+        do_test
+            Additionally, run the aligner on the returned Molecule and check that
+            opposite transformations obtained.
         run_to_completion
             By construction, scrambled systems are fully alignable (final RMSD=0).
             Even so, `True` turns off the mechanism to stop when RMSD reaches zero
             and instead proceed to worst possible time.
         run_resorting
             Even if atoms not shuffled, test the resorting machinery.
+        fix_mode
+            {"copy", "true"}
+            Relevant to the ``fix_com``, ``fix_orientation``, and ``geometry`` state of the returned Molecule.
+            ``fixed_mode="copy"`` uses the ``fix_com`` and ``fix_orientation`` (hereafter fix_) attributes of
+            ``concern_mol`` (self) to create the returned molecule. The perhaps unexpected implication if fix_=F is that
+            the resultant molecule will be in standard orientation (pretty) and *NOT ALIGNED TO REF_MOL*. Nevertheless,
+            this is sometimes useful when imitating the original construction of a molecule. ``fixed_mode="true" sets
+            ``fix_com=True`` and ``fix_orientation=True`` to create the returned molecule. The perhaps unexpected
+            implication if fix_=F is that the resultant molecule will *DIFFER FROM CONCERN_MOL BY MORE THAN GEOMETRY*.
+            Nevertheless, this is the common usage so that the returned molecule actually has the aligned geometry
+            regardless of ``concern_mol`` (self) fix_. Note that a possible compromise of returned molecule always
+            having the aligned geometry and the input fix_ is technically possible but contrary to the Molecule design.
         verbose
             Print level.
 
         Returns
         -------
-        None
+        mol : Molecule
+        data : Dict[key, Any]
+            Molecule is scrambled copy of `ref_mol` (self).
+            `data['rmsd']` is RMSD [A] between `ref_mol` and the scrambled geometry.
+            `data['mill']` is a AlignmentMill with fields
+            (shift, rotation, atommap, mirror) that prescribe the transformation
+            from `ref_mol` to the returned geometry.
 
         """
         rgeom, rmass, relem, relez, runiq = ref_mol.to_arrays()
         nat = rgeom.shape[0]
 
         perturbation = qcel.molutil.compute_scramble(
-            rgeom.shape[0],
+            nat,
             do_shift=do_shift,
             do_rotate=do_rotate,
             deflection=deflection,
             do_resort=do_resort,
             do_mirror=do_mirror)
-        cgeom, cmass, celem, celez, cuniq = perturbation.align_system(rgeom, rmass, relem, relez, runiq, reverse=True)
-        cmol = Molecule.from_arrays(
-            geom=cgeom,
-            mass=cmass,
-            elem=celem,
-            elez=celez,
-            units='Bohr',
-            molecular_charge=ref_mol.molecular_charge(),
-            molecular_multiplicity=ref_mol.multiplicity(),
-            fix_com=True,
-            fix_orientation=True)
+
+        if fix_mode in ["true", True]:
+            fix_com = True
+            fix_orientation = True
+        elif fix_mode == "copy":
+            fix_com = ref_mol.com_fixed()
+            fix_orientation = ref_mol.orientation_fixed()
+
+        rdict = ref_mol.to_dict()
+        cgeom = perturbation.align_coordinates(rgeom, reverse=True)
+        cupdate = {
+            "elem": perturbation.align_atoms(relem),
+            "geom": cgeom,
+            "mass": perturbation.align_atoms(rmass),
+            "real": perturbation.align_atoms(rdict["real"]),
+            "elbl": perturbation.align_atoms(rdict["elbl"]),
+            "elez": perturbation.align_atoms(relez),
+            "elea": perturbation.align_atoms(rdict["elea"]),
+            "fix_com": fix_com,
+            "fix_orientation": fix_orientation,
+        }
+        cdict = {**rdict, **cupdate, "units": "Bohr"}
+
+        if isinstance(ref_mol, Molecule):
+            cmol = Molecule.from_dict(cdict)
+        else:
+            from psi4 import core
+            cmol = core.Molecule.from_dict(cdict)
+
 
         rmsd = np.linalg.norm(cgeom - rgeom) * qcel.constants.bohr2angstroms / np.sqrt(nat)
         if verbose >= 1:
             print('Start RMSD = {:8.4f} [A]'.format(rmsd))
 
-        rmsd, solution, amol = cmol.B787(
-            ref_mol,
-            do_plot=do_plot,
-            atoms_map=(not do_resort),
-            run_resorting=run_resorting,
-            mols_align=True,
-            run_to_completion=run_to_completion,
-            run_mirror=do_mirror,
-            verbose=verbose)
+        if do_test:
+            final_rmsd, solution, amol = cmol.B787(
+                ref_mol,
+                do_plot=do_plot,
+                atoms_map=(not do_resort),
+                run_resorting=run_resorting,
+                mols_align=True,
+                run_to_completion=run_to_completion,
+                run_mirror=do_mirror,
+                verbose=verbose)
 
-        compare(
-            True, np.allclose(solution.shift, perturbation.shift, atol=6), 'shifts equiv', quiet=(verbose < 2))
-        if not do_resort:
             compare(
-                True,
-                np.allclose(solution.rotation.T, perturbation.rotation),
-                'rotations transpose',
-                quiet=(verbose < 2))
-        if solution.mirror:
-            compare(True, do_mirror, 'mirror allowed', quiet=(verbose < 2))
+                True, np.allclose(solution.shift, perturbation.shift, atol=1.e-6), 'shifts equiv', quiet=(verbose < 2))
+            if not do_resort:
+                compare(
+                    True,
+                    np.allclose(solution.rotation.T, perturbation.rotation),
+                    'rotations transpose',
+                    quiet=(verbose < 2))
+            if solution.mirror:
+                compare(True, do_mirror, 'mirror allowed', quiet=(verbose < 2))
+
+        return cmol, {"rmsd": rmsd, "mill": perturbation}
+
+        # Notes
+        #
+        # * doing the illegal (pre fix_mode) amol with aligned geom and concern_mol fix_
+        #   cupdate = {
+        #       ...
+        #       # signal to build returned Mol with exactly the aligned Cartesians of "geom" rather than psi std frame
+        #       "fix_com": True,
+        #       "fix_orientation": True,
+        #   }
+        #   cdict = {**rdict, **cupdate, "units": "Bohr"}
+        #   ... cmol = Molecule.from_dict(cdict)
+        #   # correct fix_* properties of returned Mol to match self
+        #   cmol.fix_com(ref_mol.com_fixed())
+        #   cmol.fix_orientation(ref_mol.orientation_fixed())
 
     def set_fragment_pattern(self, frl, frt, frc, frm):
         """Set fragment member data through public method analogous to psi4.core.Molecule"""

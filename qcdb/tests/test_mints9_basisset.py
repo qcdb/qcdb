@@ -1,6 +1,5 @@
 import qcdb
 
-from .addons import *
 from .utils import *
 
 #! A test of the basis specification.  Various basis sets are specified outright and in blocks, both
@@ -38,7 +37,7 @@ def test_1():
     compare_strings('CC-PVDZ', dwert['name'], 'callby')  
     compare_strings('CC-PVDZ', dwert['blend'], 'blend')  
 
-@using_psi4
+@using("psi4")
 def test_1b():
     """[1]    <<<  uniform cc-pVDZ  >>>"""
     import psi4
@@ -66,7 +65,7 @@ def test_2():
     compare_strings('(CC-PVDZ AUX)', dwert['name'], 'callby')  
     compare_strings('CC-PVDZ-RI', dwert['blend'], 'blend')  
 
-@using_psi4
+@using("psi4")
 def test_2b():
     """[2]        <<<  RIFIT (default)  >>>"""
     import psi4
@@ -101,7 +100,7 @@ def test_3():
     compare_strings('DZ_PLUS', dwert['name'], 'callby')  
     compare_strings('AUG-CC-PVDZ + CC-PVDZ', dwert['blend'], 'blend')  
 
-@using_psi4
+@using("psi4")
 def test_3b():
     """[3]    <<<  cc-pVDZ w/ aug-cc-pVDZ on C  >>>"""
     import psi4

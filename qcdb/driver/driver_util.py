@@ -29,7 +29,7 @@ def kwargs_lower(kwargs):
             except (AttributeError, KeyError):
                 lvalue = value
 
-        if lkey in ['irrep', 'check_bsse', 'linkage', 'bsse_type']:
+        if lkey in ["irrep", "check_bsse", "linkage", "bsse_type", "local_options"]:
             caseless_kwargs[lkey] = lvalue
 
         elif 'dertype' in lkey:
@@ -40,7 +40,7 @@ def kwargs_lower(kwargs):
             elif der2nd.match(str(lvalue)):
                 caseless_kwargs[lkey] = 2
             else:
-                raise KeyError('Derivative type key ({}) was not recognized'.format(key))
+                raise KeyError(f"Derivative type key ({key}={value}) was not recognized")
 
         elif yes.match(str(lvalue)):
             caseless_kwargs[lkey] = True

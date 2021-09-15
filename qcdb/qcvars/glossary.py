@@ -20,22 +20,43 @@ qcvardefs['(T) CORRECTION ENERGY'] = {
 """
 }
 
-qcvardefs['[T] CORRECTION ENERGY'] = {
+qcvardefs['A-(T) CORRECTION ENERGY'] = {
     'units': 'Eh',
     'glossary': """
-   The coupled-cluster bracket perturbative triples correction.
+   The coupled-cluster asymmetric perturbative triples correction.
+   Identical to the "(AT)" and the "Lambda-CCSD(T)" correction.
 """
 }
 
-#.. qcvar:: A-(T) CORRECTION ENERGY
-#
-#   The coupled-cluster asymmetric perturbative triples correction [H].
-#
-#.. qcvar:: MP4(T) CORRECTION ENERGY
-#
-#   The MP4 triples component [H]. Quantity is second right-hand term in
-#   Eq. :eq:`MP4terms`.
-#
+qcvardefs['T(CCSD) CORRECTION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': """
+   The coupled-cluster triples correction evaluated with CCSD amplitudes.
+   Identical to the "[T]" bracket T correction.
+"""
+}
+
+qcvardefs["QCISD(T) CORRECTION ENERGY"] = {
+    "units": "Eh",
+    'glossary': """
+   The quadratice configuration interaction singles and doubles triples correction.
+"""
+}
+
+qcvardefs['(Q) CORRECTION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': """
+   The coupled-cluster perturbative quadruples correction.
+"""
+}
+
+qcvardefs['[Q] CORRECTION ENERGY'] = {
+    'units': 'Eh',
+    'glossary': """
+   The coupled-cluster bracket perturbative quadruples correction.
+"""
+}
+
 #.. qcvar:: AAA (T) CORRECTION ENERGY
 #   AAB (T) CORRECTION ENERGY
 #   ABB (T) CORRECTION ENERGY
@@ -127,12 +148,19 @@ qcvardefs['[T] CORRECTION ENERGY'] = {
 #.. qcvar:: CC TOTAL ENERGY
 #   CC CORRELATION ENERGY
 #
-#.. qcvar:: CC T1 DIAGNOSTIC
-#   CC D1 DIAGNOSTIC
-#   CC NEW D1 DIAGNOSTIC
-#   CC D2 DIAGNOSTIC
-#
-#   Diagnostic of multireference character.
+for qcv in [
+    "CC T1 DIAGNOSTIC",
+    "CC D1 DIAGNOSTIC",
+    "CC NEW D1 DIAGNOSTIC",
+    "CC D2 DIAGNOSTIC",
+]:
+    qcvardefs[qcv] = {
+        "units": "",
+        "glossary":
+        """
+       Diagnostic of multireference character."""
+}
+
 #
 #.. qcvar:: CC2 TOTAL ENERGY
 #   CC2 CORRELATION ENERGY
@@ -446,23 +474,23 @@ qcvardefs['CI CORRELATION ENERGY'] = {
 #
 #   .. math:: E_{\text{IE}} = E_{dimer} - \sum_{monomer}^{n}{E_{monomer}^{\text{CP}}}
 
-qcvardefs['CISD TOTAL ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    """
-        The total energy for a configuration interaction with singles and doubles calculation.
-        """
-}
-
-qcvardefs['CISD CORRELATION ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    """
-        The correlation energy corresponding to configuration interaction with single and doubles calculation.
-        """
-}
+#qcvardefs['CISD TOTAL ENERGY'] = {
+#    'units':
+#    'Eh',
+#    'glossary':
+#    """
+#        The total energy for a configuration interaction with singles and doubles calculation.
+#        """
+#}
+#
+#qcvardefs['CISD CORRELATION ENERGY'] = {
+#    'units':
+#    'Eh',
+#    'glossary':
+#    """
+#        The correlation energy corresponding to configuration interaction with single and doubles calculation.
+#        """
+#}
 
 qcvardefs['CISDT TOTAL ENERGY'] = {
     'units':
@@ -500,23 +528,23 @@ qcvardefs['CISDTQ CORRELATION ENERGY'] = {
         """
 }
 
-qcvardefs['QCISD TOTAL ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    """
-        The total energy for a quadratic configuration interaction with singles and doubles calculation.
-        """
-}
-
-qcvardefs['QCISD CORRELATION ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    """
-        The correlation energy for a quadratic configuration interaction with singles and doubles calculation.
-        """
-}
+#qcvardefs['QCISD TOTAL ENERGY'] = {
+#    'units':
+#    'Eh',
+#    'glossary':
+#    """
+#        The total energy for a quadratic configuration interaction with singles and doubles calculation.
+#        """
+#}
+#
+#qcvardefs['QCISD CORRELATION ENERGY'] = {
+#    'units':
+#    'Eh',
+#    'glossary':
+#    """
+#        The correlation energy for a quadratic configuration interaction with singles and doubles calculation.
+#        """
+#}
 
 qcvardefs['CURRENT CORRELATION ENERGY'] = {
     'units': 'Eh',
@@ -614,7 +642,38 @@ def define_prop_qcvars(mtd, extra=''):
     }
 
 
-def define_scf_qcvars(mtd, is_dft=True, extra='', is_dh=False):
+def define_transition_prop_qcvars(mtd, i, j, extra=''):
+    mtd = mtd.upper()
+
+    qcvardefs[f'{mtd} ROOT {i} -> ROOT {j} DIPOLE'] = {
+            'units':
+            'e a0',
+            'dimension': '(3,)',
+            'glossary':
+            f"""
+           The transition dipole array between roots {i} and {j} for the {mtd} level of theory (number starts at GS = 0). {extra}"""
+    }
+
+    qcvardefs[f'{mtd} ROOT {i} -> ROOT {j} QUADRUPOLE'] = {
+            'units':
+            'e a0^2',
+            'dimension': ('(3,3)'),
+            'glossary':
+            """
+           The redundant transition quadrupole between roots {i} and {j} for the {mtd} level of theory (number starts at GS = 0). {extra}"""
+    }
+
+    qcvardefs[f"{mtd} ROOT {i} -> ROOT {j} OSCILLATOR STRENGTH (LEN)"] = {
+            "units": "",
+            "glossary": 
+   """The oscillator strength in length or velocity gauge of named method
+   from ground state to root m in h symmetry (if available). DFT
+   functional labeled if canonical."""
+    }
+
+
+
+def define_scf_qcvars(mtd, is_dft=True, extra='', is_dh=False, do_grad=False):
     global qcvardefs
 
     if mtd + ' TOTAL ENERGY' not in qcvardefs:
@@ -625,6 +684,13 @@ def define_scf_qcvars(mtd, is_dft=True, extra='', is_dh=False):
             """
            The total electronic energy for the {} level of theory. {}
         """.format(mtd, extra)
+        }
+
+    if do_grad and mtd + ' TOTAL GRADIENT' not in qcvardefs:
+        qcvardefs[f"{mtd} TOTAL GRADIENT"] = {
+            "units": "Eh/a0",
+            "dimension": "({nat}, 3)",
+            "glossary": f"""The total electronic gradient for the {mtd} DFT level of theory. {extra}""",
         }
 
     if is_dft:
@@ -668,6 +734,66 @@ def define_scf_qcvars(mtd, is_dft=True, extra='', is_dh=False):
            The total quadrupole for the {} level of theory. {}
     """.format(mtd, extra)
     }
+
+
+def define_spin_qcvars(mtd, description, do_spin=False, do_grad=False, extra=""):
+    global qcvardefs
+
+    if mtd + ' TOTAL ENERGY' not in qcvardefs:
+        qcvardefs['{} TOTAL ENERGY'.format(mtd)] = {
+            'units':
+            'Eh',
+            'glossary': """The total electronic energy for the {} level of theory. {}""".format(description, extra)
+        }
+
+    if mtd + ' CORRELATION ENERGY' not in qcvardefs:
+        qcvardefs['{} CORRELATION ENERGY'.format(mtd)] = {
+            'units':
+            'Eh',
+            'glossary': """The correlation energy for the {} level of theory. {}""".format(description, extra)
+        }
+
+    if do_grad and mtd + " TOTAL GRADIENT" not in qcvardefs:
+        qcvardefs[f"{mtd} TOTAL GRADIENT"] = {
+            "units": "Eh/a0",
+            "dimension": "({nat}, 3)",
+            "glossary": f"""The total electronic gradient for the {description} level of theory. {extra}""",
+        }
+
+    if do_grad and mtd + " TOTAL HESSIAN" not in qcvardefs:
+        qcvardefs[f"{mtd} TOTAL HESSIAN"] = {
+            "units": "Eh/a0/a0",
+            "dimension": "(3 * {nat}, 3 * {nat})",
+            "glossary": f"""The total electronic Hessian for the {description} level of theory. {extra}""",
+        }
+
+    if do_spin and f"{mtd} SAME-SPIN CORRELATION ENERGY" not in qcvardefs:
+        qcvardefs[f"{mtd} SAME-SPIN CORRELATION ENERGY"] = {
+            'units': 'Eh',
+            'glossary':
+            rf"""The unscaled portion of the {mtd} correlation energy from same-spin or triplet doubles correlations."""
+        }
+
+    if do_spin and f"{mtd} OPPOSITE-SPIN CORRELATION ENERGY" not in qcvardefs:
+        qcvardefs[f"{mtd} OPPOSITE-SPIN CORRELATION ENERGY"] = {
+            'units': 'Eh',
+            'glossary':
+            rf"""The unscaled portion of the {mtd} correlation energy from opposite-spin or singlet doubles correlations."""
+        }
+
+    if do_spin and f"{mtd} SINGLES ENERGY" not in qcvardefs:
+        qcvardefs[f"{mtd} SINGLES ENERGY"] = {
+            'units': 'Eh',
+            'glossary':
+            rf"""The singles portion of the {mtd} correlation energy. Zero except in ROHF."""
+        }
+
+    if do_spin and f"{mtd} DOUBLES ENERGY" not in qcvardefs:
+        qcvardefs[f"{mtd} DOUBLES ENERGY"] = {
+            'units': 'Eh',
+            'glossary':
+            rf"""The doubles portion of the {mtd} correlation energy including same-spin and opposite-spin correlations."""
+        }
 
 
 def define_dashd_qcvars(fctl, dashes, extra=''):
@@ -727,19 +853,21 @@ def define_ex_transition_qcvars(max_root, mtd, sym):
                 The total energy of EOM-{} in {} symmetry from 0 to root {}""".format(mtd, sym, i)
         }
 
-def define_tddft_roots_qcvars(max_root, sym):
-    sym = []
-
+def define_tddft_roots_qcvars(max_root, syms):
     for i in range(max_root):
-        qcvardefs['TDDFT ROOT {} EXCITATION ENERGY - {} SYMMETRY'.format(i+1, sym)] = {
+        for sym in syms:
+            qcvardefs[f"TDDFT ROOT {i + 1} EXCITATION ENERGY - {sym} SYMMETRY"] = {
                 'units' : 'Eh',
                 'glossary' : """ The excitation energy of time-dependent DFT in {} symmetry from 0 to root {}""".format(sym, i+1)
                 }
 
-        qcvardefs['TDDFT ROOT {} EXCITED STATE ENERGY - {} SYMMETRY'.format(i+1, sym)] = {
+            qcvardefs[f"TDDFT ROOT {i + 1} EXCITED STATE ENERGY - {sym} SYMMETRY"] = {
                 'units' : 'Eh',
                 'glossary' : """The excited state energy of time dependent DFT from root 0 to root {} in {} symmetry""".format(i+1, sym)
                 }
+        #define_prop_qcvars(f"TDDFT ROOT {i + 1}")
+        define_transition_prop_qcvars("TDDFT", 0, i+1)
+
 
 #TRACELESS QUADRUPOLE POLARIZABILITY XZYY
 #.. qcvar:: db_name DATABASE MEAN ABSOLUTE DEVIATION
@@ -805,6 +933,13 @@ qcvardefs['DFT TOTAL ENERGY'] = {
    :qcvar:`SCF TOTAL ENERGY`. If the method is neither a
    double-hybrid, nor dispersion corrected, this quantity is equal to
    :qcvar:`DFT FUNCTIONAL TOTAL ENERGY`.
+"""
+}
+
+qcvardefs["DFT TOTAL GRADIENT"] = {
+    "units": "Eh/a0",
+    "glossary": r"""
+    The total electronic gradient for the requested DFT method.
 """
 }
 
@@ -890,7 +1025,7 @@ qcvardefs['HF TOTAL ENERGY'] = {
 }
 
 qcvardefs['HF TOTAL GRADIENT'] = {
-    'units': 'Eh/a0/a0',
+    'units': 'Eh/a0',
     'dimension': '({nat}, 3)',
     'glossary': """
    The total electronic gradient of the Hartree--Fock method.
@@ -948,10 +1083,18 @@ qcvardefs['MP2 TOTAL ENERGY'] = {
 }
 
 qcvardefs['MP2 TOTAL GRADIENT'] = {
-    'units': 'Eh/a0/a0',
+    'units': 'Eh/a0',
     'dimension': '({nat}, 3)',
     'glossary': """
    The total electronic gradient of the MP2 method.
+"""
+}
+
+qcvardefs['MP2 TOTAL HESSIAN'] = {
+    'units': 'Eh/a0/a0',
+    'dimension': '(3 * {nat}, 3 * {nat})',
+    'glossary': """
+   The total electronic Hessian of the MP2 method.
 """
 }
 
@@ -1209,114 +1352,10 @@ qcvardefs['MP2.5 OPPOSITE-SPIN CORRELATION ENERGY'] = {
 """
 }
 
-#.. qcvar:: MP3 TOTAL ENERGY
-#   MP3 CORRELATION ENERGY
-#
-#   The total electronic energy [H] and correlation energy component [H]
-#   for the MP3 level of theory.
-#
-#.. qcvar:: MP4(SDQ) TOTAL ENERGY
-#   MP4(SDQ) CORRELATION ENERGY
-#
-#   The total electronic energy [H] and correlation energy component [H]
-#   for the MP4 singles, doubles, quadruples level of theory.  Quantity
-#   :qcvar:`MP4(SDQ) CORRELATION ENERGY` is
-#   first right-hand term in Eq. :eq:`MP4terms`.
-#
-#.. qcvar:: MP4 TOTAL ENERGY
-#   MP4 CORRELATION ENERGY
-#   MP4(SDTQ) TOTAL ENERGY
-#   MP4(SDTQ) CORRELATION ENERGY
-#
-#   The total electronic energy [H] and correlation energy component [H]
-#   for the full MP4 level of theory. Quantity :qcvar:`MP4 CORRELATION
-#   ENERGY` / :qcvar:`MP4(SDTQ) CORRELATION ENERGY`
-#   is left-hand term in Eq. :eq:`MP4terms`.
-#
-#   .. math:: E_{\text{MP4}} = E_{\text{MP4(SDQ)}} + E_{\text{MP4(T)}}
-#      :label: MP4terms
-#
-#.. qcvar:: MPn TOTAL ENERGY
-#   MPn CORRELATION ENERGY
-#
-#   The total electronic energy [H] and correlation energy component [H]
-#   for the labeled |MollerPlesset| perturbation theory level.
-#   *n* is MP perturbation order.
-
-qcvardefs['MP3 TOTAL ENERGY'] = {
-    'units': 'Eh',
-    'glossary': r"""
-   The total electronic energy for 3-order Perturbation theory.
-"""
-}
-
-qcvardefs['MP3 CORRELATION ENERGY'] = {
-    'units': 'Eh',
-    'glossary': r"""
-   The correlation energy component for 3-order Perturbation theory.
-???
-   .. math::
-   ???:nowrap:
-   ???:label: MP3corl
-???
-   ???   \begin{align*}
-   ???      E_{\text{MP3corl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
-   ???                         & = E_{\text{S}} + E_{\text{D}}
-   ???   \end{align*}
-???
-"""
-}
-
 qcvardefs['MP3 CORRECTION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    The correlation energy difference between 2nd and 3-order Perturbation theory.
-"""
-}
-
-qcvardefs['MP3 SINGLES ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    r"""
-   The singles portion of the MP3 correlation energy.
-   Zero except in ROHF.
-   :math:`E_{\text{S}}` in Eq. :eq:`MP3corl`.
-"""
-}
-
-qcvardefs['MP3 DOUBLES ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    r"""
-   The doubles portion of the MP3 correlation energy
-   including same-spin and opposite-spin correlations.
-   :math:`E_{\text{D}}` in Eq. :eq:`MP3corl`.
-"""
-}
-
-qcvardefs['MP3 SAME-SPIN CORRELATION ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    r"""
-   The unscaled portion of the MP3 correlation energy
-   from same-spin or triplet doubles correlations.
-
-   canonical_corl(os_scale=1, ss_scale=1) = singles + os_scale * (tot_corl - ss_corl) + ss_scale * ss_corl
-   :math:`E_{\text{SS}}` in Eq. :eq:`MP3corl`.
-"""
-}
-
-qcvardefs['MP3 OPPOSITE-SPIN CORRELATION ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    r"""
-   The unscaled portion of the MP3 correlation energy
-   from opposite-spin or singlet doubles correlations.
-   :math:`E_{\text{OS}}` in Eq. :eq:`MP3corl`.
 """
 }
 
@@ -1338,6 +1377,13 @@ qcvardefs['MP4 CORRECTION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
    The correlation energy difference between 3rd and 4th-order Perturbation theory.
+"""
+}
+
+qcvardefs["MP4(T) CORRECTION ENERGY"] = {
+    "units": "Eh",
+    "glossary": r"""
+   The MP4 triples component. Difference between MP4 and MP4(SDQ).
 """
 }
 
@@ -1378,10 +1424,19 @@ qcvardefs['CCSD TOTAL ENERGY'] = {
 }
 
 qcvardefs['CCSD TOTAL GRADIENT'] = {
-    'units': 'Eh/a0/a0',
+    'units': 'Eh/a0',
     'dimension': '({nat}, 3)',
     'glossary': """
    The total electronic gradient
+    for the coupled cluster singles and doubles level of theory.
+"""
+}
+
+qcvardefs['CCSD TOTAL HESSIAN'] = {
+    'units': "Eh/a0/a0",
+    "dimension": "(3 * {nat}, 3 * {nat})",
+    'glossary': """
+   The total electronic Hessian
     for the coupled cluster singles and doubles level of theory.
 """
 }
@@ -1447,7 +1502,7 @@ qcvardefs['CCSDT (PBE) TOTAL ENERGY'] = {
     'Eh',
     'glossary':
     r"""
-   The total electronic energy 
+   The total electronic energy
    for the coupled cluster singles, doubles, and triples level of theory.
 """
 }
@@ -1462,10 +1517,10 @@ qcvardefs['CCSDT (PBE) CORRELATION ENERGY'] = {
 
 .. qcvar:: CCSDT CORRELATION ENERGY
 
-   The CCSDT correlation energy for the requested DFT method, 
+   The CCSDT correlation energy for the requested DFT method,
    :math:`E_{\text{CCSDTcorl}}` in Eq. :eq:`CCSDTcorl`.
 ???
-   .. math:: 
+   .. math::
    ???:nowrap:
    ???:label: CCSDTcorl
 ???
@@ -1482,10 +1537,19 @@ qcvardefs['CCSDTQ TOTAL ENERGY'] = {
     'Eh',
     'glossary':
     r"""
-   The total electronic energy 
+   The total electronic energy
    for the coupled cluster singles, doubles, triples, and quadruples level of theory.
 
    .. qcvar:: CCSDTQ TOTAL ENERGY
+"""
+}
+
+qcvardefs['CCSDTQ TOTAL GRADIENT'] = {
+    'units': 'Eh/a0',
+    'dimension': '({nat}, 3)',
+    'glossary': """
+   The total electronic gradient
+   for the coupled cluster singles, doubles, triples, and quadruples level of theory.
 """
 }
 
@@ -1499,10 +1563,10 @@ qcvardefs['CCSDTQ CORRELATION ENERGY'] = {
 
 .. qcvar:: CCSDTQ CORRELATION ENERGY
 
-   The CCSDTQ correlation energy for the requested DFT method, 
+   The CCSDTQ correlation energy for the requested DFT method,
    :math:`E_{\text{CCSDTQcorl}}` in Eq. :eq:`CCSDTQcorl`.
 ???
-   .. math:: 
+   .. math::
    ???:nowrap:
    ???:label: CCSDTQcorl
 ???
@@ -1513,6 +1577,49 @@ qcvardefs['CCSDTQ CORRELATION ENERGY'] = {
 ???
 """
 }
+
+qcvardefs['CCSDTQ SAME-SPIN CORRELATION ENERGY'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+   The unscaled portion of the CCSDTQ correlation energy
+   from same-spin or triplet doubles correlations.
+"""
+}
+
+qcvardefs['CCSDTQ OPPOSITE-SPIN CORRELATION ENERGY'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+   The unscaled portion of the CCSDTQ correlation energy
+   from opposite-spin or singlet doubles correlations.
+"""
+}
+
+qcvardefs['CCSDTQ SINGLES ENERGY'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+   The singles portion of the CCSDTQ correlation energy.
+   Zero except in ROHF.
+   :math:`E_{\text{S}}` in Eq. :eq:`CCSDTQcorl`.
+"""
+}
+
+qcvardefs['CCSDTQ DOUBLES ENERGY'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+   The doubles portion of the CCSDTQ correlation energy
+   including same-spin and opposite-spin correlations.
+   :math:`E_{\text{D}}` in Eq. :eq:`CCSDTQcorl`.
+"""
+}
+
 
 qcvardefs['CCSD SAME-SPIN CORRELATION ENERGY'] = {
     'units':
@@ -1575,26 +1682,6 @@ qcvardefs['CCD CORRELATION ENERGY'] = {
 """
 }
 
-qcvardefs['CCSD(T) TOTAL ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    r"""
-   The total electronic energy
-   for the coupled cluster singles and doubles plus perturbative triples level of theory.
-"""
-}
-
-qcvardefs['CCSD(T) CORRELATION ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    r"""
-   The correlation energy component
-   for the coupled cluster singles and doubles plus perturbative triples level of theory.
-"""
-}
-
 qcvardefs['CR-CCSD(T) TOTAL ENERGY'] = {
     'units':
     'Eh',
@@ -1615,45 +1702,25 @@ qcvardefs['CR-CCSD(T) CORRELATION ENERGY'] = {
 """
 }
 
-qcvardefs['CCSDT TOTAL ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    r"""
-   The total electronic energy 
-   for the coupled cluster singles and doubles plus perturbative triples level of theory.
-"""
-}
-
-qcvardefs['CCSDT CORRELATION ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    r"""
-   The correlation energy component
-   for the coupled cluster singles and doubles plus perturbative triples level of theory.
-"""
-}
-
-qcvardefs['CCSD[T] TOTAL ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    r"""
-   The total electronic energy
-   for the coupled cluster singles and doubles plus bracket perturbative triples level of theory.
-"""
-}
-
-qcvardefs['CCSD[T] CORRELATION ENERGY'] = {
-    'units':
-    'Eh',
-    'glossary':
-    r"""
-   The correlation energy component
-   for the coupled cluster singles and doubles plus bracket perturbative triples level of theory.
-"""
-}
+#qcvardefs['CCSD[T] TOTAL ENERGY'] = {
+#    'units':
+#    'Eh',
+#    'glossary':
+#    r"""
+#   The total electronic energy
+#   for the coupled cluster singles and doubles plus bracket perturbative triples level of theory.
+#"""
+#}
+#
+#qcvardefs['CCSD[T] CORRELATION ENERGY'] = {
+#    'units':
+#    'Eh',
+#    'glossary':
+#    r"""
+#   The correlation energy component
+#   for the coupled cluster singles and doubles plus bracket perturbative triples level of theory.
+#"""
+#}
 
 qcvardefs['CR-CCSD[T] TOTAL ENERGY'] = {
     'units':
@@ -1675,48 +1742,97 @@ qcvardefs['CR-CCSD[T] CORRELATION ENERGY'] = {
 """
 }
 
+qcvardefs['CCSDT[Q] TOTAL ENERGY'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+   The total electronic energy
+   for the coupled cluster singles doubles triples plus bracket perturbative quadruples level of theory.
+"""
+}
+
+qcvardefs['CCSDT[Q] CORRELATION ENERGY'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+   The correlation energy component
+   for the coupled cluster singles and doubles and triples plus bracket perturbative quadruples level of theory.
+"""
+}
+
+qcvardefs['CCSDT(Q) TOTAL ENERGY'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+   The total electronic energy
+   for the coupled cluster singles doubles triples plus perturbative quadruples level of theory.
+"""
+}
+
+qcvardefs['CCSDT(Q) TOTAL GRADIENT'] = {
+    'units': 'Eh/a0',
+    'dimension': '({nat}, 3)',
+    'glossary': """
+   The total electronic gradient
+   for the coupled cluster singles, doubles, and triples, plus perturbative quadruples level of theory.
+"""
+}
+
+qcvardefs['CCSDT(Q) CORRELATION ENERGY'] = {
+    'units':
+    'Eh',
+    'glossary':
+    r"""
+   The correlation energy component
+   for the coupled cluster singles and doubles and triples plus perturbative quadruples level of theory.
+"""
+}
+
 qcvardefs['LCCD TOTAL ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
-   The total energy for linearized coupled cluster doubles level of theory. 
+   The total energy for linearized coupled cluster doubles level of theory.
 """
 }
 
 qcvardefs['LCCD CORRELATION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
-   The correlation energy for linearized coupled cluster doubles level of theory. 
+   The correlation energy for linearized coupled cluster doubles level of theory.
 """
 }
 
 qcvardefs['LCCSD TOTAL ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
-   The total energy for linearized coupled cluster singles and doubles level of theory. 
+   The total energy for linearized coupled cluster singles and doubles level of theory.
 """
 }
 
 qcvardefs['LCCSD CORRELATION ENERGY'] = {
     'units': 'Eh',
     'glossary': r"""
-   The correlation energy for linearized coupled cluster singles and doubles level of theory. 
+   The correlation energy for linearized coupled cluster singles and doubles level of theory.
 """
 }
 
 qcvardefs['CR-CC(2,3),A TOTAL ENERGY'] = {'units': 'Eh', 'glossary': r"""
-   The total energy for. 
+   The total energy for.
 """}
 
 qcvardefs['CR-CC(2,3),A CORRELATION ENERGY'] = {'units': 'Eh', 'glossary': r"""
-   The correlation energy for. 
+   The correlation energy for.
 """}
 
 qcvardefs['CR-CC(2,3) TOTAL ENERGY'] = {'units': 'Eh', 'glossary': r"""
-   The total energy for. 
+   The total energy for.
 """}
 
 qcvardefs['CR-CC(2,3) CORRELATION ENERGY'] = {'units': 'Eh', 'glossary': r"""
-   The correlation energy for. 
+   The correlation energy for.
 """}
 
 qcvardefs['NUCLEAR REPULSION ENERGY'] = {
@@ -1888,7 +2004,7 @@ qcvardefs['SCF TOTAL ENERGY'] = {
 }
 
 qcvardefs['SCF TOTAL GRADIENT'] = {
-    'units': 'Eh/a0/a0',
+    'units': 'Eh/a0',
     'dimension': '({nat}, 3)',
     'glossary': """
    The total electronic gradient of the SCF stage of a calculation.
@@ -1928,20 +2044,18 @@ qcvardefs['TWO-ELECTRON ENERGY'] = {
 }
 
 qcvardefs['N ALPHA ELECTRONS'] = {
-    'units':
-    'Eh',
+    'units': "",
     'glossary':
     r"""
-The number of alpha electrons
+The number of alpha electrons.
 """
 }
 
 qcvardefs['N BETA ELECTRONS'] = {
-    'units':
-    'Eh',
+    'units': "",
     'glossary':
     r"""
-  The number of beta electrons 
+  The number of beta electrons.
 """
 }
 
@@ -2080,6 +2194,54 @@ qcvardefs["CBS REFERENCE ENERGY"] = {
 """
 }
 
+qcvardefs["GRID ELECTRONS ALPHA"] = {
+    "units": "",
+    "glossary": r"""
+   The number of alpha electrons integrated by the xc quadrature grid.
+"""
+}
+
+qcvardefs["GRID ELECTRONS BETA"] = {
+    "units": "",
+    "glossary": r"""
+   The number of beta electrons integrated by the xc quadrature grid.
+"""
+}
+
+qcvardefs["GRID ELECTRONS TOTAL"] = {
+    "units": "",
+    "glossary": r"""
+   The number of total electrons integrated by the xc quadrature grid.
+"""
+}
+
+## TODO kill off
+#qcvardefs["-D ENERGY"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-MP2 TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-MP3 TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCD TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-LCCD TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-LCCSD TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSD TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSD(T) TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSDT-1A TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSDT-1B TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSDT-2 TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSDT-3 TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSDT TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["MRCC TOTAL GRADIENT"] = {"units": "Eh", "glossary": ""}
+#
+#qcvardefs["C4-MP2 TOTAL HESSIAN"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCD TOTAL HESSIAN"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSD TOTAL HESSIAN"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSD(T) TOTAL HESSIAN"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSDT-1A TOTAL HESSIAN"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSDT-1B TOTAL HESSIAN"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSDT-2 TOTAL HESSIAN"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSDT-3 TOTAL HESSIAN"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["C4-CCSDT TOTAL HESSIAN"] = {"units": "Eh", "glossary": ""}
+#qcvardefs["MRCC TOTAL HESSIAN"] = {"units": "Eh", "glossary": ""}
+## end TODO kill off
 
 #.. qcvar:: UNCP-CORRECTED 2-BODY INTERACTION ENERGY
 #
@@ -2096,8 +2258,8 @@ qcvardefs["CBS REFERENCE ENERGY"] = {
 #   for the labeled Z-averaged perturbation theory level.
 #   *n* is ZAPT perturbation order.
 define_scf_qcvars('HF', is_dft=False)
-define_scf_qcvars('B3LYP')
-define_scf_qcvars('B3LYP5')
+define_scf_qcvars('B3LYP', is_dh=False, do_grad=True)
+define_scf_qcvars('B3LYP5', is_dh=False, do_grad=True)
 define_scf_qcvars('SCF',
                   is_dft=False,
                   extra=' This is a generic HF/DFT quantity and not necessarily aligned across different calcs.')
@@ -2105,7 +2267,7 @@ define_scf_qcvars('B2PLYP', is_dh=True)
 define_scf_qcvars('DSD-PBEP86', is_dh=True)
 define_scf_qcvars('WPBE', is_dh=False)
 define_scf_qcvars('WB97', is_dh=False)
-define_scf_qcvars('PBE', is_dh=False)
+define_scf_qcvars('PBE', is_dh=False, do_grad=True)
 define_scf_qcvars('CAM-B3LYP', is_dh=False)
 define_scf_qcvars('DLDF+D09', is_dh=False)
 define_scf_qcvars('WB97X', is_dh=False)
@@ -2145,3 +2307,21 @@ define_ex_transition_qcvars(4, 'ccsd', ['B1', 'A1', 'A2', 'B2'])
 define_tddft_roots_qcvars(10, ['B1U' , 'AG','B2U', 'B3U', 'AU'])
 define_prop_qcvars('ccsd')
 define_prop_qcvars('cc')  # TODO reconsider
+define_spin_qcvars("LCCD", description="linearized coupled cluster doubles", do_spin=True, do_grad=True)
+define_spin_qcvars("LCCSD", description="linearized coupled cluster singles and doubles", do_spin=True)
+define_spin_qcvars("CEPA(0)", description="coupled electron pair approximation, variant 0", do_spin=True)
+define_spin_qcvars("CCD", description="coupled cluster doubles", do_spin=True, do_grad=True)
+define_spin_qcvars("MP3", description="3rd-order Moller--Plesset perturbation theory", do_spin=True, do_grad=True)
+define_spin_qcvars("MP4(SDQ)", description="4rd-order Moller--Plesset perturbation theory without triples excitations", do_spin=False, do_grad=False)
+define_spin_qcvars("MP4(SDTQ)", description="4rd-order Moller--Plesset perturbation theory", do_spin=False, do_grad=False)
+define_spin_qcvars("CCSD+T(CCSD)", description="coupled cluster singles and doubles with triples evaluated at converged CCSD amplitudes", do_spin=False, do_grad=False)
+define_spin_qcvars("CCSDT", description="coupled cluster singles, doubles, and triples excitations", do_spin=True, do_grad=True)
+define_spin_qcvars("CCSDT-1A", description="coupled cluster singles, doubles, and triples excitations at approximation 1a", do_spin=False, do_grad=True)
+define_spin_qcvars("CCSDT-1B", description="coupled cluster singles, doubles, and triples excitations at approximation 1b", do_spin=False, do_grad=True)
+define_spin_qcvars("CCSDT-2", description="coupled cluster singles, doubles, and triples excitations at approximation 2", do_spin=False, do_grad=True)
+define_spin_qcvars("CCSDT-3", description="coupled cluster singles, doubles, and triples excitations at approximation 3", do_spin=False, do_grad=True)
+define_spin_qcvars("A-CCSD(T)", description="coupled cluster singles, doubles, and asymmetric perturbative triples excitations. Also known as Lambda-CCSD(T) or CCSD(AT).", do_spin=False, do_grad=True)
+define_spin_qcvars("CCSD(T)", description="coupled cluster singles, doubles, and perturbative triples excitations.", do_spin=False, do_grad=True)
+define_spin_qcvars("CISD", description="configuration interaction with singles and doubles", do_spin=True, do_grad=False)
+define_spin_qcvars("QCISD", description="quadratic configuration interaction singles and doubles", do_spin=True, do_grad=False)
+define_spin_qcvars("QCISD(T)", description="quadratic configuration interaction singles and doubles with perturbative triples", do_spin=False, do_grad=False)

@@ -36,7 +36,7 @@ def load_gamess_keywords(options: Keywords) -> None:
 
     options.add(
         'gamess',
-        Keyword(keyword='contrl__dfttyp', default='none', validator=parsers.enum("NONE B3LYP PBE0"), glossary=""""""))
+        Keyword(keyword='contrl__dfttyp', default='none', validator=parsers.enum("NONE B3LYP PBE0 PBE B3LYPV1R B3LYPV3"), glossary=""""""))
 
     options.add('gamess',
                 Keyword(keyword='contrl__mplevl', default=2, validator=parsers.intenum("0 2"), glossary=""""""))
@@ -106,6 +106,13 @@ def load_gamess_keywords(options: Keywords) -> None:
                 validator=parsers.enum("STO N21 N31 N311 G3L G3LX"),
                 glossary=""""""))
 
+    options.add(
+        "gamess",
+        Keyword(keyword="contrl__numgrd",
+                default=False,
+                validator=parsers.boolean,
+                glossary="""Flag to allow numerical differentiation of the energy."""))
+
     # $SCF
 
     options.add(
@@ -154,6 +161,43 @@ def load_gamess_keywords(options: Keywords) -> None:
             validator=parsers.enum("ZAPT RMP"),
             glossary="""Selects open shell spin-restricted perturbation. Only applies when gamess_mp2__scftype=ROHF."""
         ))
+
+    options.add(
+    "gamess",
+    Keyword(
+            keyword="mp2__cutoff",
+            default=1.e-8,
+            validator=lambda x: float(x),
+            glossary="""transformed integral retention threshold, the                        
+           default is 1.0d-9 (1.0d-12 in FMO runs)."""))
+
+    options.add(
+        "gamess",
+        Keyword(keyword="mp2__code",
+                default="SERIAL", # complex
+                validator=parsers.enum("SERIAL DDI IMS RIMP2 RICCHEM"),
+                glossary="""
+CODE  =    the program implementation to use, choose from                       
+           SERIAL, DDI, IMS, RIMP2, or RICCHEM according                        
+           to the following chart, depending on SCFTYP and                      
+           if the run involves nuclear gradients,                               
+                                                                                
+ RHF     RHF        UHF    UHF       ROHF    ROHF    ROHF                       
+energy gradient   energy gradient   energy gradient energy                      
+                                OSPT=ZAPT    ZAPT    RMP                        
+SERIAL  SERIAL    SERIAL  SERIAL    SERIAL    -     SERIAL                      
+DDI      DDI       DDI     DDI       DDI     DDI      -                         
+IMS      IMS        -       -         -       -       -                         
+RIMP2     -       RIMP2     -         -       -       -                         
+RICCHEM RICCHEM    -        -      RICCHEM    -       -                         
+                                                                                
+The default for serial runs (p=1) is CODE=IMS for RHF, and                      
+CODE=SERIAL for UHF or ROHF (provided PARALL is .FALSE. in                      
+$SYSTEM).  When p>1 (or PARALL=.TRUE.), the default becomes                     
+CODE=DDI.  However, if FMO is in use, the default for                           
+closed shell parallel runs is CODE=IMS.  The "SERIAL" code                      
+for OSPT=RMP will run with modest scalability when p>1.                         
+"""))
 
     # $CCINP
 
@@ -208,6 +252,33 @@ def load_gamess_keywords(options: Keywords) -> None:
             validator=parsers.intenum("86 110 146 170 194 302 350 434 590 770 974 1202 1454 1730 2030"),
             glossary="""Number of angular points in the Lebedev grids."""))
 
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="dft__thresh",
+            default=1.e-10,  # approx
+            validator=lambda x: float(x),
+            glossary="""threshold for ignoring small contributions to the                      
+         Fock matrix.  The default is designed to produce                       
+         no significant energy loss, even when the grid is                      
+         as good as "army grade".  If for some reason you                       
+         want to turn all threshhold tests off, of course                       
+         requiring more CPU, enter 1.0e-15.                                     
+         default: 1.0e-4/Natoms/NRAD/NTHE/NPHI"""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="dft__gthre",
+            default=1,
+            validator=lambda x: float(x),
+            glossary="""threshold applied to gradients, similar to THRESH.                     
+         < 1 assign this value to all thresholds                                
+         = 1 use the default thresholds (default).                              
+         > 1 divide default thresholds by this value.                           
+         If you wish to increase accuracy, set GTHRE=10.                        
+         The default introduces an error of roughly 1e-7                        
+         (a.u./bohr) in the gradient."""))
     #options.add_int("GAMESS_EOMINP_NSTATE", 1);
 
     # $CIDET
@@ -234,3 +305,151 @@ def load_gamess_keywords(options: Keywords) -> None:
             default=2,  #None,
             validator=parsers.positive_integer,
             glossary="""Total number of active electrons."""))
+
+
+    # $SODET
+
+    options.add(
+        'gamess',
+        Keyword(
+            keyword='sodet__next',
+            default=1,  #None,
+            validator=parsers.positive_integer,
+            glossary="""the number of external orbitals to be included.                        
+         The default is the entire virtual MO space."""))
+
+    options.add(
+        'gamess',
+        Keyword(
+            keyword='sodet__orbs',
+            default="MOS",
+            validator=parsers.enum("MOS NOS"),
+            glossary="""
+         MOS means use the MCSCF orbitals, which should be                      
+             allowed to undergo canonicalization (see the                       
+             CANONC keyword in $MCSCF), or the input $VEC                       
+             group in case SCFTYP=NONE. (default)                               
+         NOS means to instead use the natural orbitals of                       
+             the MCSCF.  
+    """))
+
+    # $CIDRT
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__iexcit",
+        default=100,  # usually by program
+                validator=parsers.nonnegative_integer,
+        glossary="""electron excitation level, for example 2 will                           
+        lead to a singles and doubles CI.  This variable                        
+        is computed by the program if FORS, FOCI, or                            
+        SOCI is chosen, otherwise it must be entered."""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__ndoc",
+            default=0,
+            validator=parsers.nonnegative_integer,
+            glossary="""number of doubly occupied MOs in the reference."""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__naos",
+            default=0,
+            validator=parsers.nonnegative_integer,
+            glossary="""number of alpha occupied MOs in the reference which are singlet coupled with a corresponding number of NBOS orbitals."""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__nbos",
+            default=0,
+            validator=parsers.nonnegative_integer,
+            glossary="""number of beta singly occupied MOs."""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__nval",
+            default=0,
+            validator=parsers.nonnegative_integer,
+            glossary="""number of empty MOs in the reference."""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__nfzc",
+            default=0,
+            validator=parsers.nonnegative_integer,
+            glossary="""number of CI frozen core MOs."""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__nalp",
+            default=0,
+            validator=parsers.nonnegative_integer,
+            glossary="""NALP = number of alpha spin singly occupied MOs in the                          
+       reference, which are coupled high spin."""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__intact",
+            default=False,
+            validator=parsers.boolean,
+            glossary="""flag to select the interacting space option.  See                       
+        C.F.Bender, H.F.Schaefer  J.Chem.Phys. 55,                              
+        4798-4803(1971).  The CI will include only those                        
+        CSFs which have non-vanishing spin couplings with                       
+        the reference configuration.  Note that when the                        
+        Schaefer group uses this option for high spin                           
+        ROHF references, they use Guest/Saunders orbital                        
+        canonicalization."""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__group",
+            default="C1",
+            validator=parsers.enum("C1 C2 CI CS C2V C2H D2 D2H C4V D4 D4H"),
+            glossary="""the name of the point group to be used.  This is                        
+        usually the same as that in $DATA, except for                           
+        RUNTYP=HESSIAN, when it must be C1.  Choose from                        
+        the following: C1, C2, CI, CS, C2V, C2H, D2, D2H,                       
+        C4V, D4, D4H.  If your $DATA's group is not listed,                     
+        choose only C1 here."""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__mxnint",
+            default=20000,
+            validator=parsers.nonnegative_integer,
+            glossary="""Buffer size for sorted integrals. (default=20000)                      
+         Adjust this upwards if the program tells you to,                       
+         which may occur in cases with large numbers of                         
+         external orbitals."""))
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="cidrt__mxneme",
+            default=10000,
+            validator=parsers.nonnegative_integer,
+            glossary="""MXNEME = Buffer size for energy matrix.  (default=10000)                        """))
+
+
+    # <<< FORCE
+
+    options.add(
+        "gamess",
+        Keyword(
+            keyword="force__method",
+            default="analytic",
+            validator=parsers.enum("ANALYTIC SEMINUM FULLNUM"),
+            glossary="""Chooses between fully analytic, numerical differention of analytic first derivatives, or double differentiation of energies."""))
+

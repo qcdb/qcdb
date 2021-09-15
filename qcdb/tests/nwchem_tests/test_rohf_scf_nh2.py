@@ -4,7 +4,6 @@ import sys
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 #nh2 = qcdb.set_molecule('''
@@ -22,7 +21,7 @@ def check_hf(return_value):
     assert compare_values(nre, qcdb.variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
 
 
-@using_nwchem
+@using("nwchem")
 def test_1_rohf():
     nh2= qcdb.set_molecule('''
         N
@@ -31,7 +30,6 @@ def test_1_rohf():
 
     qcdb.set_options({
         'basis': 'cc-pVDZ',
-        'memory': '270 mb',
         'nwchem_scf__rohf': True,
         'nwchem_scf__rhf' : False,
         'nwchem_scf__nopen': 1,

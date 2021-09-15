@@ -6,7 +6,6 @@ import sys
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
@@ -42,7 +41,7 @@ def check_ccsd_t_2(return_value):
         assert compare_values(t_corr, qcdb.variable('(T) CORRECTION ENERGY'), 5, 'ccsd(t) correction')
 
 
-@using_nwchem
+@using("nwchem")
 def test_1_a5050_no():
     h2o = qcdb.set_molecule('''
         O     0.000000000000    0.000000000000   -0.065638538099
@@ -52,7 +51,6 @@ def test_1_a5050_no():
 
     qcdb.set_options({
         'basis': 'cc-pvdz',
-        'memory': '600 mb',
         'nwchem_scf__rhf': True,
         'nwchem_scf__thresh': 1.0e-12,
     })
@@ -61,7 +59,7 @@ def test_1_a5050_no():
     check_ccsd_t_2(val)
 
 
-#@using_nwchem
+#@using("nwchem")
 #def test_2_a5050():
 #    qcdb.set_options({
 #        'basis': 'cc-pvdz',

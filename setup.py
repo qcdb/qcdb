@@ -29,8 +29,8 @@ if __name__ == "__main__":
         include_package_data=True,
         package_data={'': [os.path.join('qcdb', 'basis', '*.gbs')]},
         setup_requires=[] + pytest_runner,
-        python_requires='>=3.6',
-        install_requires=["numpy >= 1.12.0", "qcengine >= 0.18.0", "networkx>=2.4.0"],
+        python_requires=">=3.9",
+        install_requires=["numpy >= 1.12.0", "qcelemental >= 0.22.1", "qcengine >= 0.19.1", "networkx>=2.4.0"],
         extras_require={
 #            'docs': [
 #                'numpydoc',
@@ -65,9 +65,6 @@ if __name__ == "__main__":
             'Intended Audience :: Science/Research',
             'Programming Language :: Python :: 3 :: Only',
             'Programming Language :: Python :: 3',
-            'Programming Language :: Python :: 3.6',
-            'Programming Language :: Python :: 3.7',
-            'Programming Language :: Python :: 3.8',
             'Programming Language :: Python :: 3.9',
         ],
         zip_safe=False,

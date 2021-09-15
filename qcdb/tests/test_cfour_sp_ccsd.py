@@ -4,7 +4,6 @@ import pytest
 
 import qcdb
 
-from .addons import *
 from .utils import *
 
 
@@ -31,7 +30,7 @@ R=1.008
 A=105.0
 """
 
-@using_cfour
+@using("cfour")
 def test_sp_rhf_ccsd(h2o):
     """cfour/sp-rhf-ccsd/input.dat 
     #! single point CCSD/qz2p on water
@@ -57,7 +56,7 @@ def test_sp_rhf_ccsd(h2o):
     assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, tnm() + 'CCSD')
 
 
-@using_cfour
+@using("cfour")
 def test_sp_rhf_ccsd_ao(h2o):
     """cfour/sp-rhf-ccsd-ao/input.dat 
     #! single point CCSD/qz2p on water
@@ -84,7 +83,7 @@ def test_sp_rhf_ccsd_ao(h2o):
     assert compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, tnm() + 'CCSD')
 
 
-@using_cfour
+@using("cfour")
 def test_sp_uhf_ccsd(nh2):
     """cfour/sp-uhf-ccsd/input.dat
     #! single-point CCSD/qz2p on NH2
@@ -110,7 +109,7 @@ def test_sp_uhf_ccsd(nh2):
     assert compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), 6, tnm() + 'CCSD')
 
 
-@using_cfour
+@using("cfour")
 def test_sp_rohf_ccsd(nh2):
 
     nh2 = qcdb.set_molecule(nh2)
@@ -141,7 +140,9 @@ def test_sp_rohf_ccsd(nh2):
     # not printed compare_values(ssmp2corl, qcdb.variable('mp2 same-spin correlation energy'), 6, tnm() + 'MP2 SS corl')
     # not printed compare_values(mp2corl, qcdb.variable('mp2 correlation energy'), 6, tnm() + 'MP2 corl')
     # not printed compare_values(mp2tot, qcdb.variable('mp2 total energy'), 6, tnm() + 'MP2')
-    compare_values(osccsdcorl, qcdb.variable('ccsd opposite-spin correlation energy'), 6, tnm() + 'CCSD OS corl')
+
+    # * Summer 2021: have a value for ccsd opposite-spin correlation below, but probably not collected from current version with ROHF
+    # compare_values(osccsdcorl, qcdb.variable('ccsd opposite-spin correlation energy'), 6, tnm() + 'CCSD OS corl')
     compare_values(ssccsdcorl, qcdb.variable('ccsd same-spin correlation energy'), 6, tnm() + 'CCSD SS corl')
     compare_values(ccsdcorl, qcdb.variable('ccsd correlation energy'), 6, tnm() + 'CCSD corl')
     compare_values(ccsdtot, qcdb.variable('ccsd total energy'), 6, tnm() + 'CCSD')

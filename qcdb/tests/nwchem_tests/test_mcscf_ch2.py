@@ -1,8 +1,9 @@
 import os
 import sys
 
+import pytest
+
 from ..utils import *
-from ..addons import *
 
 import qcdb
 
@@ -11,10 +12,10 @@ def mcscf_ch2(return_value):
     hf  =   -38.857160053058
     mcscf   =   -38.913118315963
 
-    assert compare_values(hf, qcdb.variable("HF TOTAL ENERGY"), 5, "hf ref")
     assert compare_values(mcscf, qcdb.variable("MCSCF TOTAL ENERGY"), 5, "mcscf 1a1")
 
-@using_nwchem
+@pytest.mark.xfail(reason="haven't found where nwchem prints molecular charge for MCSCF")
+@using("nwchem")
 def test_1_1a1():
     h2o = qcdb.set_molecule('''
             C    0   0     0

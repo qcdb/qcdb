@@ -10,13 +10,21 @@ def gamess_list() -> List:
     val.append('gms-scf')
     val.append('gms-hf')
     val.append('gms-mp2')
+    val.append("gms-cisd")
+    val.append("gms-lccd")
+    val.append("gms-ccd")
     val.append('gms-ccsd')
+    val.append('gms-ccsd+t(ccsd)')
     val.append('gms-ccsd(t)')
     val.append('gms-cr-ccl')
     val.append('gms-ccsd(tq)')
     val.append('gms-fci')
     #        val.append('gms-dft')
     #        val.append('gms-efp')
+
+    val.append("gms-pbe")
+    val.append("gms-b3lyp")
+    val.append("gms-b3lyp5")
 
     return val
 
@@ -29,6 +37,14 @@ def gamess_gradient_list() -> List:
     val.append('gms-hf')
     val.append('gms-scf')
     val.append('gms-mp2')
+    val.append("gms-lccd")  # fd
+    val.append('gms-ccd')  # fd
+    val.append('gms-ccsd')  # fd
+    val.append('gms-ccsd(t)')  # fd
+
+    val.append("gms-pbe")
+    val.append("gms-b3lyp")
+    val.append("gms-b3lyp5")
 
     return val
 
@@ -38,6 +54,12 @@ def gamess_hessian_list() -> List:
     to procedures['hessian'].
         """
     val = []
+    val.append('gms-hf')
+    val.append('gms-scf')
+    val.append('gms-mp2')  # fd
+    val.append('gms-ccd')  # fd
+    val.append('gms-ccsd')  # fd
+    val.append('gms-ccsd(t)')  # fd
 
     return val
 

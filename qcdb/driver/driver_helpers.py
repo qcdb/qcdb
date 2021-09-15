@@ -1,7 +1,7 @@
 import os
 import re
 import warnings
-from typing import Dict, Union
+from typing import Any, Dict, Union
 
 import numpy as np
 
@@ -198,12 +198,11 @@ def activate(mol):
     pe.active_molecule = mol
 
 
-def set_options(options_dict):
-    """
-    Sets Psi4 global options from an input dictionary.
-    """
+def set_options(options_dict: Dict[str, Any]) -> None:
+    """Set QCDB keywords from input dictionary."""
+
     optionre = re.compile(
-        r'\A((?P<silo>(cfour|psi4|nwchem|gamess|dftd3|resp))_)?(?P<module>\w+__)?(?P<option>[\w\(\)]+)\Z',
+        r'\A((?P<domain>(qcdb|cfour|psi4|nwchem|gamess|dftd3|resp))_)?(?P<module>\w+__)?(?P<option>[\w\(\)]+)\Z',
         re.IGNORECASE)
 
     if len(pe.nu_options.scroll) == 0:
@@ -218,14 +217,17 @@ def set_options(options_dict):
             pass
 
         if mobj:
-            silo = mobj.group('silo').upper() if mobj.group('silo') else 'QCDB'
+            domain = mobj.group("domain").upper() if mobj.group("domain") else "QCDB"
             module = mobj.group('module').upper() if mobj.group('module') else ''
             option = mobj.group('option').upper()
 
-            print(f'SET_OPTIONS: [{silo}][{module + option}] = {v}')
-            pe.nu_options.require(silo, module + option, v, accession=pe.nu_options.mark_of_the_user)
+            print(f'SET_OPTIONS: [{domain}][{module + option}] = {v}')
+            pe.nu_options.require(domain, module + option, v, accession=pe.nu_options.mark_of_the_user)
         else:
-            raise ValidationError(f'Keyword not in {{space}}?_{{module}}?__{{option}} format: {k}')
+            raise ValidationError(f"Keyword not in {{domain}}?_{{module}}?__{{option}} format: {k}")
+
+
+set_keywords = set_options
 
 
 def has_variable(key):

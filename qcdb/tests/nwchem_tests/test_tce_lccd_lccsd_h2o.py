@@ -5,7 +5,6 @@ import sys
 
 import qcdb
 
-from ..addons import *
 from ..utils import *
 
 
@@ -18,7 +17,7 @@ def check_lccd(return_value):
     assert compare_values(lccd_tot, qcdb.variable('LCCD TOTAL ENERGY'), 5, 'lccd tot')
     assert compare_values(lccd_corl, qcdb.variable('LCCD CORRELATION ENERGY'), 5, 'lccd corl')
 
-@using_nwchem
+@using("nwchem")
 def test_1_lccd():
     h2o = qcdb.set_molecule('''
     H    0.000000000000000   1.079252144093028   1.474611055780858
@@ -28,7 +27,6 @@ def test_1_lccd():
 
     qcdb.set_options({
         'basis' : 'sto-3g',
-        'memory': '1500 mb',
         #'scf__e_convergence':   1.0e-10,
         'nwchem_scf__thresh':   1.0e-10,
         'nwchem_scf__tol2e' :   1.0e-10,
@@ -49,7 +47,7 @@ def check_lccsd(return_value):
     assert compare_values(lccsd_tot, qcdb.variable('LCCSD TOTAL ENERGY'), 5, 'lccd tot')
     assert compare_values(lccsd_corl, qcdb.variable('LCCSD CORRELATION ENERGY'), 5, 'lccd corl')
 
-@using_nwchem
+@using("nwchem")
 def test_2_lccsd():
     h2o = qcdb.set_molecule('''
     H    0.000000000000000   1.079252144093028   1.474611055780858
@@ -59,7 +57,6 @@ def test_2_lccsd():
 
     qcdb.set_options({
         'basis' : 'sto-3g',
-        'memory': '1500 mb',
         #'scf__e_convergence':   1.0e-10,
         'nwchem_scf__thresh':   1.0e-10,
         'nwchem_scf__tol2e' :   1.0e-10,

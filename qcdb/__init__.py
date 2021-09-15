@@ -30,14 +30,16 @@ __version__ = get_versions()['version']
 del get_versions
 
 from .driver import energy, properties, hessian, gradient, frequency
-from .driver import optking, geometric
+from .driver import optking, geometric, optimize
 from .driver import vpt2
+from .driver import diatomic
 from .driver.cbs_driver import cbs
 from .driver.cbs_helpers import *
 from .driver.driver_helpers import get_variable, has_variable, print_variables, variable
-from .driver.driver_helpers import set_options, get_active_options
+from .driver.driver_helpers import set_keywords, set_options, get_active_options
 from .driver.driver_helpers import set_molecule, activate
 from .driver.yaml import yaml_run
+from .driver.compute import compute
 from .exceptions import *
 
 from .basisset import BasisSet, basishorde

@@ -1,5 +1,7 @@
 import copy
 import inspect
+import sys
+import traceback
 from typing import Any, Dict, Optional
 from decimal import Decimal
 
@@ -7,19 +9,22 @@ import qcelemental as qcel
 from qcelemental.models import AtomicInput
 
 import qcengine as qcng
+from qcengine.exceptions import InputError
 from qcengine.programs.cfour import CFOURHarness
 from qcengine.programs.cfour.keywords import format_keyword, format_keywords
 from qcengine.programs.util import PreservingDict
 
 from ... import qcvars
 from ...basisset import BasisSet
-from ...util import print_jobrec, provenance_stamp
+from ...util import print_jobrec, provenance_stamp, accession_stamp
 from .germinate import (extract_basis_from_genbas, muster_basisset, muster_inherited_keywords, muster_modelchem,
                         muster_molecule)
 
 
 def run_cfour(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -> Dict:
     """QCDB API to QCEngine connection for CFOUR."""
+
+    local_options = kwargs.get("local_options", None)
 
     resi = AtomicInput(
         **{
@@ -31,14 +36,16 @@ def run_cfour(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) ->
                 'method': name,
                 'basis': '(auto)',
             },
-            'molecule': molecule.to_schema(dtype=2),
+            "molecule": molecule.to_schema(dtype=2) | {"fix_com": True, "fix_orientation": True},
             'provenance': provenance_stamp(__name__),
         })
 
-    jobrec = qcng.compute(resi, "qcdb-cfour", raise_error=True).dict()
+    jobrec = qcng.compute(resi, "qcdb-cfour", local_options=local_options, raise_error=True).dict()
 
     hold_qcvars = jobrec['extras'].pop('qcdb:qcvars')
     jobrec['qcvars'] = {key: qcel.Datum(**dval) for key, dval in hold_qcvars.items()}
+    jobrec["molecule"]["fix_com"] = molecule.com_fixed()
+    jobrec["molecule"]["fix_orientation"] = molecule.orientation_fixed()
 
     return jobrec
 
@@ -79,12 +86,16 @@ class QcdbCFOURHarness(CFOURHarness):
                          template: Optional[str] = None) -> Dict[str, Any]:
         cfourrec = {
             'infiles': {},
+            'scratch_messy': config.scratch_messy,
             'scratch_directory': config.scratch_directory,
         }
 
+        kwgs = {"accession": accession_stamp(), "verbose": 1}
         molrec = qcel.molparse.from_schema(input_model.molecule.dict())
         molrec['fix_symmetry'] = 'c1'  # write _all_ atoms to GENBAS
         ropts = input_model.extras['qcdb:options']
+
+        ropts.require("QCDB", "MEMORY", f"{config.memory} gib", **kwgs)
 
         molcmd = muster_molecule(molrec, ropts, verbose=1)
 
@@ -116,6 +127,9 @@ class QcdbCFOURHarness(CFOURHarness):
         #print(jobrec['options'].print_changed(history=False))
         # Handle driver vs input/default keyword reconciliation
 
+        # print("Touched Keywords")  # debug
+        # print(ropts.print_changed(history=True))  # debug
+
         # Handle conversion of psi4 keyword structure into cfour format
         skma_options = {key: ropt.value for key, ropt in sorted(ropts.scroll['CFOUR'].items()) if ropt.disputed()}
         optcmd = format_keywords(skma_options)
@@ -143,7 +157,15 @@ class QcdbCFOURHarness(CFOURHarness):
 #                custom_scsmp2_corl += dqcvars["MP2 SINGLES ENERGY"]
 #            dqcvars["CUSTOM SCS-MP2 CORRELATION ENERGY"] = custom_scsmp2_corl
 
-        qcvars.build_out(dqcvars)
+        try:
+            qcvars.build_out(dqcvars)
+        except ValueError as e:
+            raise InputError(
+                "STDOUT:\n"
+                + output_model.stdout
+                + "\nTRACEBACK:\n"
+                + "".join(traceback.format_exception(*sys.exc_info()))
+            )
         calcinfo = qcvars.certify_and_datumize(dqcvars, plump=True, nat=len(output_model.molecule.symbols))
         output_model.extras['qcdb:qcvars'] = calcinfo
 

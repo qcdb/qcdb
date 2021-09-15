@@ -7,7 +7,7 @@ from typing import Callable, Dict, Union
 import qcelemental as qcel
 
 from ..driver import pe
-from ..exceptions import ValidationError
+from ..exceptions import BasisSetNotFound, ValidationError
 from ..molecule import Molecule
 from ..util import search_file
 from .basislist import corresponding_basis, corresponding_zeta
@@ -1388,7 +1388,8 @@ class BasisSet(object):
 
             for Q in range(n_shell):
                 if not numbersonly:
-                    text += """%2s%d """ % (self.molecule.symbol(A), A + 1)
+                    text += """%s%s%d """ % ("" if self.molecule.Z(A) > 0 else "bq", self.molecule.symbol(A).capitalize(), A + 1)
+                    # TODO revisit and figure out right mixture of unique/numbered for mixed basis sets incl. ghost
                 text += self.shells[Q + first_shell].pyprint_nwchem(outfile=None)
         text += """\n"""
 

@@ -4,7 +4,6 @@ import pytest
 
 import qcdb
 
-from .addons import *
 from .utils import *
 
 #! conventional and density-fitting mp2 test of mp2 itself and setting scs-mp2
@@ -57,7 +56,7 @@ H 1 1.0 2 90.0
 """
 
 
-@using_psi4
+@using("psi4")
 def test_1_df_mp2(h2o):
     qcdb.set_molecule(h2o)
     qcdb.set_options({
@@ -69,7 +68,7 @@ def test_1_df_mp2(h2o):
     check_mp2(val, is_df=True)
 
 
-@using_psi4
+@using("psi4")
 def test_2_conv_mp2(h2o):
     qcdb.set_molecule(h2o)
     qcdb.set_options({
@@ -82,7 +81,7 @@ def test_2_conv_mp2(h2o):
     check_mp2(val, is_df=False)
 
 
-@using_psi4
+@using("psi4")
 def test_3_df_scs_mp2(h2o):
     qcdb.set_molecule(h2o)
     qcdb.set_options({
@@ -99,7 +98,7 @@ def test_3_df_scs_mp2(h2o):
     check_mp2(val, is_df=True)
 
 
-@using_psi4
+@using("psi4")
 def test_4_conv_scs_mp2(h2o):
     qcdb.set_molecule(h2o)
     qcdb.set_options({
@@ -114,7 +113,7 @@ def test_4_conv_scs_mp2(h2o):
     check_mp2(val, is_df=False)
 
 
-@using_psi4
+@using("psi4")
 def test_5_df_custom_scs_mp2(h2o):
     qcdb.set_molecule(h2o)
     qcdb.set_options({
@@ -130,7 +129,8 @@ def test_5_df_custom_scs_mp2(h2o):
     check_mp2(val, is_df=True, is_5050=True)
 
 
-@using_psi4
+@pytest.mark.xfail(reason="custom scs NYI")
+@using("psi4")
 def test_6_conv_custom_scs_mp2(h2o):
     qcdb.set_molecule(h2o)
     qcdb.set_options({

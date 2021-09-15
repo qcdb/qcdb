@@ -1,11 +1,13 @@
 import copy
 import pprint
 import inspect
+import re
 from typing import Any, Dict, Optional
 from decimal import Decimal
 
+import numpy as np
 import qcelemental as qcel
-from qcelemental.models import FailedOperation, AtomicInput
+from qcelemental.models import FailedOperation, AtomicInput, AtomicResult
 
 import qcengine as qcng
 from qcengine.exceptions import InputError
@@ -15,7 +17,8 @@ from qcengine.programs.util import PreservingDict
 
 from ... import qcvars
 from ...basisset import BasisSet
-from ...util import print_jobrec, provenance_stamp
+from ...molecule import Molecule
+from ...util import format_error, print_jobrec, provenance_stamp, accession_stamp
 from .germinate import muster_basisset, muster_inherited_keywords, muster_modelchem, muster_molecule
 
 pp = pprint.PrettyPrinter(width=120)
@@ -23,6 +26,8 @@ pp = pprint.PrettyPrinter(width=120)
 
 def run_nwchem(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -> Dict:
     """QCDB API to QCEngine connection for NWChem."""
+
+    local_options = kwargs.get("local_options", None)
 
     resi = AtomicInput(
         **{
@@ -34,14 +39,16 @@ def run_nwchem(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -
                 'method': name,
                 'basis': '(auto)',
             },
-            'molecule': molecule.to_schema(dtype=2),
+            "molecule": molecule.to_schema(dtype=2) | {"fix_com": True, "fix_orientation": True},
             'provenance': provenance_stamp(__name__),
         })
 
-    jobrec = qcng.compute(resi, "qcdb-nwchem", raise_error=True).dict()
+    jobrec = qcng.compute(resi, "qcdb-nwchem", local_options=local_options, raise_error=True).dict()
 
     hold_qcvars = jobrec['extras'].pop('qcdb:qcvars')
     jobrec['qcvars'] = {key: qcel.Datum(**dval) for key, dval in hold_qcvars.items()}
+    jobrec["molecule"]["fix_com"] = molecule.com_fixed()
+    jobrec["molecule"]["fix_orientation"] = molecule.orientation_fixed()
 
     return jobrec
 
@@ -83,7 +90,7 @@ class QcdbNWChemHarness(NWChemHarness):
             output_model = FailedOperation(success=False,
                                            error={
                                                "error_type": "execution_error",
-                                               "error_message": dexe["stderr"],
+                                               "error_message": format_error(stdout=dexe["stdout"], stderr=dexe["stderr"]),
                                            },
                                            input_data=input_model.dict())
 
@@ -92,17 +99,23 @@ class QcdbNWChemHarness(NWChemHarness):
     def qcdb_build_input(self, input_model: AtomicInput, config: 'JobConfig',
                          template: Optional[str] = None) -> Dict[str, Any]:
 
+        kwgs = {"accession": accession_stamp(), "verbose": 1}
+
         nwchemrec = {
             'infiles': {},
+            'scratch_messy': config.scratch_messy,
             'scratch_directory': config.scratch_directory,
         }
 
         molrec = qcel.molparse.from_schema(input_model.molecule.dict())
+        qmol = Molecule(molrec)
         molrecc1 = molrec.copy()
         molrecc1['fix_symmetry'] = 'c1'  # write _all_ atoms to input
         ropts = input_model.extras['qcdb:options']
 
-        molcmd = muster_molecule(molrec, ropts, verbose=1)
+        ropts.require("QCDB", "MEMORY", f"{config.memory} gib", **kwgs)
+
+        molcmd = muster_molecule(molrec, qmol, ropts, verbose=1)
 
         # Handle memory
         # I don't think memory belongs in jobrec. it goes in pkgrec (for pbs) and possibly duplicated in options (for prog)
@@ -138,8 +151,8 @@ class QcdbNWChemHarness(NWChemHarness):
         #      harvester.nu_muster_modelchem(jobrec['method'], jobrec['dertype'], ropts])
         mdccmd = muster_modelchem(input_model.model.method, input_model.driver.derivative_int(), ropts)
 
-        #PRprint('Touched Keywords')
-        #PRprint(ropts.print_changed(history=False))
+        # print("Touched Keywords")  # debug
+        # print(ropts.print_changed(history=True))  # debug
 
         # Handle driver vs input/default keyword reconciliation
 
@@ -157,7 +170,34 @@ class QcdbNWChemHarness(NWChemHarness):
         #zmat = molcmd + optcmd + bascmd
         nwchemrec['infiles']['nwchem.nw'] = 'echo\n' + molcmd + bascmd + optcmd + mdccmd
         #OLD    nwchemrec['nwchem.nw'] = write_input(jobrec['method'], jobrec['dertype'], jobrec['molecule'], jobrec['options']) #molecule)
-        #    print('<<< ZMAT||\n{}\n||>>>\n'.format(nwchemrec['nwchem.nw']))
+
+        # For gradient methods, add a Python command to save the gradients in higher precision
+        #  Note: The Hessian is already stored in high precision in a file named "*.hess"
+        if input_model.driver == "gradient":
+            # Get the name of the theory used for computing the gradients
+            theory = re.search(r"^task\s+(.+)\s+grad", mdccmd, re.MULTILINE).group(1)
+            #logger.debug(f"Adding a Python task to retrieve gradients. Theory: {theory}")
+            print(f"Adding a Python task to retrieve gradients. Theory: {theory}")
+
+            # Create a Python function to get the gradient from NWChem's checkpoint file (rtdb)
+            #  and save it to a JSON file. The stdout for NWChem only prints 6 _decimal places_
+            #  (not 6 significant figures)
+            pycmd = f"""
+python
+   try:  
+      grad = rtdb_get('{theory}:gradient')
+      if ga_nodeid() == 0:
+          import json
+          with open('nwchem.grad', 'w') as fp:
+              json.dump(grad, fp)
+   except NWChemError, message:  
+        pass
+end
+
+task python
+            """
+            nwchemrec["infiles"]["nwchem.nw"] += pycmd
+
         nwchemrec['command'] = ['nwchem']  # subnw?
 
         return nwchemrec

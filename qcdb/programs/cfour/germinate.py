@@ -7,11 +7,11 @@ import qcelemental as qcel
 
 from ...driver import pe
 from ...exceptions import ValidationError
-from ...util import conv_float2negexp
+from ...util import conv_float2negexp, accession_stamp
 
 
 def muster_molecule(molrec: Dict, ropts: 'Keywords', verbose: int = 1) -> str:
-    kwgs = {'accession': uuid.uuid4(), 'verbose': verbose}
+    kwgs = {'accession': accession_stamp(), 'verbose': verbose}
 
     molcmd, moldata = qcel.molparse.to_string(molrec, dtype='cfour', units='Bohr', return_data=True)
 
@@ -28,7 +28,7 @@ def muster_basisset(molrec: Dict, ropts: 'Keywords', native_puream: bool, verbos
     Cfour constraints.
 
     """
-    accession = uuid.uuid4()
+    accession = accession_stamp()
 
     text = [f"""{elem.upper()}:CD_{iat + 1}""" for iat, elem in enumerate(molrec['elem'])]
     text.append('')
@@ -111,7 +111,7 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
 
     """
     lowername = name.lower()
-    accession = 2345
+    accession = accession_stamp()
 
     if dertype == 0:
         if lowername == 'c4-cfour':
@@ -143,8 +143,26 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
     elif lowername == 'c4-mp4':
         ropts.require('CFOUR', 'CALC_LEVEL', 'MP4', accession=accession, verbose=verbose)
 
+    elif lowername == 'c4-cisd':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'CISD', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-qcisd':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'QCISD', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-qcisd(t)':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'QCISD(T)', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-lccd':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'LCCD', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-lccsd':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'LCCSD', accession=accession, verbose=verbose)
+
     elif lowername == 'c4-cc2':
         ropts.require('CFOUR', 'CALC_LEVEL', 'CC2', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-ccd':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'CCD', accession=accession, verbose=verbose)
 
     elif lowername == 'c4-ccsd':
         ropts.require('CFOUR', 'CALC_LEVEL', 'CCSD', accession=accession, verbose=verbose)
@@ -159,10 +177,32 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
     elif lowername == 'c4-cc3':
         ropts.require('CFOUR', 'CALC_LEVEL', 'CC3', accession=accession, verbose=verbose)
 
+    elif lowername == 'c4-ccsd+t(ccsd)':
+        if ropts.scroll['CFOUR']['CC_PROGRAM'].value == 'ECC':
+            ropts.require('CFOUR', 'CALC_LEVEL', 'CCSD[T]', accession=accession, verbose=verbose)
+        else:
+            ropts.require('CFOUR', 'CALC_LEVEL', 'CCSD+T(CCSD)', accession=accession, verbose=verbose)
+
     elif lowername == 'c4-ccsd(t)':
         # Can't use (T) b/c bug in xsymcor lops it off
         ropts.require('CFOUR', 'CALC_LEVEL', 'CCSD[T]', accession=accession, verbose=verbose)
         ropts.suggest('CFOUR', 'CC_PROGRAM', 'ECC', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-a-ccsd(t)':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'CCSD(T)_L', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-ccsdt-1a':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'CCSDT-1', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-ccsdt-1b':
+        # note mixed case
+        ropts.require('CFOUR', 'CALC_LEVEL', 'CCSDT-1b', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-ccsdt-2':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'CCSDT-2', accession=accession, verbose=verbose)
+
+    elif lowername == 'c4-ccsdt-3':
+        ropts.require('CFOUR', 'CALC_LEVEL', 'CCSDT-3', accession=accession, verbose=verbose)
 
     elif lowername == 'c4-ccsdt':
         # TODO, CC_PROG needs defaulting on a per-reference basis
@@ -193,13 +233,12 @@ def muster_inherited_keywords(ropts: 'Keywords', verbose: int = 1) -> None:
     kwgs = {'accession': accession, 'verbose': verbose}
     do_translate = ropts.scroll['QCDB']['TRANSLATE_QCDB'].value
 
-    # qcdb/memory [B] --> cfour/memory_size [MB]
+    # qcdb/memory [B] --> cfour/memory_size [QW]
     qopt = ropts.scroll['QCDB']['MEMORY']
     if do_translate or qopt.is_required():
-        mem = int(0.000001 * qopt.value)
-        print('\n\nMEMORY', mem, '\n\n')
-        ropts.suggest('CFOUR', 'MEMORY_SIZE', mem, **kwgs)
-        ropts.suggest('CFOUR', 'MEM_UNIT', 'MB', **kwgs)
+        mem = int(qopt.value / 8.0)
+        ropts.require("CFOUR", "MEMORY_SIZE", mem, **kwgs)
+        ropts.require("CFOUR", "MEM_UNIT", "INTEGERWORDS", **kwgs)
 
     # qcdb/puream --> cfour/spherical
     ropts.suggest('CFOUR', 'SPHERICAL', ropts.scroll['QCDB']['PUREAM'].value, **kwgs)
@@ -226,6 +265,9 @@ def muster_inherited_keywords(ropts: 'Keywords', verbose: int = 1) -> None:
     # qcdb/scf__damping_percentage --> cfour/scf_damping
     damp = int(10 * ropts.scroll['QCDB']['SCF__DAMPING_PERCENTAGE'].value)
     ropts.suggest('CFOUR', 'SCF_DAMPING', damp, **kwgs)
+
+    # qcdb/freeze_core --> cfour/frozen_core
+    ropts.suggest("CFOUR", "FROZEN_CORE", ropts.scroll["QCDB"]["FREEZE_CORE"].value, **kwgs)
 
 
 if __name__ == '__main__':

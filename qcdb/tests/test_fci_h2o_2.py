@@ -1,6 +1,5 @@
 import qcdb
 
-from .addons import *
 from .utils import *
 
 _refnuc   =   9.2342185209120
@@ -23,7 +22,7 @@ units bohr
     return h2o
 
 
-@using_psi4
+@using("psi4")
 def test_fci_rhf_psi4():
     #! 6-31G H2O Test FCI Energy Point
 
@@ -44,14 +43,15 @@ def test_fci_rhf_psi4():
     assert compare_values(_refcorr, qcdb.variable("CI CORRELATION ENERGY"), 7, "ci correlation energy")
 
 
-@using_gamess
+@using("gamess")
 def test_fci_rhf_gamess():
     #! 6-31G H2O Test FCI Energy Point
 
     h2o = system_water()
     qcdb.set_options({
         'basis': '6-31G',
-        'gamess_cidet__ncore': 0,
+        # 'gamess_cidet__ncore': 0,
+        "freeze_core": False,
     })
 
     E = qcdb.energy('gms-fci', molecule=h2o)

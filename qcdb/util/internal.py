@@ -1,3 +1,6 @@
+import sys
+import traceback
+import uuid
 import pprint
 from typing import Dict
 
@@ -23,3 +26,15 @@ def print_jobrec(label, dicary, do_print):
         print(label + ' <<<')
         pp.pprint(dicary)
         print('>>>')
+
+def format_error(stdout: str="", stderr: str="", tb:str =None) -> str:
+    """Return all useful information in error string."""
+
+    tb = traceback.format_exception(*sys.exc_info())
+    return "STDOUT:\n" + stdout + "\nSTDERR:\n" + stderr + "\nTRACEBACK:\n" + "".join(tb)
+
+
+def accession_stamp() -> str:
+    """Return stamp of who recorded the keyword."""
+
+    return sys._getframe().f_back.f_code.co_name + "_" + str(uuid.uuid4())[:8]

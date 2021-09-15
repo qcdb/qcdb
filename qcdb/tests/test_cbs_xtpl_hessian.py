@@ -6,7 +6,6 @@ import pytest
 import qcdb
 from qcengine.programs.util.hessparse import load_hessian
 
-from .addons import *
 from .utils import *
 
 #! Various gradients for a strained helium dimer and water molecule
@@ -143,7 +142,7 @@ def system2():
 
 # SCF TESTS
 
-@using_psi4
+@using("psi4")
 def test_1a():
     system1()
     lbl = "[1a] SCF/cc-pVDZ, Psi4"
@@ -167,7 +166,7 @@ def test_1a():
     print(jrec['provenance'])
 
 
-@using_cfour
+@using("cfour")
 def test_1b():
     system1()
     lbl = "[1b] SCF/cc-pVDZ, Cfour"
@@ -189,7 +188,7 @@ def test_1b():
     assert 'CFOUR' == jrec['provenance']['creator'], "[1b] prov"
 
 
-@using_psi4
+@using("psi4")
 def test_1c():
     system2()
     lbl = "[1c] SCF/cc-pVDZ, Psi4"
@@ -207,7 +206,7 @@ def test_1c():
     print(jrec['provenance'])
 
 
-@using_cfour
+@using("cfour")
 def test_1d():
     system2()
     lbl = "[1d] SCF/cc-pVDZ, Cfour"
@@ -225,7 +224,7 @@ def test_1d():
 
 
 @pytest.mark.xfail(True, reason='Old Driver, Spring 2019', run=True)
-@using_psi4
+@using("psi4")
 def test_2a():
     system1()
     lbl = "[2a] SCF/cc-pVDZ, Psi4, dertype=1"
@@ -252,7 +251,7 @@ def test_2a():
 
 
 @pytest.mark.xfail(True, reason='Old Driver, Spring 2019', run=True)
-@using_cfour
+@using("cfour")
 def test_2b():
     system1()
     lbl = "[2b] SCF/cc-pVDZ, Cfour, dertype=1"
@@ -274,7 +273,7 @@ def test_2b():
     assert 'CFOUR' == jrec['provenance']['creator'], "[1b] prov"
 
 
-@using_psi4
+@using("psi4")
 def test_2c():
     system2()
     lbl = "[2c] SCF/cc-pVDZ, Psi4, dertype=1"
@@ -292,7 +291,7 @@ def test_2c():
     print(jrec['provenance'])
 
 
-@using_cfour
+@using("cfour")
 def test_2d():
     system2()
     lbl = "[2d] SCF/cc-pVDZ, Cfour, dertype=1"
@@ -323,7 +322,7 @@ def test_2d():
 ##    assert compare_arrays(ref_grad_scf_dtz, scf_dtz, 6, "[3] SCF/cc-pV[DT]Z Gradient, dertype=0")
 
 
-@using_psi4
+@using("psi4")
 def test_4a():
     system1()
     lbl = "[4a] SCF/cc-pV[DT]Z Gradient, dertype=1"
@@ -341,7 +340,7 @@ def test_4a():
     #assert compare_arrays(ref_e_scf_dtz, jrec['qcvars']['HF/CC-PV[DTQ]Z TOTAL ENNERGY'].data, 6, lbl)
 
 
-@using_cfour
+@using("cfour")
 def test_4b():
     system1()
     lbl = "[4b] SCF/cc-pV[DT]Z Cfour, dertype=1"
@@ -359,7 +358,7 @@ def test_4b():
     #assert compare_arrays(ref_e_scf_dtz, jrec['qcvars']['HF/CC-PV[DTQ]Z TOTAL ENNERGY'].data, 6, lbl)
 
 
-@using_psi4
+@using("psi4")
 def test_5a():
     system1()
     lbl = "[5a] HF/cc-pV[DTQ]Z, Psi4"
@@ -377,7 +376,7 @@ def test_5a():
     #assert compare_arrays(ref_e_scf_dtqz, jrec['qcvars']['HF/CC-PV[DTQ]Z TOTAL ENNERGY'].data, 6, lbl)
 
 
-@using_cfour
+@using("cfour")
 def test_5b():
     system1()
     lbl = "[5b] SCF/cc-pV[DTQ]Z, Cfour"
@@ -398,7 +397,7 @@ def test_5b():
 # MP2 TESTS
 
 @pytest.mark.xfail(True, reason='Old Driver, Spring 2019', run=True)
-@using_psi4
+@using("psi4")
 def test_6a():
     system1()
     lbl = '[6a] MP2/cc-pV[DT]Z, Psi4'
@@ -418,7 +417,7 @@ def test_6a():
     #assert ['QCDB', 'Psi4'] == [d['creator'] for d in jrec['provenance']], "[1a] prov"
 
 
-@using_cfour
+@using("cfour")
 def test_6b():
     system1()
     lbl = '[6b] MP2/cc-pV[DT]Z, Cfour'
