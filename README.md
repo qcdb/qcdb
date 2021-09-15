@@ -3,7 +3,7 @@
 | **Status** | [![GHA build](https://img.shields.io/github/workflow/status/qcdb/qcdb/CI?logo=github)](https://github.com/qcdb/qcdb/actions/workflows/ci.yml) [![Codecov coverage](https://img.shields.io/codecov/c/github/qcdb/qcdb.svg?logo=Codecov&logoColor=white)](https://codecov.io/gh/qcdb/qcdb) [![LGTM analysis](https://img.shields.io/lgtm/grade/python/g/qcdb/qcdb.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/qcdb/qcdb/context:python) |
 | :------ | :------- |
 | **Communication** | [![docs latest](https://img.shields.io/badge/docs-latest-5077AB.svg?logo=read%20the%20docs)](https://qcdb.github.io/qcdb/) [![dev chat on slack](https://img.shields.io/badge/dev_chat-on_slack-808493.svg?logo=slack)](https://join.slack.com/t/qcarchive/shared_invite/enQtNDIzNTQ2OTExODk0LTE3MWI0YzBjNzVhNzczNDM0ZTA5MmQ1ODcxYTc0YTA1ZDQ2MTk1NDhlMjhjMmQ0YWYwOGMzYzJkZTM2NDlmOGM) |
-| **Foundation** | [![license](https://img.shields.io/github/license/qcdb/qcdb.svg)](https://opensource.org/licenses/BSD-3-Clause) [![platforms](https://img.shields.io/badge/Platforms-Linux%2C%20MacOS%2C%20Windows%20WSL-orange.svg)](http://psicode.org/psi4manual/master/introduction.html#supported-systems) [![python](https://img.shields.io/badge/python-3.6+-blue.svg)](http://psicode.org/psi4manual/master/introduction.html#supported-systems) |
+| **Foundation** | [![license](https://img.shields.io/github/license/qcdb/qcdb.svg)](https://opensource.org/licenses/BSD-3-Clause) [![platforms](https://img.shields.io/badge/Platforms-Linux%2C%20MacOS%2C%20Windows%20WSL-orange.svg)](http://psicode.org/psi4manual/master/introduction.html#supported-systems) [![python](https://img.shields.io/badge/python-3.9+-blue.svg)](http://psicode.org/psi4manual/master/introduction.html#supported-systems) |
 
 # Example
 
@@ -207,4 +207,4 @@ The accustomed output (and generated input) are also accessible
 * [test_tu6_cp.py](qcdb/tests/test_tu6_cp.py)
 
 ### Environment
-A snapshot dev environment is available by mid-September 2021 through `conda create -n qcdbenv python=3.9 psi4 qcdb -c psi4/label/qcdb -c psi4/label/dev -c defaults`. QC programs besides Psi4 are bring-your-own.
+A snapshot dev environment is available through `conda create -n qcdbenv python=3.9 psi4 qcdb pytest-xdist -c psi4/label/qcdb -c psi4/label/dev -c defaults`. QC programs besides Psi4 are bring-your-own. Testing through `pytest --pyargs qcdb -n<nproc>`
