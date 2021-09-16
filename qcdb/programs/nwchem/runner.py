@@ -19,6 +19,7 @@ from ... import qcvars
 from ...basisset import BasisSet
 from ...molecule import Molecule
 from ...util import format_error, print_jobrec, provenance_stamp, accession_stamp
+from ...driver.config import get_mode_config
 from .germinate import muster_basisset, muster_inherited_keywords, muster_modelchem, muster_molecule
 
 pp = pprint.PrettyPrinter(width=120)
@@ -28,12 +29,14 @@ def run_nwchem(name: str, molecule: 'Molecule', options: 'Keywords', **kwargs) -
     """QCDB API to QCEngine connection for NWChem."""
 
     local_options = kwargs.get("local_options", None)
+    mode_options = get_mode_config(mode_options=kwargs.get("mode_options"))
 
     resi = AtomicInput(
         **{
             'driver': inspect.stack()[1][3],
             'extras': {
                 'qcdb:options': copy.deepcopy(options),
+                "qcdb:mode_config": mode_options,
             },
             'model': {
                 'method': name,
@@ -112,6 +115,7 @@ class QcdbNWChemHarness(NWChemHarness):
         molrecc1 = molrec.copy()
         molrecc1['fix_symmetry'] = 'c1'  # write _all_ atoms to input
         ropts = input_model.extras['qcdb:options']
+        mode_config = input_model.extras["qcdb:mode_config"]
 
         ropts.require("QCDB", "MEMORY", f"{config.memory} gib", **kwgs)
 
@@ -149,7 +153,7 @@ class QcdbNWChemHarness(NWChemHarness):
 
         # Handle calc type and quantum chemical method
         #      harvester.nu_muster_modelchem(jobrec['method'], jobrec['dertype'], ropts])
-        mdccmd = muster_modelchem(input_model.model.method, input_model.driver.derivative_int(), ropts)
+        mdccmd = muster_modelchem(input_model.model.method, input_model.driver.derivative_int(), ropts, mode_config)
 
         # print("Touched Keywords")  # debug
         # print(ropts.print_changed(history=True))  # debug

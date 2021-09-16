@@ -67,6 +67,7 @@ _q41 = (qcng.exceptions.InputError, "qcisd requires 'reference rhf'.", "no non-R
 _q42 = (qcng.exceptions.InputError, "QCISD is not a supported calculation in NCC", "no QCISD in Cfour with NCC.")
 _q43 = (KeyError, "gms-qcisd", "no QCISD in GAMESS.")
 _q44 = (KeyError, r"nwc-qcisd\(t\)", "no QCISD(T) in NWChem.")
+# _q45  # qcng
 
 _w1 = ("MP2 CORRELATION ENERGY", "nonstandard answer: NWChem TCE MP2 doesn't report singles (affects ROHF).")
 _w2 = ("CCSD CORRELATION ENERGY", "nonstandard answer: GAMESS CCSD ROHF FC energy.")
@@ -97,6 +98,7 @@ _w26 = ("MP2 TOTAL HESSIAN", "nonstandard answer: CFOUR MP2 ROHF hessian doesn't
 _w27 = ("MP2 CORRELATION ENERGY", "nonstandard answer: CFOUR MP2 ROHF hessian doesn't match findif, nor FC energy. (Paper says NYI, but program does yield a value.)")
 _w28 = ("CISD CORRELATION ENERGY", "nonstandard answer: ROHF CISD vcc=tce!=guga=detci.")
 _w29 = ("LCCSD CORRELATION ENERGY", "uncertain reference: ROHF CISD vcc=tce!=psi4numpy while CFOUR paper says NYI.")
+_w30 = ("HF TOTAL HESSIAN", "unconverged: GAMESS HF hessian CPHF too loose; answer correct if hardwire tighter convergence. thanks, Sarom.")
 # yapf: enable
 
 # <<<  Notes
@@ -269,7 +271,7 @@ def test_hf_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, requ
         pytest.param({"call": "p4-hf",  "reference": "rhf",  "fcae": "ae", "keywords": {"basis": "<>", "psi4_scf_type": "pk"},                                                                          }, id="hf  rhf ae: psi4",       marks=using("psi4")),
 
         pytest.param({"call": "c4-hf",  "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "cfour_reference": "uhf", "cfour_scf_conv": 12},                                                 }, id="hf  uhf ae: cfour",      marks=using("cfour")),
-        pytest.param({"call": "gms-hf", "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "gamess_contrl__scftyp": "uhf"},                                                                 }, id="hf  uhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "gms-hf", "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "gamess_contrl__scftyp": "uhf"},                                    "wrong": {"cfour-qz2p": _w30}}, id="hf  uhf ae: gamess",     marks=using("gamess")),
         pytest.param({"call": "nwc-hf", "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "nwchem_scf__uhf": True},                                                                        }, id="hf  uhf ae: nwchem",     marks=using("nwchem")),
         pytest.param({"call": "p4-hf",  "reference": "uhf",  "fcae": "ae", "keywords": {"basis": "<>", "reference": "uhf", "psi4_scf_type": "pk"},                                                      }, id="hf  uhf ae: psi4",       marks=using("psi4")),
 
@@ -3326,6 +3328,10 @@ def _processor(inp, dertype, basis, subjects, clsd_open_pmols, request, driver, 
         inpcopy["error"] = inp["error"][dertype]
     if inp.get("wrong", False) and inp["wrong"].get(dertype, False):
         inpcopy["wrong"] = inp["wrong"][dertype]
+    if inp.get("error", False) and inp["error"].get(basis, False):
+        inpcopy["error"] = inp["error"][basis]
+    if inp.get("wrong", False) and inp["wrong"].get(basis, False):
+        inpcopy["wrong"] = inp["wrong"][basis]
     if inp.get("marks", False) and inp["marks"].get(dertype, False):
         pytest.xfail(inp["marks"][dertype])
         # request.node.add_marker(inp["marks"][dertype])

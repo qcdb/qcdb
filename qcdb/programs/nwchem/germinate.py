@@ -36,7 +36,7 @@ def muster_basisset(molrec: Dict, ropts: 'Keywords', qbs: 'BasisSet', verbose: i
     return bascmd
 
 
-def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 1) -> str:
+def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', mode_config, verbose: int = 1) -> str:
     accession = sys._getframe().f_code.co_name + '_' + str(uuid.uuid4())
     kwgs = {'accession': accession, 'verbose': verbose}
 
@@ -108,6 +108,11 @@ def muster_modelchem(name: str, dertype: int, ropts: 'Keywords', verbose: int = 
             #   (ropts.scroll["NWCHEM"]["SCF__ROHF"].value is True):
             #    ropts.suggest('NWCHEM', 'tce__ccsd', True, **kwgs)
             #    mdccmd = f'task tce {runtyp}\n\n'
+
+        if mode_config.module_fallback is True:
+            if ropts.scroll["NWCHEM"]["SCF__ROHF"].value is True:
+                mdccmd = f'task tce {runtyp}\n\n'
+                ropts.require('NWCHEM', 'tce__ccsd', True, **kwgs)
 
     elif lowername == 'nwc-ccsd+t(ccsd)':
         if ropts.scroll['QCDB']['QC_MODULE'].value == 'tce':
