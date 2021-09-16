@@ -24,6 +24,7 @@ class ModeConfig(BaseModel):
     # Specifications
 #    result_frame: FrameEnum = Field(None, description="Orientation/frame/alignment for returned results")
     implicit_program: ProgramEnum = Field(ProgramEnum.qcdb, description="Program to use without prefixing method or keywords")
+    module_fallback: bool = Field(None, description="")
 
 #    ncores: int = pydantic.Field(None, description="Number cores per task on each node")
 #    nnodes: int = pydantic.Field(None, description="Number of nodes per task")
@@ -62,7 +63,7 @@ def get_mode_config(*, mode_options: Dict[str, Any] = None) -> ModeConfig:
     config = {}
 
     # Override any settings
-    if mode_options is not None:
+    if mode_options:
         config.update(mode_options)
 
     return ModeConfig(**config)

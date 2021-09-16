@@ -13,11 +13,9 @@ from .utils import *
 pp = pprint.PrettyPrinter(width=120)
 
 
-_abbr = {v: k for k, v in qcdb.driver.driver_util.pkgprefix.items()}
-
-_the_fc_energy = -55.74674563
-_the_energy = -55.74896542928988
-_the_short_energy = str(_the_energy)[:10]
+_the_fig2_fc_energy = -55.74674563
+_the_fig2_energy = -55.74896542928988
+_the_short_fig2_energy = str(_the_fig2_energy)[:10]
 
 
 def _qcskmol_nh2():
@@ -41,10 +39,10 @@ _dnh2 = {
     "molecular_multiplicity": 2,
 }
 
-_ins = defaultdict(lambda: defaultdict(dict))
+_fig2_ins = defaultdict(lambda: defaultdict(dict))
 
 
-_ins["cfour"][
+_fig2_ins["cfour"][
     "a"
 ] = """
 comment
@@ -52,13 +50,14 @@ N  0.000  0.000 -0.146
 H  0.000 -1.511  1.014
 H  0.000  1.511  1.014
 
-*CFOUR(REFERENCE=ROHF,BASIS=AUG-PVDZ
-CALC_LEVEL=CCSD,CHARGE=0,UNITS=BOHR
-COORDINATES=CARTESIAN,MULTIPLICITY=2)
+*CFOUR(REFERENCE=ROHF
+CALC_LEVEL=CCSD,BASIS=AUG-PVDZ
+CHARGE=0,MULTIPLICITY=2
+COORDINATES=CARTESIAN,UNITS=BOHR)
 """
 
 # memory added
-_ins["gamess"][
+_fig2_ins["gamess"][
     "a"
 ] = """
  $ccinp ncore=0 $end
@@ -77,7 +76,7 @@ _ins["gamess"][
  $system mwords=2000 $end
 """
 
-_ins["nwchem"][
+_fig2_ins["nwchem"][
     "a"
 ] = """
 geometry units bohr
@@ -100,7 +99,7 @@ end
 task tce energy
 """
 
-_ins["psi4"][
+_fig2_ins["psi4"][
     "a"
 ] = """
 molecule {
@@ -116,87 +115,64 @@ set reference rohf
 energy('ccsd/aug-cc-pvdz')
 """
 
-#   (A)(A)
-#
-#   cp infile . && xcfour        > outfile
-#                  rungms infile > outfile
-#                  nwchem infile > outfile
-#                  psi4   infile   outfile
 
-
-#   (B)(B)
-#
-#                         'cfour'
-# ene = qcng.compute(json, 'gamess')
-#                         'nwchem'
-#                         'psi4'
-
-#   (C)(C)
-#   (D)(D)
-#
-#                   c4
-# ene = qcdb.energy('gms-ccsd/aug-cc-pvdz')
-#                   nwc
-#                   p4
-
-
-_ins["cfour"]["b"] = {
+_fig2_ins["cfour"]["b"] = {
     "molecule": _dnh2,
     "driver": "energy",
     "model": {"method": "ccsd", "basis": "aug-pvdz"},
     "keywords": {"reference": "rohf"},
 }
 
-_ins["gamess"]["b"] = {
+_fig2_ins["gamess"]["b"] = {
     "molecule": _dnh2,
     "driver": "energy",
     "model": {"method": "ccsd", "basis": "accd"},
     "keywords": {"contrl__ispher": 1, "contrl__scftyp": "rohf", "ccinp__ncore": 0},
 }
 
-_ins["nwchem"]["b"] = {
+_fig2_ins["nwchem"]["b"] = {
     "molecule": _dnh2,
     "driver": "energy",
     "model": {"method": "ccsd", "basis": "aug-cc-pvdz"},
     "keywords": {"basis__spherical": True, "scf__rohf": True, "qc_module": "tce"},
 }
 
-_ins["psi4"]["b"] = {
+_fig2_ins["psi4"]["b"] = {
     "molecule": _dnh2,
     "driver": "energy",
     "model": {"method": "ccsd", "basis": "aug-cc-pvdz"},
     "keywords": {"reference": "rohf"},
 }
 
-_ins["cfour"]["c"] = {
+_fig2_ins["cfour"]["c"] = {
     "molecule": _dnh2,
     "driver": "energy",
     "model": {"method": "ccsd", "basis": "aug-cc-pvdz"},
     "keywords": {"cfour_reference": "rohf"},
 }
 
-_ins["gamess"]["c"] = {
+_fig2_ins["gamess"]["c"] = {
     "molecule": _dnh2,
     "driver": "energy",
     "model": {"method": "ccsd", "basis": "aug-cc-pvdz"},
     "keywords": {"gamess_contrl__scftyp": "rohf", "gamess_ccinp__ncore": 0},
 }
 
-_ins["nwchem"]["c"] = {
+_fig2_ins["nwchem"]["c"] = {
     "molecule": _dnh2,
     "driver": "energy",
     "model": {"method": "ccsd", "basis": "aug-cc-pvdz"},
     "keywords": {"nwchem_scf__rohf": True, "qc_module": "tce"},
 }
 
-_ins["psi4"]["c"] = {
+_fig2_ins["psi4"]["c"] = {
     "molecule": _dnh2,
     "driver": "energy",
     "model": {"method": "ccsd", "basis": "aug-cc-pvdz"},
     "keywords": {"psi4_reference": "rohf"},
 }
 
-_ins["all"]["d"] = {
+_fig2_ins["all"]["d"] = {
     "molecule": _dnh2,
     "driver": "energy",
     "model": {"method": "ccsd", "basis": "aug-cc-pvdz"},
@@ -214,8 +190,16 @@ _ins["all"]["d"] = {
     ],
 )
 def test_fig2a_txt(qcprog):
+    """
+    Execution (a; txt)
 
-    sin = _ins[qcprog]["a"]
+    cp infile . && xcfour        > outfile
+                   rungms infile > outfile
+                   nwchem infile > outfile
+                   psi4   infile   outfile
+    """
+
+    sin = _fig2_ins[qcprog]["a"]
     from qcelemental.util import which
     from qcengine.util import execute
 
@@ -230,7 +214,7 @@ def test_fig2a_txt(qcprog):
 
     pprint.pprint(dexe, width=180)
     assert success
-    assert _the_short_energy in dexe["stdout"]
+    assert _the_short_fig2_energy in dexe["stdout"]
 
 
 @pytest.mark.parametrize(
@@ -243,11 +227,20 @@ def test_fig2a_txt(qcprog):
     ],
 )
 def test_fig2b_json(qcprog, request):
-    datin = _ins[qcprog]["b"]
+    """
+    Execution (b; json)
+
+                             'cfour'
+    ene = qcng.compute(json, 'gamess')
+                             'nwchem'
+                             'psi4'
+
+    """
+    datin = _fig2_ins[qcprog]["b"]
 
     atres = qcng.compute(datin, qcprog)
     pprint.pprint(atres.dict(), width=180)
-    assert compare_values(_the_energy, atres.return_result, atol=1.0e-6, label=request.node.name)
+    assert compare_values(_the_fig2_energy, atres.return_result, atol=1.0e-6, label=request.node.name)
 
 
 @pytest.mark.parametrize(
@@ -259,8 +252,23 @@ def test_fig2b_json(qcprog, request):
         pytest.param("psi4", marks=using("psi4")),
     ],
 )
-def test_fig2c_api(qcprog, request):
-    datin = _ins[qcprog]["c"]
+@pytest.mark.parametrize("part", ["c", "d"])
+def test_fig2cd_api(qcprog, part, request):
+    """
+    Execution (c, d; api)
+
+                       c4
+    ene = qcdb.energy('gms-ccsd/aug-cc-pvdz')
+                       nwc
+                       p4
+
+    """
+    if part == "c":
+        datin = _fig2_ins[qcprog]["c"]
+        mo = None
+    elif part == "d":
+        datin = _fig2_ins["all"]["d"]
+        mo = {"module_fallback": True}
 
     qcskmol = qcel.models.Molecule(**datin["molecule"])
     qcdbmol = qcdb.Molecule.from_schema(qcskmol.dict())
@@ -269,10 +277,10 @@ def test_fig2c_api(qcprog, request):
         "energy": qcdb.energy,
         "gradient": qcdb.gradient,
     }[datin["driver"]]
-    call = _abbr[qcprog] + datin["model"]["method"] + "/" + datin["model"]["basis"]
+    call = qcdb.util.program_prefix(qcprog) + datin["model"]["method"] + "/" + datin["model"]["basis"]
 
-    ene = driver(call, molecule=qcdbmol)
-    assert compare_values(_the_energy, ene, atol=1.0e-6, label=request.node.name)
+    ene = driver(call, molecule=qcdbmol, mode_options=mo)
+    assert compare_values(_the_fig2_energy, ene, atol=1.0e-6, label=request.node.name)
 
 
 @pytest.mark.parametrize(
@@ -284,43 +292,79 @@ def test_fig2c_api(qcprog, request):
         pytest.param("psi4", marks=using("psi4")),
     ],
 )
-def test_fig2c_json(qcprog, request):
-    datin = _ins[qcprog]["c"]
+@pytest.mark.parametrize("part", ["c", "d"])
+def test_fig2cd_json(qcprog, part, request):
+    """
+    Execution (c, d; json)
 
-    atres = qcdb.compute(datin, qcprog)
+                             'cfour'
+    ene = qcdb.compute(json, 'gamess')
+                             'nwchem'
+                             'psi4'
+
+    """
+    if part == "c":
+        datin = _fig2_ins[qcprog]["c"]
+        mo = None
+    elif part == "d":
+        datin = _fig2_ins["all"]["d"]
+        mo = {"module_fallback": True}
+
+    atres = qcdb.compute(datin, qcprog, mode_options=mo)
     pprint.pprint(atres.dict(), width=200)
 
-    assert compare_values(_the_energy, atres.return_result, atol=1.0e-6, label=request.node.name)
+    assert compare_values(_the_fig2_energy, atres.return_result, atol=1.0e-6, label=request.node.name)
 
 
-@pytest.mark.parametrize(
-    "qcprog",
-    [
-        pytest.param("cfour", marks=using("cfour")),
-        pytest.param("gamess", marks=using("gamess")),
-        pytest.param("nwchem", marks=using("nwchem")),
-        pytest.param("psi4", marks=using("psi4")),
-    ],
-)
-def test_fig2d_api(qcprog, request):
-    datin = _ins["all"]["d"]
+def test_snippet2():
+    snippet1 = """
+O 0 0 0
+H 2 0 0
+--
+@22Ne 5 0 0
+units bohr
+"""
 
-    qcskmol = qcel.models.Molecule(**datin["molecule"])
-    qcdbmol = qcdb.Molecule.from_schema(qcskmol.dict())
-    qcdb.set_keywords(datin["keywords"])
-    driver = {
-        "energy": qcdb.energy,
-        "gradient": qcdb.gradient,
-    }[datin["driver"]]
-    call = _abbr[qcprog] + datin["model"]["method"] + "/" + datin["model"]["basis"]
+    snippet2 = {
+        "atom_labels": ["", "", ""],
+        "atomic_numbers": [8, 1, 10],
+        "fix_com": False,
+        "fix_orientation": False,
+        "fragment_charges": [0.0, 0.0],
+        "fragment_multiplicities": [2, 1],
+        "fragments": [[0, 1], [2]],
+        "geometry": [[0.0, 0.0, 0.0], [2.0, 0.0, 0.0], [5.0, 0.0, 0.0]],
+        "mass_numbers": [16, 1, 22],
+        "masses": [15.99491462, 1.00782503, 21.99138511],
+        "molecular_charge": 0.0,
+        "molecular_multiplicity": 2,
+        "name": "HNeO",
+        "provenance": {"creator": "QCElemental", "routine": "qcelemental.molparse.from_schema", "version": "v0.8.0"},
+        "real": [True, True, False],
+        "schema_name": "qcschema_molecule",
+        "schema_version": 2,
+        "symbols": ["O", "H", "Ne"],
+        "validated": True,
+    }
 
-    ene = driver(call, molecule=qcdbmol)
-    assert compare_values(_the_energy, ene, atol=1.0e-6, label=request.node.name)
+    mol1 = qcel.models.Molecule.from_data(snippet1)
+
+    # the `qcel.models.Molecule.dict()` method removes default and regeneratable fields for compact
+    #   storage in database, so test those separately
+    assert compare(snippet2.pop("atom_labels"), mol1.atom_labels, "atom_labels")
+    assert compare(snippet2.pop("atomic_numbers"), mol1.atomic_numbers, "atomic_numbers")
+    assert compare_recursive(snippet2, mol1.dict(), "snippet1 -> snippet2", forgive=["provenance"])
 
 
 @using("psi4")
 @using("cfour")
-@pytest.mark.parametrize("bsse, ans", [(None, -229.34491301195257), ("cp", -0.00017499)])
+@pytest.mark.parametrize(
+    "bsse,ans",
+    [
+        pytest.param(None, -229.34491301195257, id="electronic_ene"),
+        pytest.param("cp", -0.00017499, id="counterpoise_interaction_ene"),
+    ],
+)
 def test_snippet3(bsse, ans):
     import qcdb
 
@@ -614,6 +658,7 @@ def test_sectionIII():
 
     # need a Psi4 molecule to give atomic masses to the diatomic module
     import psi4
+
     psi4.geometry(
         """
             B
@@ -639,7 +684,7 @@ def test_sectionIII():
     pp.pprint(phys_consts_basis)
 
     print("Base Energy w/ only DBOC")
-    phys_consts_dboc = qcdb.diatomicanharmonicity(R_arr, E_dboc)
+    phys_consts_dboc = qcdb.diatomic(R_arr, E_dboc, molecule=bh)
     pp.pprint(phys_consts_dboc)
 
     print("Base Energy w/ only rel. correction")

@@ -1,5 +1,13 @@
 import pytest
 
+def pytest_configure(config):
+    # Register marks to avoid warnings in qcdb.test()
+    # sync with setup.cfg
+    config.addinivalue_line("markers", "long")
+    config.addinivalue_line("markers", """slow: marks tests as slow (deselect with '-m "not slow"')""")
+    config.addinivalue_line("markers", "smoke")
+    config.addinivalue_line("markers", "quick")
+
 
 @pytest.fixture(scope="function", autouse=True)
 def set_up():

@@ -15,6 +15,7 @@ def compute(
     input_data: Union[Dict[str, Any], "AtomicInput"],
     program: str,
     local_options: Optional[Dict[str, Any]] = None,
+    mode_options: Optional[Dict[str, str]] = None,
 ) -> "AtomicResult":
     """Run an analytic single-point specified in ``input_data`` through program ``qcprog``."""
 
@@ -34,11 +35,16 @@ def compute(
         driver_call = {"energy": qcdb.energy, "gradient": qcdb.gradient, "hessian": qcdb.hessian}
         qmol = qcdb.Molecule.from_schema(input_model.molecule.dict())
 
-        # keywords = {(program + "_" + k): v for k, v in input_model.keywords.items()}
-        keywords = input_model.keywords
-        mtd_call = prefixpkg[program.lower()] + input_model.model.method + "/" + input_model.model.basis
+        mode_config = qcdb.driver.config.get_mode_config(mode_options=mode_options)
+        if mode_config.implicit_program == "qcdb":
+            keywords = input_model.keywords
+            mtd_call = prefixpkg[program.lower()] + input_model.model.method + "/" + input_model.model.basis
+        else:
+            # check consis mode_options and program?
+            keywords = {(program + "_" + k): v for k, v in input_model.keywords.items()}
+            mtd_call = program_prefix(program) + input_model.model.method + "/" + input_model.model.basis
 
-        retres, ret = driver_call[input_model.driver](mtd_call, molecule=qmol, options=keywords, return_wfn=True, local_options=local_options)
+        retres, ret = driver_call[input_model.driver](mtd_call, molecule=qmol, options=keywords, return_wfn=True, local_options=local_options, mode_options=mode_options)
 
         ## qcschema should be copied
         # ret_data = run_json_qcschema(input_model.dict(), clean, False, keep_wfn=keep_wfn)
