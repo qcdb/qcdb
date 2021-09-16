@@ -6,25 +6,25 @@ def banner(text, type=1, width=35):
     to output file.
 
     """
-    lines = text.split('\n')
+    lines = text.split("\n")
     max_length = max(len(ln) for ln in lines)
     max_length = max([width, max_length])
 
-    null = ''
+    null = ""
     if type == 1:
-        #banner = '  //' + null.center(max_length, '>') + '//\n'
-        #for line in lines:
+        # banner = '  //' + null.center(max_length, '>') + '//\n'
+        # for line in lines:
         #    banner += '  //' + line.center(max_length) + '//\n'
-        #banner += '  //' + null.center(max_length, '<') + '//\n'
-        banner = '  <<' + null.center(max_length, '>') + '>>\n'
+        # banner += '  //' + null.center(max_length, '<') + '//\n'
+        banner = "  <<" + null.center(max_length, ">") + ">>\n"
         for line in lines:
-            banner += '  <<' + line.center(max_length) + '>>\n'
-        banner += '  <<' + null.center(max_length, '<') + '>>\n'
+            banner += "  <<" + line.center(max_length) + ">>\n"
+        banner += "  <<" + null.center(max_length, "<") + ">>\n"
 
     if type == 2:
-        banner = ''
+        banner = ""
         for line in lines:
-            banner += (' ' + line + ' ').center(max_length, '=')
+            banner += (" " + line + " ").center(max_length, "=")
 
     return banner
 

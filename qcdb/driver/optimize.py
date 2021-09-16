@@ -16,8 +16,7 @@ pp = pprint.PrettyPrinter(width=120)
 #   import numpy as np
 
 
-
-#def optimize(name, **kwargs):
+# def optimize(name, **kwargs):
 #    r"""Function to perform a geometry optimization.
 #
 #    :aliases: opt()
@@ -178,159 +177,161 @@ pp = pprint.PrettyPrinter(width=120)
 #    """
 def optking(name, **kwargs):
     from . import load_proc_table
+
     kwargs = driver_util.kwargs_lower(kwargs)
 
-    if hasattr(name, '__call__'):
+    if hasattr(name, "__call__"):
         lowername = name
         custom_gradient = True
     else:
         lowername = name.lower()
         custom_gradient = False
 
-    return_wfn = kwargs.pop('return_wfn', False)
+    return_wfn = kwargs.pop("return_wfn", False)
 
     import psi4
+
     psi4.core.clean()
     psi4.core.clean_options()
-    #psi4.set_output_file("pytest_output.dat", True)
+    # psi4.set_output_file("pytest_output.dat", True)
 
-#    return_history = kwargs.pop('return_history', False)
-#    if return_history:
-#        # Add wfn once the deep copy issues are worked out
-#        step_energies      = []
-#        step_gradients     = []
-#        step_coordinates   = []
-#
-#    # For CBS wrapper, need to set retention on INTCO file
-#    if custom_gradient or ('/' in lowername):
-#        psi4.core.IOManager.shared_object().set_specific_retention(1, True)
+    #    return_history = kwargs.pop('return_history', False)
+    #    if return_history:
+    #        # Add wfn once the deep copy issues are worked out
+    #        step_energies      = []
+    #        step_gradients     = []
+    #        step_coordinates   = []
+    #
+    #    # For CBS wrapper, need to set retention on INTCO file
+    #    if custom_gradient or ('/' in lowername):
+    #        psi4.core.IOManager.shared_object().set_specific_retention(1, True)
 
-#    if kwargs.get('bsse_type', None) is not None:
-#        raise ValidationError("Optimize: Does not currently support 'bsse_type' arguements")
-#
-#    full_hess_every = core.get_option('OPTKING', 'FULL_HESS_EVERY')
-#    steps_since_last_hessian = 0
-#
-#    if custom_gradient and core.has_option_changed('OPTKING', 'FULL_HESS_EVERY'):
-#        raise ValidationError("Optimize: Does not support custom Hessian's yet.")
-#    else:
-#        hessian_with_method = kwargs.get('hessian_with', lowername)
-#
-#    # are we in sow/reap mode?
-#    opt_mode = kwargs.get('mode', 'continuous').lower()
-#    if opt_mode not in ['continuous', 'sow', 'reap']:
-#        raise ValidationError("""Optimize execution mode '%s' not valid.""" % (opt_mode))
-#
-#    optstash = p4util.OptionsState(
-#        ['OPTKING', 'INTRAFRAG_STEP_LIMIT'],
-#        ['FINDIF', 'HESSIAN_WRITE'],
-#        ['OPTKING', 'CART_HESS_READ'],
-#        ['SCF', 'GUESS_PERSIST'],  # handle on behalf of cbs()
-#        ['SCF', 'GUESS'])
+    #    if kwargs.get('bsse_type', None) is not None:
+    #        raise ValidationError("Optimize: Does not currently support 'bsse_type' arguements")
+    #
+    #    full_hess_every = core.get_option('OPTKING', 'FULL_HESS_EVERY')
+    #    steps_since_last_hessian = 0
+    #
+    #    if custom_gradient and core.has_option_changed('OPTKING', 'FULL_HESS_EVERY'):
+    #        raise ValidationError("Optimize: Does not support custom Hessian's yet.")
+    #    else:
+    #        hessian_with_method = kwargs.get('hessian_with', lowername)
+    #
+    #    # are we in sow/reap mode?
+    #    opt_mode = kwargs.get('mode', 'continuous').lower()
+    #    if opt_mode not in ['continuous', 'sow', 'reap']:
+    #        raise ValidationError("""Optimize execution mode '%s' not valid.""" % (opt_mode))
+    #
+    #    optstash = p4util.OptionsState(
+    #        ['OPTKING', 'INTRAFRAG_STEP_LIMIT'],
+    #        ['FINDIF', 'HESSIAN_WRITE'],
+    #        ['OPTKING', 'CART_HESS_READ'],
+    #        ['SCF', 'GUESS_PERSIST'],  # handle on behalf of cbs()
+    #        ['SCF', 'GUESS'])
 
-    iopt = kwargs.get('opt_iter', 1)
+    iopt = kwargs.get("opt_iter", 1)
 
     # Make sure the molecule the user provided is the active one
-    molecule = kwargs.pop('molecule', driver_helpers.get_active_molecule())
+    molecule = kwargs.pop("molecule", driver_helpers.get_active_molecule())
     molecule.update_geometry()
 
     if len(pe.nu_options.scroll) == 0:
-        print('EMPTY OPT')
+        print("EMPTY OPT")
         pe.load_options()
 
-#    # If we are freezing cartesian, do not orient or COM
-#    if core.get_local_option("OPTKING", "FROZEN_CARTESIAN"):
-#        molecule.fix_orientation(True)
-#        molecule.fix_com(True)
-#    molecule.update_geometry()
-#
-#    # Shifting the geometry so need to copy the active molecule
+    #    # If we are freezing cartesian, do not orient or COM
+    #    if core.get_local_option("OPTKING", "FROZEN_CARTESIAN"):
+    #        molecule.fix_orientation(True)
+    #        molecule.fix_com(True)
+    #    molecule.update_geometry()
+    #
+    #    # Shifting the geometry so need to copy the active molecule
     moleculeclone = molecule.clone()
-#
-#    initial_sym = moleculeclone.schoenflies_symbol()
-#    while iopt <= core.get_option('OPTKING', 'GEOM_MAXITER'):
+    #
+    #    initial_sym = moleculeclone.schoenflies_symbol()
+    #    while iopt <= core.get_option('OPTKING', 'GEOM_MAXITER'):
 
-    while iopt <= pe.nu_options.scroll['QCDB']['GEOM_MAXITER'].value:
-#        current_sym = moleculeclone.schoenflies_symbol()
-#        if initial_sym != current_sym:
-#            raise ValidationError("""Point group changed! (%s <-- %s) You should restart """
-#                                  """using the last geometry in the output, after """
-#                                  """carefully making sure all symmetry-dependent """
-#                                  """input, such as DOCC, is correct.""" %
-#                                  (current_sym, initial_sym))
-#        kwargs['opt_iter'] = iopt
-#
-#        # Use orbitals from previous iteration as a guess
-#        #   set within loop so that can be influenced by fns to optimize (e.g., cbs)
-#        if (iopt > 1) and (opt_mode == 'continuous') and (not core.get_option('SCF', 'GUESS_PERSIST')):
-#            core.set_local_option('SCF', 'GUESS', 'READ')
-#
-#        # Before computing gradient, save previous molecule and wavefunction if this is an IRC optimization
-#        if (iopt > 1) and (core.get_option('OPTKING', 'OPT_TYPE') == 'IRC'):
-#            old_thisenergy = core.get_variable('CURRENT ENERGY')
+    while iopt <= pe.nu_options.scroll["QCDB"]["GEOM_MAXITER"].value:
+        #        current_sym = moleculeclone.schoenflies_symbol()
+        #        if initial_sym != current_sym:
+        #            raise ValidationError("""Point group changed! (%s <-- %s) You should restart """
+        #                                  """using the last geometry in the output, after """
+        #                                  """carefully making sure all symmetry-dependent """
+        #                                  """input, such as DOCC, is correct.""" %
+        #                                  (current_sym, initial_sym))
+        #        kwargs['opt_iter'] = iopt
+        #
+        #        # Use orbitals from previous iteration as a guess
+        #        #   set within loop so that can be influenced by fns to optimize (e.g., cbs)
+        #        if (iopt > 1) and (opt_mode == 'continuous') and (not core.get_option('SCF', 'GUESS_PERSIST')):
+        #            core.set_local_option('SCF', 'GUESS', 'READ')
+        #
+        #        # Before computing gradient, save previous molecule and wavefunction if this is an IRC optimization
+        #        if (iopt > 1) and (core.get_option('OPTKING', 'OPT_TYPE') == 'IRC'):
+        #            old_thisenergy = core.get_variable('CURRENT ENERGY')
 
         # Compute the gradient - preserve opt data despite core.clean calls in gradient
-#        psi4.core.IOManager.shared_object().set_specific_retention(1, True)
+        #        psi4.core.IOManager.shared_object().set_specific_retention(1, True)
         G, jobrec = gradient(lowername, return_wfn=True, molecule=moleculeclone, **kwargs)
-        thisenergy = float(jobrec['qcvars']['CURRENT ENERGY'].data)
+        thisenergy = float(jobrec["qcvars"]["CURRENT ENERGY"].data)
 
-#        # above, used to be getting energy as last of energy list from gradient()
-#        # thisenergy below should ultimately be testing on wfn.energy()
-#
-#        # Record optimization steps
-#        # Add wavefunctions later
-#        if return_history:
-#            step_energies.append(thisenergy)
-#            step_coordinates.append(moleculeclone.geometry())
-#            step_gradients.append(G.clone())
-#
-#        # S/R: Quit after getting new displacements or if forming gradient fails
-#        if opt_mode == 'sow':
-#            return (0.0, None)
-#        elif opt_mode == 'reap' and thisenergy == 0.0:
-#            return (0.0, None)
+        #        # above, used to be getting energy as last of energy list from gradient()
+        #        # thisenergy below should ultimately be testing on wfn.energy()
+        #
+        #        # Record optimization steps
+        #        # Add wavefunctions later
+        #        if return_history:
+        #            step_energies.append(thisenergy)
+        #            step_coordinates.append(moleculeclone.geometry())
+        #            step_gradients.append(G.clone())
+        #
+        #        # S/R: Quit after getting new displacements or if forming gradient fails
+        #        if opt_mode == 'sow':
+        #            return (0.0, None)
+        #        elif opt_mode == 'reap' and thisenergy == 0.0:
+        #            return (0.0, None)
 
-        psi4.core.set_variable('CURRENT ENERGY', thisenergy)
+        psi4.core.set_variable("CURRENT ENERGY", thisenergy)
         psi4.core.set_gradient(psi4.core.Matrix.from_array(G))
 
-#        # S/R: Move opt data file from last pass into namespace for this pass
-#        if opt_mode == 'reap' and iopt != 0:
-#            core.IOManager.shared_object().set_specific_retention(1, True)
-#            core.IOManager.shared_object().set_specific_path(1, './')
-#            if 'opt_datafile' in kwargs:
-#                restartfile = kwargs.pop('opt_datafile')
-#                shutil.copy(restartfile, p4util.get_psifile(1))
-#
-#        # opt_func = kwargs.get('opt_func', kwargs.get('func', energy))
-#        # if opt_func.__name__ == 'complete_basis_set':
-#        #     core.IOManager.shared_object().set_specific_retention(1, True)
-#
-#        if full_hess_every > -1:
-#            core.set_global_option('HESSIAN_WRITE', True)
-#
-#        # compute Hessian as requested; frequency wipes out gradient so stash it
-#        if ((full_hess_every > -1) and (iopt == 1)) or (steps_since_last_hessian + 1 == full_hess_every):
-#            G = core.get_gradient()  # TODO
-#            core.IOManager.shared_object().set_specific_retention(1, True)
-#            core.IOManager.shared_object().set_specific_path(1, './')
-#            frequencies(hessian_with_method, **kwargs)
-#            steps_since_last_hessian = 0
-#            core.set_gradient(G)
-#            core.set_global_option('CART_HESS_READ', True)
-#        elif (full_hess_every == -1) and core.get_global_option('CART_HESS_READ') and (iopt == 1):
-#            pass
-#            # Do nothing; user said to read existing hessian once
-#        else:
-#            core.set_global_option('CART_HESS_READ', False)
-#            steps_since_last_hessian += 1
+        #        # S/R: Move opt data file from last pass into namespace for this pass
+        #        if opt_mode == 'reap' and iopt != 0:
+        #            core.IOManager.shared_object().set_specific_retention(1, True)
+        #            core.IOManager.shared_object().set_specific_path(1, './')
+        #            if 'opt_datafile' in kwargs:
+        #                restartfile = kwargs.pop('opt_datafile')
+        #                shutil.copy(restartfile, p4util.get_psifile(1))
+        #
+        #        # opt_func = kwargs.get('opt_func', kwargs.get('func', energy))
+        #        # if opt_func.__name__ == 'complete_basis_set':
+        #        #     core.IOManager.shared_object().set_specific_retention(1, True)
+        #
+        #        if full_hess_every > -1:
+        #            core.set_global_option('HESSIAN_WRITE', True)
+        #
+        #        # compute Hessian as requested; frequency wipes out gradient so stash it
+        #        if ((full_hess_every > -1) and (iopt == 1)) or (steps_since_last_hessian + 1 == full_hess_every):
+        #            G = core.get_gradient()  # TODO
+        #            core.IOManager.shared_object().set_specific_retention(1, True)
+        #            core.IOManager.shared_object().set_specific_path(1, './')
+        #            frequencies(hessian_with_method, **kwargs)
+        #            steps_since_last_hessian = 0
+        #            core.set_gradient(G)
+        #            core.set_global_option('CART_HESS_READ', True)
+        #        elif (full_hess_every == -1) and core.get_global_option('CART_HESS_READ') and (iopt == 1):
+        #            pass
+        #            # Do nothing; user said to read existing hessian once
+        #        else:
+        #            core.set_global_option('CART_HESS_READ', False)
+        #            steps_since_last_hessian += 1
 
         popts = {}
-        for k, v in pe.nu_options.scroll['QCDB'].items():
-            if v.disputed() and k.endswith('G_CONVERGENCE'):
+        for k, v in pe.nu_options.scroll["QCDB"].items():
+            if v.disputed() and k.endswith("G_CONVERGENCE"):
                 popts[k] = v.value
 
-        for k, v in pe.nu_options.scroll['PSI4'].items():
-            if v.disputed() and k.endswith('G_CONVERGENCE'):
+        for k, v in pe.nu_options.scroll["PSI4"].items():
+            if v.disputed() and k.endswith("G_CONVERGENCE"):
                 popts[k] = v.value
         psi4.driver.p4util.python_helpers.set_options(popts)
 
@@ -340,135 +341,139 @@ def optking(name, **kwargs):
         moleculeclone = Molecule.from_dict(psi4.core.get_legacy_molecule().to_dict())
         moleculeclone.update_geometry()
         if optking_rval == psi4.core.PsiReturnType.EndLoop:
-#            # if this is the end of an IRC run, set wfn, energy, and molecule to that
-#            # of the last optimized IRC point
-#            if core.get_option('OPTKING', 'OPT_TYPE') == 'IRC':
-#                thisenergy = old_thisenergy
-            print('Optimizer: Optimization complete!')
-#            core.print_out('\n    Final optimized geometry and variables:\n')
-#            moleculeclone.print_in_input_format()
-#            # Check if user wants to see the intcos; if so, don't delete them.
-#            if core.get_option('OPTKING', 'INTCOS_GENERATE_EXIT') == False:
-#                if core.get_option('OPTKING', 'KEEP_INTCOS') == False:
+            #            # if this is the end of an IRC run, set wfn, energy, and molecule to that
+            #            # of the last optimized IRC point
+            #            if core.get_option('OPTKING', 'OPT_TYPE') == 'IRC':
+            #                thisenergy = old_thisenergy
+            print("Optimizer: Optimization complete!")
+            #            core.print_out('\n    Final optimized geometry and variables:\n')
+            #            moleculeclone.print_in_input_format()
+            #            # Check if user wants to see the intcos; if so, don't delete them.
+            #            if core.get_option('OPTKING', 'INTCOS_GENERATE_EXIT') == False:
+            #                if core.get_option('OPTKING', 'KEEP_INTCOS') == False:
             psi4.core.opt_clean()
-#                    core.opt_clean()
+            #                    core.opt_clean()
             # Changing environment to optimized geometry as expected by user
             molecule.set_geometry(moleculeclone.geometry())
-#            for postcallback in hooks['optimize']['post']:
-#                postcallback(lowername, wfn=wfn, **kwargs)
-#            core.clean()
+            #            for postcallback in hooks['optimize']['post']:
+            #                postcallback(lowername, wfn=wfn, **kwargs)
+            #            core.clean()
             psi4.core.clean()
 
-#            # S/R: Clean up opt input file
-#            if opt_mode == 'reap':
-#                with open('OPT-master.in', 'wb') as fmaster:
-#                    fmaster.write('# This is a psi4 input file auto-generated from the gradient() wrapper.\n\n'.encode('utf-8'))
-#                    fmaster.write('# Optimization complete!\n\n'.encode('utf-8'))
-#
-#            # Cleanup binary file 1
-#            if custom_gradient or ('/' in lowername):
-#                psi4.core.IOManager.shared_object().set_specific_retention(1, False)
-#
-#            optstash.restore()
-#
-#            if return_history:
-#                history = { 'energy'        : step_energies ,
-#                            'gradient'      : step_gradients ,
-#                            'coordinates'   : step_coordinates,
-#                          }
+            #            # S/R: Clean up opt input file
+            #            if opt_mode == 'reap':
+            #                with open('OPT-master.in', 'wb') as fmaster:
+            #                    fmaster.write('# This is a psi4 input file auto-generated from the gradient() wrapper.\n\n'.encode('utf-8'))
+            #                    fmaster.write('# Optimization complete!\n\n'.encode('utf-8'))
+            #
+            #            # Cleanup binary file 1
+            #            if custom_gradient or ('/' in lowername):
+            #                psi4.core.IOManager.shared_object().set_specific_retention(1, False)
+            #
+            #            optstash.restore()
+            #
+            #            if return_history:
+            #                history = { 'energy'        : step_energies ,
+            #                            'gradient'      : step_gradients ,
+            #                            'coordinates'   : step_coordinates,
+            #                          }
 
-#            if return_wfn and return_history:
-#                return (thisenergy, wfn, history)
-#            elif return_wfn and not return_history:
-#                return (thisenergy, wfn)
-#            elif return_history and not return_wfn:
-#                return (thisenergy, history)
+            #            if return_wfn and return_history:
+            #                return (thisenergy, wfn, history)
+            #            elif return_wfn and not return_history:
+            #                return (thisenergy, wfn)
+            #            elif return_history and not return_wfn:
+            #                return (thisenergy, history)
             if return_wfn:
                 return (thisenergy, jobrec)
             else:
                 return thisenergy
 
         elif optking_rval == psi4.core.PsiReturnType.Failure:
-            print('Optimizer: Optimization failed!')
-#            if (core.get_option('OPTKING', 'KEEP_INTCOS') == False):
-#                core.opt_clean()
+            print("Optimizer: Optimization failed!")
+            #            if (core.get_option('OPTKING', 'KEEP_INTCOS') == False):
+            #                core.opt_clean()
             psi4.core.opt_clean()
             molecule.set_geometry(moleculeclone.geometry())
             psi4.core.clean()
-#            optstash.restore()
-#            raise OptimizationConvergenceError("""geometry optimization""", iopt - 1, wfn)
+            #            optstash.restore()
+            #            raise OptimizationConvergenceError("""geometry optimization""", iopt - 1, wfn)
             return thisenergy
 
-        print('\n    Structure for next step:\n')
+        print("\n    Structure for next step:\n")
         print(moleculeclone)
-#        moleculeclone.print_in_input_format()
+        #        moleculeclone.print_in_input_format()
 
-#        # S/R: Preserve opt data file for next pass and switch modes to get new displacements
-#        if opt_mode == 'reap':
-#            kwargs['opt_datafile'] = p4util.get_psifile(1)
-#            kwargs['mode'] = 'sow'
+        #        # S/R: Preserve opt data file for next pass and switch modes to get new displacements
+        #        if opt_mode == 'reap':
+        #            kwargs['opt_datafile'] = p4util.get_psifile(1)
+        #            kwargs['mode'] = 'sow'
 
         iopt += 1
 
-#    if core.get_option('OPTKING', 'INTCOS_GENERATE_EXIT') == False:
-#        if core.get_option('OPTKING', 'KEEP_INTCOS') == False:
-#            core.opt_clean()
+    #    if core.get_option('OPTKING', 'INTCOS_GENERATE_EXIT') == False:
+    #        if core.get_option('OPTKING', 'KEEP_INTCOS') == False:
+    #            core.opt_clean()
     psi4.core.IOManager.shared_object().set_specific_retention(1, False)
     psi4.core.clean()
     psi4.core.opt_clean()
+
 
 #    optstash.restore()
 #    raise OptimizationConvergenceError("""geometry optimization""", iopt - 1, wfn)
 
 optimize = optking
 
+
 def geometric(name, **kwargs):
     from . import load_proc_table
+
     kwargs = driver_util.kwargs_lower(kwargs)
 
-    if hasattr(name, '__call__'):
+    if hasattr(name, "__call__"):
         lowername = name
         custom_gradient = True
     else:
         lowername = name.lower()
         custom_gradient = False
 
-    return_wfn = kwargs.pop('return_wfn', False)
+    return_wfn = kwargs.pop("return_wfn", False)
 
     # Make sure the molecule the user provided is the active one
-    molecule = kwargs.pop('molecule', driver_helpers.get_active_molecule())
+    molecule = kwargs.pop("molecule", driver_helpers.get_active_molecule())
     molecule.update_geometry()
 
     if len(pe.nu_options.scroll) == 0:
-        print('EMPTY OPT')
+        print("EMPTY OPT")
         pe.load_options()
 
     import yaml
-    tricin = {}
-    tricin['molecule'] = molecule.to_dict(np_out=False, force_units='Angstrom')
-    cereal = {}
-    cereal['driver'] = gradient
-    cereal['method'] = name
-    cereal['options'] = {}  # outrageous
-    qwer = {'template': yaml.dump(cereal),
-            'molecule': molecule.to_dict(np_out=False, force_units='Angstrom')}
-    tricin['template'] = yaml.dump(qwer)
-    tricin['argparse'] =  ['--qcdb', 'tmp_tricin.yaml'] #prepare_options_for_geometric({'qcdb': True}).split()
-    
-    import geometric
-    otricrec = geometric.json_run(tricin)
-    #pp.pprint(otricrec)
 
-    ngeom = otricrec['coords'].reshape((-1, 3))
+    tricin = {}
+    tricin["molecule"] = molecule.to_dict(np_out=False, force_units="Angstrom")
+    cereal = {}
+    cereal["driver"] = gradient
+    cereal["method"] = name
+    cereal["options"] = {}  # outrageous
+    qwer = {"template": yaml.dump(cereal), "molecule": molecule.to_dict(np_out=False, force_units="Angstrom")}
+    tricin["template"] = yaml.dump(qwer)
+    tricin["argparse"] = ["--qcdb", "tmp_tricin.yaml"]  # prepare_options_for_geometric({'qcdb': True}).split()
+
+    import geometric
+
+    otricrec = geometric.json_run(tricin)
+    # pp.pprint(otricrec)
+
+    ngeom = otricrec["coords"].reshape((-1, 3))
     molecule.set_geometry(ngeom)
 
     # going to do an extra grad to get E, G, wfn until better tric comm
     G, jobrec = gradient(name, return_wfn=True, **kwargs)
-    E = jobrec['qcvars']['CURRENT ENERGY'].data
+    E = jobrec["qcvars"]["CURRENT ENERGY"].data
 
-    #jobrec['qcvars'] = {info.lbl: info for info in calcinfo}
+    # jobrec['qcvars'] = {info.lbl: info for info in calcinfo}
     pp.pprint(jobrec)
-    pe.active_qcvars = copy.deepcopy(jobrec['qcvars'])
+    pe.active_qcvars = copy.deepcopy(jobrec["qcvars"])
 
     if return_wfn:
         return (E, jobrec)
@@ -478,11 +483,12 @@ def geometric(name, **kwargs):
 
 def prepare_options_for_geometric(dicary):
 
-    sysargv = ' '.join(['--' + k + ' ' + str(v) for k, v in dicary.items()])
-    sysargv += ' tmp_tricin.yaml'
-    print('sysargv', sysargv)
+    sysargv = " ".join(["--" + k + " " + str(v) for k, v in dicary.items()])
+    sysargv += " tmp_tricin.yaml"
+    print("sysargv", sysargv)
 
     return sysargv
+
 
 #    jrec = {}
 #    jrec['molecule'] = mymol.to_dict(np_out=False)
@@ -500,7 +506,7 @@ def prepare_options_for_geometric(dicary):
 #        yaml.dump(jrec, handle)
 
 
-#molecule:
+# molecule:
 #  elbl: ['', '', '', '', '', '', '', '', '']
 #  elea: [16, 1, 1, 16, 1, 1, 16, 1, 1]
 #  elem: [O, H, H, O, H, H, O, H, H]
@@ -523,9 +529,7 @@ def prepare_options_for_geometric(dicary):
 #  molecular_multiplicity: 1
 #  real: [true, true, true, true, true, true, true, true, true]
 #  units: Angstrom
-#template: "\ndriver: !!python/name:qcdb.gradient\nmethod: hf\noptions:\n  basis: cc-pvdz\n"
+# template: "\ndriver: !!python/name:qcdb.gradient\nmethod: hf\noptions:\n  basis: cc-pvdz\n"
 
 
-
-
-#PYTHONPATH=/home/psilocaluser/miniconda3/envs/idp35p4/lib/python3.5/site-packages:/home/psilocaluser/gits/geomeTRIC:/home/psilocaluser/miniconda3/envs/tric35/lib/python3.5/site-packages/:$PYTHONPATH /home/psilocaluser/gits/geomeTRIC/geometric/optimize.py --qcdb trictest3.yaml
+# PYTHONPATH=/home/psilocaluser/miniconda3/envs/idp35p4/lib/python3.5/site-packages:/home/psilocaluser/gits/geomeTRIC:/home/psilocaluser/miniconda3/envs/tric35/lib/python3.5/site-packages/:$PYTHONPATH /home/psilocaluser/gits/geomeTRIC/geometric/optimize.py --qcdb trictest3.yaml

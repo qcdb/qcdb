@@ -16,18 +16,19 @@ def provenance_stamp(routine: str) -> Dict[str, str]:
     generating routine's name is passed in through `routine`.
 
     """
-    return {'creator': 'QCDB', 'version': __version__, 'routine': routine}
+    return {"creator": "QCDB", "version": __version__, "routine": routine}
 
 
 def print_jobrec(label, dicary, do_print):
     """Consolidate jobrec debug printing."""
 
     if do_print:
-        print(label + ' <<<')
+        print(label + " <<<")
         pp.pprint(dicary)
-        print('>>>')
+        print(">>>")
 
-def format_error(stdout: str="", stderr: str="", tb:str =None) -> str:
+
+def format_error(stdout: str = "", stderr: str = "", tb: str = None) -> str:
     """Return all useful information in error string."""
 
     tb = traceback.format_exception(*sys.exc_info())

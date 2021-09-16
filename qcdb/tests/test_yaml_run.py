@@ -24,26 +24,26 @@ ans_hf3 = -7.4326961561955551
 
 @using("psi4")
 def test_hf3_a():
-    subject = yamlin_hf3.replace('pkg-', '')
+    subject = yamlin_hf3.replace("pkg-", "")
 
     jrec = qcdb.yaml_run(subject)
-    assert compare_values(ans_hf3, qcdb.variable('current energy'), 7, '')
+    assert compare_values(ans_hf3, qcdb.variable("current energy"), 7, "")
 
 
 @using("psi4")
 def test_hf3_b():
-    subject = yamlin_hf3.replace('pkg', 'p4')
+    subject = yamlin_hf3.replace("pkg", "p4")
 
     jrec = qcdb.yaml_run(subject)
-    assert compare_values(ans_hf3, qcdb.variable('current energy'), 7, '')
+    assert compare_values(ans_hf3, qcdb.variable("current energy"), 7, "")
 
 
 @using("cfour")
 def test_hf3_c():
-    subject = yamlin_hf3.replace('pkg', 'c4')
+    subject = yamlin_hf3.replace("pkg", "c4")
 
     jrec = qcdb.yaml_run(subject)
-    assert compare_values(ans_hf3, qcdb.variable('current energy'), 7, '')
+    assert compare_values(ans_hf3, qcdb.variable("current energy"), 7, "")
 
 
 yamlin_c2d2 = """
@@ -74,26 +74,26 @@ ans_c2d2 = -1.148287763304
 
 @using("cfour")
 def test_c2d2_a():
-    subject = yamlin_c2d2.replace('pkg-', '')
+    subject = yamlin_c2d2.replace("pkg-", "")
 
     jrec = qcdb.yaml_run(subject)
-    assert compare_values(ans_c2d2, qcdb.variable('current energy'), 7, '')
+    assert compare_values(ans_c2d2, qcdb.variable("current energy"), 7, "")
 
 
 @using("cfour")
 def test_c2d2_b():
-    subject = yamlin_c2d2.replace('pkg', 'p4')
+    subject = yamlin_c2d2.replace("pkg", "p4")
 
     jrec = qcdb.yaml_run(subject)
-    assert compare_values(ans_c2d2, qcdb.variable('current energy'), 7, '')
+    assert compare_values(ans_c2d2, qcdb.variable("current energy"), 7, "")
 
 
 @using("cfour")
 def test_c2d2_c():
-    subject = yamlin_c2d2.replace('pkg', 'c4')
+    subject = yamlin_c2d2.replace("pkg", "c4")
 
     jrec = qcdb.yaml_run(subject)
-    assert compare_values(ans_c2d2, qcdb.variable('current energy'), 7, '')
+    assert compare_values(ans_c2d2, qcdb.variable("current energy"), 7, "")
 
 
 # TODO do mixed pkgs and assert provenance pattern

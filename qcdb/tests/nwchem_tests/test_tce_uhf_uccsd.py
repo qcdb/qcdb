@@ -1,4 +1,4 @@
-#TCE UHF UCCSD
+# TCE UHF UCCSD
 
 import os
 import sys
@@ -12,50 +12,59 @@ from ..utils import *
 
 def tce_uccsd(return_value):
 
-    hf  =   -74.656470840577
-    ccsd_tot    =   -74.695659393231864
-    ccsd_corl   =    -0.039188552654924
+    hf = -74.656470840577
+    ccsd_tot = -74.695659393231864
+    ccsd_corl = -0.039188552654924
 
-    assert compare_values(hf, qcdb.variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(ccsd_tot, qcdb.variable('CCSD TOTAL ENERGY'), 5, 'ccsd tot')
-    assert compare_values(ccsd_corl, qcdb.variable('CCSD CORRELATION ENERGY'), 5, 'ccsd corl')
+    assert compare_values(hf, qcdb.variable("HF TOTAL ENERGY"), 5, "hf ref")
+    assert compare_values(ccsd_tot, qcdb.variable("CCSD TOTAL ENERGY"), 5, "ccsd tot")
+    assert compare_values(ccsd_corl, qcdb.variable("CCSD CORRELATION ENERGY"), 5, "ccsd corl")
+
 
 @using("nwchem")
 def test_1_uccsd():
-    h2o = qcdb.set_molecule('''
+    h2o = qcdb.set_molecule(
+        """
     1 2
         H
         O H 0.96
         H O 0.96 H 104.0
-        ''')
+        """
+    )
 
-    qcdb.set_options({
-        'basis'     :   'sto-3g',
-        'scf__e_convergence'   :   1e-10,
-        'nwchem_charge'    : 1,
-        'nwchem_scf__uhf'  :   True,
-        'nwchem_scf__doublet': True,
-        'nwchem_scf__tol2e':   1e-10,
-        'qc_module' :   'TCE',
-        'nwchem_tce__ccsd' :   True,
-        })
+    qcdb.set_options(
+        {
+            "basis": "sto-3g",
+            "scf__e_convergence": 1e-10,
+            "nwchem_charge": 1,
+            "nwchem_scf__uhf": True,
+            "nwchem_scf__doublet": True,
+            "nwchem_scf__tol2e": 1e-10,
+            "qc_module": "TCE",
+            "nwchem_tce__ccsd": True,
+        }
+    )
 
-    val = qcdb.energy('nwc-ccsd')
+    val = qcdb.energy("nwc-ccsd")
     tce_uccsd(val)
 
 
 @using("nwchem")
 def test_mol_chg_error():
-    h2o = qcdb.set_molecule('''
+    h2o = qcdb.set_molecule(
+        """
         H
         O H 0.96
         H O 0.96 H 104.0
-        ''')
+        """
+    )
 
-    qcdb.set_options({
-        'basis'     :   'sto-3g',
-        'nwchem_charge'    : 1,
-        })
+    qcdb.set_options(
+        {
+            "basis": "sto-3g",
+            "nwchem_charge": 1,
+        }
+    )
 
     with pytest.raises(qcdb.KeywordReconciliationError):
-        qcdb.energy('nwc-ccsd')
+        qcdb.energy("nwc-ccsd")

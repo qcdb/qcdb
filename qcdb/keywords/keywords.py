@@ -57,7 +57,8 @@ class Keywords:
                 raise ValidationError(f"Keyword alias must not share a name with keyword proper: {key.alias}")
             if key.target not in self.scroll[pkg]:
                 raise ValidationError(
-                    f"Keyword alias must point to existing keyword proper: {key.alias} --/--> {key.target}")
+                    f"Keyword alias must point to existing keyword proper: {key.alias} --/--> {key.target}"
+                )
             self.aliases[pkg][key.alias] = key
         else:
             raise ValidationError(f"Domain not supported: {package}")
@@ -102,7 +103,7 @@ class Keywords:
         count = 0
         acount = 0
         for ropt, oropt in self.scroll[pkg].items():
-            #if ropt.endswith(ukey):
+            # if ropt.endswith(ukey):
             if ropt == ukey or ropt.endswith("__" + ukey):  # psi wants
                 overlap = len(key)
                 if imperative:
@@ -140,7 +141,7 @@ class Keyword:
     mark_of_the_user = "00000000"
     mark_of_the_default = "ffffffff"
 
-    def __init__(self, keyword, default, validator, glossary='', expert=False):
+    def __init__(self, keyword, default, validator, glossary="", expert=False):
         self.keyword = keyword.upper()
         self.glossary = glossary
         self.validator = validator
@@ -151,19 +152,29 @@ class Keyword:
 
     def __str__(self):
         text = []
-        text.append('  {:50} {:>30} {} {}'.format(self.keyword + ':', str(self.value),
-                                                  '  ' if self.is_default() else '<>',
-                                                  '(' + str(self.history[0][0]) + ')'))
+        text.append(
+            "  {:50} {:>30} {} {}".format(
+                self.keyword + ":",
+                str(self.value),
+                "  " if self.is_default() else "<>",
+                "(" + str(self.history[0][0]) + ")",
+            )
+        )
         if self.disputed():
-            text.extend(['         ' + str(entry) for entry in self.history])
-        return '\n'.join(text)
+            text.extend(["         " + str(entry) for entry in self.history])
+        return "\n".join(text)
 
     def shortstr(self):
         text = []
-        text.append('  {:50} {:>30} {} {}'.format(self.keyword + ':', str(self.value),
-                                                  '  ' if self.is_default() else '<>',
-                                                  '(' + str(self.history[0][0]) + ')'))
-        return '\n'.join(text)
+        text.append(
+            "  {:50} {:>30} {} {}".format(
+                self.keyword + ":",
+                str(self.value),
+                "  " if self.is_default() else "<>",
+                "(" + str(self.history[0][0]) + ")",
+            )
+        )
+        return "\n".join(text)
 
     def _compute(self):
         """The all-important `self.value` is read-only and computed on-the-fly from `self.history`."""
@@ -185,7 +196,7 @@ class Keyword:
                 break
 
         if user is None and driver is None:
-            raise KeywordReconciliationError('No info')
+            raise KeywordReconciliationError("No info")
         elif user is None and driver is not None:
             hist = driver
         elif user is not None and driver is None:
@@ -195,10 +206,10 @@ class Keyword:
                 hist = user
             else:
                 raise KeywordReconciliationError(
-                    f'Conflicting option requirements btwn user ({user[0]}) and driver ({driver[0]}) for {self.keyword}'
+                    f"Conflicting option requirements btwn user ({user[0]}) and driver ({driver[0]}) for {self.keyword}"
                 )
 
-        #self.score = max_score
+        # self.score = max_score
         return hist[0], max_score, hist
 
     @property
@@ -206,7 +217,7 @@ class Keyword:
         val, score, hist = self._compute()
         return val
 
-    def inherit(self, other, transform, suggests_too=True):  #score_cutoff=100):
+    def inherit(self, other, transform, suggests_too=True):  # score_cutoff=100):
         assert isinstance(other, KeywordOption)
         _, _, ohist = other._compute()
         oval, oimperative, ooverlap, oaccession = ohist
@@ -215,12 +226,14 @@ class Keyword:
         if not oimperative and not suggests_too:
             return
 
-        #self.set(oimperative, transform(oval), ???, oaccession)
+        # self.set(oimperative, transform(oval), ???, oaccession)
 
     def suggest(self, value, overlap=None, accession=None, verbose=1):
         self._set(False, value, overlap, accession, verbose)
 
-    def require(self, value: Any, overlap: Optional[int] = None, accession: Optional[str] = None, verbose: int = 1) -> None:
+    def require(
+        self, value: Any, overlap: Optional[int] = None, accession: Optional[str] = None, verbose: int = 1
+    ) -> None:
         """
 
         Parameters
@@ -240,7 +253,9 @@ class Keyword:
         """
         self._set(True, value, overlap, accession, verbose)
 
-    def _set(self, imperative: bool, value: Any, overlap: Optional[int], accession: Optional[str], verbose: int = 1) -> None:
+    def _set(
+        self, imperative: bool, value: Any, overlap: Optional[int], accession: Optional[str], verbose: int = 1
+    ) -> None:
         """Backend to ``suggest()`` and ``require()``. Fills in ``overlap`` and ``accession`` defaults, validates
         ``value``, and appends entry to ``history``. Prints if ``verbose``."""
 
@@ -254,7 +269,8 @@ class Keyword:
         if verbose >= 2:
             added = self.history[-1]
             print(
-                f"Setting {self.keyword} to {added[0]} priority {added[2] + 100 * int(added[1])} accession {added[3]}")
+                f"Setting {self.keyword} to {added[0]} priority {added[2] + 100 * int(added[1])} accession {added[3]}"
+            )
 
     def _check(self, val: Any) -> Any:
         """Common function to check `val` against `self.validator` for setting, defaulting, etc."""

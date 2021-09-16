@@ -10,7 +10,6 @@ import qcdb
 from .utils import *
 
 
-
 @using("psi4")
 def test_uhf_yaml_psi4():
     yamlin = """
@@ -64,13 +63,12 @@ options:
 """
 
     import yaml
+
     asdf = yaml.load(yamlin, Loader=yaml.FullLoader)
 
-    ene = asdf['driver'](asdf['method'],
-                         options=asdf['options'],
-                         molecule=qcdb.Molecule(asdf['molecule']))
+    ene = asdf["driver"](asdf["method"], options=asdf["options"], molecule=qcdb.Molecule(asdf["molecule"]))
 
-    assert compare_values(-38.9253416082900827, ene, 6, 'calc from yaml str')
+    assert compare_values(-38.9253416082900827, ene, 6, "calc from yaml str")
 
 
 @using("nwchem")
@@ -96,13 +94,12 @@ options:
 """
 
     import yaml
+
     asdf = yaml.load(yamlin, Loader=yaml.FullLoader)
 
-    ene = asdf['driver'](asdf['method'],
-                         options=asdf['options'],
-                         molecule=qcdb.Molecule(asdf['molecule']))
+    ene = asdf["driver"](asdf["method"], options=asdf["options"], molecule=qcdb.Molecule(asdf["molecule"]))
 
-    assert compare_values(-38.9253416082900827, ene, 6, 'calc from yaml str')
+    assert compare_values(-38.9253416082900827, ene, 6, "calc from yaml str")
 
 
 @using("gamess")
@@ -128,11 +125,9 @@ options:
 """
 
     import yaml
+
     asdf = yaml.load(yamlin, Loader=yaml.FullLoader)
 
-    ene = asdf['driver'](asdf['method'],
-                         options=asdf['options'],
-                         molecule=qcdb.Molecule(asdf['molecule']))
+    ene = asdf["driver"](asdf["method"], options=asdf["options"], molecule=qcdb.Molecule(asdf["molecule"]))
 
-    assert compare_values(-38.9253416082900827, ene, 6, 'calc from yaml str')
-
+    assert compare_values(-38.9253416082900827, ene, 6, "calc from yaml str")

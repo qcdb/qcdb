@@ -27,16 +27,17 @@ def load_program_options(options: Keywords) -> None:
     """Initialize program keywords with defaults onto `options`."""
 
     load_qcdb_keywords(options)
-    if which('xcfour') and which_import('psi4'):
+    if which("xcfour") and which_import("psi4"):
         load_cfour_keywords_from_psi4(options)
-    if which('nwchem'):
+    if which("nwchem"):
         load_nwchem_keywords(options)
-    if which('rungms'):
+    if which("rungms"):
         load_gamess_keywords(options)
-    if which('psi4') and which_import('psi4'):
+    if which("psi4") and which_import("psi4"):
         load_psi4_keywords(options)
-    if which_import('resp_qcdb'):
+    if which_import("resp_qcdb"):
         import resp_qcdb
+
         resp.load_keywords(nu_options)
 
 

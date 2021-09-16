@@ -1,6 +1,7 @@
 [tool.black]
 line-length = 120
-target-version = ['py37']
+target-version = ['py38']
+extend-exclude = '''(^/qcdb/basis/|^/qcdb/legacy/|^/qcdb/molecule/|^/qcdb/basisset/|^/qcdb/tests/old_tests/|^/qcdb/databases/|^/qcdb/bfs.py|^/qcdb/driver/diatomic.py|^/qcdb/vib.py|^/qcdb/mpl.py)'''
 
 [tool.isort]
 line_length = 120

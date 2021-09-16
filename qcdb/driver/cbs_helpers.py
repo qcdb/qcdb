@@ -5,13 +5,18 @@ import numpy as np
 
 from ..exceptions import ValidationError
 
-__all__ = ['xtpl_highest_1', 'scf_xtpl_helgaker_2', 'scf_xtpl_helgaker_3', 'corl_xtpl_helgaker_2',]
+__all__ = [
+    "xtpl_highest_1",
+    "scf_xtpl_helgaker_2",
+    "scf_xtpl_helgaker_3",
+    "corl_xtpl_helgaker_2",
+]
 
 
-#_zeta_values = ['d', 't', 'q', '5', '6', '7', '8']
-#_zeta_val2sym = {k + 2: v for k, v in zip(range(7), _zeta_values)}
-#_zeta_sym2val = {v: k for k, v in _zeta_val2sym.items()}
-_zeta_values = 'dtq5678'
+# _zeta_values = ['d', 't', 'q', '5', '6', '7', '8']
+# _zeta_val2sym = {k + 2: v for k, v in zip(range(7), _zeta_values)}
+# _zeta_sym2val = {v: k for k, v in _zeta_val2sym.items()}
+_zeta_values = "dtq5678"
 _zeta_val2sym = {k + 2: v for k, v in enumerate(_zeta_values)}
 _zeta_sym2val = {v: k for k, v in _zeta_val2sym.items()}
 
@@ -48,7 +53,7 @@ def xtpl_highest_1(mtdname: str, zHI: int, valueHI: Union[float, np.ndarray], ve
 
         if verbose:
             # Output string with extrapolation parameters
-            cbsscheme = ''
+            cbsscheme = ""
             cbsscheme += """\n   ==> {} <==\n\n""".format(mtdname.upper())
             cbsscheme += """   HI-zeta ({}) Energy:               {:16.12f}\n""".format(zHI, valueHI)
 
@@ -65,7 +70,15 @@ def xtpl_highest_1(mtdname: str, zHI: int, valueHI: Union[float, np.ndarray], ve
         return valueHI
 
 
-def scf_xtpl_helgaker_2(mtdname: str, zLO: int, valueLO: Union[float, np.ndarray], zHI: int, valueHI: Union[float, np.ndarray], alpha: float = 1.63, verbose: int = 1):
+def scf_xtpl_helgaker_2(
+    mtdname: str,
+    zLO: int,
+    valueLO: Union[float, np.ndarray],
+    zHI: int,
+    valueHI: Union[float, np.ndarray],
+    alpha: float = 1.63,
+    verbose: int = 1,
+):
     r"""Extrapolation scheme for reference energies with two adjacent zeta-level bases.
     Used by :py:func:`qcdb.cbs`.
     `Halkier, Helgaker, Jorgensen, Klopper, & Olsen, Chem. Phys. Lett. 302 (1999) 437-446
@@ -105,8 +118,9 @@ def scf_xtpl_helgaker_2(mtdname: str, zLO: int, valueLO: Union[float, np.ndarray
 
     """
     if type(valueLO) != type(valueHI):
-        raise ValidationError("scf_xtpl_helgaker_2: Inputs must be of the same datatype! (%s, %s)"
-                              % (type(valueLO), type(valueHI)))
+        raise ValidationError(
+            "scf_xtpl_helgaker_2: Inputs must be of the same datatype! (%s, %s)" % (type(valueLO), type(valueHI))
+        )
 
     beta_division = 1 / (math.exp(-1 * alpha * zLO) * (math.exp(-1 * alpha) - 1))
     beta_mult = math.exp(-1 * alpha * zHI)
@@ -117,7 +131,7 @@ def scf_xtpl_helgaker_2(mtdname: str, zLO: int, valueLO: Union[float, np.ndarray
 
         if verbose:
             # Output string with extrapolation parameters
-            cbsscheme = ''
+            cbsscheme = ""
             cbsscheme += """\n   ==> Helgaker 2-point SCF extrapolation for method: %s <==\n\n""" % (mtdname.upper())
             cbsscheme += """   LO-zeta (%s) Energy:               % 16.12f\n""" % (str(zLO), valueLO)
             cbsscheme += """   HI-zeta (%s) Energy:               % 16.12f\n""" % (str(zHI), valueHI)
@@ -126,7 +140,7 @@ def scf_xtpl_helgaker_2(mtdname: str, zLO: int, valueLO: Union[float, np.ndarray
 
             name_str = "%s/(%s,%s)" % (mtdname.upper(), _zeta_val2sym[zLO].upper(), _zeta_val2sym[zHI].upper())
             cbsscheme += """   @Extrapolated """
-            cbsscheme += name_str + ':'
+            cbsscheme += name_str + ":"
             cbsscheme += " " * (18 - len(name_str))
             cbsscheme += """% 16.12f\n\n""" % value
             print(cbsscheme)
@@ -136,8 +150,8 @@ def scf_xtpl_helgaker_2(mtdname: str, zLO: int, valueLO: Union[float, np.ndarray
     elif isinstance(valueLO, np.ndarray):
         beta = (valueHI - valueLO) * beta_division
         value = valueHI - beta * beta_mult
-        #beta.name = 'Helgaker SCF (%s, %s) beta' % (zLO, zHI)
-        #value.name = 'Helgaker SCF (%s, %s) data' % (zLO, zHI)
+        # beta.name = 'Helgaker SCF (%s, %s) beta' % (zLO, zHI)
+        # value.name = 'Helgaker SCF (%s, %s) data' % (zLO, zHI)
 
         if verbose > 2:
             core.print_out("""\n   ==> Helgaker 2-point SCF extrapolation for method: %s <==\n\n""" % (mtdname.upper()))
@@ -159,7 +173,16 @@ def scf_xtpl_helgaker_2(mtdname: str, zLO: int, valueLO: Union[float, np.ndarray
         raise ValidationError("scf_xtpl_helgaker_2: datatype is not recognized '%s'." % type(valueLO))
 
 
-def scf_xtpl_helgaker_3(mtdname: str, zLO: int, valueLO: Union[float, np.ndarray], zMD: int, valueMD: Union[float, np.ndarray], zHI: int, valueHI: Union[float, np.ndarray], verbose: int = 1):
+def scf_xtpl_helgaker_3(
+    mtdname: str,
+    zLO: int,
+    valueLO: Union[float, np.ndarray],
+    zMD: int,
+    valueMD: Union[float, np.ndarray],
+    zHI: int,
+    valueHI: Union[float, np.ndarray],
+    verbose: int = 1,
+):
     r"""Extrapolation scheme for reference energies with three adjacent zeta-level bases.
     Used by :py:func:`qcdb.cbs`.
     `Halkier, Helgaker, Jorgensen, Klopper, & Olsen, Chem. Phys. Lett. 302 (1999) 437-446
@@ -203,8 +226,10 @@ def scf_xtpl_helgaker_3(mtdname: str, zLO: int, valueLO: Union[float, np.ndarray
 
     """
     if (type(valueLO) != type(valueMD)) or (type(valueMD) != type(valueHI)):
-        raise ValidationError("scf_xtpl_helgaker_3: Inputs must be of the same datatype! (%s, %s, %s)"
-                              % (type(valueLO), type(valueMD), type(valueHI)))
+        raise ValidationError(
+            "scf_xtpl_helgaker_3: Inputs must be of the same datatype! (%s, %s, %s)"
+            % (type(valueLO), type(valueMD), type(valueHI))
+        )
 
     if isinstance(valueLO, float):
 
@@ -215,7 +240,7 @@ def scf_xtpl_helgaker_3(mtdname: str, zLO: int, valueLO: Union[float, np.ndarray
 
         if verbose:
             # Output string with extrapolation parameters
-            cbsscheme = ''
+            cbsscheme = ""
             cbsscheme += """\n   ==> Helgaker 3-point SCF extrapolation for method: %s <==\n\n""" % (mtdname.upper())
             cbsscheme += """   LO-zeta (%s) Energy:               % 16.12f\n""" % (str(zLO), valueLO)
             cbsscheme += """   MD-zeta (%s) Energy:               % 16.12f\n""" % (str(zMD), valueMD)
@@ -223,10 +248,14 @@ def scf_xtpl_helgaker_3(mtdname: str, zLO: int, valueLO: Union[float, np.ndarray
             cbsscheme += """   Alpha (exponent) Value:           % 16.12f\n""" % (alpha)
             cbsscheme += """   Beta (coefficient) Value:         % 16.12f\n\n""" % (beta)
 
-            name_str = "%s/(%s,%s,%s)" % (mtdname.upper(), _zeta_val2sym[zLO].upper(), _zeta_val2sym[zMD].upper(),
-                                                             _zeta_val2sym[zHI].upper())
+            name_str = "%s/(%s,%s,%s)" % (
+                mtdname.upper(),
+                _zeta_val2sym[zLO].upper(),
+                _zeta_val2sym[zMD].upper(),
+                _zeta_val2sym[zHI].upper(),
+            )
             cbsscheme += """   @Extrapolated """
-            cbsscheme += name_str + ':'
+            cbsscheme += name_str + ":"
             cbsscheme += " " * (18 - len(name_str))
             cbsscheme += """% 16.12f\n\n""" % value
             print(cbsscheme)
@@ -238,7 +267,7 @@ def scf_xtpl_helgaker_3(mtdname: str, zLO: int, valueLO: Union[float, np.ndarray
         valueMD = np.array(valueMD)
         valueHI = np.array(valueHI)
 
-        nonzero_mask = np.abs(valueHI) > 1.e-14
+        nonzero_mask = np.abs(valueHI) > 1.0e-14
         top = (valueHI - valueMD)[nonzero_mask]
         bot = (valueMD - valueLO)[nonzero_mask]
 
@@ -251,16 +280,23 @@ def scf_xtpl_helgaker_3(mtdname: str, zLO: int, valueLO: Union[float, np.ndarray
         return np_value
 
         ## Build and set from numpy routines
-        #value = core.Matrix(*valueHI.shape)
-        #value_view = np.asarray(value)
-        #value_view[:] = np_value
-        #return value
+        # value = core.Matrix(*valueHI.shape)
+        # value_view = np.asarray(value)
+        # value_view[:] = np_value
+        # return value
 
     else:
         raise ValidationError("scf_xtpl_helgaker_3: datatype is not recognized '%s'." % type(valueLO))
 
 
-def corl_xtpl_helgaker_2(mtdname: str, zLO: int, valueLO: Union[float, np.ndarray], zHI: int, valueHI: Union[float, np.ndarray], verbose: int = 1):
+def corl_xtpl_helgaker_2(
+    mtdname: str,
+    zLO: int,
+    valueLO: Union[float, np.ndarray],
+    zHI: int,
+    valueHI: Union[float, np.ndarray],
+    verbose: int = 1,
+):
     r"""Extrapolation scheme for correlation energies with two adjacent zeta-level bases.
     Used by :py:func:`qcdb.cbs`.
     `Halkier, Helgaker, Jorgensen, Klopper, Koch, Olsen, & Wilson, Chem. Phys. Lett. 286 (1998) 243-252
@@ -298,31 +334,34 @@ def corl_xtpl_helgaker_2(mtdname: str, zLO: int, valueLO: Union[float, np.ndarra
 
     """
     if type(valueLO) != type(valueHI):
-        raise ValidationError("corl_xtpl_helgaker_2: Inputs must be of the same datatype! (%s, %s)"
-                              % (type(valueLO), type(valueHI)))
+        raise ValidationError(
+            "corl_xtpl_helgaker_2: Inputs must be of the same datatype! (%s, %s)" % (type(valueLO), type(valueHI))
+        )
 
     if isinstance(valueLO, float):
         value = (valueHI * zHI ** 3 - valueLO * zLO ** 3) / (zHI ** 3 - zLO ** 3)
         beta = (valueHI - valueLO) / (zHI ** (-3) - zLO ** (-3))
 
-#        final = valueSCF + value
+        #        final = valueSCF + value
         final = value
         if verbose:
             # Output string with extrapolation parameters
-            cbsscheme = """\n\n   ==> Helgaker 2-point correlated extrapolation for method: %s <==\n\n""" % (mtdname.upper())
-#            cbsscheme += """   HI-zeta (%1s) SCF Energy:           % 16.12f\n""" % (str(zHI), valueSCF)
+            cbsscheme = """\n\n   ==> Helgaker 2-point correlated extrapolation for method: %s <==\n\n""" % (
+                mtdname.upper()
+            )
+            #            cbsscheme += """   HI-zeta (%1s) SCF Energy:           % 16.12f\n""" % (str(zHI), valueSCF)
             cbsscheme += """   LO-zeta (%s) Energy:               % 16.12f\n""" % (str(zLO), valueLO)
             cbsscheme += """   HI-zeta (%s) Energy:               % 16.12f\n""" % (str(zHI), valueHI)
-#            cbsscheme += """   Beta (coefficient) Value:         % 16.12f\n""" % beta
+            #            cbsscheme += """   Beta (coefficient) Value:         % 16.12f\n""" % beta
             cbsscheme += """   Extrapolated Energy:              % 16.12f\n\n""" % value
-            #cbsscheme += """   LO-zeta (%s) Correlation Energy:   % 16.12f\n""" % (str(zLO), valueLO)
-            #cbsscheme += """   HI-zeta (%s) Correlation Energy:   % 16.12f\n""" % (str(zHI), valueHI)
-            #cbsscheme += """   Beta (coefficient) Value:         % 16.12f\n""" % beta
-            #cbsscheme += """   Extrapolated Correlation Energy:  % 16.12f\n\n""" % value
+            # cbsscheme += """   LO-zeta (%s) Correlation Energy:   % 16.12f\n""" % (str(zLO), valueLO)
+            # cbsscheme += """   HI-zeta (%s) Correlation Energy:   % 16.12f\n""" % (str(zHI), valueHI)
+            # cbsscheme += """   Beta (coefficient) Value:         % 16.12f\n""" % beta
+            # cbsscheme += """   Extrapolated Correlation Energy:  % 16.12f\n\n""" % value
 
             name_str = "%s/(%s,%s)" % (mtdname.upper(), _zeta_val2sym[zLO].upper(), _zeta_val2sym[zHI].upper())
             cbsscheme += """   @Extrapolated """
-            cbsscheme += name_str + ':'
+            cbsscheme += name_str + ":"
             cbsscheme += " " * (19 - len(name_str))
             cbsscheme += """% 16.12f\n\n""" % final
             print(cbsscheme)
@@ -331,14 +370,16 @@ def corl_xtpl_helgaker_2(mtdname: str, zLO: int, valueLO: Union[float, np.ndarra
 
     elif isinstance(valueLO, np.ndarray):
         beta = (valueHI - valueLO) / (zHI ** (-3) - zLO ** (-3))
-        #beta.name = 'Helgaker Corl (%s, %s) beta' % (zLO, zHI)
+        # beta.name = 'Helgaker Corl (%s, %s) beta' % (zLO, zHI)
 
         value = (valueHI * zHI ** 3 - valueLO * zLO ** 3) / (zHI ** 3 - zLO ** 3)
-        #value.name = 'Helgaker Corr (%s, %s) data' % (zLO, zHI)
+        # value.name = 'Helgaker Corr (%s, %s) data' % (zLO, zHI)
 
         if verbose > 2:
-            core.print_out("""\n   ==> Helgaker 2-point correlated extrapolation for """
-                           """method: %s <==\n\n""" % (mtdname.upper()))
+            core.print_out(
+                """\n   ==> Helgaker 2-point correlated extrapolation for """
+                """method: %s <==\n\n""" % (mtdname.upper())
+            )
             core.print_out("""   LO-zeta (%s) Data\n""" % (str(zLO)))
             valueLO.print_out()
             core.print_out("""   HI-zeta (%s) Data\n""" % (str(zHI)))
@@ -348,7 +389,7 @@ def corl_xtpl_helgaker_2(mtdname: str, zLO: int, valueLO: Union[float, np.ndarra
             core.print_out("""   Beta Data:\n""")
             beta.print_out()
 
-#        value.add(valueSCF)
+        #        value.add(valueSCF)
         return value
 
     else:

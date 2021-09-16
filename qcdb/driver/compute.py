@@ -14,8 +14,10 @@ prefixpkg = {v: k for k, v in pkgprefix.items()}
 def compute(
     input_data: Union[Dict[str, Any], "AtomicInput"],
     program: str,
+    # raise_error: bool = False,
     local_options: Optional[Dict[str, Any]] = None,
     mode_options: Optional[Dict[str, str]] = None,
+    # return_dict: bool = False,
 ) -> "AtomicResult":
     """Run an analytic single-point specified in ``input_data`` through program ``qcprog``."""
 
@@ -44,7 +46,14 @@ def compute(
             keywords = {(program + "_" + k): v for k, v in input_model.keywords.items()}
             mtd_call = program_prefix(program) + input_model.model.method + "/" + input_model.model.basis
 
-        retres, ret = driver_call[input_model.driver](mtd_call, molecule=qmol, options=keywords, return_wfn=True, local_options=local_options, mode_options=mode_options)
+        retres, ret = driver_call[input_model.driver](
+            mtd_call,
+            molecule=qmol,
+            options=keywords,
+            return_wfn=True,
+            local_options=local_options,
+            mode_options=mode_options,
+        )
 
         ## qcschema should be copied
         # ret_data = run_json_qcschema(input_model.dict(), clean, False, keep_wfn=keep_wfn)

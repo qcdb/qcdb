@@ -8,8 +8,15 @@ import qcelemental as qcel
 from .exceptions import TestComparisonError, UpgradeHelper
 
 __all__ = [
-    'compare', 'compare_integers', 'compare_strings', 'compare_values', 'compare_arrays', 'compare_recursive',
-    'compare_molrecs', 'compare_matrices', 'compare_dicts'
+    "compare",
+    "compare_integers",
+    "compare_strings",
+    "compare_values",
+    "compare_arrays",
+    "compare_recursive",
+    "compare_molrecs",
+    "compare_matrices",
+    "compare_dicts",
 ]
 
 
@@ -21,50 +28,47 @@ def _merge_psi4_qcel_apis(args, kwargs):
     `kwargs` modified (and returned) in-place
 
     """
+
     def process_digits(digits):
         if digits >= 1:
-            return 10**-digits
+            return 10 ** -digits
         return digits
 
     if len(args) == 0:
-        kwargs['label'] = sys._getframe().f_back.f_back.f_code.co_name
+        kwargs["label"] = sys._getframe().f_back.f_back.f_code.co_name
 
     elif len(args) == 1:
         if isinstance(args[0], str):
-            kwargs['label'] = args[0]
+            kwargs["label"] = args[0]
 
         else:
-            kwargs['atol'] = process_digits(args[0])
-            kwargs['label'] = sys._getframe().f_back.f_back.f_code.co_name
-            if 'verbose' in kwargs:
-                kwargs['quiet'] = (kwargs.pop('verbose') < 1)
+            kwargs["atol"] = process_digits(args[0])
+            kwargs["label"] = sys._getframe().f_back.f_back.f_code.co_name
+            if "verbose" in kwargs:
+                kwargs["quiet"] = kwargs.pop("verbose") < 1
 
     elif len(args) == 2:
-        kwargs['atol'] = process_digits(args[0])
-        kwargs['label'] = args[1]
-        if 'verbose' in kwargs:
-            kwargs['quiet'] = (kwargs.pop('verbose') < 1)
+        kwargs["atol"] = process_digits(args[0])
+        kwargs["label"] = args[1]
+        if "verbose" in kwargs:
+            kwargs["quiet"] = kwargs.pop("verbose") < 1
 
     else:
         raise ValueError("""Not following either Psi4 or QCElemental API pattern for comparison.""")
 
 
-def _psi4_compare_integers(expected, computed, label: str = None, *, verbose: int = 1,
-                           return_handler: Callable = None):
+def _psi4_compare_integers(expected, computed, label: str = None, *, verbose: int = 1, return_handler: Callable = None):
     """Shim between Psi4-style and QCA-style testing interfaces for scalar ints, strings."""
 
     # uncomment to ferret out old function name
-    #raise UpgradeHelper('qcdb.compare_integers', 'qcdb.compare', 'someday', ' Same API, just rename the function and convert `verbose` to `quiet`.')
+    # raise UpgradeHelper('qcdb.compare_integers', 'qcdb.compare', 'someday', ' Same API, just rename the function and convert `verbose` to `quiet`.')
 
     if label is None:
         label = sys._getframe().f_back.f_code.co_name
 
-    return qcel.testing.compare(expected,
-                                computed,
-                                label=label,
-                                quiet=(verbose == 0),
-                                return_message=False,
-                                return_handler=return_handler)
+    return qcel.testing.compare(
+        expected, computed, label=label, quiet=(verbose == 0), return_message=False, return_handler=return_handler
+    )
 
 
 def _mergedapis_compare_values(expected, computed, *args, **kwargs):
@@ -79,8 +83,10 @@ def _mergedapis_compare_recursive(expected, computed, *args, **kwargs):
 
     if (len(args) > 0) and not isinstance(args[0], str):
         raise UpgradeHelper(
-            'qcdb.compare_recursive', 'qcdb.compare_recursive', 1.4,
-            ' Use the new `qcel.testing.compare_recursive` API, being sure to convert positional arg `digits` decimal places to keyword arg `atol` literal absolute tolerance.'
+            "qcdb.compare_recursive",
+            "qcdb.compare_recursive",
+            1.4,
+            " Use the new `qcel.testing.compare_recursive` API, being sure to convert positional arg `digits` decimal places to keyword arg `atol` literal absolute tolerance.",
         )
 
     return qcel.testing.compare_molrecs(expected, computed, *args, **kwargs)
@@ -90,8 +96,10 @@ def _mergedapis_compare_molrecs(expected, computed, *args, **kwargs):
 
     if (len(args) > 0) and not isinstance(args[0], str):
         raise UpgradeHelper(
-            'qcdb.compare_molrecs', 'qcdb.compare_molrecs', 1.4,
-            ' Use the new `qcel.testing.compare_molrecs` API, being sure to convert positional arg `digits` decimal places to keyword arg `atol` literal absolute tolerance.'
+            "qcdb.compare_molrecs",
+            "qcdb.compare_molrecs",
+            1.4,
+            " Use the new `qcel.testing.compare_molrecs` API, being sure to convert positional arg `digits` decimal places to keyword arg `atol` literal absolute tolerance.",
         )
 
     _merge_psi4_qcel_apis(args, kwargs)
@@ -100,16 +108,20 @@ def _mergedapis_compare_molrecs(expected, computed, *args, **kwargs):
 
 def compare_matrices(expected, computed, *args, **kwargs):
     raise UpgradeHelper(
-        'qcdb.compare_matrices', 'qcdb.compare_values', 1.4,
-        ' Use the new qcel.testing.compare_values` API, being sure to convert `digits` decimal places to `atol` literal absolute tolerance.'
+        "qcdb.compare_matrices",
+        "qcdb.compare_values",
+        1.4,
+        " Use the new qcel.testing.compare_values` API, being sure to convert `digits` decimal places to `atol` literal absolute tolerance.",
     )
 
 
 def compare_dicts(expected, computed, *args, **kwargs):
 
     raise UpgradeHelper(
-        'qcdb.compare_dicts', 'qcdb.compare_recursive', 1.4,
-        ' Use the new `qcel.testing.compare_recursive` API, being sure to convert `tol` decimal places to `atol` literal absolute tolerance.'
+        "qcdb.compare_dicts",
+        "qcdb.compare_recursive",
+        1.4,
+        " Use the new `qcel.testing.compare_recursive` API, being sure to convert `tol` decimal places to `atol` literal absolute tolerance.",
     )
 
 
@@ -119,10 +131,10 @@ def _qcdb_true_raise_handler(passfail, label, message, return_message=False, qui
     width = 66
     if passfail:
         if not quiet:
-            print(f'    {label:.<{width}}PASSED')
+            print(f"    {label:.<{width}}PASSED")
             sys.stdout.flush()
     else:
-        print(f'    {label:.<{width}}FAILED')
+        print(f"    {label:.<{width}}FAILED")
         sys.stdout.flush()
         raise TestComparisonError(message)
 

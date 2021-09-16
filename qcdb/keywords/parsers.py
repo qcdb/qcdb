@@ -20,10 +20,10 @@ def enum_bool(inputval):
 
     def closedenum(x, allowed=allowed):
         if x.upper() in allowed:
-            if x.upper() == 'TRUE':
-                return 'ON'
-            elif x.upper() == 'FALSE':
-                return 'OFF'
+            if x.upper() == "TRUE":
+                return "ON"
+            elif x.upper() == "FALSE":
+                return "OFF"
             else:
                 return x.upper()
         else:
@@ -33,8 +33,8 @@ def enum_bool(inputval):
 
 
 def onoff_boolean(inputval):
-    yes = re.compile(r'^(yes|true|on|1)', re.IGNORECASE)
-    no = re.compile(r'^(no|false|off|0)', re.IGNORECASE)
+    yes = re.compile(r"^(yes|true|on|1)", re.IGNORECASE)
+    no = re.compile(r"^(no|false|off|0)", re.IGNORECASE)
 
     if yes.match(str(inputval)):
         return "on"
@@ -63,15 +63,14 @@ def casesensitive_enum(inputval):
         if x in allowed:
             return x
         else:
-            raise KeywordValidationError("""Not allowed case-sensitive value: {} not in {}""".format(
-                inputval, allowed))
+            raise KeywordValidationError("""Not allowed case-sensitive value: {} not in {}""".format(inputval, allowed))
 
     return closedenum
 
 
 def boolean(inputval):
-    yes = re.compile(r'^(yes|true|on|1)', re.IGNORECASE)
-    no = re.compile(r'^(no|false|off|0)', re.IGNORECASE)
+    yes = re.compile(r"^(yes|true|on|1)", re.IGNORECASE)
+    no = re.compile(r"^(no|false|off|0)", re.IGNORECASE)
 
     if yes.match(str(inputval)):
         return True
@@ -82,16 +81,15 @@ def boolean(inputval):
 
 
 def sphcart(inputval):
-    sph = re.compile(r'^(yes|true|on|1|sph|spherical)', re.IGNORECASE)
-    cart = re.compile(r'^(no|false|off|0|cart|cartesian)', re.IGNORECASE)
+    sph = re.compile(r"^(yes|true|on|1|sph|spherical)", re.IGNORECASE)
+    cart = re.compile(r"^(no|false|off|0|cart|cartesian)", re.IGNORECASE)
 
     if sph.match(str(inputval)):
         return True
     elif cart.match(str(inputval)):
         return False
     else:
-        raise KeywordValidationError(
-            """Can't interpret into boolean True (sph) or False (cart): {}""".format(inputval))
+        raise KeywordValidationError("""Can't interpret into boolean True (sph) or False (cart): {}""".format(inputval))
 
 
 def gridradang(inputval):
@@ -104,7 +102,7 @@ def gridradang(inputval):
         return dict(sorted(retdict.items()))  # to place '' key first
     else:
         rad, ang = inputval
-        return {'': (positive_integer(rad), positive_integer(ang))}
+        return {"": (positive_integer(rad), positive_integer(ang))}
 
 
 def bool_or_elem_dict(inputval):
@@ -113,6 +111,7 @@ def bool_or_elem_dict(inputval):
         return dict(sorted(retdict.items()))
     else:
         return boolean(inputval)
+
 
 def atompair(inputval):
 
@@ -123,51 +122,52 @@ def atompair(inputval):
             retdict[k] = (positive_integer(atom1), positive_integer(atom2))
         return dict(sorted(retdict.items()))  # to place '' key first
     else:
-        return {''}
+        return {""}
+
 
 def percentage(inputval):
     if 0.0 <= inputval <= 100.0:
         return float(inputval)
     else:
-        raise KeywordValidationError('Percentage should be between 0 and 100: {}'.format(inputval))
+        raise KeywordValidationError("Percentage should be between 0 and 100: {}".format(inputval))
 
 
 def nonnegative_float(inputval):
     if 0.0 <= inputval:
         return float(inputval)
     else:
-        raise KeywordValidationError('Float should be non-negative: {}'.format(inputval))
+        raise KeywordValidationError("Float should be non-negative: {}".format(inputval))
 
 
 def positive_integer(inputval):
     if inputval > 0 and float(inputval).is_integer():
         return int(inputval)
     else:
-        raise KeywordValidationError('Positive integer, if you please: {}'.format(inputval))
+        raise KeywordValidationError("Positive integer, if you please: {}".format(inputval))
 
 
 def nonnegative_integer(inputval):
     if inputval > -1 and float(inputval).is_integer():
         return int(inputval)
     else:
-        raise KeywordValidationError('Non-negative integer number, if you please: {}'.format(inputval))
+        raise KeywordValidationError("Non-negative integer number, if you please: {}".format(inputval))
 
 
 def integer(inputval):
     if float(inputval).is_integer():
         return int(inputval)
     else:
-        raise KeywordValidationError('Integer number, if you please: {}'.format(inputval))
+        raise KeywordValidationError("Integer number, if you please: {}".format(inputval))
 
 
 def parse_convergence(inputval):
 
     if inputval > 0 and isinstance(inputval, int):
-        return pow(10., -inputval)
+        return pow(10.0, -inputval)
     elif inputval > 0 and inputval < 5:
         return inputval
     else:
-        raise KeywordValidationError('wth! you call this a convergence criterion? {}'.format(inputval))
+        raise KeywordValidationError("wth! you call this a convergence criterion? {}".format(inputval))
 
 
 def parse_memory(inputval, min_mem_allowed=262144000):
@@ -215,20 +215,22 @@ def parse_memory(inputval, min_mem_allowed=262144000):
     # Handle memory given in bytes directly (int or float)
     if isinstance(inputval, (int, float)):
         val = inputval
-        units = ''
+        units = ""
     # Handle memory given as a string
     elif isinstance(inputval, str):
-        memory_string = re.compile(r'^\s*(\d*\.?\d+)\s*([KMGTPBE]i?B)\s*$', re.IGNORECASE)
+        memory_string = re.compile(r"^\s*(\d*\.?\d+)\s*([KMGTPBE]i?B)\s*$", re.IGNORECASE)
         matchobj = re.search(memory_string, inputval)
         if matchobj:
             val = float(matchobj.group(1))
             units = matchobj.group(2)
         else:
-            raise KeywordValidationError("""Invalid memory specification: {}. Try 5e9 or '5 gb'.""".format(
-                repr(inputval)))
+            raise KeywordValidationError(
+                """Invalid memory specification: {}. Try 5e9 or '5 gb'.""".format(repr(inputval))
+            )
     else:
-        raise KeywordValidationError("""Invalid type {} in memory specification: {}. Try 5e9 or '5 gb'.""".format(
-            type(inputval), repr(inputval)))
+        raise KeywordValidationError(
+            """Invalid type {} in memory specification: {}. Try 5e9 or '5 gb'.""".format(type(inputval), repr(inputval))
+        )
 
     # Units decimal or binary?
     multiplier = 1000
@@ -249,8 +251,10 @@ def parse_memory(inputval, min_mem_allowed=262144000):
     # Check minimum memory requirement
     if memory_amount < min_mem_allowed:
         raise KeywordValidationError(
-            """set_memory(): Requested {:.3} MiB ({:.3} MB); minimum 250 MiB (263 MB). Please, sir, I want some more."""
-            .format(memory_amount / 1024**2, memory_amount / 1000**2))
+            """set_memory(): Requested {:.3} MiB ({:.3} MB); minimum 250 MiB (263 MB). Please, sir, I want some more.""".format(
+                memory_amount / 1024 ** 2, memory_amount / 1000 ** 2
+            )
+        )
 
     return memory_amount
 

@@ -16,12 +16,12 @@ def load_psi4_keywords(options: Keywords) -> None:
 
     for m in opts:
         for o, v in opts[m].items():
-            if m == 'GLOBALS':
+            if m == "GLOBALS":
                 keyword = o
             else:
-                keyword = m + '__' + o
+                keyword = m + "__" + o
 
-            options.add('psi4', Keyword(keyword=keyword, default=v['value'], validator=p4_validator))
+            options.add("psi4", Keyword(keyword=keyword, default=v["value"], validator=p4_validator))
 
 
 def _basic_validator(val):
@@ -35,11 +35,11 @@ def _basic_validator(val):
 def load_cfour_keywords_from_psi4(options: Keywords) -> None:
 
     opts = _query_options_defaults_from_psi()
-    opts = opts['CFOUR']
+    opts = opts["CFOUR"]
 
     for o, v in opts.items():
-        if o.startswith('CFOUR_'):
-            options.add('cfour', Keyword(keyword=o[6:], default=v['value'], validator=_basic_validator))
+        if o.startswith("CFOUR_"):
+            options.add("cfour", Keyword(keyword=o[6:], default=v["value"], validator=_basic_validator))
 
 
 def _query_options_defaults_from_psi(changedOnly=False):
@@ -101,15 +101,15 @@ def _query_options_defaults_from_psi(changedOnly=False):
     for opt in psi4.core.get_global_option_list():
         hoc = psi4.core.has_global_option_changed(opt)
         if hoc or not changedOnly:
-            if opt in ['DFT_CUSTOM_FUNCTIONAL', 'EXTERN']:  # Feb 2017 hack
+            if opt in ["DFT_CUSTOM_FUNCTIONAL", "EXTERN"]:  # Feb 2017 hack
                 continue
             val = psi4.core.get_global_option(opt)
-            options['GLOBALS'][opt] = {'value': val, 'has_changed': hoc}
+            options["GLOBALS"][opt] = {"value": val, "has_changed": hoc}
         for module in modules:
             if psi4.core.option_exists_in_module(module, opt):
                 hoc = psi4.core.has_option_changed(module, opt)
                 if hoc or not changedOnly:
                     val = psi4.core.get_option(module, opt)
-                    options[module][opt] = {'value': val, 'has_changed': hoc}
+                    options[module][opt] = {"value": val, "has_changed": hoc}
 
     return options

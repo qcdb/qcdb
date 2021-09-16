@@ -50,33 +50,36 @@ def test_Molecule_BFS():
     """
 
     ref_fragmentation = [
-      [3, 16],
-      [21],
-      [0, 12],
-      [1, 14, 19],
-      [2, 13, 20],
-      [4, 15, 22],
-      [5, 23, 28],
-      [6, 24, 29],
-      [7, 25, 30],
-      [8, 26, 31],
-      [9, 27, 32],
-      [10, 33],
-      [11, 34, 35],
-      [17],
-      [18]]  # yapf: disable
+        [3, 16],
+        [21],
+        [0, 12],
+        [1, 14, 19],
+        [2, 13, 20],
+        [4, 15, 22],
+        [5, 23, 28],
+        [6, 24, 29],
+        [7, 25, 30],
+        [8, 26, 31],
+        [9, 27, 32],
+        [10, 33],
+        [11, 34, 35],
+        [17],
+        [18],
+    ]  # yapf: disable
 
-    qmol = qcdb.Molecule.from_string(iceIh, dtype='xyz')
+    qmol = qcdb.Molecule.from_string(iceIh, dtype="xyz")
     frag, arrs, bmols, bmol = qmol.BFS(
-        seed_atoms=[[3, 16], [21]], return_arrays=True, return_molecule=True, return_molecules=True)
+        seed_atoms=[[3, 16], [21]], return_arrays=True, return_molecule=True, return_molecules=True
+    )
 
-    assert compare_integers(frag == ref_fragmentation, 1, 'Q: BFS from qcdb.Molecule')
-    assert compare_arrays(qmol.geometry(np_out=True)[[1, 14, 19]], arrs[0][3], 4, 'Q: geom back from BFS')
-    assert compare_integers(15, bmol.nfragments(), 'Q: nfrag')
-    assert compare_values(qmol.nuclear_repulsion_energy(), bmol.nuclear_repulsion_energy(), 4, 'Q: nre')
+    assert compare_integers(frag == ref_fragmentation, 1, "Q: BFS from qcdb.Molecule")
+    assert compare_arrays(qmol.geometry(np_out=True)[[1, 14, 19]], arrs[0][3], 4, "Q: geom back from BFS")
+    assert compare_integers(15, bmol.nfragments(), "Q: nfrag")
+    assert compare_values(qmol.nuclear_repulsion_energy(), bmol.nuclear_repulsion_energy(), 4, "Q: nre")
     assert compare_arrays(
-        qmol.geometry(np_out=True)[[2, 13, 20]], bmols[4].geometry(np_out=True), 4, 'Q: frag geom back from BFS')
-    assert compare_integers(True, type(bmol) == qcdb.Molecule, 'Q return type')
+        qmol.geometry(np_out=True)[[2, 13, 20]], bmols[4].geometry(np_out=True), 4, "Q: frag geom back from BFS"
+    )
+    assert compare_integers(True, type(bmol) == qcdb.Molecule, "Q return type")
 
 
 def test_numpy_BFS():
@@ -84,21 +87,23 @@ def test_numpy_BFS():
     from qcdb.bfs import BFS
 
     # FaOOFaOO 3.6 ?
-    mol_elem = np.asarray(['C', 'C', 'H', 'H', 'O', 'O', 'O', 'O', 'H', 'H'])
-    mol_geom = np.asarray([
-        [    1.79035823,      -0.18606050,       0.00000000],
-        [   -1.79035823,       0.18606050,       0.00000000],
-        [    2.89087214,      -0.30042988,       0.00000000],
-        [   -2.89087214,       0.30042988,       0.00000000],
-        [    1.07568931,      -1.19425943,       0.00000000],
-        [   -1.07568931,       1.19425943,       0.00000000],
-        [    1.44185816,       1.08049605,       0.00000000],
-        [   -1.44185816,      -1.08049605,       0.00000000],
-        [    0.43274661,       1.15045330,       0.00000000],
-        [   -0.43274661,      -1.15045330,       0.00000000]])  # yapf: disable
-
+    mol_elem = np.asarray(["C", "C", "H", "H", "O", "O", "O", "O", "H", "H"])
+    mol_geom = np.asarray(
+        [
+            [1.79035823, -0.18606050, 0.00000000],
+            [-1.79035823, 0.18606050, 0.00000000],
+            [2.89087214, -0.30042988, 0.00000000],
+            [-2.89087214, 0.30042988, 0.00000000],
+            [1.07568931, -1.19425943, 0.00000000],
+            [-1.07568931, 1.19425943, 0.00000000],
+            [1.44185816, 1.08049605, 0.00000000],
+            [-1.44185816, -1.08049605, 0.00000000],
+            [0.43274661, 1.15045330, 0.00000000],
+            [-0.43274661, -1.15045330, 0.00000000],
+        ]
+    )  # yapf: disable
 
     ans = BFS(mol_geom / qcel.constants.bohr2angstroms, mol_elem)
 
     ref_fragmentation = [[0, 2, 4, 6, 8], [1, 3, 5, 7, 9]]
-    assert compare_integers(True, ans == ref_fragmentation, 'BFS from np.array')
+    assert compare_integers(True, ans == ref_fragmentation, "BFS from np.array")

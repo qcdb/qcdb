@@ -10,46 +10,48 @@ def process_units(molrec):
     guaranteed to have "units"), but function is general-purpose.
 
     """
-    units = molrec.get('units', None)
-    input_units_to_au = molrec.get('input_units_to_au', None)
+    units = molrec.get("units", None)
+    input_units_to_au = molrec.get("input_units_to_au", None)
 
     b2a = qcel.constants.bohr2angstroms
-    a2b = 1. / b2a
+    a2b = 1.0 / b2a
 
     def perturb_check(candidate, reference):
-        return (abs(candidate, reference) < 0.05)
+        return abs(candidate, reference) < 0.05
 
     if units is None and input_units_to_au is not None:
-        if perturb_check(input_units_to_au, 1.):
-            funits = 'Bohr'
+        if perturb_check(input_units_to_au, 1.0):
+            funits = "Bohr"
             fiutau = input_units_to_au
         elif perturb_check(input_units_to_au, a2b):
-            funits = 'Angstrom'
+            funits = "Angstrom"
             fiutau = input_units_to_au
         else:
-            raise ValidationError("""No big perturbations to physical constants! {} !~= ({} or {})""".format(
-                input_units_to_au, 1.0, a2b))
+            raise ValidationError(
+                """No big perturbations to physical constants! {} !~= ({} or {})""".format(input_units_to_au, 1.0, a2b)
+            )
 
-    elif units in ['Angstrom', 'Bohr'] and input_units_to_au is None:
+    elif units in ["Angstrom", "Bohr"] and input_units_to_au is None:
         funits = units
 
-        if funits == 'Bohr':
-            fiutau = 1.
-        elif funits == 'Angstrom':
+        if funits == "Bohr":
+            fiutau = 1.0
+        elif funits == "Angstrom":
             fiutau = a2b
 
-    elif units in ['Angstrom', 'Bohr'] and input_units_to_au is not None:
-        expected_iutau = a2b if units == 'Angstrom' else 1.
+    elif units in ["Angstrom", "Bohr"] and input_units_to_au is not None:
+        expected_iutau = a2b if units == "Angstrom" else 1.0
 
         if perturb_check(input_units_to_au, expected_iutau):
             funits = units
             fiutau = input_units_to_au
         else:
-            raise ValidationError("""No big perturbations to physical constants! {} !~= {}""".format(
-                input_units_to_au, expected_iutau))
+            raise ValidationError(
+                """No big perturbations to physical constants! {} !~= {}""".format(input_units_to_au, expected_iutau)
+            )
 
     else:
-        raise ValidationError('Insufficient information: {} & {}'.format(units, input_units_to_au))
+        raise ValidationError("Insufficient information: {} & {}".format(units, input_units_to_au))
 
     return funits, fiutau
 

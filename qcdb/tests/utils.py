@@ -9,16 +9,16 @@ pp = pprint.PrettyPrinter(width=120)
 
 
 __all__ = [
-    'a2a',
-    'compare',
-    'compare_integers',
-    'compare_strings',
-    'compare_values',
-    'compare_arrays',
-    'compare_recursive',
-    'compare_molrecs',
+    "a2a",
+    "compare",
+    "compare_integers",
+    "compare_strings",
+    "compare_values",
+    "compare_arrays",
+    "compare_recursive",
+    "compare_molrecs",
     "has_program",
-    'tnm',
+    "tnm",
     "using",
 ]
 

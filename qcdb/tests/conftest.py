@@ -1,5 +1,6 @@
 import pytest
 
+
 def pytest_configure(config):
     # Register marks to avoid warnings in qcdb.test()
     # sync with setup.cfg

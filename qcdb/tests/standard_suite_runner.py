@@ -55,7 +55,9 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
     fcae = inp["fcae"]
 
     if qc_module_in == "nwchem-tce" and basis == "cc-pvdz":
-        pytest.skip(f"TCE throwing 'non-Abelian symmetry not permitted' for HF molecule when not C1. fix this a different way than setting C1.")
+        pytest.skip(
+            f"TCE throwing 'non-Abelian symmetry not permitted' for HF molecule when not C1. fix this a different way than setting C1."
+        )
 
     # <<<  Molecule  >>>
 

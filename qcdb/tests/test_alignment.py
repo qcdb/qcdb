@@ -25,14 +25,15 @@ def clsd_open_pmols():
     return {**frame_not_important, **frame_part_of_spec}
 
 
-#                                                                                          
-#  ,--.  ,--.,------.      ,---.  ,--.,--.                                          ,--.   
-#  |  '--'  ||  .---'     /  O  \ |  |`--' ,---. ,--,--, ,--,--,--. ,---. ,--,--, ,-'  '-. 
-#  |  .--.  ||  `--,     |  .-.  ||  |,--.| .-. ||      \|        || .-. :|      \'-.  .-' 
-#  |  |  |  ||  |`       |  | |  ||  ||  |' '-' '|  ||  ||  |  |  |\   --.|  ||  |  |  |   
-#  `--'  `--'`--'        `--' `--'`--'`--'.`-  / `--''--'`--`--`--' `----'`--''--'  `--'   
-#                                         `---'                                           
+#
+#  ,--.  ,--.,------.      ,---.  ,--.,--.                                          ,--.
+#  |  '--'  ||  .---'     /  O  \ |  |`--' ,---. ,--,--, ,--,--,--. ,---. ,--,--, ,-'  '-.
+#  |  .--.  ||  `--,     |  .-.  ||  |,--.| .-. ||      \|        || .-. :|      \'-.  .-'
+#  |  |  |  ||  |`       |  | |  ||  ||  |' '-' '|  ||  ||  |  |  |\   --.|  ||  |  |  |
+#  `--'  `--'`--'        `--' `--'`--'`--'.`-  / `--''--'`--`--`--' `----'`--''--'  `--'
+#                                         `---'
 #  <<<  HF Alignment
+
 
 @pytest.mark.parametrize(
     "scramble",
@@ -56,7 +57,7 @@ def clsd_open_pmols():
     # * this parameter alters the input molecule by fix_com and fix_orientation to imitate user signalling frame matters or not.
     [
         pytest.param("fixed"),  # fix_=True (no_com/no_reorient); atres.mol.geom = atin.mol.geom aka scrambled
-        pytest.param("free"),   # fix_=False (def)              ; atres.mol.geom = qcdb (aka psi4) interna orientation
+        pytest.param("free"),  # fix_=False (def)              ; atres.mol.geom = qcdb (aka psi4) interna orientation
     ],
 )
 @pytest.mark.parametrize(
@@ -92,4 +93,6 @@ def clsd_open_pmols():
     ],
 )
 def test_hf_alignment(inp, scramble, frame, driver, dertype, basis, subjects, clsd_open_pmols, request):
-    runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, driver, scramble=scramble, frame=frame))
+    runner_asserter(
+        *_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, driver, scramble=scramble, frame=frame)
+    )

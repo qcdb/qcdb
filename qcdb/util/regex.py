@@ -1,13 +1,13 @@
 import re
 
-yes = re.compile(r'^(yes|true|on|1)', re.IGNORECASE)
-no = re.compile(r'^(no|false|off|0)', re.IGNORECASE)
-der0th = re.compile(r'^(0|none|energy|property)', re.IGNORECASE)
-der1st = re.compile(r'^(1|first|gradient)', re.IGNORECASE)
-der2nd = re.compile(r'^(2|second|hessian)', re.IGNORECASE)
-der3rd = re.compile(r'^(3|third)', re.IGNORECASE)
-der4th = re.compile(r'^(4|fourth)', re.IGNORECASE)
-der5th = re.compile(r'^(5|fifth)', re.IGNORECASE)
+yes = re.compile(r"^(yes|true|on|1)", re.IGNORECASE)
+no = re.compile(r"^(no|false|off|0)", re.IGNORECASE)
+der0th = re.compile(r"^(0|none|energy|property)", re.IGNORECASE)
+der1st = re.compile(r"^(1|first|gradient)", re.IGNORECASE)
+der2nd = re.compile(r"^(2|second|hessian)", re.IGNORECASE)
+der3rd = re.compile(r"^(3|third)", re.IGNORECASE)
+der4th = re.compile(r"^(4|fourth)", re.IGNORECASE)
+der5th = re.compile(r"^(5|fifth)", re.IGNORECASE)
 
 
 def parse_dertype(dertype, max_derivative=2):
@@ -26,7 +26,7 @@ def parse_dertype(dertype, max_derivative=2):
         Returns dertype as an integer and a driver-valid string.
 
     """
-    derdriver = dict(enumerate(['energy', 'gradient', 'hessian', 'third', 'fourth', 'fifth']))
+    derdriver = dict(enumerate(["energy", "gradient", "hessian", "third", "fourth", "fifth"]))
 
     if der0th.match(str(dertype)):
         derint = 0
