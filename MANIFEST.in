@@ -1,7 +1,8 @@
-recursive-include qcdb *.py *.md *.gbs
+recursive-include qcdb *.py *.md *.gbs GENBAS
 prune qcdb/legacy
 prune qcdb/basis/primitives
 prune qcdb/basis/generally_contracted
+prune qcdb/tests/old_tests
 
 include setup.py
 include README.md
