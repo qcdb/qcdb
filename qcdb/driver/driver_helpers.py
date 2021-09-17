@@ -4,7 +4,6 @@ import warnings
 from typing import Any, Dict, Union
 
 import numpy as np
-
 import qcelemental as qcel  # for typing
 
 from ..exceptions import ValidationError

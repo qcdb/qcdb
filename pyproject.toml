@@ -4,11 +4,15 @@ target-version = ['py38']
 extend-exclude = '''(^/qcdb/basis/|^/qcdb/legacy/|^/qcdb/molecule/|^/qcdb/basisset/|^/qcdb/tests/old_tests/|^/qcdb/databases/|^/qcdb/bfs.py|^/qcdb/driver/diatomic.py|^/qcdb/vib.py|^/qcdb/mpl.py)'''
 
 [tool.isort]
+profile = "black"
 line_length = 120
+py_version = 38
 skip = "__init__.py"
 include_trailing_comma = true
 force_grid_wrap = 0
 use_parentheses = true
 multi_line_output = 3
-length_sort_stdlib = 1
-
+float_to_top = true
+color_output = true
+# length_sort_stdlib = 1
+# skip_gitignore = true

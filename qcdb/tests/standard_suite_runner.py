@@ -1,37 +1,37 @@
-import re
 import pprint
+import re
 from typing import Any, Dict
 
-import pytest
 import numpy as np
+import pytest
 from qcelemental.molutil import compute_scramble
 from qcengine.programs.tests.standard_suite_contracts import (
-    contractual_hf,
-    contractual_mp2,
-    contractual_mp2p5,
-    contractual_mp3,
-    contractual_mp4_prsdq_pr,
-    contractual_mp4,
-    contractual_cisd,
-    contractual_qcisd,
-    contractual_qcisd_prt_pr,
-    contractual_fci,
-    contractual_lccd,
-    contractual_lccsd,
+    contractual_accsd_prt_pr,
     contractual_ccd,
     contractual_ccsd,
-    contractual_ccsdpt_prccsd_pr,
     contractual_ccsd_prt_pr,
-    contractual_accsd_prt_pr,
+    contractual_ccsdpt_prccsd_pr,
+    contractual_ccsdt,
     contractual_ccsdt1a,
     contractual_ccsdt1b,
     contractual_ccsdt2,
     contractual_ccsdt3,
-    contractual_ccsdt,
     contractual_ccsdt_prq_pr,
     contractual_ccsdtq,
-    contractual_dft_current,
+    contractual_cisd,
     contractual_current,
+    contractual_dft_current,
+    contractual_fci,
+    contractual_hf,
+    contractual_lccd,
+    contractual_lccsd,
+    contractual_mp2,
+    contractual_mp2p5,
+    contractual_mp3,
+    contractual_mp4,
+    contractual_mp4_prsdq_pr,
+    contractual_qcisd,
+    contractual_qcisd_prt_pr,
     query_has_qcvar,
     query_qcvar,
 )

@@ -1,8 +1,8 @@
+import pytest
 import qcelemental as qcel
 
 import qcdb
 
-import pytest
 from .utils import *
 
 

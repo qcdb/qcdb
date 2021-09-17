@@ -26,14 +26,14 @@
 # @END LICENSE
 #
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
+
+import collections
+import itertools
 import re
 import sys
-import itertools
-import collections
 
-from .modelchems import Method, BasisSet, Error, methods, bases, errors
+from .modelchems import BasisSet, Error, Method, bases, errors, methods
 
 try:
     dict.items

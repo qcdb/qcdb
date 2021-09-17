@@ -1,12 +1,12 @@
-import re
-import sys
 import copy
 import pprint
+import re
+import sys
 
 import numpy as np
 from qcelemental import Datum
 
-from ..exceptions import ValidationError, BasisSetNotFound
+from ..exceptions import BasisSetNotFound, ValidationError
 from ..keywords import register_kwds
 from ..qcvars import VARH
 from ..util import banner

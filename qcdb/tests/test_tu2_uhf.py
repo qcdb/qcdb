@@ -4,6 +4,7 @@ Sample UHF/6-31G** CH2 computation
 
 """
 import pprint
+
 import pytest
 
 import qcdb

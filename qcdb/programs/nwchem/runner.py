@@ -1,15 +1,14 @@
 import copy
-import pprint
 import inspect
+import pprint
 import re
-from typing import Any, Dict, Optional
 from decimal import Decimal
+from typing import Any, Dict, Optional
 
 import numpy as np
 import qcelemental as qcel
-from qcelemental.models import FailedOperation, AtomicInput, AtomicResult
-
 import qcengine as qcng
+from qcelemental.models import AtomicInput, AtomicResult, FailedOperation
 from qcengine.exceptions import InputError
 from qcengine.programs.nwchem import NWChemHarness
 from qcengine.programs.nwchem.keywords import format_keywords
@@ -17,9 +16,9 @@ from qcengine.programs.util import PreservingDict
 
 from ... import qcvars
 from ...basisset import BasisSet
-from ...molecule import Molecule
-from ...util import format_error, print_jobrec, provenance_stamp, accession_stamp
 from ...driver.config import get_mode_config
+from ...molecule import Molecule
+from ...util import accession_stamp, format_error, print_jobrec, provenance_stamp
 from .germinate import muster_basisset, muster_inherited_keywords, muster_modelchem, muster_molecule
 
 pp = pprint.PrettyPrinter(width=120)

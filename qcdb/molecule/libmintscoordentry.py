@@ -4,10 +4,10 @@ Justin M. Turney, with incremental improvements by other
 psi4 developers.
 
 """
-import copy
-import math
 import cmath
 import collections
+import copy
+import math
 
 from ..exceptions import IncompleteAtomError, ValidationError
 from ..util.vecutil import *

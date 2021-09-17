@@ -1,17 +1,16 @@
 from qcelemental.util import which, which_import
-
 from qcengine.programs import register_program
 
 from ..programs.cfour import QcdbCFOURHarness, cfour_gradient_list, cfour_hessian_list, cfour_list, run_cfour
 from ..programs.dftd3 import alt_run_dftd3, dftd3_list
 from ..programs.gamess import QcdbGAMESSHarness, gamess_gradient_list, gamess_hessian_list, gamess_list, run_gamess
-from ..programs.nwchem import (
+from ..programs.nwchem import (  # nwchem_properties_list, run_nwchem
     QcdbNWChemHarness,
     nwchem_gradient_list,
     nwchem_hessian_list,
     nwchem_list,
     run_nwchem,
-)  # nwchem_properties_list, run_nwchem
+)
 from ..programs.psi4 import QcdbPsi4Harness, run_psi4
 from .proc_table import procedures
 

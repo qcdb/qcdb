@@ -10,8 +10,8 @@ import pprint
 from ..keywords import register_kwds
 from . import pe  # keep this at top of imports
 from . import cbs_driver, driver_helpers, driver_util
-from .proc_table import procedures
 from .driver_nbody import nbody_gufunc
+from .proc_table import procedures
 
 pp = pprint.PrettyPrinter(width=120)
 

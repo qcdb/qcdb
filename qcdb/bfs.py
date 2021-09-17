@@ -1,5 +1,5 @@
-import math
 import collections
+import math
 
 import numpy as np
 import qcelemental as qcel

@@ -3,8 +3,9 @@
 import os
 import sys
 
-import qcdb
 import pytest
+
+import qcdb
 
 from ..utils import *
 

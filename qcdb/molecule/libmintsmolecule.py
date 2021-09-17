@@ -1,8 +1,8 @@
-import os
-import re
+import collections
 import copy
 import math
-import collections
+import os
+import re
 
 import numpy as np
 import qcelemental as qcel

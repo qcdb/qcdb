@@ -1,15 +1,14 @@
 """Module with functions that interface with Grimme's DFTD3 code."""
-import re
-import sys
 import copy
 import json
 import pprint
+import re
+import sys
 from decimal import Decimal
 
 import numpy as np
 import qcelemental as qcel
 from qcelemental.util import update_with_error
-
 from qcengine.programs.util import PreservingDict
 
 from ... import __version__, qcvars
@@ -373,10 +372,10 @@ def dftd3_subprocess(dftd3rec):
 
     """
     import os
-    import uuid
     import shutil
     import socket
     import subprocess
+    import uuid
 
     try:
         dftd3rec["command"]

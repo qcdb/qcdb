@@ -7,10 +7,10 @@ import tempfile
 from pathlib import Path
 
 import pytest
-from qcelemental.models import AtomicInput
-
 import qcengine as qcng
+from qcelemental.models import AtomicInput
 from qcengine.testing import has_program, using
+
 import qcdb
 
 _canonical_methods = [

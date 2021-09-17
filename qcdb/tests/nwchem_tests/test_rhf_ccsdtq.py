@@ -3,6 +3,7 @@ import os
 import sys
 
 import pytest
+
 import qcdb
 
 from ..utils import *

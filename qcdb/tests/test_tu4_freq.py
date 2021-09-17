@@ -4,6 +4,7 @@ Optimization followed by frequencies H2O HF/cc-pVDZ
 
 """
 import pprint
+
 import pytest
 
 import qcdb

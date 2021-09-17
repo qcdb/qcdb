@@ -1,5 +1,5 @@
-from typing import Dict, Union
 from decimal import Decimal
+from typing import Dict, Union
 
 import numpy as np
 from qcelemental import Datum

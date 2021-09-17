@@ -4,18 +4,17 @@ Also calls to qcdb module are here and not elsewhere in driver.
 Organizationally, this module isolates qcdb code from psi4 code.
 
 """
-import os
 import copy
+import datetime
+import os
 import pprint
 import shelve
-import datetime
 import subprocess
 from pathlib import Path
 
 import qcelemental as qcel
-from qcelemental.models import AtomicInput
-
 import qcengine as qcng
+from qcelemental.models import AtomicInput
 
 from ..driver import pe
 from ..driver.driver_helpers import get_active_molecule

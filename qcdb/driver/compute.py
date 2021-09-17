@@ -5,8 +5,8 @@ from typing import Any, Dict, Optional, Union
 import qcelemental as qcel
 import qcengine as qcng
 
-from .driver_util import pkgprefix
 from ..util import program_prefix
+from .driver_util import pkgprefix
 
 prefixpkg = {v: k for k, v in pkgprefix.items()}
 

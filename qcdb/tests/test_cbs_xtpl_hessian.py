@@ -2,9 +2,9 @@ import os
 
 import numpy as np
 import pytest
+from qcengine.programs.util.hessparse import load_hessian
 
 import qcdb
-from qcengine.programs.util.hessparse import load_hessian
 
 from .utils import *
 

@@ -3,9 +3,9 @@ import sys
 
 import pytest
 
-from ..utils import *
-
 import qcdb
+
+from ..utils import *
 
 
 def mcscf_ch2(return_value):

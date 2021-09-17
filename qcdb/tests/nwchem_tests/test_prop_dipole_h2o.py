@@ -1,12 +1,12 @@
 import os
 import sys
 
+import numpy as np
+import pytest
+
 import qcdb
 
 from ..utils import *
-
-import pytest
-import numpy as np
 
 # import pprinter as pp
 

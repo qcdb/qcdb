@@ -1,7 +1,7 @@
-import sys
-import math
-import itertools
 import collections
+import itertools
+import math
+import sys
 
 import numpy as np
 import qcelemental as qcel

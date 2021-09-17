@@ -3,6 +3,7 @@ from https://github.com/psi4/psi4/blob/master/tests/tu2-ch2-energy/input.dat
 
 """
 import pprint
+
 import pytest
 
 import qcdb

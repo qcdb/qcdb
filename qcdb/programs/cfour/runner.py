@@ -2,13 +2,12 @@ import copy
 import inspect
 import sys
 import traceback
-from typing import Any, Dict, Optional
 from decimal import Decimal
+from typing import Any, Dict, Optional
 
 import qcelemental as qcel
-from qcelemental.models import AtomicInput
-
 import qcengine as qcng
+from qcelemental.models import AtomicInput
 from qcengine.exceptions import InputError
 from qcengine.programs.cfour import CFOURHarness
 from qcengine.programs.cfour.keywords import format_keyword, format_keywords
@@ -16,7 +15,7 @@ from qcengine.programs.util import PreservingDict
 
 from ... import qcvars
 from ...basisset import BasisSet
-from ...util import print_jobrec, provenance_stamp, accession_stamp
+from ...util import accession_stamp, print_jobrec, provenance_stamp
 from .germinate import (
     extract_basis_from_genbas,
     muster_basisset,

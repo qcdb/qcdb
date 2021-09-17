@@ -1,12 +1,11 @@
 import pytest
 from qcengine.programs.tests.standard_suite_ref import std_molecules, std_refs
 
-from .utils import using
-
 import qcdb
 
 from .standard_suite_runner import runner_asserter
 from .test_standard_suite import _processor
+from .utils import using
 
 
 @pytest.fixture

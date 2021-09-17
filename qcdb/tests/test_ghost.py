@@ -1,10 +1,11 @@
 import pprint
-import pytest
 
+import pytest
 import qcengine
-from qcengine.testing import using
-import qcdb
 from qcelemental import constants
+from qcengine.testing import using
+
+import qcdb
 
 from .utils import *
 

@@ -1,7 +1,7 @@
+import pprint
 import sys
 import traceback
 import uuid
-import pprint
 from typing import Dict
 
 from .. import __version__

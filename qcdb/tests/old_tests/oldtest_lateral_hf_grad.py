@@ -3,9 +3,9 @@ import sys
 
 import numpy as np
 import pytest
+import qcengine as qcng
 
 import qcdb
-import qcengine as qcng
 
 from .addons import *
 from .utils import *

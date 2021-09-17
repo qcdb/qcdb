@@ -1,5 +1,5 @@
-import uuid
 import functools
+import uuid
 
 from ..driver import driver_helpers
 

@@ -1,6 +1,6 @@
 import os
-import sys
 import pprint as pp
+import sys
 
 import numpy as py  # will keep for when QCDB transfer dipole from single var --> array
 import pytest

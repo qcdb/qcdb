@@ -84,6 +84,7 @@ def test_Molecule_BFS():
 
 def test_numpy_BFS():
     import numpy as np
+
     from qcdb.bfs import BFS
 
     # FaOOFaOO 3.6 ?

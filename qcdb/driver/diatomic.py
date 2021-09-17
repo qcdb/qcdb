@@ -1,10 +1,9 @@
 from typing import Dict, List
 
 import numpy as np
-
 from psi4 import core
-from qcelemental import constants
 from psi4.driver.p4util.exceptions import *
+from qcelemental import constants
 
 
 def least_squares_fit_polynomial(xvals, fvals, localization_point, no_factorials=True, weighted=True, polynomial_order=4):

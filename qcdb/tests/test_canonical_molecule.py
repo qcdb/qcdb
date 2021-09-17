@@ -3,21 +3,22 @@
 # """
 import pprint
 
+import pytest
+import qcengine as qcng
+
+# import qcelemental as qcel
+from qcelemental.models import AtomicInput, Molecule
+from qcengine.programs.tests.standard_suite_ref import std_molecules, std_suite
+from qcengine.testing import has_program, using
+
+import qcdb
+
+from .utils import compare_values
+
 # import re
 # import tempfile
 # from pathlib import Path
 
-import pytest
-
-# import qcelemental as qcel
-from qcelemental.models import AtomicInput, Molecule
-
-import qcengine as qcng
-from qcengine.testing import has_program, using
-from qcengine.programs.tests.standard_suite_ref import std_molecules, std_suite
-
-import qcdb
-from .utils import compare_values
 
 _canonical_methods = [
     ("cfour", {"method": "hf", "basis": "cc-pvdz"}, {"reference": "uhf"}),

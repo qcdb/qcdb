@@ -26,11 +26,12 @@
 # @END LICENSE
 #
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
+
 from collections import defaultdict
-from .pdict import PreservingDict
+
 from .molecule import Molecule
+from .pdict import PreservingDict
 from .physconst import *
 
 

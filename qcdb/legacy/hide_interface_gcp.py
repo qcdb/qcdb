@@ -27,23 +27,24 @@
 #
 
 """Module with functions that interface with Grimme's GCP code."""
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
+
 import os
 import re
-import uuid
 import socket
 import subprocess
+import uuid
+
+#from .p4regex import *
+from .molecule import Molecule
 
 try:
-    from psi4.driver.p4util.exceptions import *
     from psi4 import core
+    from psi4.driver.p4util.exceptions import *
     isP4regime = True
 except ImportError:
     from .exceptions import *
     isP4regime = False
-#from .p4regex import *
-from .molecule import Molecule
 
 
 def run_gcp(self, func=None, dertype=None, verbose=False):  # dashlvl=None, dashparam=None

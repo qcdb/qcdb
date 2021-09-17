@@ -1,6 +1,6 @@
 import sys
-from typing import Callable
 from functools import partial
+from typing import Callable
 
 import numpy as np
 import qcelemental as qcel

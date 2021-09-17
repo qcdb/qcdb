@@ -26,21 +26,19 @@
 # @END LICENSE
 #
 
+import copy
 import itertools
 import math
 import pprint
-import copy
 from typing import Callable, Union
 
 import numpy as np
-
-# from psi4 import core
-# from psi4.driver import p4util
-from . import driver_helpers, driver_util, pe
-from qcelemental import constants, Datum
+from qcelemental import Datum, constants
 
 # from psi4.driver.p4util.exceptions import *
-from . import driver_nbody_helper
+# from psi4 import core
+# from psi4.driver import p4util
+from . import driver_helpers, driver_nbody_helper, driver_util, pe
 
 pp = pprint.PrettyPrinter(width=120)
 

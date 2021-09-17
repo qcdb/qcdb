@@ -1,12 +1,11 @@
 import copy
-import pprint
 import inspect
+import pprint
 from typing import Any, Dict, Optional
 
 import qcelemental as qcel
-from qcelemental.models import AtomicInput
-
 import qcengine as qcng
+from qcelemental.models import AtomicInput
 from qcengine.programs.psi4 import Psi4Harness
 from qcengine.programs.util import PreservingDict
 

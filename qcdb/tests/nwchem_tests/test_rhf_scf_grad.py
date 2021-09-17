@@ -1,8 +1,8 @@
 #! gradient HF/cc-pvdz on water
 
 import os
-import sys
 import pprint
+import sys
 
 import numpy as np
 

@@ -89,6 +89,7 @@ def bars(data, title='', saveas=None, relpath=False, graphicsformat=['pdf'], vie
 
     """
     import hashlib
+
     import matplotlib.pyplot as plt
 
     # initialize plot, fix dimensions for consistent Illustrator import
@@ -282,6 +283,7 @@ def valerr(data, color=None, title='', xtitle='', view=True, saveas=None, relpat
     """
     import hashlib
     from itertools import cycle
+
     import matplotlib.pyplot as plt
 
     fig, ax = plt.subplots(figsize=(4, 6))
@@ -373,8 +375,9 @@ def disthist(data,
 
     """
     import hashlib
-    import numpy as np
+
     import matplotlib.pyplot as plt
+    import numpy as np
 
     def gaussianpdf(u, v, x):
         """*u* is mean, *v* is variance, *x* is value, returns probability"""
@@ -537,8 +540,9 @@ def threads(data,
     http://www.dalkescientific.com/writings/diary/archive/2005/04/24/interactive_html.html
 
     """
-    import random
     import hashlib
+    import random
+
     import matplotlib.pyplot as plt
     import numpy as np  # only needed for missing data with mouseiness
 
@@ -736,11 +740,12 @@ def ternary(sapt, title='', labeled=True, view=True, saveas=None, relpath=False,
 
     """
     import hashlib
-    import numpy as np
-    import matplotlib.pyplot as plt
+
     import matplotlib as mpl
-    from matplotlib.path import Path
     import matplotlib.patches as patches
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from matplotlib.path import Path
 
     # initialize plot
     fig, ax = plt.subplots(figsize=(6, 3.6))
@@ -947,6 +952,7 @@ def composition_tile(db, aa1, aa2):
 
     """
     import re
+
     import numpy as np
     bfdbpattern = re.compile("\d\d\d([A-Z][A-Z][A-Z])-\d\d\d([A-Z][A-Z][A-Z])-\d")
 
@@ -973,10 +979,11 @@ def iowa(mcdat, mclbl, title='', xtitle='', xlimit=2.0, view=True, saveas=None, 
     *labels*.
 
     """
-    import numpy as np
     import hashlib
+
     import matplotlib
     import matplotlib.pyplot as plt
+    import numpy as np
 
     aa = [
         'ARG', 'HIE', 'LYS', 'ASP', 'GLU', 'SER', 'THR', 'ASN', 'GLN', 'CYS', 'MET', 'GLY', 'ALA', 'VAL', 'ILE', 'LEU',
@@ -1044,10 +1051,11 @@ def liliowa(mcdat, title='', xlimit=2.0, view=True, saveas=None, relpath=False, 
     """Saves a plot with a heatmap representation of *mcdat*.
 
     """
-    import numpy as np
     import hashlib
+
     import matplotlib
     import matplotlib.pyplot as plt
+    import numpy as np
 
     # handle for frame, overall axis
     fig, axt = plt.subplots(figsize=(1, 1))

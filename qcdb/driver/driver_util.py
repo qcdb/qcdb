@@ -169,6 +169,7 @@ def _process_displacement(derivfunc, method, molecule, displacement, n, ndisp, *
         The wavefunction computed.
     """
     import sys
+
     import numpy as np
     import psi4
 

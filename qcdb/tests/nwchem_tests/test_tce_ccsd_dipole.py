@@ -2,12 +2,12 @@
 import os
 import sys
 
-import qcdb
+import numpy as np
 import qcelemental as qcel
 
-from ..utils import *
+import qcdb
 
-import numpy as np
+from ..utils import *
 
 
 @using("nwchem")

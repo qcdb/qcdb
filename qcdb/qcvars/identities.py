@@ -1,6 +1,6 @@
 import collections
-from typing import Any, Dict, List
 from decimal import Decimal as Dm
+from typing import Any, Dict, List
 
 
 def _difference(args):
