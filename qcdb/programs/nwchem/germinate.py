@@ -117,7 +117,6 @@ def muster_modelchem(name: str, dertype: int, ropts: "Keywords", mode_config, ve
 
     elif lowername == "nwc-ccsd+t(ccsd)":
         if ropts.scroll["QCDB"]["QC_MODULE"].value == "tce":
-            pass
             mdccmd = f"task tce {runtyp} \n\n"
             ropts.require("NWCHEM", "tce__ccsd(t)", True, **kwgs)
         else:

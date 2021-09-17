@@ -6,7 +6,7 @@ import uuid
 def muster_inherited_keywords(ropts: "Keywords", verbose: int = 1) -> None:
     accession = sys._getframe().f_code.co_name + "_" + str(uuid.uuid4())
     kwgs = {"accession": accession, "verbose": verbose}
-    do_translate = ropts.scroll["QCDB"]["TRANSLATE_QCDB"].value
+    ropts.scroll["QCDB"]["TRANSLATE_QCDB"].value
 
     #    # qcdb/memory [B] --> cfour/memory_size [MB]
     #    qopt = ropts.scroll['QCDB']['MEMORY']

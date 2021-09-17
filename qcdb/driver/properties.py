@@ -9,7 +9,6 @@ import pprint
 from ..keywords import register_kwds
 from . import pe  # keep this at top of imports
 from . import driver_helpers, driver_util
-from .proc_table import procedures
 
 pp = pprint.PrettyPrinter(width=120)
 
@@ -46,6 +45,6 @@ def properties(name, **kwargs):
     # return_wfn = kwargs.pop('return_wfn', False)
     pe.active_qcvars = {}
 
-    package = driver_util.get_package(lowername, kwargs)
+    driver_util.get_package(lowername, kwargs)
 
     # jobrec = procedures['properties'][package][lowername](lowername, molecule=molecule, options=pe.nu_options, ptype='properties', **kwargs)

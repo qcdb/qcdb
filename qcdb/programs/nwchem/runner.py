@@ -2,10 +2,8 @@ import copy
 import inspect
 import pprint
 import re
-from decimal import Decimal
 from typing import Any, Dict, Optional
 
-import numpy as np
 import qcelemental as qcel
 import qcengine as qcng
 from qcelemental.models import AtomicInput, AtomicResult, FailedOperation

@@ -55,7 +55,7 @@ def diatomic(rvals: List, energies: List, molecule, plot_fit: str = '') -> Dict:
                  corresponding to the spectroscopic constants in cm-1
     """
 
-    angstrom_to_bohr = 1.0 / constants.bohr2angstroms
+    1.0 / constants.bohr2angstroms
     angstrom_to_meter = 10e-10
 
     # Make sure the input is valid
@@ -114,7 +114,7 @@ def diatomic(rvals: List, energies: List, molecule, plot_fit: str = '') -> Dict:
     print("Cubic Force Constant     %14.7f MDYNE/A**2\n" % d3)
     print("Quartic Force Constant   %14.7f MDYNE/A**3\n" % d4)
 
-    hbar = constants.h / (2.0 * np.pi)
+    constants.h / (2.0 * np.pi)
     mu = ((m1*m2)/(m1+m2))*constants.amu2kg
     we = 5.3088375e-11 * np.sqrt(d2/mu)
     wexe = (1.2415491e-6)*(we/d2)**2 * ((5.0*d3*d3)/(3.0*d2)-d4)

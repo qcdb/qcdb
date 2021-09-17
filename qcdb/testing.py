@@ -2,7 +2,6 @@ import sys
 from functools import partial
 from typing import Callable
 
-import numpy as np
 import qcelemental as qcel
 
 from .exceptions import TestComparisonError, UpgradeHelper

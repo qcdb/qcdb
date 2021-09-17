@@ -6,7 +6,7 @@ import sys
 import numpy as np
 from qcelemental import Datum
 
-from ..exceptions import BasisSetNotFound, ValidationError
+from ..exceptions import ValidationError
 from ..keywords import register_kwds
 from ..qcvars import VARH
 from ..util import banner
@@ -65,7 +65,7 @@ def _cbs_gufunc(func, total_method_name, molecule, **kwargs):
     kwargs = driver_util.kwargs_lower(kwargs)
     return_wfn = kwargs.pop("return_wfn", False)
     #    core.clean_variables()
-    user_dertype = kwargs.pop("dertype", None)
+    kwargs.pop("dertype", None)
     cbs_verbose = kwargs.pop("cbs_verbose", False)
     ptype = kwargs.pop("ptype", None)
 
@@ -1505,7 +1505,7 @@ def _expand_bracketed_basis(basisstring, molecule=None):
             qcdb.BasisSet.pyconstruct(molecule, "BASIS", basis)
         # qbs = BasisSet.pyconstruct(jobrec['molecule'], 'BASIS', jobrec['options']['BASIS'])
         except qcdb.BasisSetNotFound:
-            e = sys.exc_info()[1]
+            sys.exc_info()[1]
             raise ValidationError("""Basis set '%s' not available for molecule.""" % (basis))
 
     return (BSET, ZSET)

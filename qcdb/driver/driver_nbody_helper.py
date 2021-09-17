@@ -45,7 +45,7 @@ def multi_level(func, **kwargs):
     from .driver_nbody import _print_nbody_energy, nbody_gufunc
 
     ptype = kwargs["ptype"]
-    return_wfn = kwargs.get("return_wfn", False)
+    kwargs.get("return_wfn", False)
     kwargs["return_wfn"] = True
     levels = {}
     for k, v in kwargs.pop("levels").items():

@@ -744,7 +744,6 @@ def ternary(sapt, title='', labeled=True, view=True, saveas=None, relpath=False,
     import matplotlib as mpl
     import matplotlib.patches as patches
     import matplotlib.pyplot as plt
-    import numpy as np
     from matplotlib.path import Path
 
     # initialize plot
@@ -1053,7 +1052,6 @@ def liliowa(mcdat, title='', xlimit=2.0, view=True, saveas=None, relpath=False, 
     """
     import hashlib
 
-    import matplotlib
     import matplotlib.pyplot as plt
     import numpy as np
 

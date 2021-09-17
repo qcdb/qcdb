@@ -38,7 +38,7 @@ from qcelemental import Datum, constants
 # from psi4.driver.p4util.exceptions import *
 # from psi4 import core
 # from psi4.driver import p4util
-from . import driver_helpers, driver_nbody_helper, driver_util, pe
+from . import driver_nbody_helper, driver_util, pe
 
 pp = pprint.PrettyPrinter(width=120)
 
@@ -488,7 +488,7 @@ def compute_nbody_components(func, method_string, metadata):
     kwargs = metadata["kwargs"]
     molecule = metadata["molecule"]
     molecule.update_geometry  # MM
-    keep_mol = molecule.clone()
+    molecule.clone()
     compute_list = metadata["compute_dict"]["all"]
 
     # Now compute the energies
@@ -618,15 +618,15 @@ def assemble_nbody_components(metadata, component_results):
             total 2-body gradient.
     """
     # Unpack metadata
-    kwargs = metadata["kwargs"]
+    metadata["kwargs"]
 
     nbody_range = range(1, metadata["max_nbody"] + 1)
 
     # Unpack compute list metadata
-    compute_list = metadata["compute_dict"]["all"]
+    metadata["compute_dict"]["all"]
     cp_compute_list = metadata["compute_dict"]["cp"]
     nocp_compute_list = metadata["compute_dict"]["nocp"]
-    vmfc_compute_list = metadata["compute_dict"]["vmfc_compute"]
+    metadata["compute_dict"]["vmfc_compute"]
     vmfc_level_list = metadata["compute_dict"]["vmfc_levels"]
 
     print("MM")

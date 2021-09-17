@@ -2,7 +2,6 @@ import copy
 import inspect
 import sys
 import traceback
-from decimal import Decimal
 from typing import Any, Dict, Optional
 
 import qcelemental as qcel
@@ -168,7 +167,7 @@ class QcdbCFOURHarness(CFOURHarness):
 
         try:
             qcvars.build_out(dqcvars)
-        except ValueError as e:
+        except ValueError:
             raise InputError(
                 "STDOUT:\n"
                 + output_model.stdout

@@ -182,10 +182,8 @@ def optking(name, **kwargs):
 
     if hasattr(name, "__call__"):
         lowername = name
-        custom_gradient = True
     else:
         lowername = name.lower()
-        custom_gradient = False
 
     return_wfn = kwargs.pop("return_wfn", False)
 
@@ -431,11 +429,9 @@ def geometric(name, **kwargs):
     kwargs = driver_util.kwargs_lower(kwargs)
 
     if hasattr(name, "__call__"):
-        lowername = name
-        custom_gradient = True
+        pass
     else:
-        lowername = name.lower()
-        custom_gradient = False
+        name.lower()
 
     return_wfn = kwargs.pop("return_wfn", False)
 

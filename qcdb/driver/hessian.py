@@ -538,7 +538,6 @@ def frequency(name, **kwargs):
     from . import load_proc_table
 
     kwargs = driver_util.kwargs_lower(kwargs)
-    text = ""
 
     #    # Bounce (someday) if name is function
     #    if hasattr(name, '__call__'):
@@ -585,7 +584,7 @@ def frequency(name, **kwargs):
 
     irrep = kwargs.get("irrep", None)
     vibinfo = vibanal_jobrec(jobrec, irrep=irrep, project_trans=project_trans, project_rot=project_rot)
-    vibonly = vib.filter_nonvib(vibinfo)
+    vib.filter_nonvib(vibinfo)
     #    wfn.set_frequencies(core.Vector.from_array(qcdb.vib.filter_omega_to_real(vibonly['omega'].data)))
     #    wfn.frequency_analysis = vibinfo
     jobrec["frequency_analysis"] = vibinfo

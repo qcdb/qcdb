@@ -4,8 +4,6 @@
 class QcdbException(Exception):
     """Error class for QCDB."""
 
-    pass
-
 
 class FeatureNotImplemented(QcdbException):
     """Error called for functions defined but not yet implemented.

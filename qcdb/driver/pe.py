@@ -36,7 +36,7 @@ def load_program_options(options: Keywords) -> None:
     if which("psi4") and which_import("psi4"):
         load_psi4_keywords(options)
     if which_import("resp_qcdb"):
-        import resp_qcdb
+        pass
 
         resp.load_keywords(nu_options)
 

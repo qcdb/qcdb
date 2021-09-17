@@ -108,7 +108,6 @@ def vpt2(name, **kwargs):
        - switch C --> S/R with recovery using shelf
 
     """
-    from ..driver import endorsed_plugins
 
     kwargs = kwargs_lower(kwargs)
 

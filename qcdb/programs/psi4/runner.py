@@ -91,7 +91,7 @@ class QcdbPsi4Harness(Psi4Harness):
         input_data["model"]["method"] = mtd
 
         # should we put this memory in the JobConfig object? I don't think the units agree
-        omem = ropts.scroll["QCDB"].pop("MEMORY")
+        ropts.scroll["QCDB"].pop("MEMORY")
         # print(config.memory, '!!')
         # config.memory = omem.value #???
         # print(config.memory, '!!')

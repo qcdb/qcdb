@@ -453,7 +453,7 @@ def dftd3_subprocess(dftd3rec):
         os.chdir("..")
         try:
             shutil.rmtree(dftd3_tmpdir)
-        except OSError as err:
+        except OSError:
             raise OSError("Unable to remove dftd3 temporary directory: {}".format(dftd3_tmpdir)) from err
 
     if defmoved is True:

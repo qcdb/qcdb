@@ -110,7 +110,7 @@ def nwchem_properties_list() -> List:
     """Return an array of NWChem methods with energies. Appended to procedures ['properties']"""
 
     val = []
-    va.append("nwc-")
+    # val.append("nwc-")
 
 
 def _dft_functionals_list() -> List:
