@@ -8,28 +8,28 @@ import qcdb
 
 from .utils import *
 
-_arrays_prov_stamp = {'creator': 'QCElemental', 'version': '1.0', 'routine': 'qcelemental.molparse.from_arrays'}
-_string_prov_stamp = {'creator': 'QCElemental', 'version': '1.0', 'routine': 'qcelemental.molparse.from_string'}
+_arrays_prov_stamp = {"creator": "QCElemental", "version": "1.0", "routine": "qcelemental.molparse.from_arrays"}
+_string_prov_stamp = {"creator": "QCElemental", "version": "1.0", "routine": "qcelemental.molparse.from_string"}
 
 fullans1a = {
-    'geom': np.array([0., 0., 0., 1., 0., 0.]),
-    'elea': np.array([16, 1]),
-    'elez': np.array([8, 1]),
-    'elem': np.array(['O', 'H']),
-    'mass': np.array([15.99491462, 1.00782503]),
-    'real': np.array([True, True]),
-    'elbl': np.array(['', '']),
-    'units': 'Angstrom',
-    'fix_com': True,
-    'fix_orientation': False,
-    'fragment_separators': [],
-    'fragment_charges': [0.0],
-    'fragment_multiplicities': [2],
-    'molecular_charge': 0.0,
-    'molecular_multiplicity': 2,
+    "geom": np.array([0.0, 0.0, 0.0, 1.0, 0.0, 0.0]),
+    "elea": np.array([16, 1]),
+    "elez": np.array([8, 1]),
+    "elem": np.array(["O", "H"]),
+    "mass": np.array([15.99491462, 1.00782503]),
+    "real": np.array([True, True]),
+    "elbl": np.array(["", ""]),
+    "units": "Angstrom",
+    "fix_com": True,
+    "fix_orientation": False,
+    "fragment_separators": [],
+    "fragment_charges": [0.0],
+    "fragment_multiplicities": [2],
+    "molecular_charge": 0.0,
+    "molecular_multiplicity": 2,
 }
 
-#subject6 = """
+# subject6 = """
 #    0 1
 #    O1    0         0     0.118720
 #    h2   -0.753299, 0.0, -0.474880
@@ -39,16 +39,16 @@ fullans1a = {
 #    --
 #    efp h2O -2.12417561  1.22597097 -0.95332054 -2.902133 1.734999 -1.953647
 # --
-#efp ammoniA
+# efp ammoniA
 #     0.98792    1.87681    2.85174
-#units au
+# units au
 #     1.68798    1.18856    3.09517
 #
 #     1.45873    2.55904    2.27226
 #
-#"""
+# """
 #
-#ans6 = {'units': 'Bohr',
+# ans6 = {'units': 'Bohr',
 #        'geom': [0., 0., 0.118720, -0.753299, 0.0, -0.474880, 0.753299, 0.0, -0.474880],
 #        'elbl': ['O1', 'h2', 'H3'],
 #        'fragment_charges': [0.],
@@ -60,7 +60,7 @@ fullans1a = {
 #        'hint_types': ['xyzabc', 'points'],
 #        }
 #
-#fullans6 = {'qm': {'geom': np.array([0., 0., 0.118720, -0.753299, 0.0, -0.474880, 0.753299, 0.0, -0.474880]),
+# fullans6 = {'qm': {'geom': np.array([0., 0., 0.118720, -0.753299, 0.0, -0.474880, 0.753299, 0.0, -0.474880]),
 #                   'elea': np.array([16, 1, 1]),
 #                   'elez': np.array([8, 1, 1]),
 #                   'elem': np.array(['O', 'H', 'H']),
@@ -86,8 +86,8 @@ fullans1a = {
 #                   'fix_symmetry': 'c1',
 #        }}
 
-#@using_pylibefp
-#def test_psi4_qmefp_6d():
+# @using_pylibefp
+# def test_psi4_qmefp_6d():
 #    subject = subject6
 #
 #    fullans = copy.deepcopy(fullans6)
@@ -128,106 +128,106 @@ fullans1a = {
 
 def test_qmol_11a():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = _string_prov_stamp
+    fullans["provenance"] = _string_prov_stamp
 
     asdf = qcdb.Molecule(fullans)
 
-    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms="align", atol=1.0e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
 
 def test_qmol_11b():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = _arrays_prov_stamp
+    fullans["provenance"] = _arrays_prov_stamp
 
-    asdf = qcdb.Molecule(geom=[0., 0., 0., 1., 0., 0.], elez=[8, 1], fix_com=True)
+    asdf = qcdb.Molecule(geom=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0], elez=[8, 1], fix_com=True)
 
-    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms="align", atol=1.0e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
 
 def test_qmol_11c():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = _string_prov_stamp
+    fullans["provenance"] = _string_prov_stamp
 
-    asdf = qcdb.Molecule("""nocom\n8 0 0 0\n1 1 0 0""", dtype='psi4')
+    asdf = qcdb.Molecule("""nocom\n8 0 0 0\n1 1 0 0""", dtype="psi4")
 
-    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms="align", atol=1.0e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
 
 def test_qmol_11d():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = _string_prov_stamp
+    fullans["provenance"] = _string_prov_stamp
 
-    asdf = qcdb.Molecule("""nocom\n8 0 0 0\n1 1 0 0""", dtype='psi4+')
+    asdf = qcdb.Molecule("""nocom\n8 0 0 0\n1 1 0 0""", dtype="psi4+")
 
-    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms="align", atol=1.0e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
 
 def test_qmol_11e():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = _string_prov_stamp
+    fullans["provenance"] = _string_prov_stamp
 
-    asdf = qcdb.Molecule("""2\n\nO 0 0 0 \n1 1 0 0 """, dtype='xyz', fix_com=True)
+    asdf = qcdb.Molecule("""2\n\nO 0 0 0 \n1 1 0 0 """, dtype="xyz", fix_com=True)
 
-    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms="align", atol=1.0e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
 
 def test_qmol_11f():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = _arrays_prov_stamp
+    fullans["provenance"] = _arrays_prov_stamp
 
     asdf = qcdb.Molecule.from_dict(fullans)
 
-    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms="align", atol=1.0e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
 
 def test_qmol_11g():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = _arrays_prov_stamp
+    fullans["provenance"] = _arrays_prov_stamp
 
-    asdf = qcdb.Molecule.from_arrays(geom=[0., 0., 0., 1., 0., 0.], elez=[8, 1], fix_com=True)
+    asdf = qcdb.Molecule.from_arrays(geom=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0], elez=[8, 1], fix_com=True)
 
-    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms="align", atol=1.0e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
 
 def test_qmol_11h():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = _string_prov_stamp
+    fullans["provenance"] = _string_prov_stamp
 
     asdf = qcdb.Molecule.from_string("""nocom\n8 0 0 0\n1 1 0 0""")
 
-    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms="align", atol=1.0e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
 
 def test_qmol_11i():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = _string_prov_stamp
+    fullans["provenance"] = _string_prov_stamp
 
     asdf = qcdb.Molecule.from_string("""nocom\n8 0 0 0\n1 1 0 0""")
 
-    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms="align", atol=1.0e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
 
 def test_qmol_11j():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = _string_prov_stamp
+    fullans["provenance"] = _string_prov_stamp
 
     asdf = qcdb.Molecule.from_string("""2\n\nO 0 0 0 \n1 1 0 0 """, fix_com=True)
 
-    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms="align", atol=1.0e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
 
-#@using_psi4_molrec
-#def test_pmol_11k():
+# @using_psi4_molrec
+# def test_pmol_11k():
 #    import psi4
 #    asdf = psi4.core.Molecule.from_dict(fullans1a)
 #    assess_mol_11(asdf, '[16] psi4.core.Molecule.from_dict(dict)')
@@ -235,8 +235,8 @@ def test_qmol_11j():
 #    assert compare_molrecs(fullans, asdf.to_dict(), 4, tnm(), relative_geoms='align')
 #    assert compare_integers(2, asdf.natom(), tnm())
 #
-#@using_psi4_molrec
-#def test_pmol_11l():
+# @using_psi4_molrec
+# def test_pmol_11l():
 #    import psi4
 #    asdf = psi4.core.Molecule.from_arrays(geom=[ 0.,  0.,  0.,  1.,  0.,  0.], elez=[8, 1], fix_com=True)
 #    assess_mol_11(asdf, '[17] psi4.core.Molecule.from_arrays(geom, elez)')
@@ -244,8 +244,8 @@ def test_qmol_11j():
 #    assert compare_molrecs(fullans, asdf.to_dict(), 4, tnm(), relative_geoms='align')
 #    assert compare_integers(2, asdf.natom(), tnm())
 #
-#@using_psi4_molrec
-#def test_pmol_11m():
+# @using_psi4_molrec
+# def test_pmol_11m():
 #    import psi4
 #    asdf = psi4.core.Molecule.from_string("""nocom\n8 0 0 0\n1 1 0 0""")
 #    assess_mol_11(asdf, '[18] psi4.core.Molecule.from_string(str, dtype="psi4")')
@@ -253,8 +253,8 @@ def test_qmol_11j():
 #    assert compare_molrecs(fullans, asdf.to_dict(), 4, tnm(), relative_geoms='align')
 #    assert compare_integers(2, asdf.natom(), tnm())
 #
-#@using_psi4_molrec
-#def test_pmol_11n():
+# @using_psi4_molrec
+# def test_pmol_11n():
 #    import psi4
 #    asdf = psi4.core.Molecule.from_string("""nocom\n8 0 0 0\n1 1 0 0""")
 #    assess_mol_11(asdf, '[19] psi4.core.Molecule.from_string(str, dtype="psi4+")')
@@ -262,8 +262,8 @@ def test_qmol_11j():
 #    assert compare_molrecs(fullans, asdf.to_dict(), 4, tnm(), relative_geoms='align')
 #    assert compare_integers(2, asdf.natom(), tnm())
 #
-#@using_psi4_molrec
-#def test_pmol_11o():
+# @using_psi4_molrec
+# def test_pmol_11o():
 #    import psi4
 #    asdf = psi4.core.Molecule.from_string("""2\n\nO 0 0 0 \n1 1 0 0 """, fix_com=True)
 #    assess_mol_11(asdf, '[20] psi4.core.Molecule.from_string(str, dtype="xyz")')
@@ -274,18 +274,19 @@ def test_qmol_11j():
 
 def test_qmol_12():
     fullans = copy.deepcopy(fullans1a)
-    fullans['provenance'] = _arrays_prov_stamp
+    fullans["provenance"] = _arrays_prov_stamp
 
-    asdf = qcdb.Molecule(geom=[0., 0., 0., 1., 0., 0.], elez=[8, 1], fix_com=True)
+    asdf = qcdb.Molecule(geom=[0.0, 0.0, 0.0, 1.0, 0.0, 0.0], elez=[8, 1], fix_com=True)
 
-    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
+    assert compare_molrecs(fullans, asdf.to_dict(), tnm(), relative_geoms="align", atol=1.0e-4)
     assert compare_integers(2, asdf.natom(), tnm())
 
     import json
+
     smol = json.dumps(asdf.to_dict(np_out=False))
     dmol = json.loads(smol)
 
     asdf2 = qcdb.Molecule(dmol)
 
-    assert compare_molrecs(fullans, asdf2.to_dict(), tnm(), relative_geoms='align', atol=1.e-4)
+    assert compare_molrecs(fullans, asdf2.to_dict(), tnm(), relative_geoms="align", atol=1.0e-4)
     assert compare_integers(2, asdf2.natom(), tnm())

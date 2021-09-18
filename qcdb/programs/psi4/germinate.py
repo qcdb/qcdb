@@ -2,11 +2,11 @@ import sys
 import uuid
 
 
-#@moptions.register_opts(pe.nu_options)
-def muster_inherited_keywords(ropts: 'Keywords', verbose: int = 1) -> None:
-    accession = sys._getframe().f_code.co_name + '_' + str(uuid.uuid4())
-    kwgs = {'accession': accession, 'verbose': verbose}
-    do_translate = ropts.scroll['QCDB']['TRANSLATE_QCDB'].value
+# @moptions.register_opts(pe.nu_options)
+def muster_inherited_keywords(ropts: "Keywords", verbose: int = 1) -> None:
+    accession = sys._getframe().f_code.co_name + "_" + str(uuid.uuid4())
+    kwgs = {"accession": accession, "verbose": verbose}
+    ropts.scroll["QCDB"]["TRANSLATE_QCDB"].value
 
     #    # qcdb/memory [B] --> cfour/memory_size [MB]
     #    qopt = ropts.scroll['QCDB']['MEMORY']
@@ -29,6 +29,6 @@ def muster_inherited_keywords(ropts: 'Keywords', verbose: int = 1) -> None:
     #        ropts.suggest('CFOUR', 'REFERENCE', qref, **kwgs)
 
     # qcdb/mp2__mp2_type --> psi4/mp2_type
-    qopt = ropts.scroll['QCDB']['MP2__MP2_TYPE']
+    qopt = ropts.scroll["QCDB"]["MP2__MP2_TYPE"]
     if qopt.disputed():
-        ropts.suggest('PSI4', 'MP2_TYPE', qopt.value, **kwgs)
+        ropts.suggest("PSI4", "MP2_TYPE", qopt.value, **kwgs)

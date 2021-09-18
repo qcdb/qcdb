@@ -4,6 +4,7 @@ Sample HF/cc-pVDZ H2O computation
 
 """
 import pprint
+
 import pytest
 
 import qcdb

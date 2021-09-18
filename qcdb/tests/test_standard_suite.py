@@ -108,9 +108,17 @@ _w30 = ("HF TOTAL HESSIAN", "unconverged: GAMESS HF hessian CPHF too loose; answ
 #
 # >>> Notes
 
-_c4_tight = {"cfour_SCF_CONV": 12, "cfour_CC_CONV": 12, "cfour_LINEQ_CONV": 10}  # tighten cfour for generating references
+_c4_tight = {
+    "cfour_SCF_CONV": 12,
+    "cfour_CC_CONV": 12,
+    "cfour_LINEQ_CONV": 10,
+}  # tighten cfour for generating references
 _p4_fd = {"psi4_points": 5, "psi4_fd_project": False}  # tighten fd for a psi calc that's already doing it
-_p4c4_fd = {**{"psi4_" + k: v for k, v in _c4_tight.items()}, **_p4_fd, "psi4_dertype": "none"}  # tight cfour mtd with psi4 fd. needs modified psi
+_p4c4_fd = {
+    **{"psi4_" + k: v for k, v in _c4_tight.items()},
+    **_p4_fd,
+    "psi4_dertype": "none",
+}  # tight cfour mtd with psi4 fd. needs modified psi
 
 
 def _trans_key(qc, bas, key):
@@ -301,7 +309,7 @@ def test_hf_hessian_module(inp, dertype, basis, subjects, clsd_open_pmols, reque
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -464,6 +472,7 @@ def test_mp2_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, req
 #
 #  <<<  MP2 Hessian
 
+
 @pytest.mark.parametrize(
     "dertype",
     [
@@ -515,7 +524,6 @@ def test_mp2_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, req
         pytest.param({"call": "c4-mp2",  "reference": "rohf", "fcae": "fc", "xptd": {           }, "keywords": {**_c4_tight, "cfour_reference": "rohf", "cfour_dropmo": [1]},                             "wrong": {2: _w27}}, id="mp2 rohf fc: cfour",      marks=using("cfour")),
         # DEBUG pytest.param({"call": "p4-mp2",  "reference": "rohf", "fcae": "fc", "xptd": {"fd": False}, "keywords": {**_p4_fd, "reference": "rohf", "psi4_freeze_core": True, "psi4_mp2_type": "conv"},                  }, id="mp2 rohf fc: psi4",       marks=using("psi4")),
         # DEBUG pytest.param({"call": "p4-c4-mp2", "reference": "rohf", "fcae": "fc", "keywords": {"psi4_cfour_reference": "rohf", "psi4_cfour_dropmo": [1], "psi4_cfour_cc_program": "vcc", **_p4c4_fd}                    }, id="mp2 rohf fc: psi4-cfour-vcc"),
-
         # for rohf, cfour analytic 2nd deriv (which cfour ppr doesn't admit to) doesn't match findif HbyE from psi4 not HbyG from p4c4
         # yapf: enable
     ],
@@ -538,7 +546,7 @@ def test_mp2_hessian_module(inp, dertype, basis, subjects, clsd_open_pmols, requ
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -602,6 +610,7 @@ def test_mp3_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, reque
 #  `--'   `--'`--'     `----'      `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'
 #
 #  <<<  MP3 Gradient
+
 
 @pytest.mark.parametrize(
     "dertype",
@@ -670,21 +679,21 @@ def test_mp3_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, req
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "gradient"))
 
 
-
-#                                                                                                                        
-#  ,--.   ,--.,------.   ,---.  ,-. ,---.  ,------.   ,-----.   ,-.      ,------.                                        
-#  |   `.'   ||  .--. ' /    | / .''   .-' |  .-.  \ '  .-.  '  '. \     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.   
-#  |  |'.'|  ||  '--' |/  '  ||  | `.  `-. |  |  \  :|  | |  |   |  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /    
-#  |  |   |  ||  | --' '--|  ||  | .-'    ||  '--'  /'  '-'  '-. |  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '     
-#  `--'   `--'`--'        `--' \ '.`-----' `-------'  `-----'--'.' /     `------'`--''--' `----'`--'   .`-  /.-'  /      
-#                               `-'                             `-'                                    `---' `---'       
+#
+#  ,--.   ,--.,------.   ,---.  ,-. ,---.  ,------.   ,-----.   ,-.      ,------.
+#  |   `.'   ||  .--. ' /    | / .''   .-' |  .-.  \ '  .-.  '  '. \     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  |'.'|  ||  '--' |/  '  ||  | `.  `-. |  |  \  :|  | |  |   |  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  |  |   |  ||  | --' '--|  ||  | .-'    ||  '--'  /'  '-'  '-. |  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#  `--'   `--'`--'        `--' \ '.`-----' `-------'  `-----'--'.' /     `------'`--''--' `----'`--'   .`-  /.-'  /
+#                               `-'                             `-'                                    `---' `---'
 #  <<<  MP4(SDQ) Energy
+
 
 @pytest.mark.parametrize(
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -724,20 +733,21 @@ def test_mp4_prsdq_pr_energy_module(inp, dertype, basis, subjects, clsd_open_pmo
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
 
 
-#                                                                                             
-#  ,--.   ,--.,------.   ,---.    ,------.                                                    
-#  |   `.'   ||  .--. ' /    |    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.               
-#  |  |'.'|  ||  '--' |/  '  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /                
-#  |  |   |  ||  | --' '--|  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '                 
-#  `--'   `--'`--'        `--'    `------'`--''--' `----'`--'   .`-  /.-'  /                  
-#                                                               `---' `---'                   
+#
+#  ,--.   ,--.,------.   ,---.    ,------.
+#  |   `.'   ||  .--. ' /    |    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  |'.'|  ||  '--' |/  '  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  |  |   |  ||  | --' '--|  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#  `--'   `--'`--'        `--'    `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                                               `---' `---'
 #  <<<  MP4 Energy
+
 
 @pytest.mark.parametrize(
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -789,22 +799,21 @@ def test_mp4_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, reque
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
 
 
-
-
-#                                                                                                   
-#   ,-----.,--. ,---.  ,------.      ,------.                                                       
-#  '  .--./|  |'   .-' |  .-.  \     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.                  
-#  |  |    |  |`.  `-. |  |  \  :    |  `--, |      \| .-. :|  .--'| .-. |\  '  /                   
-#  '  '--'\|  |.-'    ||  '--'  /    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '                    
-#   `-----'`--'`-----' `-------'     `------'`--''--' `----'`--'   .`-  /.-'  /                     
-#                                                                  `---' `---'                      
+#
+#   ,-----.,--. ,---.  ,------.      ,------.
+#  '  .--./|  |'   .-' |  .-.  \     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  |    |  |`.  `-. |  |  \  :    |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  '  '--'\|  |.-'    ||  '--'  /    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#   `-----'`--'`-----' `-------'     `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                                                  `---' `---'
 #  <<<  CISD Energy
+
 
 @pytest.mark.parametrize(
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -851,7 +860,7 @@ def test_mp4_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, reque
         pytest.param({"call": "c4-cisd",  "reference": "rohf", "fcae": "fc", "keywords": {**_c4_tight, "cfour_REFerence": "roHF", "cfour_dropmo": [1], "cfour_cc_program": "vcc", "cfour_orbitals": 0, "cfour_print": 2},                   }, id="cisd rohf fc: cfour-vcc",  marks=using("cfour")),
         #pytest.param({"call": "gms-cisd", "reference": "rohf", "fcae": "fc", "keywords": {"gamess_contrl__scftyp": "rohf", "freeze_core": True},                                              "error": {2: _q4 }}, id="cisd rohf fc: gamess",     marks=using("gamess")),
         pytest.param({"call": "nwc-cisd", "reference": "rohf", "fcae": "fc", "keywords": {"nwchem_scf__rohf": True, "nwchem_tce__freeze": 1, "qc_module": "tce"},                                                                           }, id="cisd rohf fc: nwchem-tce", marks=using("nwchem")),
-        #pytest.param({"call": "p4-cisd",  "reference": "rohf", "fcae": "fc", "keywords": {"psi4_reference": "rohf", "psi4_freeze_core": True, "psi4_qc_module": "detci", "psi4_e_convergence": 8, "psi4_r_convergence": 7}, "error": {2: _q8 }}, id="cisd rohf fc: psi4",       marks=using("psi4")),
+        # pytest.param({"call": "p4-cisd",  "reference": "rohf", "fcae": "fc", "keywords": {"psi4_reference": "rohf", "psi4_freeze_core": True, "psi4_qc_module": "detci", "psi4_e_convergence": 8, "psi4_r_convergence": 7}, "error": {2: _q8 }}, id="cisd rohf fc: psi4",       marks=using("psi4")),
         # yapf: enable
     ],
 )
@@ -859,20 +868,21 @@ def test_cisd_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, requ
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
 
 
-#                                                                                             
-#   ,-----.    ,-----.,--. ,---.  ,------.      ,------.                                      
-#  '  .-.  '  '  .--./|  |'   .-' |  .-.  \     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--. 
-#  |  | |  |  |  |    |  |`.  `-. |  |  \  :    |  `--, |      \| .-. :|  .--'| .-. |\  '  /  
-#  '  '-'  '-.'  '--'\|  |.-'    ||  '--'  /    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '   
-#   `-----'--' `-----'`--'`-----' `-------'     `------'`--''--' `----'`--'   .`-  /.-'  /    
-#                                                                             `---' `---'     
+#
+#   ,-----.    ,-----.,--. ,---.  ,------.      ,------.
+#  '  .-.  '  '  .--./|  |'   .-' |  .-.  \     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  | |  |  |  |    |  |`.  `-. |  |  \  :    |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  '  '-'  '-.'  '--'\|  |.-'    ||  '--'  /    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#   `-----'--' `-----'`--'`-----' `-------'     `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                                                             `---' `---'
 #  <<<  QCISD Energy
+
 
 @pytest.mark.parametrize(
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -907,7 +917,6 @@ def test_cisd_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, requ
         pytest.param({"call": "c4-qcisd",  "reference": "uhf",  "fcae": "fc", "keywords": {**_c4_tight, "cfour_refereNCE": "UHF", "cfour_dropmo": [1], "cfour_cc_program": "ecc"},                                                          }, id="qcisd  uhf fc: cfour-ecc",  marks=using("cfour")),
         pytest.param({"call": "nwc-qcisd", "reference": "uhf",  "fcae": "fc", "keywords": {"nwchem_scf__uhf": True, "nwchem_tce__freeze": 1, "qc_module": "tce"},                                                                           }, id="qcisd  uhf fc: nwchem-tce", marks=using("nwchem")),
         pytest.param({"call": "p4-qcisd",  "reference": "uhf",  "fcae": "fc", "keywords": {"psi4_reference": "uhf", "psi4_freeze_core": True},                                                                            "error": {0: _q41}}, id="qcisd  uhf fc: psi4",   marks=using("psi4")),
-
         # * no ROHF in Cfour, so hard to establish a ref
         # yapf: enable
     ],
@@ -915,20 +924,21 @@ def test_cisd_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, requ
 def test_qcisd_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
 
-                                                                                                                 
-#   ,-----.    ,-----.,--. ,---.  ,------.    ,-.,--------.,-.      ,------.                                      
-#  '  .-.  '  '  .--./|  |'   .-' |  .-.  \  / .''--.  .--''. \     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--. 
-#  |  | |  |  |  |    |  |`.  `-. |  |  \  :|  |    |  |    |  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /  
-#  '  '-'  '-.'  '--'\|  |.-'    ||  '--'  /|  |    |  |    |  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '   
-#   `-----'--' `-----'`--'`-----' `-------'  \ '.   `--'   .' /     `------'`--''--' `----'`--'   .`-  /.-'  /    
-#                                             `-'          `-'                                    `---' `---'     
+
+#   ,-----.    ,-----.,--. ,---.  ,------.    ,-.,--------.,-.      ,------.
+#  '  .-.  '  '  .--./|  |'   .-' |  .-.  \  / .''--.  .--''. \     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  | |  |  |  |    |  |`.  `-. |  |  \  :|  |    |  |    |  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  '  '-'  '-.'  '--'\|  |.-'    ||  '--'  /|  |    |  |    |  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#   `-----'--' `-----'`--'`-----' `-------'  \ '.   `--'   .' /     `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                             `-'          `-'                                    `---' `---'
 #  <<<  QCISD(T) Energy
+
 
 @pytest.mark.parametrize(
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -959,20 +969,22 @@ def test_qcisd_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, req
 def test_qcisd_prt_pr_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
 
-#                                                                        
-#  ,------. ,-----.,--.    ,------.                                      
-#  |  .---''  .--./|  |    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--. 
-#  |  `--, |  |    |  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /  
-#  |  |`   '  '--'\|  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '   
-#  `--'     `-----'`--'    `------'`--''--' `----'`--'   .`-  /.-'  /    
-#                                                        `---' `---'    
+
+#
+#  ,------. ,-----.,--.    ,------.
+#  |  .---''  .--./|  |    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  `--, |  |    |  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  |  |`   '  '--'\|  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#  `--'     `-----'`--'    `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                                        `---' `---'
 #  <<<  FCI Energy -- NYI
+
 
 @pytest.mark.parametrize(
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -995,6 +1007,7 @@ def test_qcisd_prt_pr_energy_module(inp, dertype, basis, subjects, clsd_open_pmo
 def test_fci_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
 
+
 #
 #  ,--.    ,-----. ,-----.,------.      ,------.
 #  |  |   '  .--./'  .--./|  .-.  \     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
@@ -1009,7 +1022,7 @@ def test_fci_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, reque
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -1065,13 +1078,14 @@ def test_lccd_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, requ
 
 
 #
-#  ,--.    ,-----. ,-----.,------.       ,----.                     ,--.,--.                 ,--.   
-#  |  |   '  .--./'  .--./|  .-.  \     '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-. 
-#  |  |   |  |    |  |    |  |  \  :    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-' 
-#  |  '--.'  '--'\'  '--'\|  '--'  /    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |   
-#  `-----' `-----' `-----'`-------'      `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'   
+#  ,--.    ,-----. ,-----.,------.       ,----.                     ,--.,--.                 ,--.
+#  |  |   '  .--./'  .--./|  .-.  \     '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-.
+#  |  |   |  |    |  |    |  |  \  :    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-'
+#  |  '--.'  '--'\'  '--'\|  '--'  /    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |
+#  `-----' `-----' `-----'`-------'      `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'
 #
 #  <<<  LCCD Gradient
+
 
 @pytest.mark.parametrize(
     "dertype",
@@ -1136,11 +1150,12 @@ def test_lccd_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, re
 #                                                                             `---' `---'
 #  <<<  LCCSD Energy
 
+
 @pytest.mark.parametrize(
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -1201,6 +1216,7 @@ def test_lccsd_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, req
 #   `-----' `-----'`-------'     `------'`--''--' `----'`--'   .`-  /.-'  /
 #                                                              `---' `---'
 #  <<<  CCD Energy
+
 
 @pytest.mark.parametrize(
     "dertype",
@@ -1339,6 +1355,7 @@ def test_ccd_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, req
 #
 #  <<<  CCD Hessian
 
+
 @pytest.mark.parametrize(
     "dertype",
     [
@@ -1376,7 +1393,6 @@ def test_ccd_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, req
         pytest.param({"call": "nwc-ccd", "reference": "uhf",  "fcae": "ae", "xptd": {"fd": True},  "keywords": {"nwchem_scf__uhf": True, "qc_module": "tce"},                                                                                 }, id="ccd  uhf ae: nwchem",     marks=using("nwchem")),
         pytest.param({"call": "p4-ccd",  "reference": "uhf",  "fcae": "ae",                        "keywords": {"reference": "uhf", "psi4_cc_type": "conv"},                                                                "error": {2: _q17}}, id="ccd  uhf ae: psi4",       marks=using("psi4")),
         # DEBUG pytest.param({"call": "p4-c4-ccd", "reference": "uhf", "fcae": "ae", "keywords": {**_p4c4_fd, "psi4_cfour_reference": "uhf", "psi4_cfour_cc_program": "vcc"},                                                                 }, id="ccd  uhf ae: psi4-cfour-vcc"),
-
         # FC: vcc errors for analytic hess
         # pytest.param({"call": "c4-ccd",  "reference": "uhf",  "fcae": "fc",                         "keywords": {**_c4_tight, "cfour_reference": "uhf", "cfour_dropmo": [1], "cfour_cc_program": "vcc", "cfour_print": 2},                    }, id="ccd  uhf fc: cfour-vcc", marks=using("cfour")),
         # yapf: enable
@@ -1400,7 +1416,7 @@ def test_ccd_hessian_module(inp, dertype, basis, subjects, clsd_open_pmols, requ
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -1472,7 +1488,7 @@ def test_ccsd_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, requ
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -1677,6 +1693,7 @@ def test_ccsd_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, re
 #
 #  <<<  CCSD Hessian
 
+
 @pytest.mark.parametrize(
     "dertype",
     [
@@ -1724,7 +1741,8 @@ def test_ccsd_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, re
         pytest.param({"call": "c4-ccsd",  "reference": "uhf",  "fcae": "fc",                        "keywords": {**_c4_tight, "cfour_reference": "uhf", "cfour_dropmo": 1, "cfour_cc_program": "ecc", "cfour_print": 2},                       }, id="ccsd  uhf fc: cfour-ecc",  marks=using("cfour")),
         pytest.param({"call": "gms-ccsd", "reference": "uhf",  "fcae": "fc", "xptd": {"fd": True},  "keywords": {"gamess_contrl__scftyp": "uhf", "gamess_force__method": "fullnum"},                                         "error": {2: _q2} }, id="ccsd  uhf fc: gamess",     marks=using("gamess")),
         pytest.param({"call": "nwc-ccsd", "reference": "uhf",  "fcae": "fc", "xptd": {"fd": True},  "keywords": {"nwchem_scf__uhf": True, "nwchem_tce__freeze": 1, "qc_module": "tce"},                                                        }, id="ccsd  uhf fc: nwchem-tce", marks=using("nwchem")),
-        pytest.param({"call": "p4-ccsd",  "reference": "uhf",  "fcae": "fc", "xptd": {"fd": False},  "keywords": {**_p4_fd, "psi4_reference": "uhf", "psi4_freeze_core": True, "psi4_cc_type": "conv", "psi4_dertype": "none"},                 }, id="ccsd  uhf fc: psi4",       marks=using("psi4")),  # FD SWITCH
+        pytest.param({"call": "p4-ccsd",  "reference": "uhf",  "fcae": "fc", "xptd": {"fd": False},  "keywords": {**_p4_fd, "psi4_reference": "uhf", "psi4_freeze_core": True, "psi4_cc_type": "conv", "psi4_dertype": "none"},                 }, id="ccsd  uhf fc: psi4",       marks=using("psi4")),
+        # FD SWITCH
         # DEBUG pytest.param({"call": "p4-c4-ccsd", "reference": "uhf", "fcae": "fc", "keywords": {"psi4_dertype": "none", "psi4_cfour_dropmo": [1], "psi4_cfour_reference": "uhf", "psi4_cfour_cc_program": "vcc", **_p4c4_fd},               }, id="ccsd  uhf fc: psi4-cfour-vcc"),
         # yapf: enable
     ],
@@ -1733,20 +1751,21 @@ def test_ccsd_hessian_module(inp, dertype, basis, subjects, clsd_open_pmols, req
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "hessian"))
 
 
-#                                        ,--.                                                                                                          
-#   ,-----. ,-----. ,---.  ,------.      |  |    ,--------. ,-. ,-----. ,-----. ,---.  ,------. ,-.      ,------.                                      
-#  '  .--./'  .--./'   .-' |  .-.  \ ,---    ---.'--.  .--'/ .''  .--./'  .--./'   .-' |  .-.  \'. \     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--. 
-#  |  |    |  |    `.  `-. |  |  \  :'---    ---'   |  |  |  | |  |    |  |    `.  `-. |  |  \  :|  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /  
-#  '  '--'\'  '--'\.-'    ||  '--'  /    |  |       |  |  |  | '  '--'\'  '--'\.-'    ||  '--'  /|  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '   
-#   `-----' `-----'`-----' `-------'     `--'       `--'   \ '. `-----' `-----'`-----' `-------'.' /     `------'`--''--' `----'`--'   .`-  /.-'  /    
-#                                                           `-'                                 `-'                                    `---' `---'     
+#                                        ,--.
+#   ,-----. ,-----. ,---.  ,------.      |  |    ,--------. ,-. ,-----. ,-----. ,---.  ,------. ,-.      ,------.
+#  '  .--./'  .--./'   .-' |  .-.  \ ,---    ---.'--.  .--'/ .''  .--./'  .--./'   .-' |  .-.  \'. \     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  |    |  |    `.  `-. |  |  \  :'---    ---'   |  |  |  | |  |    |  |    `.  `-. |  |  \  :|  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  '  '--'\'  '--'\.-'    ||  '--'  /    |  |       |  |  |  | '  '--'\'  '--'\.-'    ||  '--'  /|  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#   `-----' `-----'`-----' `-------'     `--'       `--'   \ '. `-----' `-----'`-----' `-------'.' /     `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                                           `-'                                 `-'                                    `---' `---'
 #  <<<  CCSD+T(CCSD) Energy aka CCSD[T] Energy
+
 
 @pytest.mark.parametrize(
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -1796,20 +1815,21 @@ def test_ccsdpt_prccsd_pr_energy_module(inp, dertype, basis, subjects, clsd_open
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
 
 
-#                                                                                                                        
-#   ,-----. ,-----. ,---.  ,------.    ,-.,--------.,-.      ,------.                                                    
-#  '  .--./'  .--./'   .-' |  .-.  \  / .''--.  .--''. \     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.               
-#  |  |    |  |    `.  `-. |  |  \  :|  |    |  |    |  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /                
-#  '  '--'\'  '--'\.-'    ||  '--'  /|  |    |  |    |  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '                 
-#   `-----' `-----'`-----' `-------'  \ '.   `--'   .' /     `------'`--''--' `----'`--'   .`-  /.-'  /                  
-#                                      `-'          `-'                                    `---' `---'                   
+#
+#   ,-----. ,-----. ,---.  ,------.    ,-.,--------.,-.      ,------.
+#  '  .--./'  .--./'   .-' |  .-.  \  / .''--.  .--''. \     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  |    |  |    `.  `-. |  |  \  :|  |    |  |    |  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  '  '--'\'  '--'\.-'    ||  '--'  /|  |    |  |    |  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#   `-----' `-----'`-----' `-------'  \ '.   `--'   .' /     `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                      `-'          `-'                                    `---' `---'
 #  <<<  CCSD(T) Energy
+
 
 @pytest.mark.parametrize(
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -1861,16 +1881,15 @@ def test_ccsdpt_prccsd_pr_energy_module(inp, dertype, basis, subjects, clsd_open
         pytest.param({"call": "nwc-ccsd(t)", "reference": "rohf", "fcae": "ae", "keywords": {"nwchem_scf__rohf": True, "qc_module": "tce"},                                                                                                                                     "wrong": {0: _w3} }, id="ccsd_t_ rohf ae: nwchem-tce", marks=using("nwchem")),
         pytest.param({"call": "nwc-ccsd(t)", "reference": "rohf", "fcae": "ae", "keywords": {"nwchem_scf__rohf": True},                                                                                                                                                         "error": {0: _q3} }, id="ccsd_t_ rohf ae: nwchem",     marks=using("nwchem")),
         pytest.param({"call": "p4-ccsd(t)",  "reference": "rohf", "fcae": "ae", "keywords": {"reference": "rohf", "qc_module": "ccenergy"},                                                                                                                                                       }, id="ccsd_t_ rohf ae: psi4-cc",    marks=using("psi4")),
-
         ## can get all passing c4 = p4 = mrcc but at cost of CCSD  not matching plain CCSD
         ##pytest.param({"call": "c4-ccsd(t)",  "reference": "rohf", "fcae": "fc", "keywords": {**_c4_tight, "cfour_REFerence": "roHF", "cfour_dropmo": [1], "cfour_orbitals": 0, "cfour_cc_program": "vcc", "cfour_print": 2},                                                                      }, id="ccsd_t_ rohf fc: cfour-vcc",  marks=using("cfour")),
         ##pytest.param({"call": "c4-ccsd(t)",  "reference": "rohf", "fcae": "fc", "keywords": {**_c4_tight, "cfour_REFerence": "roHF", "cfour_dropmo": [1], "cfour_orbitals": 0, "cfour_cc_program": "ecc"},                                                                                        }, id="ccsd_t_ rohf fc: cfour-ecc",  marks=using("cfour")),
-        #pytest.param({"call": "c4-ccsd(t)",  "reference": "rohf", "fcae": "fc", "keywords": {**_c4_tight, "cfour_REFerence": "roHF", "cfour_dropmo": [1],  "cfour_cc_program": "vcc", "cfour_print": 2},                                                                      }, id="ccsd_t_ rohf fc: cfour-vcc",  marks=using("cfour")),
-        #pytest.param({"call": "c4-ccsd(t)",  "reference": "rohf", "fcae": "fc", "keywords": {**_c4_tight, "cfour_REFerence": "roHF", "cfour_dropmo": [1],  "cfour_cc_program": "ecc"},                                                                                        }, id="ccsd_t_ rohf fc: cfour-ecc",  marks=using("cfour")),
-        #pytest.param({"call": "gms-ccsd(t)", "reference": "rohf", "fcae": "fc", "keywords": {"gamess_contrl__scftyp": "rohf", "gamess_ccinp__iconv": 9, "gamess_scf__conv": 9},                                                                                                 "error": {0: _q4}}, id="ccsd_t_ rohf fc: gamess",     marks=using("gamess")),
-        #pytest.param({"call": "nwc-ccsd(t)", "reference": "rohf", "fcae": "fc", "keywords": {"nwchem_scf__rohf": True, "nwchem_tce__freeze": 1, "qc_module": "tce"},                                                                                                            "wrong": {0: _w3} }, id="ccsd_t_ rohf fc: nwchem-tce", marks=using("nwchem")),
-        #pytest.param({"call": "nwc-ccsd(t)", "reference": "rohf", "fcae": "fc", "keywords": {"nwchem_scf__rohf": True, "nwchem_ccsd__freeze": 1},                                                                                                                               "error": {0: _q3}}, id="ccsd_t_ rohf fc: nwchem",     marks=using("nwchem")),
-        #pytest.param({"call": "p4-ccsd(t)",  "reference": "rohf", "fcae": "fc", "keywords": {"reference": "rohf", "psi4_freeze_core": True, "qc_module": "ccenergy", "psi4_e_convergence": 10, "psi4_r_convergence": 9},                                                                          }, id="ccsd_t_ rohf fc: psi4-cc",    marks=using("psi4")),
+        # pytest.param({"call": "c4-ccsd(t)",  "reference": "rohf", "fcae": "fc", "keywords": {**_c4_tight, "cfour_REFerence": "roHF", "cfour_dropmo": [1],  "cfour_cc_program": "vcc", "cfour_print": 2},                                                                      }, id="ccsd_t_ rohf fc: cfour-vcc",  marks=using("cfour")),
+        # pytest.param({"call": "c4-ccsd(t)",  "reference": "rohf", "fcae": "fc", "keywords": {**_c4_tight, "cfour_REFerence": "roHF", "cfour_dropmo": [1],  "cfour_cc_program": "ecc"},                                                                                        }, id="ccsd_t_ rohf fc: cfour-ecc",  marks=using("cfour")),
+        # pytest.param({"call": "gms-ccsd(t)", "reference": "rohf", "fcae": "fc", "keywords": {"gamess_contrl__scftyp": "rohf", "gamess_ccinp__iconv": 9, "gamess_scf__conv": 9},                                                                                                 "error": {0: _q4}}, id="ccsd_t_ rohf fc: gamess",     marks=using("gamess")),
+        # pytest.param({"call": "nwc-ccsd(t)", "reference": "rohf", "fcae": "fc", "keywords": {"nwchem_scf__rohf": True, "nwchem_tce__freeze": 1, "qc_module": "tce"},                                                                                                            "wrong": {0: _w3} }, id="ccsd_t_ rohf fc: nwchem-tce", marks=using("nwchem")),
+        # pytest.param({"call": "nwc-ccsd(t)", "reference": "rohf", "fcae": "fc", "keywords": {"nwchem_scf__rohf": True, "nwchem_ccsd__freeze": 1},                                                                                                                               "error": {0: _q3}}, id="ccsd_t_ rohf fc: nwchem",     marks=using("nwchem")),
+        # pytest.param({"call": "p4-ccsd(t)",  "reference": "rohf", "fcae": "fc", "keywords": {"reference": "rohf", "psi4_freeze_core": True, "qc_module": "ccenergy", "psi4_e_convergence": 10, "psi4_r_convergence": 9},                                                                          }, id="ccsd_t_ rohf fc: psi4-cc",    marks=using("psi4")),
         # yapf: enable
     ],
 )
@@ -1879,13 +1898,14 @@ def test_ccsd_prt_pr_energy_module(inp, dertype, basis, subjects, clsd_open_pmol
 
 
 #
-#   ,-----. ,-----. ,---.  ,------.    ,-.,--------.,-.       ,----.                     ,--.,--.                 ,--.   
-#  '  .--./'  .--./'   .-' |  .-.  \  / .''--.  .--''. \     '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-. 
-#  |  |    |  |    `.  `-. |  |  \  :|  |    |  |    |  |    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-' 
-#  '  '--'\'  '--'\.-'    ||  '--'  /|  |    |  |    |  |    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |   
-#   `-----' `-----'`-----' `-------'  \ '.   `--'   .' /      `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'   
-#                                      `-'          `-'                                                                  
+#   ,-----. ,-----. ,---.  ,------.    ,-.,--------.,-.       ,----.                     ,--.,--.                 ,--.
+#  '  .--./'  .--./'   .-' |  .-.  \  / .''--.  .--''. \     '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-.
+#  |  |    |  |    `.  `-. |  |  \  :|  |    |  |    |  |    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-'
+#  '  '--'\'  '--'\.-'    ||  '--'  /|  |    |  |    |  |    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |
+#   `-----' `-----'`-----' `-------'  \ '.   `--'   .' /      `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'
+#                                      `-'          `-'
 #  <<<  CCSD(T) Gradient
+
 
 @pytest.mark.parametrize(
     "dertype",
@@ -1947,7 +1967,6 @@ def test_ccsd_prt_pr_energy_module(inp, dertype, basis, subjects, clsd_open_pmol
         pytest.param({"call": "nwc-ccsd(t)", "reference": "rohf", "fcae": "ae",                        "keywords": {"nwchem_scf__rohf": True},                                                                                                "error": {1: _q3} }, id="ccsd_t_ rohf ae: nwchem-cc",  marks=using("nwchem")),
         pytest.param({"call": "p4-ccsd(t)",  "reference": "rohf", "fcae": "ae", "xptd": {"fd": False}, "keywords": {"reference": "rohf", "qc_module": "ccenergy", "psi4_points": 5},                                                                            }, id="ccsd_t_ rohf ae: psi4-cc",    marks=using("psi4")),
         # DEBUG pytest.param({"call": "p4-c4-ccsd(t)", "reference": "rohf", "fcae": "ae", "keywords": {**_p4c4_fd, "psi4_cfour_reference": "rohf", "psi4_cfour_cc_program": "vcc", "psi4_dertype": "none"},                                                     }, id="ccsd_t_ rohf ae: psi4-cfour-vcc"),
-
         # Skip ROHF FC until energy resolved
         # yapf: enable
     ],
@@ -1957,13 +1976,14 @@ def test_ccsd_prt_pr_gradient_module(inp, dertype, basis, subjects, clsd_open_pm
 
 
 #
-#   ,-----. ,-----. ,---.  ,------.    ,-.,--------.,-.      ,--.  ,--.                     ,--.                         
-#  '  .--./'  .--./'   .-' |  .-.  \  / .''--.  .--''. \     |  '--'  | ,---.  ,---.  ,---. `--' ,--,--.,--,--,          
-#  |  |    |  |    `.  `-. |  |  \  :|  |    |  |    |  |    |  .--.  || .-. :(  .-' (  .-' ,--.' ,-.  ||      \         
-#  '  '--'\'  '--'\.-'    ||  '--'  /|  |    |  |    |  |    |  |  |  |\   --..-'  `).-'  `)|  |\ '-'  ||  ||  |         
-#   `-----' `-----'`-----' `-------'  \ '.   `--'   .' /     `--'  `--' `----'`----' `----' `--' `--`--'`--''--'         
-#                                      `-'          `-'                                                          
+#   ,-----. ,-----. ,---.  ,------.    ,-.,--------.,-.      ,--.  ,--.                     ,--.
+#  '  .--./'  .--./'   .-' |  .-.  \  / .''--.  .--''. \     |  '--'  | ,---.  ,---.  ,---. `--' ,--,--.,--,--,
+#  |  |    |  |    `.  `-. |  |  \  :|  |    |  |    |  |    |  .--.  || .-. :(  .-' (  .-' ,--.' ,-.  ||      \
+#  '  '--'\'  '--'\.-'    ||  '--'  /|  |    |  |    |  |    |  |  |  |\   --..-'  `).-'  `)|  |\ '-'  ||  ||  |
+#   `-----' `-----'`-----' `-------'  \ '.   `--'   .' /     `--'  `--' `----'`----' `----' `--' `--`--'`--''--'
+#                                      `-'          `-'
 #  <<<  CCSD(T) Hessian
+
 
 @pytest.mark.parametrize(
     "dertype",
@@ -2014,7 +2034,8 @@ def test_ccsd_prt_pr_gradient_module(inp, dertype, basis, subjects, clsd_open_pm
         pytest.param({"call": "gms-ccsd(t)", "reference": "uhf",  "fcae": "fc",                        "keywords": {"gamess_contrl__scftyp": "uhf", "gamess_force__method": "fullnum",},                                                      "error": {2: _q2} }, id="ccsd_t_  uhf fc: gamess",     marks=using("gamess")),
         pytest.param({"call": "nwc-ccsd(t)", "reference": "uhf",  "fcae": "fc", "xptd": {"fd": True},  "keywords": {"nwchem_scf__uhf": True, "nwchem_tce__freeze": 1, "qc_module": "tce"},                                                                      }, id="ccsd_t_  uhf fc: nwchem-tce", marks=using("nwchem")),
         pytest.param({"call": "nwc-ccsd(t)", "reference": "uhf",  "fcae": "fc",                        "keywords": {"nwchem_scf__uhf": True, "nwchem_ccsd__freeze": 1},                                                                       "error": {2: _q3} }, id="ccsd_t_  uhf fc: nwchem-cc",  marks=using("nwchem")),
-        pytest.param({"call": "p4-ccsd(t)",  "reference": "uhf",  "fcae": "fc", "xptd": {"fd": False},  "keywords": {**_p4_fd, "reference": "uhf", "psi4_freeze_core": True, "psi4_dertype": "none"},                                                            }, id="ccsd_t_  uhf fc: psi4",       marks=using("psi4")),  # FD SWITCH
+        pytest.param({"call": "p4-ccsd(t)",  "reference": "uhf",  "fcae": "fc", "xptd": {"fd": False},  "keywords": {**_p4_fd, "reference": "uhf", "psi4_freeze_core": True, "psi4_dertype": "none"},                                                            }, id="ccsd_t_  uhf fc: psi4",       marks=using("psi4")),
+        # FD SWITCH
         # DEBUG pytest.param({"call": "p4-c4-ccsd(t)", "reference": "uhf", "fcae": "fc", "keywords": {**_p4c4_fd, "psi4_cfour_reference": "uhf", "psi4_cfour_dropmo": [1], "psi4_cfour_cc_program": "vcc", "psi4_dertype": "none"},                             }, id="ccsd_t_  uhf fc: psi4-cfour-vcc"),
         # yapf: enable
     ],
@@ -2023,20 +2044,21 @@ def test_ccsd_prt_pr_hessian_module(inp, dertype, basis, subjects, clsd_open_pmo
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "hessian"))
 
 
-#                                                                                                                                       
-#                  ,-----. ,-----. ,---.  ,------.    ,-.,--------.,-.      ,------.                                                    
-#   ,--,--.,-----.'  .--./'  .--./'   .-' |  .-.  \  / .''--.  .--''. \     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.               
-#  ' ,-.  |'-----'|  |    |  |    `.  `-. |  |  \  :|  |    |  |    |  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /                
-#  \ '-'  |       '  '--'\'  '--'\.-'    ||  '--'  /|  |    |  |    |  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '                 
-#   `--`--'        `-----' `-----'`-----' `-------'  \ '.   `--'   .' /     `------'`--''--' `----'`--'   .`-  /.-'  /                  
-#                                                     `-'          `-'                                    `---' `---'                   
+#
+#                  ,-----. ,-----. ,---.  ,------.    ,-.,--------.,-.      ,------.
+#   ,--,--.,-----.'  .--./'  .--./'   .-' |  .-.  \  / .''--.  .--''. \     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  ' ,-.  |'-----'|  |    |  |    `.  `-. |  |  \  :|  |    |  |    |  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  \ '-'  |       '  '--'\'  '--'\.-'    ||  '--'  /|  |    |  |    |  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#   `--`--'        `-----' `-----'`-----' `-------'  \ '.   `--'   .' /     `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                                     `-'          `-'                                    `---' `---'
 #  <<<  a-CCSD(T) Energy aka Lambda-CCSD(T) aka CCSD(aT) aka CCSD(T)_L
+
 
 @pytest.mark.parametrize(
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -2071,13 +2093,14 @@ def test_accsd_prt_pr_energy_module(inp, dertype, basis, subjects, clsd_open_pmo
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
 
 
-#                  ,-----. ,-----. ,---.  ,------.    ,-.,--------.,-.       ,----.                     ,--.,--.                 ,--.   
-#   ,--,--.,-----.'  .--./'  .--./'   .-' |  .-.  \  / .''--.  .--''. \     '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-. 
-#  ' ,-.  |'-----'|  |    |  |    `.  `-. |  |  \  :|  |    |  |    |  |    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-' 
-#  \ '-'  |       '  '--'\'  '--'\.-'    ||  '--'  /|  |    |  |    |  |    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |   
-#   `--`--'        `-----' `-----'`-----' `-------'  \ '.   `--'   .' /      `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'   
-#                                                     `-'          `-'                                                                  
+#                  ,-----. ,-----. ,---.  ,------.    ,-.,--------.,-.       ,----.                     ,--.,--.                 ,--.
+#   ,--,--.,-----.'  .--./'  .--./'   .-' |  .-.  \  / .''--.  .--''. \     '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-.
+#  ' ,-.  |'-----'|  |    |  |    `.  `-. |  |  \  :|  |    |  |    |  |    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-'
+#  \ '-'  |       '  '--'\'  '--'\.-'    ||  '--'  /|  |    |  |    |  |    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |
+#   `--`--'        `-----' `-----'`-----' `-------'  \ '.   `--'   .' /      `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'
+#                                                     `-'          `-'
 #  <<<  a-CCSD(T) Gradient aka Lambda-CCSD(T) aka CCSD(aT) aka CCSD(T)_L
+
 
 @pytest.mark.parametrize(
     "dertype",
@@ -2110,20 +2133,21 @@ def test_accsd_prt_pr_gradient_module(inp, dertype, basis, subjects, clsd_open_p
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "gradient"))
 
 
-#                                                                                                                                 
-#   ,-----. ,-----. ,---.  ,------. ,--------.        ,--.            ,------.                                                    
-#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----./   | ,--,--.    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.               
-#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'`|  |' ,-.  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /                
-#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |           |  |\ '-'  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '                 
-#   `-----' `-----'`-----' `-------'   `--'           `--' `--`--'    `------'`--''--' `----'`--'   .`-  /.-'  /                  
-#                                                                                                   `---' `---'                   
+#
+#   ,-----. ,-----. ,---.  ,------. ,--------.        ,--.            ,------.
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----./   | ,--,--.    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'`|  |' ,-.  |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |           |  |\ '-'  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#   `-----' `-----'`-----' `-------'   `--'           `--' `--`--'    `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                                                                                   `---' `---'
 #  <<<  CCSDT-1a Energy
+
 
 @pytest.mark.parametrize(
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -2161,13 +2185,14 @@ def test_ccsdt1a_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, r
 
 
 #
-#   ,-----. ,-----. ,---.  ,------. ,--------.        ,--.             ,----.                     ,--.,--.                 ,--.   
-#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----./   | ,--,--.    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-. 
-#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'`|  |' ,-.  |    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-' 
-#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |           |  |\ '-'  |    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |   
-#   `-----' `-----'`-----' `-------'   `--'           `--' `--`--'     `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'   
+#   ,-----. ,-----. ,---.  ,------. ,--------.        ,--.             ,----.                     ,--.,--.                 ,--.
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----./   | ,--,--.    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-.
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'`|  |' ,-.  |    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-'
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |           |  |\ '-'  |    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |
+#   `-----' `-----'`-----' `-------'   `--'           `--' `--`--'     `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'
 #
 #  <<<  CCSDT-1a Gradient
+
 
 @pytest.mark.parametrize(
     "dertype",
@@ -2210,13 +2235,14 @@ def test_ccsdt1a_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols,
 
 
 #
-#   ,-----. ,-----. ,---.  ,------. ,--------.        ,--.            ,--.  ,--.                     ,--.                         
-#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----./   | ,--,--.    |  '--'  | ,---.  ,---.  ,---. `--' ,--,--.,--,--,          
-#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'`|  |' ,-.  |    |  .--.  || .-. :(  .-' (  .-' ,--.' ,-.  ||      \         
-#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |           |  |\ '-'  |    |  |  |  |\   --..-'  `).-'  `)|  |\ '-'  ||  ||  |         
-#   `-----' `-----'`-----' `-------'   `--'           `--' `--`--'    `--'  `--' `----'`----' `----' `--' `--`--'`--''--'         
-#                               
+#   ,-----. ,-----. ,---.  ,------. ,--------.        ,--.            ,--.  ,--.                     ,--.
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----./   | ,--,--.    |  '--'  | ,---.  ,---.  ,---. `--' ,--,--.,--,--,
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'`|  |' ,-.  |    |  .--.  || .-. :(  .-' (  .-' ,--.' ,-.  ||      \
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |           |  |\ '-'  |    |  |  |  |\   --..-'  `).-'  `)|  |\ '-'  ||  ||  |
+#   `-----' `-----'`-----' `-------'   `--'           `--' `--`--'    `--'  `--' `----'`----' `----' `--' `--`--'`--''--'
+#
 #  <<<  CCSDT-1a Hessian
+
 
 @pytest.mark.parametrize(
     "dertype",
@@ -2256,20 +2282,21 @@ def test_ccsdt1a_hessian_module(inp, dertype, basis, subjects, clsd_open_pmols, 
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "hessian"))
 
 
-#                                                                                                                                
-#   ,-----. ,-----. ,---.  ,------. ,--------.        ,--.,--.       ,------.                                                    
-#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----./   ||  |-.     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.               
-#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'`|  || .-. '    |  `--, |      \| .-. :|  .--'| .-. |\  '  /                
-#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |           |  || `-' |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '                 
-#   `-----' `-----'`-----' `-------'   `--'           `--' `---'     `------'`--''--' `----'`--'   .`-  /.-'  /                  
-#                                                                                                  `---' `---'                   
+#
+#   ,-----. ,-----. ,---.  ,------. ,--------.        ,--.,--.       ,------.
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----./   ||  |-.     |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'`|  || .-. '    |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |           |  || `-' |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#   `-----' `-----'`-----' `-------'   `--'           `--' `---'     `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                                                                                  `---' `---'
 #  <<<  CCSDT-1b Energy
+
 
 @pytest.mark.parametrize(
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -2307,13 +2334,14 @@ def test_ccsdt1b_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, r
 
 
 #
-#   ,-----. ,-----. ,---.  ,------. ,--------.        ,--.,--.        ,----.                     ,--.,--.                 ,--.   
-#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----./   ||  |-.     '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-. 
-#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'`|  || .-. '    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-' 
-#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |           |  || `-' |    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |   
-#   `-----' `-----'`-----' `-------'   `--'           `--' `---'      `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'   
+#   ,-----. ,-----. ,---.  ,------. ,--------.        ,--.,--.        ,----.                     ,--.,--.                 ,--.
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----./   ||  |-.     '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-.
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'`|  || .-. '    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-'
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |           |  || `-' |    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |
+#   `-----' `-----'`-----' `-------'   `--'           `--' `---'      `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'
 #
 #  <<<  CCSDT-1b Gradient
+
 
 @pytest.mark.parametrize(
     "dertype",
@@ -2356,13 +2384,14 @@ def test_ccsdt1b_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols,
 
 
 #
-#   ,-----. ,-----. ,---.  ,------. ,--------.        ,--.,--.       ,--.  ,--.                     ,--.                         
-#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----./   ||  |-.     |  '--'  | ,---.  ,---.  ,---. `--' ,--,--.,--,--,          
-#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'`|  || .-. '    |  .--.  || .-. :(  .-' (  .-' ,--.' ,-.  ||      \         
-#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |           |  || `-' |    |  |  |  |\   --..-'  `).-'  `)|  |\ '-'  ||  ||  |         
-#   `-----' `-----'`-----' `-------'   `--'           `--' `---'     `--'  `--' `----'`----' `----' `--' `--`--'`--''--'         
-#                                                                             
+#   ,-----. ,-----. ,---.  ,------. ,--------.        ,--.,--.       ,--.  ,--.                     ,--.
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----./   ||  |-.     |  '--'  | ,---.  ,---.  ,---. `--' ,--,--.,--,--,
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'`|  || .-. '    |  .--.  || .-. :(  .-' (  .-' ,--.' ,-.  ||      \
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |           |  || `-' |    |  |  |  |\   --..-'  `).-'  `)|  |\ '-'  ||  ||  |
+#   `-----' `-----'`-----' `-------'   `--'           `--' `---'     `--'  `--' `----'`----' `----' `--' `--`--'`--''--'
+#
 #  <<<  CCSDT-1b Hessian
+
 
 @pytest.mark.parametrize(
     "dertype",
@@ -2404,20 +2433,21 @@ def test_ccsdt1b_hessian_module(inp, dertype, basis, subjects, clsd_open_pmols, 
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "hessian"))
 
 
-#                                                                                                                           
-#   ,-----. ,-----. ,---.  ,------. ,--------.        ,---.     ,------.                                                    
-#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----.'.-.  \    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.               
-#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----' .-' .'    |  `--, |      \| .-. :|  .--'| .-. |\  '  /                
-#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |          /   '-.    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '                 
-#   `-----' `-----'`-----' `-------'   `--'          '-----'    `------'`--''--' `----'`--'   .`-  /.-'  /                  
-#                                                                                             `---' `---'                   
+#
+#   ,-----. ,-----. ,---.  ,------. ,--------.        ,---.     ,------.
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----.'.-.  \    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----' .-' .'    |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |          /   '-.    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#   `-----' `-----'`-----' `-------'   `--'          '-----'    `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                                                                             `---' `---'
 #  <<<  CCSDT-2 Energy
+
 
 @pytest.mark.parametrize(
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -2455,13 +2485,14 @@ def test_ccsdt2_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, re
 
 
 #
-#   ,-----. ,-----. ,---.  ,------. ,--------.        ,---.      ,----.                     ,--.,--.                 ,--.   
-#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----.'.-.  \    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-. 
-#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----' .-' .'    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-' 
-#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |          /   '-.    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |   
-#   `-----' `-----'`-----' `-------'   `--'          '-----'     `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'   
+#   ,-----. ,-----. ,---.  ,------. ,--------.        ,---.      ,----.                     ,--.,--.                 ,--.
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----.'.-.  \    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-.
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----' .-' .'    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-'
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |          /   '-.    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |
+#   `-----' `-----'`-----' `-------'   `--'          '-----'     `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'
 #
 #  <<<  CCSDT-2 Gradient
+
 
 @pytest.mark.parametrize(
     "dertype",
@@ -2502,15 +2533,15 @@ def test_ccsdt2_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, 
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "gradient"))
 
 
-
 #
-#   ,-----. ,-----. ,---.  ,------. ,--------.        ,---.     ,--.  ,--.                     ,--.                         
-#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----.'.-.  \    |  '--'  | ,---.  ,---.  ,---. `--' ,--,--.,--,--,          
-#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----' .-' .'    |  .--.  || .-. :(  .-' (  .-' ,--.' ,-.  ||      \         
-#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |          /   '-.    |  |  |  |\   --..-'  `).-'  `)|  |\ '-'  ||  ||  |         
-#   `-----' `-----'`-----' `-------'   `--'          '-----'    `--'  `--' `----'`----' `----' `--' `--`--'`--''--'         
-#                                                                                       
+#   ,-----. ,-----. ,---.  ,------. ,--------.        ,---.     ,--.  ,--.                     ,--.
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----.'.-.  \    |  '--'  | ,---.  ,---.  ,---. `--' ,--,--.,--,--,
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----' .-' .'    |  .--.  || .-. :(  .-' (  .-' ,--.' ,-.  ||      \
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |          /   '-.    |  |  |  |\   --..-'  `).-'  `)|  |\ '-'  ||  ||  |
+#   `-----' `-----'`-----' `-------'   `--'          '-----'    `--'  `--' `----'`----' `----' `--' `--`--'`--''--'
+#
 #  <<<  CCSDT-2 Hessian
+
 
 @pytest.mark.parametrize(
     "dertype",
@@ -2551,20 +2582,21 @@ def test_ccsdt2_hessian_module(inp, dertype, basis, subjects, clsd_open_pmols, r
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "hessian"))
 
 
-#                                                                                                                           
-#   ,-----. ,-----. ,---.  ,------. ,--------.       ,----.     ,------.                                                    
-#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----.'.-.  |    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.               
-#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'  .' <     |  `--, |      \| .-. :|  .--'| .-. |\  '  /                
-#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |          /'-'  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '                 
-#   `-----' `-----'`-----' `-------'   `--'          `----'     `------'`--''--' `----'`--'   .`-  /.-'  /                  
-#                                                                                             `---' `---'                   
+#
+#   ,-----. ,-----. ,---.  ,------. ,--------.       ,----.     ,------.
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----.'.-.  |    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'  .' <     |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |          /'-'  |    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#   `-----' `-----'`-----' `-------'   `--'          `----'     `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                                                                             `---' `---'
 #  <<<  CCSDT-3 Energy
+
 
 @pytest.mark.parametrize(
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -2602,13 +2634,14 @@ def test_ccsdt3_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, re
 
 
 #
-#   ,-----. ,-----. ,---.  ,------. ,--------.       ,----.      ,----.                     ,--.,--.                 ,--.   
-#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----.'.-.  |    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-. 
-#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'  .' <     |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-' 
-#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |          /'-'  |    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |   
-#   `-----' `-----'`-----' `-------'   `--'          `----'      `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'   
+#   ,-----. ,-----. ,---.  ,------. ,--------.       ,----.      ,----.                     ,--.,--.                 ,--.
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----.'.-.  |    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-.
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'  .' <     |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-'
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |          /'-'  |    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |
+#   `-----' `-----'`-----' `-------'   `--'          `----'      `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'
 #
 #  <<<  CCSDT-3 Gradient
+
 
 @pytest.mark.parametrize(
     "dertype",
@@ -2652,13 +2685,14 @@ def test_ccsdt3_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, 
 
 
 #
-#   ,-----. ,-----. ,---.  ,------. ,--------.       ,----.     ,--.  ,--.                     ,--.                         
-#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----.'.-.  |    |  '--'  | ,---.  ,---.  ,---. `--' ,--,--.,--,--,          
-#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'  .' <     |  .--.  || .-. :(  .-' (  .-' ,--.' ,-.  ||      \         
-#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |          /'-'  |    |  |  |  |\   --..-'  `).-'  `)|  |\ '-'  ||  ||  |         
-#   `-----' `-----'`-----' `-------'   `--'          `----'     `--'  `--' `----'`----' `----' `--' `--`--'`--''--'         
-#                                                                                                                           
+#   ,-----. ,-----. ,---.  ,------. ,--------.       ,----.     ,--.  ,--.                     ,--.
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--',-----.'.-.  |    |  '--'  | ,---.  ,---.  ,---. `--' ,--,--.,--,--,
+#  |  |    |  |    `.  `-. |  |  \  :  |  |   '-----'  .' <     |  .--.  || .-. :(  .-' (  .-' ,--.' ,-.  ||      \
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |          /'-'  |    |  |  |  |\   --..-'  `).-'  `)|  |\ '-'  ||  ||  |
+#   `-----' `-----'`-----' `-------'   `--'          `----'     `--'  `--' `----'`----' `----' `--' `--`--'`--''--'
+#
 #  <<<  CCSDT-3 Hessian
+
 
 @pytest.mark.parametrize(
     "dertype",
@@ -2713,7 +2747,7 @@ def test_ccsdt3_hessian_module(inp, dertype, basis, subjects, clsd_open_pmols, r
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -2808,14 +2842,15 @@ def test_ccsdt_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, r
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "gradient"))
 
 
-#                                                                                                     
-#   ,-----. ,-----. ,---.  ,------. ,--------.    ,--.  ,--.                     ,--.                 
-#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--'    |  '--'  | ,---.  ,---.  ,---. `--' ,--,--.,--,--,  
-#  |  |    |  |    `.  `-. |  |  \  :  |  |       |  .--.  || .-. :(  .-' (  .-' ,--.' ,-.  ||      \ 
-#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |       |  |  |  |\   --..-'  `).-'  `)|  |\ '-'  ||  ||  | 
-#   `-----' `-----'`-----' `-------'   `--'       `--'  `--' `----'`----' `----' `--' `--`--'`--''--' 
-# 
+#
+#   ,-----. ,-----. ,---.  ,------. ,--------.    ,--.  ,--.                     ,--.
+#  '  .--./'  .--./'   .-' |  .-.  \'--.  .--'    |  '--'  | ,---.  ,---.  ,---. `--' ,--,--.,--,--,
+#  |  |    |  |    `.  `-. |  |  \  :  |  |       |  .--.  || .-. :(  .-' (  .-' ,--.' ,-.  ||      \
+#  '  '--'\'  '--'\.-'    ||  '--'  /  |  |       |  |  |  |\   --..-'  `).-'  `)|  |\ '-'  ||  ||  |
+#   `-----' `-----'`-----' `-------'   `--'       `--'  `--' `----'`----' `----' `--' `--`--'`--''--'
+#
 #  <<<  CCSDT Hessian
+
 
 @pytest.mark.parametrize(
     "dertype",
@@ -2868,7 +2903,7 @@ def test_ccsdt_hessian_module(inp, dertype, basis, subjects, clsd_open_pmols, re
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -2890,7 +2925,6 @@ def test_ccsdt_hessian_module(inp, dertype, basis, subjects, clsd_open_pmols, re
 )
 def test_ccsdt_prq_pr_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, request):
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
-
 
 
 #   ,-----. ,-----. ,---.  ,------. ,--------. ,-. ,-----.   ,-.       ,----.                     ,--.,--.                 ,--.
@@ -2945,7 +2979,7 @@ def test_ccsdt_prq_pr_gradient_module(inp, dertype, basis, subjects, clsd_open_p
     "dertype",
     [
         pytest.param(0, id="ene0"),
-    ]
+    ],
 )
 @pytest.mark.parametrize(
     "basis, subjects",
@@ -3009,16 +3043,16 @@ def test_ccsdtq_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, 
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "gradient"))
 
 
-#                                                                                             
-#  ,------. ,-----.  ,------.    ,------.                                                     
-#  |  .--. '|  |) /_ |  .---'    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.                
-#  |  '--' ||  .-.  \|  `--,     |  `--, |      \| .-. :|  .--'| .-. |\  '  /                 
-#  |  | --' |  '--' /|  `---.    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '                  
-#  `--'     `------' `------'    `------'`--''--' `----'`--'   .`-  /.-'  /                   
-#                                                              `---' `---'                    
+#
+#  ,------. ,-----.  ,------.    ,------.
+#  |  .--. '|  |) /_ |  .---'    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  '--' ||  .-.  \|  `--,     |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  |  | --' |  '--' /|  `---.    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#  `--'     `------' `------'    `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                                              `---' `---'
 #  <<<  PBE Energy
 
-#_gms_grid = {"gamess_dft__nrad": 99, "gamess_dft__nleb": 590, "gamess_dft__thresh": 1.e-15}  #, "gamess_dft__gthre": 10, "gamess_scf__conv": 1.e-9}
+# _gms_grid = {"gamess_dft__nrad": 99, "gamess_dft__nleb": 590, "gamess_dft__thresh": 1.e-15}  #, "gamess_dft__gthre": 10, "gamess_scf__conv": 1.e-9}
 _gms_grid = {"gamess_dft__nrad": 99, "gamess_dft__nleb": 590}
 _psi_grid = {"psi4_dft_radial_points": 99, "psi4_dft_spherical_points": 590}
 _nwc_grid = {"nwchem_dft__grid__lebedev": (99, 14)}
@@ -3056,8 +3090,7 @@ _nwc_grid = {"nwchem_dft__grid__lebedev": (99, 14)}
         pytest.param({"call": "gms-pbe", "reference": "rohf", "fcae": "ae", "keywords": {**_gms_grid, "gamess_contrl__scftyp": "rohf"},                                                     }, id="pbe rohf ae: gamess",     marks=using("gamess")),
         pytest.param({"call": "nwc-pbe", "reference": "rohf", "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__rohf": True, "nwchem_dft__rodft": True},                                 }, id="pbe rohf ae: nwchem",     marks=using("nwchem")),
         pytest.param({"call": "p4-pbe",  "reference": "rohf", "fcae": "ae", "keywords": {**_psi_grid, "reference": "rohf", "psi4_scf_type": "pk"},                        "error": {0: _q36}}, id="pbe rohf ae: psi4",       marks=using("psi4")),
-
-        #pytest.param({"call": "nwc-pbe", "reference": "rohf", "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__rohf": True, "nwchem_dft__rodft": True, "nwchem_dft__convergence__energy": 1.e-9, "nwchem_dft__convergence__gradient": 1.e-7},                    }, id="pbe rohf ae: nwchem",     marks=using("nwchem")),
+        # pytest.param({"call": "nwc-pbe", "reference": "rohf", "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__rohf": True, "nwchem_dft__rodft": True, "nwchem_dft__convergence__energy": 1.e-9, "nwchem_dft__convergence__gradient": 1.e-7},                    }, id="pbe rohf ae: nwchem",     marks=using("nwchem")),
         # yapf: enable
     ],
 )
@@ -3066,11 +3099,11 @@ def test_pbe_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, reque
 
 
 #
-#  ,------. ,-----.  ,------.     ,----.                     ,--.,--.                 ,--.   
-#  |  .--. '|  |) /_ |  .---'    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-. 
-#  |  '--' ||  .-.  \|  `--,     |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-' 
-#  |  | --' |  '--' /|  `---.    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |   
-#  `--'     `------' `------'     `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'   
+#  ,------. ,-----.  ,------.     ,----.                     ,--.,--.                 ,--.
+#  |  .--. '|  |) /_ |  .---'    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-.
+#  |  '--' ||  .-.  \|  `--,     |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-'
+#  |  | --' |  '--' /|  `---.    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |
+#  `--'     `------' `------'     `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'
 #
 #  <<<  PBE Gradient
 
@@ -3108,8 +3141,7 @@ def test_pbe_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, reque
         pytest.param({"call": "gms-pbe", "reference": "rohf", "fcae": "ae", "keywords": {**_gms_grid, "gamess_contrl__scftyp": "rohf", "gamess_dft__gthre": 10},                                                          }, id="pbe rohf ae: gamess",     marks=using("gamess")),
         pytest.param({"call": "nwc-pbe", "reference": "rohf", "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__rohf": True, "nwchem_dft__rodft": True, "nwchem_dft__convergence__gradient": 1.e-5},                   }, id="pbe rohf ae: nwchem",     marks=using("nwchem")),
         pytest.param({"call": "p4-pbe",  "reference": "rohf", "fcae": "ae", "keywords": {**_psi_grid, "reference": "rohf", "psi4_scf_type": "pk"},                                                      "error": {1: _q36}}, id="pbe rohf ae: psi4",       marks=using("psi4")),
-
-        #pytest.param({"call": "nwc-pbe", "reference": "rohf", "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__rohf": True, "nwchem_dft__rodft": True, "nwchem_dft__convergence__energy": 1.e-9, "nwchem_dft__convergence__gradient": 1.e-7},                    }, id="pbe rohf ae: nwchem",     marks=using("nwchem")),
+        # pytest.param({"call": "nwc-pbe", "reference": "rohf", "fcae": "ae", "keywords": {**_nwc_grid, "nwchem_scf__rohf": True, "nwchem_dft__rodft": True, "nwchem_dft__convergence__energy": 1.e-9, "nwchem_dft__convergence__gradient": 1.e-7},                    }, id="pbe rohf ae: nwchem",     marks=using("nwchem")),
         # yapf: enable
     ],
 )
@@ -3117,14 +3149,15 @@ def test_pbe_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, req
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "gradient"))
 
 
-#                                                                                                                 
-#  ,-----.  ,----. ,--.,--.   ,--.,------.     ,------.                                                    
-#  |  |) /_ '.-.  ||  | \  `.'  / |  .--. '    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.               
-#  |  .-.  \  .' < |  |  '.    /  |  '--' |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /                
-#  |  '--' //'-'  ||  '--. |  |   |  | --'     |  `---.|  ||  |\   --.|  |   ' '-' ' \   '                 
-#  `------' `----' `-----' `--'   `--'         `------'`--''--' `----'`--'   .`-  /.-'  /                  
-#                                                                            `---' `---'                   
+#
+#  ,-----.  ,----. ,--.,--.   ,--.,------.     ,------.
+#  |  |) /_ '.-.  ||  | \  `.'  / |  .--. '    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  .-.  \  .' < |  |  '.    /  |  '--' |    |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  |  '--' //'-'  ||  '--. |  |   |  | --'     |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#  `------' `----' `-----' `--'   `--'         `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                                                            `---' `---'
 #  <<<  B3LYP Energy
+
 
 @pytest.mark.parametrize(
     "dertype",
@@ -3166,14 +3199,15 @@ def test_b3lyp_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, req
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "energy"))
 
 
-#                                                                                                                 
-#  ,-----.  ,----. ,--.,--.   ,--.,------. ,-----.    ,------.                                                    
-#  |  |) /_ '.-.  ||  | \  `.'  / |  .--. '|  .--'    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.               
-#  |  .-.  \  .' < |  |  '.    /  |  '--' |'--. `\    |  `--, |      \| .-. :|  .--'| .-. |\  '  /                
-#  |  '--' //'-'  ||  '--. |  |   |  | --' .--'  /    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '                 
-#  `------' `----' `-----' `--'   `--'     `----'     `------'`--''--' `----'`--'   .`-  /.-'  /                  
-#                                                                                   `---' `---'       
+#
+#  ,-----.  ,----. ,--.,--.   ,--.,------. ,-----.    ,------.
+#  |  |) /_ '.-.  ||  | \  `.'  / |  .--. '|  .--'    |  .---',--,--,  ,---. ,--.--. ,---.,--. ,--.
+#  |  .-.  \  .' < |  |  '.    /  |  '--' |'--. `\    |  `--, |      \| .-. :|  .--'| .-. |\  '  /
+#  |  '--' //'-'  ||  '--. |  |   |  | --' .--'  /    |  `---.|  ||  |\   --.|  |   ' '-' ' \   '
+#  `------' `----' `-----' `--'   `--'     `----'     `------'`--''--' `----'`--'   .`-  /.-'  /
+#                                                                                   `---' `---'
 #  <<<  B3LYP5 Energy
+
 
 @pytest.mark.parametrize(
     "dertype",
@@ -3216,13 +3250,14 @@ def test_b3lyp5_energy_module(inp, dertype, basis, subjects, clsd_open_pmols, re
 
 
 #
-#  ,-----.  ,----. ,--.,--.   ,--.,------.      ,----.                     ,--.,--.                 ,--.   
-#  |  |) /_ '.-.  ||  | \  `.'  / |  .--. '    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-. 
-#  |  .-.  \  .' < |  |  '.    /  |  '--' |    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-' 
-#  |  '--' //'-'  ||  '--. |  |   |  | --'     '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |   
-#  `------' `----' `-----' `--'   `--'          `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'   
-#                     
+#  ,-----.  ,----. ,--.,--.   ,--.,------.      ,----.                     ,--.,--.                 ,--.
+#  |  |) /_ '.-.  ||  | \  `.'  / |  .--. '    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-.
+#  |  .-.  \  .' < |  |  '.    /  |  '--' |    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-'
+#  |  '--' //'-'  ||  '--. |  |   |  | --'     '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |
+#  `------' `----' `-----' `--'   `--'          `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'
+#
 #  <<<  B3LYP Gradient
+
 
 @pytest.mark.parametrize(
     "dertype",
@@ -3266,13 +3301,14 @@ def test_b3lyp_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, r
 
 
 #
-#  ,-----.  ,----. ,--.,--.   ,--.,------. ,-----.     ,----.                     ,--.,--.                 ,--.   
-#  |  |) /_ '.-.  ||  | \  `.'  / |  .--. '|  .--'    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-. 
-#  |  .-.  \  .' < |  |  '.    /  |  '--' |'--. `\    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-' 
-#  |  '--' //'-'  ||  '--. |  |   |  | --' .--'  /    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |   
-#  `------' `----' `-----' `--'   `--'     `----'      `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'  
+#  ,-----.  ,----. ,--.,--.   ,--.,------. ,-----.     ,----.                     ,--.,--.                 ,--.
+#  |  |) /_ '.-.  ||  | \  `.'  / |  .--. '|  .--'    '  .-./   ,--.--. ,--,--. ,-|  |`--' ,---. ,--,--, ,-'  '-.
+#  |  .-.  \  .' < |  |  '.    /  |  '--' |'--. `\    |  | .---.|  .--'' ,-.  |' .-. |,--.| .-. :|      \'-.  .-'
+#  |  '--' //'-'  ||  '--. |  |   |  | --' .--'  /    '  '--'  ||  |   \ '-'  |\ `-' ||  |\   --.|  ||  |  |  |
+#  `------' `----' `-----' `--'   `--'     `----'      `------' `--'    `--`--' `---' `--' `----'`--''--'  `--'
 #
 #  <<<  B3LYP5 Gradient
+
 
 @pytest.mark.parametrize(
     "dertype",
@@ -3315,7 +3351,6 @@ def test_b3lyp5_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, 
     runner_asserter(*_processor(inp, dertype, basis, subjects, clsd_open_pmols, request, "gradient"))
 
 
-
 def _processor(inp, dertype, basis, subjects, clsd_open_pmols, request, driver, *, scramble=None, frame=""):
     qcprog, method = inp["call"].split("-", 1)
     qcprog = _trans_qcprog[qcprog.lower()]
@@ -3345,7 +3380,16 @@ def _processor(inp, dertype, basis, subjects, clsd_open_pmols, request, driver, 
     inpcopy["scf_type"] = "pk"
     inpcopy["corl_type"] = "conv"
     inpcopy["qc_module"] = "-".join(
-        [qcprog, inp["keywords"].get("qc_module", inp["keywords"].get("cfour_cc_program", inp["keywords"].get("psi4_qc_module", inp["keywords"].get("gamess_mp2__code", ""))))]
+        [
+            qcprog,
+            inp["keywords"].get(
+                "qc_module",
+                inp["keywords"].get(
+                    "cfour_cc_program",
+                    inp["keywords"].get("psi4_qc_module", inp["keywords"].get("gamess_mp2__code", "")),
+                ),
+            ),
+        ]
     ).strip("-")
     inpcopy["keywords"]["function_kwargs"] = {"dertype": dertype}
     print("INP", inpcopy)

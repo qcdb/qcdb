@@ -26,16 +26,15 @@
 # @END LICENSE
 #
 
-from __future__ import print_function
-from __future__ import absolute_import
-import re
+from __future__ import absolute_import, print_function
+
 import math
+import re
 from collections import defaultdict
 
-from .exceptions import *
-from . import qcformat
 #import molpro_basissets
-from . import options
+from . import options, qcformat
+from .exceptions import *
 from .pdict import PreservingDict
 
 

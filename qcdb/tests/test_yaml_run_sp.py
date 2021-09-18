@@ -3,12 +3,12 @@ from https://github.com/psi4/psi4/blob/master/tests/tu2-ch2-energy/input.dat
 
 """
 import pprint
+
 import pytest
 
 import qcdb
 
 from .utils import *
-
 
 
 @using("psi4")
@@ -64,13 +64,12 @@ options:
 """
 
     import yaml
+
     asdf = yaml.load(yamlin, Loader=yaml.FullLoader)
 
-    ene = asdf['driver'](asdf['method'],
-                         options=asdf['options'],
-                         molecule=qcdb.Molecule(asdf['molecule']))
+    ene = asdf["driver"](asdf["method"], options=asdf["options"], molecule=qcdb.Molecule(asdf["molecule"]))
 
-    assert compare_values(-38.9253416082900827, ene, 6, 'calc from yaml str')
+    assert compare_values(-38.9253416082900827, ene, 6, "calc from yaml str")
 
 
 @using("nwchem")
@@ -96,13 +95,12 @@ options:
 """
 
     import yaml
+
     asdf = yaml.load(yamlin, Loader=yaml.FullLoader)
 
-    ene = asdf['driver'](asdf['method'],
-                         options=asdf['options'],
-                         molecule=qcdb.Molecule(asdf['molecule']))
+    ene = asdf["driver"](asdf["method"], options=asdf["options"], molecule=qcdb.Molecule(asdf["molecule"]))
 
-    assert compare_values(-38.9253416082900827, ene, 6, 'calc from yaml str')
+    assert compare_values(-38.9253416082900827, ene, 6, "calc from yaml str")
 
 
 @using("gamess")
@@ -128,11 +126,9 @@ options:
 """
 
     import yaml
+
     asdf = yaml.load(yamlin, Loader=yaml.FullLoader)
 
-    ene = asdf['driver'](asdf['method'],
-                         options=asdf['options'],
-                         molecule=qcdb.Molecule(asdf['molecule']))
+    ene = asdf["driver"](asdf["method"], options=asdf["options"], molecule=qcdb.Molecule(asdf["molecule"]))
 
-    assert compare_values(-38.9253416082900827, ene, 6, 'calc from yaml str')
-
+    assert compare_values(-38.9253416082900827, ene, 6, "calc from yaml str")

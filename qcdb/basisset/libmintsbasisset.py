@@ -1,7 +1,7 @@
-import os
+import collections
 import hashlib
 import itertools
-import collections
+import os
 from typing import Callable, Dict, Union
 
 import qcelemental as qcel

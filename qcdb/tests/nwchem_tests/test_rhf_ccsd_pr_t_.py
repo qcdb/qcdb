@@ -21,38 +21,42 @@ def check_ccsd_t_(return_value):
     os = -0.167307543836588 * 1.270000000000000
     ccsd_t_tot = -76.243161551636248
     t_corr = -0.003059541972533
-    ccsd_t_corl= ccsd_corl + t_corr
+    ccsd_t_corl = ccsd_corl + t_corr
     a5050corl = 0.5 * (ss + os)
     a5050tot = a5050corl + scstot
 
-    assert compare_values(ref, qcdb.variable('HF TOTAL ENERGY'), 5, 'hf ref')
-    assert compare_values(ccsd_corl, qcdb.variable('CCSD CORRELATION ENERGY'), 5, 'ccsd corl')
-    assert compare_values(ccsd_tot, qcdb.variable('CCSD TOTAL ENERGY'), 5, 'ccsd total')
-    assert compare_values(t_corr, qcdb.variable('(T) CORRECTION ENERGY'), 5, 'ccsd(t) corr')
-    assert compare_values(ccsd_t_corl, qcdb.variable('CCSD(T) CORRELATION ENERGY'), 5, 'ccsd(t) corl')
-    assert compare_values(ccsd_t_tot, qcdb.variable('CCSD(T) TOTAL ENERGY'), 5, 'ccsd(t) tot')
-    assert compare_values(nre, qcdb.variable('NUCLEAR REPULSION ENERGY'), 5, 'nre')
+    assert compare_values(ref, qcdb.variable("HF TOTAL ENERGY"), 5, "hf ref")
+    assert compare_values(ccsd_corl, qcdb.variable("CCSD CORRELATION ENERGY"), 5, "ccsd corl")
+    assert compare_values(ccsd_tot, qcdb.variable("CCSD TOTAL ENERGY"), 5, "ccsd total")
+    assert compare_values(t_corr, qcdb.variable("(T) CORRECTION ENERGY"), 5, "ccsd(t) corr")
+    assert compare_values(ccsd_t_corl, qcdb.variable("CCSD(T) CORRELATION ENERGY"), 5, "ccsd(t) corl")
+    assert compare_values(ccsd_t_tot, qcdb.variable("CCSD(T) TOTAL ENERGY"), 5, "ccsd(t) tot")
+    assert compare_values(nre, qcdb.variable("NUCLEAR REPULSION ENERGY"), 5, "nre")
 
 
 @using("nwchem")
 def test_1_ccsd_t_():
-    h2o = qcdb.set_molecule('''
+    h2o = qcdb.set_molecule(
+        """
         O     0.000000000000    0.000000000000   -0.065638538099
         H     0.000000000000   -0.757480611647    0.520865616174
         H     0.000000000000    0.757480611647    0.520865616174
-        ''')
+        """
+    )
 
-    qcdb.set_options({
-        'basis': 'cc-pvdz',
-        'nwchem_scf__rhf': True,
-        'nwchem_scf__thresh': 1.0e-12,
-        'nwchem_tce__dft': False,
-        #'nwchem_tce__ccsd': True,
-        'nwchem_tce__ccsd(t)': True,
-        'qc_module'  : 'tce',
-        'nwchem_tce__thresh': 1.0e-12,
-        #'nwchem_task_tce': 'energy'
-    })
-    print('     Testing ccsd...')
-    val = qcdb.energy('nwc-ccsd(t)')
+    qcdb.set_options(
+        {
+            "basis": "cc-pvdz",
+            "nwchem_scf__rhf": True,
+            "nwchem_scf__thresh": 1.0e-12,
+            "nwchem_tce__dft": False,
+            #'nwchem_tce__ccsd': True,
+            "nwchem_tce__ccsd(t)": True,
+            "qc_module": "tce",
+            "nwchem_tce__thresh": 1.0e-12,
+            #'nwchem_task_tce': 'energy'
+        }
+    )
+    print("     Testing ccsd...")
+    val = qcdb.energy("nwc-ccsd(t)")
     check_ccsd_t_(val)

@@ -1,5 +1,5 @@
-from typing import Dict, Union
 from decimal import Decimal
+from typing import Dict, Union
 
 import numpy as np
 from qcelemental import Datum
@@ -9,8 +9,9 @@ from .glossary import qcvardefs
 from .identities import wfn_qcvars
 
 
-def certify_and_datumize(dicary: Dict[str, Union[float, Decimal, np.ndarray]], *, plump: bool = False,
-                         nat: int = None) -> Dict[str, Datum]:
+def certify_and_datumize(
+    dicary: Dict[str, Union[float, Decimal, np.ndarray]], *, plump: bool = False, nat: int = None
+) -> Dict[str, Datum]:
     """Convert a QCVariable: data dictionary to QCVariable: Datum dictionary, filling in details from the glossary.
 
     Parameters
@@ -22,14 +23,14 @@ def certify_and_datumize(dicary: Dict[str, Union[float, Decimal, np.ndarray]], *
     calcinfo = []
     for pv, var in dicary.items():
         if pv in qcvardefs.keys():
-            doi = qcvardefs[pv].get('doi', None)
+            doi = qcvardefs[pv].get("doi", None)
             if plump and isinstance(var, np.ndarray) and var.ndim == 1:
-                var = var.reshape(eval(qcvardefs[pv]['dimension'].format(nat=nat)))
-            calcinfo.append(Datum(pv, qcvardefs[pv]['units'], var, doi=doi, glossary=qcvardefs[pv]['glossary']))
+                var = var.reshape(eval(qcvardefs[pv]["dimension"].format(nat=nat)))
+            calcinfo.append(Datum(pv, qcvardefs[pv]["units"], var, doi=doi, glossary=qcvardefs[pv]["glossary"]))
 
         else:
             defined = sorted(qcvardefs.keys())
-            raise ValidationError('Undefined QCvar!: {}\n{}'.format(pv, '\n\t'.join(defined)))
+            raise ValidationError("Undefined QCvar!: {}\n{}".format(pv, "\n\t".join(defined)))
 
     return {info.label: info for info in calcinfo}
 
@@ -54,12 +55,12 @@ def build_out(rawvars: Dict[str, Datum], verbose: int = 1) -> None:
 
     """
     for action in wfn_qcvars():
-        pvar = action['form']
-        buildline = """building {} {}""".format(pvar, '.' * (50 - len(pvar)))
+        pvar = action["form"]
+        buildline = """building {} {}""".format(pvar, "." * (50 - len(pvar)))
 
         data_rich_args = []
 
-        for pv in action['args']:
+        for pv in action["args"]:
             if isinstance(pv, str):
                 if pv in rawvars:
                     data_rich_args.append(rawvars[pv])
@@ -72,14 +73,14 @@ def build_out(rawvars: Dict[str, Datum], verbose: int = 1) -> None:
             else:
                 data_rich_args.append(pv)
         else:
-            result = action['func'](data_rich_args)
+            result = action["func"](data_rich_args)
             if verbose >= 3:
                 print(f"{result=}")
-            #rawvars[pvar] = result
+            # rawvars[pvar] = result
             # with data coming from file --> variable, looks more precise than it is. hack
             rawvars.__setitem__(pvar, result, 6)
             if verbose >= 1:
                 print("""{}SUCCESS""".format(buildline))
 
-            if pvar == "CURRENT CORRELATION ENERGY" and abs(float(rawvars[pvar])) < 1.e-16:
+            if pvar == "CURRENT CORRELATION ENERGY" and abs(float(rawvars[pvar])) < 1.0e-16:
                 rawvars.pop(pvar)

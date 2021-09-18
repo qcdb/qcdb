@@ -4,6 +4,7 @@ Spectroscopic constants of H2, and the full ci cc-pVTZ level of theory
 
 """
 import pprint
+
 import pytest
 
 import qcdb

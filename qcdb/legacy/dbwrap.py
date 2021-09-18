@@ -26,11 +26,19 @@
 # @END LICENSE
 #
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
+
+import itertools
+import math
 import os
 import sys
-import math
+from collections import OrderedDict
+
+from . import textables
+from .exceptions import *
+from .modelchems import BasisSet, Error, Method, bases, errors, methods, pubs
+from .molecule import Molecule
+from .util.paths import import_ignorecase
 
 try:
     basestring
@@ -41,14 +49,7 @@ try:
     import cPickle as pickle
 except ImportError:
     import pickle
-import itertools
-from collections import OrderedDict
 
-from .exceptions import *
-from .molecule import Molecule
-from .modelchems import Method, BasisSet, Error, methods, bases, errors, pubs
-from .util.paths import import_ignorecase
-from . import textables
 
 
 def initialize_errors():
@@ -572,8 +573,9 @@ class Reaction(object):
         labels = ['']
         # generate matplotlib instructions and call or print
         try:
-            from . import mpl
             import matplotlib.pyplot as plt
+
+            from . import mpl
         except ImportError:
             # if not running from Canopy, print line to execute from Canopy
             print("""filedict, htmlcode = mpl.threads(%s,\n    color='%s',\n    title='%s',\n    labels=%s,\n    mae=%s,\n    mape=%s\n    xlimit=%s\n    labeled=%s\n    saveas=%s\n    mousetext=%s\n    mouselink=%s\n    mouseimag=%s\n    mousetitle=%s,\n    mousediv=%s,\n    relpath=%s\n    graphicsformat=%s)\n\n""" %
@@ -1783,8 +1785,9 @@ class Database(object):
         title = self.dbse + ' ' + pre + '[]' + suf + ' ' + ','.join(sset)
         # generate matplotlib instructions and call or print
         try:
-            from . import mpl
             import matplotlib.pyplot as plt
+
+            from . import mpl
         except ImportError:
             # if not running from Canopy, print line to execute from Canopy
             print("""filedict = mpl.bars(%s,\n    title='%s'\n    saveas=%s\n    relpath=%s\n    graphicsformat=%s)\n\n""" %
@@ -1873,8 +1876,9 @@ class Database(object):
         #            0.0 if d['mcdata'] is None else d['mcdata'])
         # generate matplotlib instructions and call or print
         try:
-            from . import mpl
             import matplotlib.pyplot as plt
+
+            from . import mpl
         except ImportError:
             # if not running from Canopy, print line to execute from Canopy
             print("""filedict = mpl.valerr(%s,\n    color='%s',\n    title='%s',\n    xtitle='%s',\n    view=%s\n    saveas=%s\n    relpath=%s\n    graphicsformat=%s)\n\n""" %
@@ -1962,8 +1966,9 @@ class Database(object):
 
         # generate matplotlib instructions and call or print
         try:
-            from . import mpl
             import matplotlib.pyplot as plt
+
+            from . import mpl
         except ImportError:
             pass
             # if not running from Canopy, print line to execute from Canopy
@@ -2016,8 +2021,9 @@ class Database(object):
         mapbe = None
         # generate matplotlib instructions and call or print
         try:
-            from . import mpl
             import matplotlib.pyplot as plt
+
+            from . import mpl
         except ImportError:
             # if not running from Canopy, print line to execute from Canopy
             print("""filedict = mpl.flat(%s,\n    color='%s',\n    title='%s',\n    mae=%s,\n    mape=%s,\n    xlimit=%s,\n    xlines=%s,\n    view=%s\n    saveas=%s\n    relpath=%s\n    graphicsformat=%s)\n\n""" %
@@ -2224,8 +2230,9 @@ reinitialize
         stde = errors[self.dbse]['stde']
         # generate matplotlib instructions and call or print
         try:
-            from . import mpl
             import matplotlib.pyplot as plt
+
+            from . import mpl
         except ImportError:
             # if not running from Canopy, print line to execute from Canopy
             print("""filedict = mpl.disthist(%s,\n    title='%s',\n    xtitle='%s'\n    me=%s,\n    stde=%s,\n    saveas=%s,\n    relpath=%s\n    graphicsformat=%s)\n\n""" %
@@ -2323,8 +2330,9 @@ reinitialize
         title = self.dbse + ' ' + ixpre + '[]' + ixsuf
         # generate matplotlib instructions and call or print
         try:
-            from . import mpl
             import matplotlib.pyplot as plt
+
+            from . import mpl
         except ImportError:
             # if not running from Canopy, print line to execute from Canopy
             print("""filedict, htmlcode = mpl.threads(%s,\n    color='%s',\n    title='%s',\n    labels=%s,\n    mae=%s,\n    mape=%s\n    xlimit=%s\n    labeled=%s\n    saveas=%s\n    mousetext=%s\n    mouselink=%s\n    mouseimag=%s\n    mousetitle=%s,\n    mousediv=%s,\n    relpath=%s\n    graphicsformat=%s)\n\n""" %
@@ -2366,8 +2374,9 @@ reinitialize
 
         # generate matplotlib instructions and call or print
         try:
-            from . import mpl
             import matplotlib.pyplot as plt
+
+            from . import mpl
         except ImportError:
             print('Matplotlib not avail')
         else:
@@ -2403,8 +2412,9 @@ reinitialize
         me = errors[self.dbse]['me']
         # generate matplotlib instructions and call or print
         try:
-            from . import mpl
             import matplotlib.pyplot as plt
+
+            from . import mpl
         except ImportError:
             # if not running from Canopy, print line to execute from Canopy
             print("""mpl.iowa(%s,\n    %s,\n    title='%s',\n    xtitle='%s'\n    xlimit=%s,\n    saveas=%s,\n    relpath=%s\n    graphicsformat=%s)\n\n""" %
@@ -2422,8 +2432,8 @@ reinitialize
         *modelchem* is array of model chemistries, if modelchem is empty, get only benchmark
         is benchmark needed?
         """
-        import pandas as pd
         import numpy as np
+        import pandas as pd
 
         if self.dbse not in ['ACONF', 'SCONF', 'PCONF', 'CYCONF']:
             saptdata = self.load_saptdata_frombfdb(sset=sset,

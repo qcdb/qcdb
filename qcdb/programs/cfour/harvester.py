@@ -55,41 +55,41 @@ def harvest_zmat(zmat: str) -> Molecule:
     zmat = zmat.splitlines()[1:]  # skip comment line
     Nat = 0
     readCoord = True
-    isBohr = ''
+    isBohr = ""
     charge = 0
     mult = 1
-    molxyz = ''
+    molxyz = ""
     for line in zmat:
-        if line.strip() == '':
+        if line.strip() == "":
             readCoord = False
         elif readCoord:
-            molxyz += line + '\n'
+            molxyz += line + "\n"
             Nat += 1
         else:
-            if line.find('CHARGE') > -1:
-                idx = line.find('CHARGE')
-                charge = line[idx + 7:]
-                idxc = charge.find(',')
+            if line.find("CHARGE") > -1:
+                idx = line.find("CHARGE")
+                charge = line[idx + 7 :]
+                idxc = charge.find(",")
                 if idxc > -1:
                     charge = charge[:idxc]
                 charge = int(charge)
-            if line.find('MULTIPLICITY') > -1:
-                idx = line.find('MULTIPLICITY')
-                mult = line[idx + 13:]
-                idxc = mult.find(',')
+            if line.find("MULTIPLICITY") > -1:
+                idx = line.find("MULTIPLICITY")
+                mult = line[idx + 13 :]
+                idxc = mult.find(",")
                 if idxc > -1:
                     mult = mult[:idxc]
                 mult = int(mult)
-            if line.find('UNITS=BOHR') > -1:
-                isBohr = ' bohr'
+            if line.find("UNITS=BOHR") > -1:
+                isBohr = " bohr"
 
-    molxyz = f'{Nat}{isBohr}\n{charge} {mult}\n' + molxyz
-    mol = Molecule(validate=False,
-                   **qcel.molparse.to_schema(qcel.molparse.from_string(molxyz,
-                                                                       dtype='xyz+',
-                                                                       fix_com=True,
-                                                                       fix_orientation=True)["qm"],
-                                             dtype=2))
+    molxyz = f"{Nat}{isBohr}\n{charge} {mult}\n" + molxyz
+    mol = Molecule(
+        validate=False,
+        **qcel.molparse.to_schema(
+            qcel.molparse.from_string(molxyz, dtype="xyz+", fix_com=True, fix_orientation=True)["qm"], dtype=2
+        ),
+    )
 
     return mol
 
@@ -101,72 +101,71 @@ def format_fjobarc(energy, amap, elem, coordinates, gradient, dipole):
     that exactly mimics the contents of a Cfour FJOBARC file.
 
     """
-    fja = 'TOTENERG\n'
-    fja += '%15d%15d\n' % (struct.unpack("ii", struct.pack("d", energy)))
-    fja += 'COORD\n'
+    fja = "TOTENERG\n"
+    fja += "%15d%15d\n" % (struct.unpack("ii", struct.pack("d", energy)))
+    fja += "COORD\n"
     Nat = len(coordinates)
     flatcoord = []
     for at in range(Nat):
         for xyz in range(3):
             flatcoord.append(coordinates[amap[at]][xyz])
     for idx in range(len(flatcoord)):
-        if abs(flatcoord[idx]) < 1.0E-14:  # TODO
+        if abs(flatcoord[idx]) < 1.0e-14:  # TODO
             flatcoord[idx] = 0.0
-        fja += '%15d%15d' % (struct.unpack("ii", struct.pack("d", flatcoord[idx])))
+        fja += "%15d%15d" % (struct.unpack("ii", struct.pack("d", flatcoord[idx])))
         if idx % 2 == 1:
-            fja += '\n'
+            fja += "\n"
     if len(flatcoord) % 2 == 1:
-        fja += '\n'
-    fja += 'MAP2ZMAT\n'
+        fja += "\n"
+    fja += "MAP2ZMAT\n"
     for idx in range(Nat):
-        fja += '%15d%15d' % (struct.unpack("ii", struct.pack("l", amap[idx] + 1)))
+        fja += "%15d%15d" % (struct.unpack("ii", struct.pack("l", amap[idx] + 1)))
         if idx % 2 == 1:
-            fja += '\n'
+            fja += "\n"
     if Nat % 2 == 1:
-        fja += '\n'
-    fja += 'GRD FILE\n'
-    fja += '%5d%20.10f\n' % (Nat, 0.0)
+        fja += "\n"
+    fja += "GRD FILE\n"
+    fja += "%5d%20.10f\n" % (Nat, 0.0)
     for at in range(Nat):
-        fja += '%20.10f%20.10f%20.10f%20.10f\n' % (elem[at], coordinates[at][0], coordinates[at][1],
-                                                   coordinates[at][2])
+        fja += "%20.10f%20.10f%20.10f%20.10f\n" % (elem[at], coordinates[at][0], coordinates[at][1], coordinates[at][2])
     for at in range(Nat):
-        fja += '%20.10f%20.10f%20.10f%20.10f\n' % (elem[at], gradient[at][0], gradient[at][1], gradient[at][2])
-    fja += 'DIPOL FILE\n'
-    fja += '%20.10f%20.10f%20.10f\n' % (dipole[0], dipole[1], dipole[2])
+        fja += "%20.10f%20.10f%20.10f%20.10f\n" % (elem[at], gradient[at][0], gradient[at][1], gradient[at][2])
+    fja += "DIPOL FILE\n"
+    fja += "%20.10f%20.10f%20.10f\n" % (dipole[0], dipole[1], dipole[2])
 
     return fja
 
 
-def backtransform(chgeMol: 'Molecule', permMol: 'Molecule', chgeGrad=None, chgeDip=None):
+def backtransform(chgeMol: "Molecule", permMol: "Molecule", chgeGrad=None, chgeDip=None):
     """Return `chgeMol` and `chgeGrd` to the native Cfour orientation embodied by `permMol`. Currently for vpt2.
 
-<         p4c4 = OrientMols(p4Mol, outMol)
-<         oriCoord = p4c4.transform_coordinates2(outMol)
----
->         # TODO watch out - haven't seen atom_map=False yet  # May 2019 we have now
->         rmsd, mill, amol = outMol.B787(p4Mol, atoms_map=True, mols_align=True, verbose=0)
->         oriCoord = mill.align_coordinates(outMol.geometry(np_out=True))
+    <         p4c4 = OrientMols(p4Mol, outMol)
+    <         oriCoord = p4c4.transform_coordinates2(outMol)
+    ---
+    >         # TODO watch out - haven't seen atom_map=False yet  # May 2019 we have now
+    >         rmsd, mill, amol = outMol.B787(p4Mol, atoms_map=True, mols_align=True, verbose=0)
+    >         oriCoord = mill.align_coordinates(outMol.geometry(np_out=True))
 
 
-       rmsd, mill, amol = grdMol.B787(p4Mol, atoms_map=False, mols_align=True, verbose=0)
+           rmsd, mill, amol = grdMol.B787(p4Mol, atoms_map=False, mols_align=True, verbose=0)
 
-        oriCoord = mill.align_coordinates(grdMol.geometry(np_out=True))
-        oriGrad = mill.align_gradient(np.array(grdGrad))
-        if dipolDip is None:
-            oriDip = None
-        else:
-            oriDip = mill.align_vector(np.array(dipolDip))
+            oriCoord = mill.align_coordinates(grdMol.geometry(np_out=True))
+            oriGrad = mill.align_gradient(np.array(grdGrad))
+            if dipolDip is None:
+                oriDip = None
+            else:
+                oriDip = mill.align_vector(np.array(dipolDip))
 
-        if fcmHess is None:
-            oriHess = None
-        else:
-            oriHess = mill.align_hessian(np.array(fcmHess))
+            if fcmHess is None:
+                oriHess = None
+            else:
+                oriHess = mill.align_hessian(np.array(fcmHess))
 
 
     """
     # Set up array reorientation object -- opposite than usual
     amol, data = chgeMol.align(permMol, atoms_map=False, mols_align=True, verbose=0)
-    mill = data['mill']
+    mill = data["mill"]
 
     oriCoord = mill.align_coordinates(chgeMol.geometry)
     oriElem = mill.align_atoms(np.array(chgeMol.atomic_numbers))
@@ -181,7 +180,7 @@ def backtransform(chgeMol: 'Molecule', permMol: 'Molecule', chgeGrad=None, chgeD
         return oriElemMap, oriElem, oriCoord
 
 
-#def backtransform_grad(p4Mol, c4Mol, p4Grd, p4Dip):
+# def backtransform_grad(p4Mol, c4Mol, p4Grd, p4Dip):
 #    """Here, p4Mol and p4Grd need to be turned into the native Cfour
 #    orientation embodied by c4Mol. Currently for vpt2.
 #
@@ -231,23 +230,23 @@ def jajo2mol(jajodic):
     from JAINDX and JOBARC.
 
     """
-    zmap = jajodic[b'MAP2ZMAT']
-    elem = jajodic[b'ATOMCHRG']
-    coord = jajodic[b'COORD   ']
+    zmap = jajodic[b"MAP2ZMAT"]
+    elem = jajodic[b"ATOMCHRG"]
+    coord = jajodic[b"COORD   "]
     Nat = len(elem)
 
-    molxyz = '%d bohr\n\n' % (Nat)
+    molxyz = "%d bohr\n\n" % (Nat)
     # TODO chgmult, though not really necessary for reorientation
     for at in range(Nat):
         posn = zmap[at] - 1
-        el = 'GH' if elem[posn] == 0 else qcel.periodictable.to_E(elem[posn])
+        el = "GH" if elem[posn] == 0 else qcel.periodictable.to_E(elem[posn])
         posn *= 3
-        molxyz += '%s %21.15f %21.15f %21.15f\n' % (el, coord[posn], coord[posn + 1], coord[posn + 2])
-    mol = Molecule(validate=False,
-                   **qcel.molparse.to_schema(qcel.molparse.from_string(molxyz,
-                                                                       dtype='xyz+',
-                                                                       fix_com=True,
-                                                                       fix_orientation=True)["qm"],
-                                             dtype=2))
+        molxyz += "%s %21.15f %21.15f %21.15f\n" % (el, coord[posn], coord[posn + 1], coord[posn + 2])
+    mol = Molecule(
+        validate=False,
+        **qcel.molparse.to_schema(
+            qcel.molparse.from_string(molxyz, dtype="xyz+", fix_com=True, fix_orientation=True)["qm"], dtype=2
+        ),
+    )
 
     return mol

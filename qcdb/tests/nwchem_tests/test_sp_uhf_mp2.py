@@ -3,8 +3,9 @@
 import os
 import sys
 
-import qcdb
 import pytest
+
+import qcdb
 
 from ..utils import *
 
@@ -20,44 +21,50 @@ def check_uhf_mp2(return_value, is_5050):
     a5050corl = 0.5 * (mp2os + mp2ss)
     a5050tot = a5050corl + ref
 
-    assert compare_values(ref, qcdb.variable('HF TOTAL ENERGY'), 5, 'scf')
-    assert compare_values(mp2_tot, qcdb.variable('MP2 TOTAL ENERGY'), 5, 'mp2 tot')
-    assert compare_values(mp2_corl, qcdb.variable('MP2 CORRELATION ENERGY'), 5, 'mp2 corl')
-    assert compare_values(scs_tot, qcdb.variable('SCS-MP2 TOTAL ENERGY'), 5, 'scs mp2 tot')
-    assert compare_values(scs_corl, qcdb.variable('SCS-MP2 CORRELATION ENERGY'), 5, 'scs mp2 corl')
-    assert compare_values(mp2ss, qcdb.variable('MP2 SAME-SPIN CORRELATION ENERGY'), 5, 'mp2 ss')
-    assert compare_values(mp2os, qcdb.variable('MP2 OPPOSITE-SPIN CORRELATION ENERGY'), 5, 'mp2 os')
-    #if is_5050:
+    assert compare_values(ref, qcdb.variable("HF TOTAL ENERGY"), 5, "scf")
+    assert compare_values(mp2_tot, qcdb.variable("MP2 TOTAL ENERGY"), 5, "mp2 tot")
+    assert compare_values(mp2_corl, qcdb.variable("MP2 CORRELATION ENERGY"), 5, "mp2 corl")
+    assert compare_values(scs_tot, qcdb.variable("SCS-MP2 TOTAL ENERGY"), 5, "scs mp2 tot")
+    assert compare_values(scs_corl, qcdb.variable("SCS-MP2 CORRELATION ENERGY"), 5, "scs mp2 corl")
+    assert compare_values(mp2ss, qcdb.variable("MP2 SAME-SPIN CORRELATION ENERGY"), 5, "mp2 ss")
+    assert compare_values(mp2os, qcdb.variable("MP2 OPPOSITE-SPIN CORRELATION ENERGY"), 5, "mp2 os")
+    # if is_5050:
     #    assert compare_values(a5050corl, qcdb.variable('CUSTOM SCS-MP2 CORRELATION ENERGY'), 5, 'mp2 scscorl')
     #    assert compare_values(a5050tot, qcdb.variable('CUSTOM SCS-MP2 TOTAL ENERGY'), 5, 'mp2 scstot')
 
+
 @using("nwchem")
-@pytest.mark.xfail(True, reason='scs vars NYI', run=True)
+@pytest.mark.xfail(True, reason="scs vars NYI", run=True)
 def test_1_mp2_5050no():
-    nh2 = qcdb.set_molecule('''
+    nh2 = qcdb.set_molecule(
+        """
          N        0.08546       -0.00020       -0.05091
          H       -0.25454       -0.62639        0.67895
          H       -0.25454       -0.31918       -0.95813
-        ''')
+        """
+    )
 
-    qcdb.set_options({
-        'basis': 'cc-pvdz',
-        #'scf__e_convergence': 1.0e-8,
-        'nwchem_scf__UHF': True,
-        'nwchem_scf__nopen': 1,
-        'nwchem_scf__maxiter': 80,
-        'nwchem_scf__thresh': 1.0e-8,
-    })
-    print('Testing hf...')
-    val = qcdb.energy('nwc-mp2', local_options={"memory": 3})
+    qcdb.set_options(
+        {
+            "basis": "cc-pvdz",
+            #'scf__e_convergence': 1.0e-8,
+            "nwchem_scf__UHF": True,
+            "nwchem_scf__nopen": 1,
+            "nwchem_scf__maxiter": 80,
+            "nwchem_scf__thresh": 1.0e-8,
+        }
+    )
+    print("Testing hf...")
+    val = qcdb.energy("nwc-mp2", local_options={"memory": 3})
     check_uhf_mp2(val, is_5050=False)
 
-#@using("nwchem")
-#def test_2_mp2_5050yes():
+
+# @using("nwchem")
+# def test_2_mp2_5050yes():
 #    qcdb.set_options({
 #        'basis': 'cc-pvdz',
 #        'memory': '3000 mb',
-        #'scf__e_convergence': 1.0e-8,
+#'scf__e_convergence': 1.0e-8,
 #        'nwchem_scf__UHF': True,
 #        'nwchem_scf__nopen': 1,
 #        'nwchem_scf__maxiter': 80,

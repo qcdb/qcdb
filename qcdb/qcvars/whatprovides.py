@@ -1,5 +1,3 @@
-
-
 def return_energy_components():
     # yapf: disable
     VARH = {}
@@ -175,7 +173,7 @@ def return_energy_components():
     # yapf: enable
 
     # Explicit Psi4 methods
-    p4_VARH = {('p4-' + k): {('p4-' + kk): vv for kk, vv in v.items()} for k, v in VARH.items()}
+    p4_VARH = {("p4-" + k): {("p4-" + kk): vv for kk, vv in v.items()} for k, v in VARH.items()}
     VARH.update(p4_VARH)
 
     from ..programs.cfour.graft import cfour_qcvar_list

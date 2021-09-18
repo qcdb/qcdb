@@ -7,23 +7,23 @@ import tempfile
 from pathlib import Path
 
 import pytest
-from qcelemental.models import AtomicInput
-
 import qcengine as qcng
+from qcelemental.models import AtomicInput
 from qcengine.testing import has_program, using
+
 import qcdb
 
 _canonical_methods = [
     ("cfour", {"method": "hf", "basis": "6-31G"}, {}),
-#    ("dftd3", {"method": "b3lyp-d3"}, {}),
+    #    ("dftd3", {"method": "b3lyp-d3"}, {}),
     ("gamess", {"method": "hf", "basis": "6-31g"}, {}),
     ("gamess", {"method": "mp2", "basis": "aug-cc-pvdz"}, {}),
     ("gamess", {"method": "ccsd", "basis": "aug-cc-pvdz"}, {}),
     ("gamess", {"method": "ccsd(t)", "basis": "aug-cc-pvtz"}, {}),
-#    ("gamess", {"method": "hf", "basis": "n31"}, {"basis__NGAUSS": 6}),
-#    ("gamess", {"method": "mp2", "basis": "accd"}, {"contrl__ispher": 1}),
-#    ("gamess", {"method": "ccsd", "basis": "accd"}, {"contrl__ispher": 1}),
-#    ("gamess", {"method": "ccsd(t)", "basis": "acct"}, {"contrl__ispher": 1}),
+    #    ("gamess", {"method": "hf", "basis": "n31"}, {"basis__NGAUSS": 6}),
+    #    ("gamess", {"method": "mp2", "basis": "accd"}, {"contrl__ispher": 1}),
+    #    ("gamess", {"method": "ccsd", "basis": "accd"}, {"contrl__ispher": 1}),
+    #    ("gamess", {"method": "ccsd(t)", "basis": "acct"}, {"contrl__ispher": 1}),
     ("nwchem", {"method": "hf", "basis": "6-31G"}, {}),
     ("psi4", {"method": "hf", "basis": "6-31G"}, {}),
 ]
@@ -50,7 +50,8 @@ def _get_molecule(program, method):
                 "nwchem": {"memory": "5 gb"},
                 "psi4": None,
             },
-            id="qcdb-contra"),
+            id="qcdb-contra",
+        ),
         pytest.param(
             # native keywords consistent with config.memory below
             {
@@ -59,7 +60,7 @@ def _get_molecule(program, method):
                 "nwchem": {"nwchem_memory": 1669668536},
                 "psi4": None,  # no memory keyword in psi
             },
-            id="dsl"
+            id="dsl",
         ),
         pytest.param(
             # native keywords that CONTRADICT config.memory below
@@ -69,9 +70,9 @@ def _get_molecule(program, method):
                 "nwchem": {"nwchem_memory": 500000000},
                 "psi4": None,  # no contradictory memory keyword in psi
             },
-            id="dsl-contra"
+            id="dsl-contra",
         ),
-    ]
+    ],
 )
 @pytest.mark.parametrize("program, model, keywords", _canonical_methods)
 def test_local_options_memory_gib(program, model, keywords, memory_trickery, request):

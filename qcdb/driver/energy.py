@@ -10,53 +10,52 @@ import pprint
 from ..keywords import register_kwds
 from . import pe  # keep this at top of imports
 from . import cbs_driver, driver_helpers, driver_util
-from .proc_table import procedures
 from .driver_nbody import nbody_gufunc
+from .proc_table import procedures
 
 pp = pprint.PrettyPrinter(width=120)
 
 
-   
-#def energy(name, molecule, **kwargs):
+# def energy(name, molecule, **kwargs):
 #    r"""Function to compute the single-point electronic energy."""
 
 #       :returns: *float* |w--w| Total electronic energy in Hartrees. SAPT & EFP return interaction energy.
-#   
+#
 #       :returns: (*float*, :py:class:`~psi4.core.Wavefunction`) |w--w| energy and wavefunction when **return_wfn** specified.
-#   
+#
 #       :PSI variables:
-#   
+#
 #       .. hlist::
 #          :columns: 1
-#   
+#
 #          * :qcvar:`CURRENT ENERGY <CURRENTENERGY>`
 #          * :qcvar:`CURRENT REFERENCE ENERGY <CURRENTREFERENCEENERGY>`
 #          * :qcvar:`CURRENT CORRELATION ENERGY <CURRENTCORRELATIONENERGY>`
-#   
+#
 #       :type name: string
 #       :param name: ``'scf'`` || ``'mp2'`` || ``'ci5'`` || etc.
-#   
+#
 #           First argument, usually unlabeled. Indicates the computational method
 #           to be applied to the system.
-#   
+#
 #       :type molecule: :ref:`molecule <op_py_molecule>`
 #       :param molecule: ``h2o`` || etc.
-#   
+#
 #           The target molecule, if not the last molecule defined.
-#   
+#
 #       :type return_wfn: :ref:`boolean <op_py_boolean>`
 #       :param return_wfn: ``'on'`` || |dl| ``'off'`` |dr|
-#   
+#
 #           Indicate to additionally return the :py:class:`~psi4.core.Wavefunction`
 #           calculation result as the second element (after *float* energy) of a tuple.
-#   
+#
 #       :type restart_file: string
 #       :param restart_file: ``['file.1, file.32]`` || ``./file`` || etc.
-#   
+#
 #           Binary data files to be renamed for calculation restart.
-#   
+#
 #       .. _`table:energy_gen`:
-#   
+#
 #       +-------------------------+---------------------------------------------------------------------------------------------------------------+
 #       | name                    | calls method                                                                                                  |
 #       +=========================+===============================================================================================================+
@@ -260,32 +259,32 @@ pp = pprint.PrettyPrinter(width=120)
 #       +-------------------------+---------------------------------------------------------------------------------------------------------------+
 #       | eom-cc3                 | EOM-CC3 :ref:`[manual] <sec:eomcc>`                                                                           |
 #       +-------------------------+---------------------------------------------------------------------------------------------------------------+
-#   
+#
 #       .. comment missing and why
 #       .. comment a certain isapt --- marginally released
 #       .. comment mrcc --- this is handled in its own table
 #       .. comment psimrcc_scf --- convenience fn
-#   
+#
 #       .. include:: ../autodoc_dft_energy.rst
-#   
+#
 #       .. include:: ../mrcc_table_energy.rst
-#   
+#
 #       .. include:: ../cfour_table_energy.rst
-#   
+#
 #       :examples:
-#   
+#
 #       >>> # [1] Coupled-cluster singles and doubles calculation with psi code
 #       >>> energy('ccsd')
-#   
+#
 #       >>> # [2] Charge-transfer SAPT calculation with scf projection from small into
 #       >>> #     requested basis, with specified projection fitting basis
 #       >>> set basis_guess true
 #       >>> set df_basis_guess jun-cc-pVDZ-JKFIT
 #       >>> energy('sapt0-ct')
-#   
+#
 #       >>> # [3] Arbitrary-order MPn calculation
 #       >>> energy('mp7')
-#   
+#
 #       >>> # [4] Converge scf as singlet, then run detci as triplet upon singlet reference
 #       >>> # Note that the integral transformation is not done automatically when detci is run in a separate step.
 #       >>> molecule H2 {\n0 1\nH\nH 1 0.74\n}
@@ -295,126 +294,129 @@ pp = pprint.PrettyPrinter(width=120)
 #       >>> H2.set_multiplicity(3)
 #       >>> core.MintsHelper(scf_wfn.basisset()).integrals()
 #       >>> energy('detci', ref_wfn=scf_wfn)
-#   
+#
 #       >>> # [5] Run two CI calculations, keeping the integrals generated in the first one.
 #       >>> molecule ne {\nNe\n}
 #       >>> set basis cc-pVDZ
 #       >>> cisd_e, cisd_wfn = energy('cisd', return_wfn=True)
 #       >>> energy('fci', ref_wfn=cisd_wfn)
-#   
+#
 #       >>> # [6] Can automatically perform complete basis set extrapolations
 #       >>> energy("CCSD/cc-pV[DT]Z")
-#   
+#
 #       >>> # [7] Can automatically perform delta corrections that include extrapolations
 #       >>> # even with a user-defined extrapolation formula. See sample inputs named
 #       >>> # cbs-xtpl* for more examples of this input style
 #       >>> energy("MP2/aug-cc-pv([d,t]+d)z + d:ccsd(t)/cc-pvdz", corl_scheme=myxtplfn_2)
-#   
+#
 #       """
+
 
 @register_kwds(pe.nu_options)
 def energy(name, **kwargs):
     r"""Function to compute the single-point electronic energy."""
 
     from . import load_proc_table
+
     kwargs = driver_util.kwargs_lower(kwargs)
 
-    if 'options' in kwargs:
-        driver_helpers.set_options(kwargs.pop('options'))
+    if "options" in kwargs:
+        driver_helpers.set_options(kwargs.pop("options"))
 
     # Bounce if name is function
-    if hasattr(name, '__call__'):
-        return name(energy, kwargs.pop('label', 'custom function'), ptype='energy', **kwargs)
+    if hasattr(name, "__call__"):
+        return name(energy, kwargs.pop("label", "custom function"), ptype="energy", **kwargs)
 
     # Allow specification of methods to arbitrary order
     lowername = name.lower()
     lowername, level = driver_helpers._parse_arbitrary_order(lowername)
     if level:
-        kwargs['level'] = level
+        kwargs["level"] = level
 
     # Make sure the molecule the user provided is the active one
-    molecule = kwargs.pop('molecule', driver_helpers.get_active_molecule())
+    molecule = kwargs.pop("molecule", driver_helpers.get_active_molecule())
     molecule.update_geometry()
 
     if len(pe.nu_options.scroll) == 0:
-        #print('EMPTY OPT')
+        # print('EMPTY OPT')
         pe.load_options()
-
 
     # Bounce to CP if bsse kwarg
     if kwargs.get("bsse_type", None) is not None:
-        #return nbody_driver.nbody_gufunc(energy, name, ptype="energy", molecule=molecule, **kwargs)
+        # return nbody_driver.nbody_gufunc(energy, name, ptype="energy", molecule=molecule, **kwargs)
         return nbody_gufunc(energy, name, ptype="energy", molecule=molecule, **kwargs)
 
     # Bounce to CBS if "method/basis" name
-    if '/' in lowername:
-        return cbs_driver._cbs_gufunc(energy, name, ptype='energy', molecule=molecule, **kwargs)
+    if "/" in lowername:
+        return cbs_driver._cbs_gufunc(energy, name, ptype="energy", molecule=molecule, **kwargs)
 
     # Commit to procedures['energy'] call hereafter
-    return_wfn = kwargs.pop('return_wfn', False)
+    return_wfn = kwargs.pop("return_wfn", False)
     pe.active_qcvars = {}
 
-#    #for precallback in hooks['energy']['pre']:
-#    #    precallback(lowername, **kwargs)
-#
-#    optstash = driver_util._set_convergence_criterion('energy', lowername, 6, 8, 6, 8, 6)
-#
-#    # Before invoking the procedure, we rename any file that should be read.
-#    # This is a workaround to do restarts with the current PSI4 capabilities
-#    # before actual, clean restarts are put in there
-#    # Restartfile is always converted to a single-element list if
-#    # it contains a single string
-#    if 'restart_file' in kwargs:
-#        restartfile = kwargs['restart_file']  # Option still available for procedure-specific action
-#        if restartfile != list(restartfile):
-#            restartfile = [restartfile]
-#        # Rename the files to be read to be consistent with psi4's file system
-#        for item in restartfile:
-#            name_split = re.split(r'\.', item)
-#            filenum = name_split[len(name_split) - 1]
-#            try:
-#                filenum = int(filenum)
-#            except ValueError:
-#                filenum = 32  # Default file number is the checkpoint one
-#            psioh = core.IOManager.shared_object()
-#            psio = core.IO.shared_object()
-#            filepath = psioh.get_file_path(filenum)
-#            namespace = psio.get_default_namespace()
-#            pid = str(os.getpid())
-#            prefix = 'psi'
-#            targetfile = filepath + prefix + '.' + pid + '.' + namespace + '.' + str(filenum)
-#            shutil.copy(item, targetfile)
+    #    #for precallback in hooks['energy']['pre']:
+    #    #    precallback(lowername, **kwargs)
+    #
+    #    optstash = driver_util._set_convergence_criterion('energy', lowername, 6, 8, 6, 8, 6)
+    #
+    #    # Before invoking the procedure, we rename any file that should be read.
+    #    # This is a workaround to do restarts with the current PSI4 capabilities
+    #    # before actual, clean restarts are put in there
+    #    # Restartfile is always converted to a single-element list if
+    #    # it contains a single string
+    #    if 'restart_file' in kwargs:
+    #        restartfile = kwargs['restart_file']  # Option still available for procedure-specific action
+    #        if restartfile != list(restartfile):
+    #            restartfile = [restartfile]
+    #        # Rename the files to be read to be consistent with psi4's file system
+    #        for item in restartfile:
+    #            name_split = re.split(r'\.', item)
+    #            filenum = name_split[len(name_split) - 1]
+    #            try:
+    #                filenum = int(filenum)
+    #            except ValueError:
+    #                filenum = 32  # Default file number is the checkpoint one
+    #            psioh = core.IOManager.shared_object()
+    #            psio = core.IO.shared_object()
+    #            filepath = psioh.get_file_path(filenum)
+    #            namespace = psio.get_default_namespace()
+    #            pid = str(os.getpid())
+    #            prefix = 'psi'
+    #            targetfile = filepath + prefix + '.' + pid + '.' + namespace + '.' + str(filenum)
+    #            shutil.copy(item, targetfile)
 
-#PR    print('QWER', pe.nu_options.print_changed())
+    # PR    print('QWER', pe.nu_options.print_changed())
     package = driver_util.get_package(lowername, kwargs)
-    #for k, v in pkgprefix.items():
+    # for k, v in pkgprefix.items():
     #    if lowername.startswith(k):
     #        package = v
     #        break
-    #else:
+    # else:
     #    package = kwargs.get('package', 'psi4')
-    #print('\nENE calling', 'procedures', package, lowername, 'with', lowername, molecule, pe.nu_options, kwargs)
-    #jobrec = procedures['energy'][package][lowername](lowername, molecule=molecule, options=pe.active_options, **kwargs)
-    jobrec = procedures['energy'][package][lowername](lowername, molecule=molecule, options=pe.nu_options, ptype='energy', **kwargs)
+    # print('\nENE calling', 'procedures', package, lowername, 'with', lowername, molecule, pe.nu_options, kwargs)
+    # jobrec = procedures['energy'][package][lowername](lowername, molecule=molecule, options=pe.active_options, **kwargs)
+    jobrec = procedures["energy"][package][lowername](
+        lowername, molecule=molecule, options=pe.nu_options, ptype="energy", **kwargs
+    )
 
-#    for postcallback in hooks['energy']['post']:
-#        postcallback(lowername, wfn=wfn, **kwargs)
-#
-#    optstash.restore()
-    #jobrec.pop('raw_output')  # just to moderate printint to screen
-#PR    pp.pprint(jobrec)
-    pe.active_qcvars = copy.deepcopy(jobrec['qcvars'])
+    #    for postcallback in hooks['energy']['post']:
+    #        postcallback(lowername, wfn=wfn, **kwargs)
+    #
+    #    optstash.restore()
+    # jobrec.pop('raw_output')  # just to moderate printint to screen
+    # PR    pp.pprint(jobrec)
+    pe.active_qcvars = copy.deepcopy(jobrec["qcvars"])
 
     if return_wfn:  # TODO current energy safer than wfn.energy() for now, but should be revisited
 
-#        # TODO place this with the associated call, very awkward to call this in other areas at the moment
-#        if lowername in ['efp', 'mrcc', 'dmrg', 'psimrcc']:
-#            core.print_out("\n\nWarning! %s does not have an associated derived wavefunction." % name)
-#            core.print_out("The returned wavefunction is the incoming reference wavefunction.\n\n")
-#        elif 'sapt' in lowername:
-#            core.print_out("\n\nWarning! %s does not have an associated derived wavefunction." % name)
-#            core.print_out("The returned wavefunction is the dimer SCF wavefunction.\n\n")
+        #        # TODO place this with the associated call, very awkward to call this in other areas at the moment
+        #        if lowername in ['efp', 'mrcc', 'dmrg', 'psimrcc']:
+        #            core.print_out("\n\nWarning! %s does not have an associated derived wavefunction." % name)
+        #            core.print_out("The returned wavefunction is the incoming reference wavefunction.\n\n")
+        #        elif 'sapt' in lowername:
+        #            core.print_out("\n\nWarning! %s does not have an associated derived wavefunction." % name)
+        #            core.print_out("The returned wavefunction is the dimer SCF wavefunction.\n\n")
 
-        return (float(jobrec['qcvars']['CURRENT ENERGY'].data), jobrec)
+        return (float(jobrec["qcvars"]["CURRENT ENERGY"].data), jobrec)
     else:
-        return float(jobrec['qcvars']['CURRENT ENERGY'].data)
+        return float(jobrec["qcvars"]["CURRENT ENERGY"].data)

@@ -10,7 +10,7 @@ def search_file(filename, search_path):
     """
     file_found = False
     paths = search_path.split(os.pathsep)
-    #paths = string.split(search_path, os.pathsep)
+    # paths = string.split(search_path, os.pathsep)
     for path in paths:
         if os.path.exists(os.path.join(path, filename)):
             file_found = True
@@ -30,7 +30,7 @@ def all_casings(input_string):
 
     """
     if not input_string:
-        yield ''
+        yield ""
     else:
         first = input_string[:1]
         if first.lower() == first.upper():
@@ -63,8 +63,9 @@ def import_ignorecase(module, lenv=None):
     return modobj
 
 
-class add_path():
+class add_path:
     """https://stackoverflow.com/a/39855753"""
+
     def __init__(self, paths):
         # paths must be list
         self.paths = paths

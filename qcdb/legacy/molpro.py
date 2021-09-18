@@ -26,13 +26,12 @@
 # @END LICENSE
 #
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
+
 import math
 
+from . import molpro_basissets, qcformat
 from .exceptions import *
-from . import qcformat
-from . import molpro_basissets
 
 
 class MolproIn(qcformat.InputFormat):

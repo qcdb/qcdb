@@ -1,8 +1,6 @@
 import pytest
-
 from qcelemental.util import parse_version, which, which_import
 from qcengine.testing import _programs as _programs_qcng
-
 
 # Figure out what is imported
 _programs = {

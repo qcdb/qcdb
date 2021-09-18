@@ -1,11 +1,11 @@
-from collections import defaultdict
 import pprint
+from collections import defaultdict
 
 import pytest
-
 import qcelemental as qcel
 import qcengine as qcng
 from qcengine.testing import using
+
 import qcdb
 
 from .utils import *

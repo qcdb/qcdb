@@ -1,10 +1,11 @@
-import re
 import pprint
-
-from qcelemental.molparse import regex
-import qcdb
+import re
 
 import pytest
+from qcelemental.molparse import regex
+
+import qcdb
+
 from .utils import *
 
 NUMBER = r"(?x:" + regex.NUMBER + ")"

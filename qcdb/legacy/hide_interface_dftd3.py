@@ -27,24 +27,25 @@
 #
 
 """Module with functions that interface with Grimme's DFTD3 code."""
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
+
 import os
 import re
-import uuid
 import shutil
 import socket
 import subprocess
+import uuid
+
+from .dashparam import *
+from .molecule import Molecule
 
 try:
-    from psi4.driver.p4util.exceptions import *
     from psi4 import core
+    from psi4.driver.p4util.exceptions import *
     isP4regime = True
 except ImportError:
     from .exceptions import *
     isP4regime = False
-from .dashparam import *
-from .molecule import Molecule
 
 
 def orig_run_dftd3(mol, func=None, dashlvl=None, dashparam=None, dertype=None, verbose=False):

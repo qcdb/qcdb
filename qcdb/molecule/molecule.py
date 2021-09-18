@@ -1,8 +1,8 @@
-import os
-import copy
-import math
-import hashlib
 import collections
+import copy
+import hashlib
+import math
+import os
 from typing import Dict, List, Union
 
 import numpy as np

@@ -3,7 +3,6 @@
 
 class QcdbException(Exception):
     """Error class for QCDB."""
-    pass
 
 
 class FeatureNotImplemented(QcdbException):
@@ -11,10 +10,11 @@ class FeatureNotImplemented(QcdbException):
     Also for functions defined that will never be implemented.
 
     """
+
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
-        print('\nQcdbException: Feature %s is not yet implemented.\n\n' % (msg))
+        print("\nQcdbException: Feature %s is not yet implemented.\n\n" % (msg))
 
 
 class ValidationError(QcdbException):
@@ -22,10 +22,11 @@ class ValidationError(QcdbException):
     error message *msg* to standard output stream.
 
     """
+
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
-        print('\nQcdbException: %s\n\n' % (msg))
+        print("\nQcdbException: %s\n\n" % (msg))
 
 
 class IncompleteAtomError(QcdbException):
@@ -34,6 +35,7 @@ class IncompleteAtomError(QcdbException):
     so message not printed but appears as traceback when error persists.
 
     """
+
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
@@ -44,10 +46,11 @@ class ParsingValidationError(QcdbException):
     error message *msg* to standard output stream.
 
     """
+
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
-        print('\nQcdbException: %s\n\n' % (msg))
+        print("\nQcdbException: %s\n\n" % (msg))
 
 
 class FragmentCountError(QcdbException):
@@ -55,51 +58,48 @@ class FragmentCountError(QcdbException):
     Prints error message *msg* to standard output stream.
 
     """
+
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
-        #print('\nQcdbException: %s\n\n' % (msg))
+        # print('\nQcdbException: %s\n\n' % (msg))
 
 
 class BasisSetFileNotFound(QcdbException):
-    """
+    """ """
 
-    """
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
-        print('\nQcdbException BasisSetFileNotFound: %s\n\n' % (msg))
+        print("\nQcdbException BasisSetFileNotFound: %s\n\n" % (msg))
 
 
 class BasisSetNotFound(QcdbException):
-    """
+    """ """
 
-    """
     def __init__(self, msg, silent=False):
         QcdbException.__init__(self, msg)
         self.msg = msg
         if not silent:
-            print('\nQcdbException BasisSetNotFound: %s\n\n' % (msg))
+            print("\nQcdbException BasisSetNotFound: %s\n\n" % (msg))
 
 
 class BasisSetNotDefined(QcdbException):
-    """
+    """ """
 
-    """
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
-        print('\nQcdbException BasisSetNotDefined: %s\n\n' % (msg))
+        print("\nQcdbException BasisSetNotDefined: %s\n\n" % (msg))
 
 
 class Dftd3Error(QcdbException):
-    """
+    """ """
 
-    """
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
-        print('\nDftd3Error: %s\n\n' % (msg))
+        print("\nDftd3Error: %s\n\n" % (msg))
 
 
 class TestComparisonError(QcdbException):
@@ -108,14 +108,16 @@ class TestComparisonError(QcdbException):
     output stream and output file.
 
     """
+
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
-        print('\nQcdbException: %s\n\n' % msg)
+        print("\nQcdbException: %s\n\n" % msg)
 
 
 class MoleculeFormatError(QcdbException):
     """Error called when a Molecule.from_string contains unparsable lines."""
+
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
@@ -126,24 +128,27 @@ class FeatureDeprecated(QcdbException):
     Should suggest a replacement.
 
     """
+
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
-        print('\nFeature deprecated: {}\n\n'.format(msg))
+        print("\nFeature deprecated: {}\n\n".format(msg))
 
 
 class KeywordValidationError(QcdbException):
     """Error called when try to set illegitimate value for a keyword."""
-    def __init__(self, msg=''):
+
+    def __init__(self, msg=""):
         pass
-        #QcdbException.__init__(self, msg)
-        #self.msg = msg
-        #print('\nFeature deprecated: {}\n\n'.format(msg))
+        # QcdbException.__init__(self, msg)
+        # self.msg = msg
+        # print('\nFeature deprecated: {}\n\n'.format(msg))
 
 
 class KeywordReconciliationError(QcdbException):
     """Error called when conflicting values given with equal priority for a keyword."""
-    def __init__(self, msg=''):
+
+    def __init__(self, msg=""):
         pass
 
 
@@ -157,7 +162,8 @@ class UpgradeHelper(QcdbException):
     the old syntax at first error and suggest the new.
 
     """
+
     def __init__(self, old, new, version, elaboration):
         msg = "Using `{}` instead of `{}` is obsolete as of {}.{}".format(old, new, version, elaboration)
         QcdbException.__init__(self, msg)
-        print('\nQcdbException: %s\n\n' % (msg))
+        print("\nQcdbException: %s\n\n" % (msg))

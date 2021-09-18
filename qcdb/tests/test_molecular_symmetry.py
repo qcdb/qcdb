@@ -1,16 +1,14 @@
 import collections
 import pprint
 
-import pytest
-
 import numpy as np
+import pytest
 import qcelemental as qcel
 from qcelemental.testing import compare, compare_values
 
-from .utils import using
-
 import qcdb
 
+from .utils import using
 
 data = collections.defaultdict(dict)
 

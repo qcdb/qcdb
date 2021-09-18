@@ -15,166 +15,172 @@ from .proc_table import procedures
 pp = pprint.PrettyPrinter(width=120)
 
 
-
 @register_kwds(pe.nu_options)
 def gradient(name, **kwargs):
-#       r"""Function complementary to :py:func:~driver.optimize(). Carries out one gradient pass,
-#       deciding analytic or finite difference.
-#   
-#       :returns: :py:class:`~psi4.core.Matrix` |w--w| Total electronic gradient in Hartrees/Bohr.
-#   
-#       :returns: (:py:class:`~psi4.core.Matrix`, :py:class:`~psi4.core.Wavefunction`) |w--w| gradient and wavefunction when **return_wfn** specified.
-#   
-#       :examples:
-#   
-#       >>> # [1] Single-point dft gradient getting the gradient
-#       >>> #     in file, core.Matrix, and np.array forms
-#       >>> set gradient_write on
-#       >>> G, wfn = gradient('b3lyp-d', return_wfn=True)
-#       >>> wfn.gradient().print_out()
-#       >>> np.array(G)
-#   
-#       """
+    #       r"""Function complementary to :py:func:~driver.optimize(). Carries out one gradient pass,
+    #       deciding analytic or finite difference.
+    #
+    #       :returns: :py:class:`~psi4.core.Matrix` |w--w| Total electronic gradient in Hartrees/Bohr.
+    #
+    #       :returns: (:py:class:`~psi4.core.Matrix`, :py:class:`~psi4.core.Wavefunction`) |w--w| gradient and wavefunction when **return_wfn** specified.
+    #
+    #       :examples:
+    #
+    #       >>> # [1] Single-point dft gradient getting the gradient
+    #       >>> #     in file, core.Matrix, and np.array forms
+    #       >>> set gradient_write on
+    #       >>> G, wfn = gradient('b3lyp-d', return_wfn=True)
+    #       >>> wfn.gradient().print_out()
+    #       >>> np.array(G)
+    #
+    #       """
     from . import load_proc_table
-    kwargs = driver_util.kwargs_lower(kwargs)
-    text = ''
-   
-    if 'options' in kwargs:
-        driver_helpers.set_options(kwargs.pop('options'))
 
-#       # Bounce to CP if bsse kwarg (someday)
-#       if kwargs.get('bsse_type', None) is not None:
-#           raise ValidationError("Gradient: Cannot specify bsse_type for gradient yet.")
-   
+    kwargs = driver_util.kwargs_lower(kwargs)
+    text = ""
+
+    if "options" in kwargs:
+        driver_helpers.set_options(kwargs.pop("options"))
+
+    #       # Bounce to CP if bsse kwarg (someday)
+    #       if kwargs.get('bsse_type', None) is not None:
+    #           raise ValidationError("Gradient: Cannot specify bsse_type for gradient yet.")
+
     # Figure out what kind of gradient this is
-    if hasattr(name, '__call__'):
-        if name.__name__ in ['cbs', 'complete_basis_set']:
-            gradient_type = 'cbs_wrapper'
-#       else:
-#           # Bounce to name if name is non-CBS function
-#           gradient_type = 'custom_function'
-    elif '/' in name:
-        gradient_type = 'cbs_gufunc'
+    if hasattr(name, "__call__"):
+        if name.__name__ in ["cbs", "complete_basis_set"]:
+            gradient_type = "cbs_wrapper"
+    #       else:
+    #           # Bounce to name if name is non-CBS function
+    #           gradient_type = 'custom_function'
+    elif "/" in name:
+        gradient_type = "cbs_gufunc"
     else:
-        gradient_type = 'conventional'
-   
-##    lowername = name.lower()
-##    package = driver_util.get_package(lowername, kwargs)
+        gradient_type = "conventional"
+
+    ##    lowername = name.lower()
+    ##    package = driver_util.get_package(lowername, kwargs)
 
     if len(pe.nu_options.scroll) == 0:
-        print('EMPTY OPT')
+        print("EMPTY OPT")
         pe.load_options()
-
 
     # Figure out lowername, dertype, and func
     # If we have analytical gradients we want to pass to our wrappers, otherwise we want to run
     # finite-diference energy or cbs energies
-#       # TODO MP5/cc-pv[DT]Z behavior unkown due to "levels"
-    user_dertype = kwargs.pop('dertype', None)
-    if gradient_type == 'custom_function':
+    #       # TODO MP5/cc-pv[DT]Z behavior unkown due to "levels"
+    user_dertype = kwargs.pop("dertype", None)
+    if gradient_type == "custom_function":
         pass
-#        if user_dertype is None:
-#            dertype = 0
-#            core.print_out("\nGradient: Custom function passed in without a defined dertype, assuming fd-energy based gradient.\n")
-#        else:
-#            core.print_out("\nGradient: Custom function passed in with a dertype of %d\n" % user_dertype)
-#            dertype = user_dertype
-#
-#        if dertype == 1:
-#            return name(gradient, kwargs.pop('label', 'custom function'), ptype='gradient', **kwargs)
-#        else:
-#            optstash = driver_util._set_convergence_criterion('energy', 'scf', 8, 10, 8, 10, 8)
-#            lowername = name
+    #        if user_dertype is None:
+    #            dertype = 0
+    #            core.print_out("\nGradient: Custom function passed in without a defined dertype, assuming fd-energy based gradient.\n")
+    #        else:
+    #            core.print_out("\nGradient: Custom function passed in with a dertype of %d\n" % user_dertype)
+    #            dertype = user_dertype
+    #
+    #        if dertype == 1:
+    #            return name(gradient, kwargs.pop('label', 'custom function'), ptype='gradient', **kwargs)
+    #        else:
+    #            optstash = driver_util._set_convergence_criterion('energy', 'scf', 8, 10, 8, 10, 8)
+    #            lowername = name
 
-#    elif gradient_type == 'cbs_wrapper':
-#        cbs_methods = driver_cbs._cbs_wrapper_methods(**kwargs)
-#        dertype = min([_find_derivative_type('gradient', method, user_dertype) for method in cbs_methods])
-#        if dertype == 1:
-#            # Bounce to CBS (directly) in pure-gradient mode if name is CBS and all parts have analytic grad. avail.
-#            return name(gradient, kwargs.pop('label', 'custom function'), ptype='gradient', **kwargs)
-#        else:
-#            optstash = driver_util._set_convergence_criterion('energy', cbs_methods[0], 8, 10, 8, 10, 8)
-#            lowername = name
-#            # Pass through to G by E
+    #    elif gradient_type == 'cbs_wrapper':
+    #        cbs_methods = driver_cbs._cbs_wrapper_methods(**kwargs)
+    #        dertype = min([_find_derivative_type('gradient', method, user_dertype) for method in cbs_methods])
+    #        if dertype == 1:
+    #            # Bounce to CBS (directly) in pure-gradient mode if name is CBS and all parts have analytic grad. avail.
+    #            return name(gradient, kwargs.pop('label', 'custom function'), ptype='gradient', **kwargs)
+    #        else:
+    #            optstash = driver_util._set_convergence_criterion('energy', cbs_methods[0], 8, 10, 8, 10, 8)
+    #            lowername = name
+    #            # Pass through to G by E
 
-    elif gradient_type == 'cbs_gufunc':
+    elif gradient_type == "cbs_gufunc":
         cbs_methods = cbs_driver._parse_cbs_gufunc_string(name.lower())[0]
-        dertype = min(driver_util.find_derivative_type('gradient', method, user_dertype, kwargs.get('package', None)) for method in cbs_methods)
+        dertype = min(
+            driver_util.find_derivative_type("gradient", method, user_dertype, kwargs.get("package", None))
+            for method in cbs_methods
+        )
         lowername = name.lower()
-        molecule = kwargs.pop('molecule', driver_helpers.get_active_molecule())
+        molecule = kwargs.pop("molecule", driver_helpers.get_active_molecule())
         if dertype == 1:
             # Bounce to CBS in pure-gradient mode if "method/basis" name and all parts have analytic grad. avail.
-            return cbs_driver._cbs_gufunc(gradient, name, ptype='gradient', molecule=molecule, **kwargs)
-#        else:
-#            # Set method-dependent scf convergence criteria (test on procedures['energy'] since that's guaranteed)
-#            optstash = driver_util._set_convergence_criterion('energy', cbs_methods[0], 8, 10, 8, 10, 8)
+            return cbs_driver._cbs_gufunc(gradient, name, ptype="gradient", molecule=molecule, **kwargs)
+    #        else:
+    #            # Set method-dependent scf convergence criteria (test on procedures['energy'] since that's guaranteed)
+    #            optstash = driver_util._set_convergence_criterion('energy', cbs_methods[0], 8, 10, 8, 10, 8)
 
     else:
         # Allow specification of methods to arbitrary order
         lowername = name.lower()
-#        lowername, level = driver_util._parse_arbitrary_order(lowername)
-#        if level:
-#            kwargs['level'] = level
+        #        lowername, level = driver_util._parse_arbitrary_order(lowername)
+        #        if level:
+        #            kwargs['level'] = level
 
-#        # Prevent methods that do not have associated gradients
-#        if lowername in energy_only_methods:
-#            raise ValidationError("gradient('%s') does not have an associated gradient" % name)
+        #        # Prevent methods that do not have associated gradients
+        #        if lowername in energy_only_methods:
+        #            raise ValidationError("gradient('%s') does not have an associated gradient" % name)
 
-        dertype = driver_util.find_derivative_type('gradient', lowername, user_dertype, kwargs.get('package', None))
+        dertype = driver_util.find_derivative_type("gradient", lowername, user_dertype, kwargs.get("package", None))
 
-#        # Set method-dependent scf convergence criteria (test on procedures['energy'] since that's guaranteed)
-#        optstash = driver_util._set_convergence_criterion('energy', lowername, 8, 10, 8, 10, 8)
+    #        # Set method-dependent scf convergence criteria (test on procedures['energy'] since that's guaranteed)
+    #        optstash = driver_util._set_convergence_criterion('energy', lowername, 8, 10, 8, 10, 8)
 
     # Commit to procedures[] call hereafter
-  #  lowername = name.lower()
-    return_wfn = kwargs.pop('return_wfn', False)
-    package = driver_util.get_package2(lowername, kwargs.get('package', None))
-#    core.clean_variables()
-#
-#    # no analytic derivatives for scf_type cd
-#    if core.get_option('SCF', 'SCF_TYPE') == 'CD':
-#        if (dertype == 1):
-#            raise ValidationError("""No analytic derivatives for SCF_TYPE CD.""")
+    #  lowername = name.lower()
+    return_wfn = kwargs.pop("return_wfn", False)
+    package = driver_util.get_package2(lowername, kwargs.get("package", None))
+    #    core.clean_variables()
+    #
+    #    # no analytic derivatives for scf_type cd
+    #    if core.get_option('SCF', 'SCF_TYPE') == 'CD':
+    #        if (dertype == 1):
+    #            raise ValidationError("""No analytic derivatives for SCF_TYPE CD.""")
 
     # Make sure the molecule the user provided is the active one
-    molecule = kwargs.pop('molecule', driver_helpers.get_active_molecule())
+    molecule = kwargs.pop("molecule", driver_helpers.get_active_molecule())
     molecule.update_geometry()
 
-#    # S/R: Mode of operation- whether finite difference opt run in one job or files farmed out
-#    opt_mode = kwargs.get('mode', 'continuous').lower()
-#    if opt_mode == 'continuous':
-#        pass
-#    elif opt_mode == 'sow':
-#        if dertype == 1:
-#            raise ValidationError("""Optimize execution mode 'sow' not valid for analytic gradient calculation.""")
-#    elif opt_mode == 'reap':
-#        opt_linkage = kwargs.get('linkage', None)
-#        if opt_linkage is None:
-#            raise ValidationError("""Optimize execution mode 'reap' requires a linkage option.""")
-#    else:
-#        raise ValidationError("""Optimize execution mode '%s' not valid.""" % (opt_mode))
+    #    # S/R: Mode of operation- whether finite difference opt run in one job or files farmed out
+    #    opt_mode = kwargs.get('mode', 'continuous').lower()
+    #    if opt_mode == 'continuous':
+    #        pass
+    #    elif opt_mode == 'sow':
+    #        if dertype == 1:
+    #            raise ValidationError("""Optimize execution mode 'sow' not valid for analytic gradient calculation.""")
+    #    elif opt_mode == 'reap':
+    #        opt_linkage = kwargs.get('linkage', None)
+    #        if opt_linkage is None:
+    #            raise ValidationError("""Optimize execution mode 'reap' requires a linkage option.""")
+    #    else:
+    #        raise ValidationError("""Optimize execution mode '%s' not valid.""" % (opt_mode))
 
     # Does dertype indicate an analytic procedure both exists and is wanted?
     if dertype == 1:
         text += """qcdb.gradient() will perform analytic gradient computation.\n"""
 
         # Perform the gradient calculation
-        jobrec = procedures['gradient'][package][lowername](lowername, molecule=molecule, options=pe.nu_options, ptype='gradient', **kwargs)
+        jobrec = procedures["gradient"][package][lowername](
+            lowername, molecule=molecule, options=pe.nu_options, ptype="gradient", **kwargs
+        )
 
-        #print('GRADIENT() JOBREC (j@io) <<<')
-        #pp.pprint(jobrec)
-        #print('>>>')
+        # print('GRADIENT() JOBREC (j@io) <<<')
+        # pp.pprint(jobrec)
+        # print('>>>')
 
-        pe.active_qcvars = copy.deepcopy(jobrec['qcvars'])
+        pe.active_qcvars = copy.deepcopy(jobrec["qcvars"])
 
-#        optstash.restore()
+        #        optstash.restore()
         if return_wfn:
-            return (jobrec['qcvars']['CURRENT GRADIENT'].data, jobrec)
+            return (jobrec["qcvars"]["CURRENT GRADIENT"].data, jobrec)
         else:
-            return jobrec['qcvars']['CURRENT GRADIENT'].data
+            return jobrec["qcvars"]["CURRENT GRADIENT"].data
 
     else:
         raise FeatureNotImplemented("""gradient(dertype=0)""" + package + lowername)
+
+
 #        core.print_out("""gradient() will perform gradient computation by finite difference of analytic energies.\n""")
 #
 #        opt_iter = kwargs.get('opt_iter', 1)
