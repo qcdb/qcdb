@@ -3,7 +3,7 @@ import uuid
 
 
 # @moptions.register_opts(pe.nu_options)
-def muster_inherited_keywords(ropts: "Keywords", verbose: int = 1) -> None:
+def muster_inherited_keywords(ropts: "Keywords", mcfg: "ModeConfig", verbose: int = 1) -> None:
     accession = sys._getframe().f_code.co_name + "_" + str(uuid.uuid4())
     kwgs = {"accession": accession, "verbose": verbose}
     ropts.scroll["QCDB"]["TRANSLATE_QCDB"].value

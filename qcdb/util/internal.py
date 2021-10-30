@@ -28,13 +28,6 @@ def print_jobrec(label, dicary, do_print):
         print(">>>")
 
 
-def format_error(stdout: str = "", stderr: str = "", tb: str = None) -> str:
-    """Return all useful information in error string."""
-
-    tb = traceback.format_exception(*sys.exc_info())
-    return "STDOUT:\n" + stdout + "\nSTDERR:\n" + stderr + "\nTRACEBACK:\n" + "".join(tb)
-
-
 def accession_stamp() -> str:
     """Return stamp of who recorded the keyword."""
 

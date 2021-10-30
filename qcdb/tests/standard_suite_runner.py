@@ -53,6 +53,7 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
     driver = inp["driver"]
     reference = inp["reference"]
     fcae = inp["fcae"]
+    mode_options = inp.get("cfg", {})
 
     if qc_module_in == "nwchem-tce" and basis == "cc-pvdz":
         pytest.skip(
@@ -218,7 +219,7 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
         return
 
     ret, wfn = driver_call[driver](
-        inp["call"], molecule=subject, return_wfn=True, local_options=local_options, **extra_kwargs
+        inp["call"], molecule=subject, return_wfn=True, local_options=local_options, mode_options=mode_options, **extra_kwargs
     )
 
     print("WFN")

@@ -20,7 +20,10 @@ def fcell(winnowed):
         if status == "pass":
             cell = "Y"
             cell = u'\u2713'
+#            cell = '✅'
+            cell = u'\u2705'
             cell = '✅'
+            cell = u'\u2713'
         elif status == "fd":
             cell = "fd"
         elif status == "error":
@@ -29,6 +32,7 @@ def fcell(winnowed):
         elif status == "wrong":
             cell = "bad"
             cell = '💥 '
+            cell = u'\u25a0'
 
         if note:
             notes.append(note)
