@@ -147,8 +147,8 @@ class QcdbNWChemHarness(NWChemHarness):
         # create a qcdb.Molecule to reset PG to c1 so all atoms. but print_detail isn't transmitting in a way nwc is picking up on, so per-element for now
         # qmol = Molecule(jobrec['molecule'])
         # qmol.reset_point_group('c1')  # need basis printed for *every* atom
-        # qbs = BasisSet.pyconstruct(qmol, 'BASIS', _qcdb_basis)
-        qbs = BasisSet.pyconstruct(molrec, "BASIS", _qcdb_basis)
+        qbs = BasisSet.pyconstruct(qmol, "BASIS", _qcdb_basis)
+        # qbs = BasisSet.pyconstruct(molrec, "BASIS", _qcdb_basis)
 
         # if qbs.has_ECP(): #    raise ValidationError("""ECPs not hooked up for Cfour""")
         bascmd = muster_basisset(molrec, ropts, qbs, verbose=1)
@@ -166,6 +166,7 @@ class QcdbNWChemHarness(NWChemHarness):
         # OLD    optcmd = moptions.prepare_options_for_nwchem(jobrec['options'])
         #    resolved_options = {k: v.value for k, v in jobrec['options'].scroll['NWCHEM'].items() if v.disputed()}
         skma_options = {key: ropt.value for key, ropt in sorted(ropts.scroll["NWCHEM"].items()) if ropt.disputed()}
+        skma_options = {k: (int(v/8.0) if k == "MEMORY" else v) for k, v in skma_options.items()}
         optcmd = format_keywords(skma_options)
 
         # Handle text to be passed untouched to cfour

@@ -633,7 +633,7 @@ class LibmintsMolecule():
         """
         return self.extract_fragments(reals, ghosts=ghosts)
 
-    def extract_fragments(self, reals, ghosts=[]):
+    def extract_fragments(self, reals, ghosts=None):
         """Makes a copy of the molecule, returning a new molecule with
         only certain fragment atoms present as either ghost or real atoms
         *reals*: The list or int of fragments (1-indexed) that should be present in the molecule as real atoms.
@@ -651,11 +651,12 @@ class LibmintsMolecule():
         except TypeError:
             lreals = [reals - 1]
         lghosts = []
-        try:
-            for idx in ghosts:
-                lghosts.append(idx - 1)
-        except TypeError:
-            lghosts = [ghosts - 1]
+        if ghosts is not None:
+            try:
+                for idx in ghosts:
+                    lghosts.append(idx - 1)
+            except TypeError:
+                lghosts = [ghosts - 1]
         if len(lreals) + len(lghosts) > self.nfragments():
             raise ValidationError(
                 'Molecule::extract_fragments: sum of real- and ghost-atom subsets is greater than the number of subsets'

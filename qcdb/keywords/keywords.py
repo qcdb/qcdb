@@ -270,7 +270,7 @@ class Keyword:
             added = self.history[-1]
             print(
                 f"Setting {self.keyword} to {added[0]} priority {added[2] + 100 * int(added[1])} accession {added[3]}"
-            )
+            )  # lgtm: [py/clear-text-logging-sensitive-data]
 
     def _check(self, val: Any) -> Any:
         """Common function to check `val` against `self.validator` for setting, defaulting, etc."""

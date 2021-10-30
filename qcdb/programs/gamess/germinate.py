@@ -54,6 +54,17 @@ def get_master_frame(
     # * most common failure mode is high-symmetry or wrong-quadrant geometry when GAMESS generates too many atoms
     #   * haven't found a reliable programmatic path out that uses full internal symmetry, so fall back to C2v, then C1
     internal_symmetry_card = f"{pgn} {naxis}".strip()
+
+    if not all(kmol.real):
+        # TODO is this the best way to handle ghosts?
+        # * the C1 early return is to avoid the qcng.compute that uses coord=prinaxis that can't take ghost specification
+        # * is the gamess master_frame the input frame for C1? have tentatively assumed so
+        data = {
+            "unique": list(range(len(kmol.symbols))),
+            "symmetry_card": "C1",
+        }
+        return kmol, data
+
     for symmetry_card in [internal_symmetry_card, "Cnv 2", "C1"]:
         naive_kmol = kmol.copy(
             update={

@@ -149,9 +149,7 @@ def test_tu6_cp_gamess():
     ecp = {}
     for R in Rvals:
         dimer.R = R
-        with pytest.raises(qcengine.exceptions.InputError) as e:
-            ecp[R], wfn = qcdb.energy("gms-ccsd(t)", bsse_type="cp", return_wfn=True)
-        return 0
+        ecp[R], wfn = qcdb.energy("gms-ccsd(t)", bsse_type="cp", return_wfn=True)
         pprint.pprint(wfn, width=200)
         assert compare_values(
             tu6_ie_scan[R], ecp[R] * constants.hartree2kcalmol, atol=1.0e-4, label=f"CP-CCSD(T) [{R:3.1f}]"
