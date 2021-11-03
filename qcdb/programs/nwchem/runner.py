@@ -189,6 +189,8 @@ class QcdbNWChemHarness(NWChemHarness):
         if input_model.driver == "gradient":
             # Get the name of the theory used for computing the gradients
             theory = re.search(r"^task\s+(.+)\s+grad", mdccmd, re.MULTILINE).group(1)
+            if theory == "ccsd(t)":
+                theory = "ccsd"
             # logger.debug(f"Adding a Python task to retrieve gradients. Theory: {theory}")
             print(f"Adding a Python task to retrieve gradients. Theory: {theory}")
 
@@ -197,14 +199,15 @@ class QcdbNWChemHarness(NWChemHarness):
             #  (not 6 significant figures)
             pycmd = f"""
 python
-   try:  
+   try:
+      #rtdb_print(1)
       grad = rtdb_get('{theory}:gradient')
       if ga_nodeid() == 0:
           import json
           with open('nwchem.grad', 'w') as fp:
               json.dump(grad, fp)
-   except NWChemError, message:  
-        pass
+   except NWChemError as message:
+       pass
 end
 
 task python

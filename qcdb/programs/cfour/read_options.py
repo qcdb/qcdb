@@ -152,8 +152,8 @@ def load_cfour_keywords(options: Keywords) -> None:
         Keyword(
             keyword="CALC_LEVEL",
             default="SCF",
-            validator=parsers.enum("SCF HF MBPT(2) MP2 MBPT(3) MP3 SDQ-MBPT(4) SDQ-MP4 MBPT(4) MP4 CCD CCSD CCSD(T) CCSDT-1 \
-                        CCSDT-1b CCSDT-2 CCSDT-3 CCSDT-4 CCSDT CC2 CC3 QCISD QCISD(T) CID CISD UCC(4) B-CCD"),
+            validator=lambda x: str(x).upper(), #parsers.enum("SCF HF MBPT(2) MP2 MBPT(3) MP3 SDQ-MBPT(4) SDQ-MP4 MBPT(4) MP4 CCD CCSD CCSD(T) CCSDT-1 \
+                        #CCSDT-1b CCSDT-2 CCSDT-3 CCSDT-4 CCSDT CC2 CC3 QCISD QCISD(T) CID CISD UCC(4) B-CCD CCSD[T] CCSD+T(CCSD)"),
             glossary="Defines the level of calculation to be performed. ",
         ),
     )
@@ -372,8 +372,8 @@ def load_cfour_keywords(options: Keywords) -> None:
         "cfour",
         Keyword(
             keyword="DROPMO",
-            default="",
-            validator= lambda x: str(x),
+            default=[],
+            validator=lambda x: x,  # should be int list
             glossary="Specifies which molecular orbitals will be dropped from the post-SCF calculation. ",
         ),
     )
@@ -432,7 +432,7 @@ def load_cfour_keywords(options: Keywords) -> None:
         "cfour",
         Keyword(
             keyword="EOM_NSTATES",
-            default="",
+            default="DAVIDSON",
             validator=parsers.enum("DAVIDSON MULTIROOT"),
             glossary="For experimental use only. Selects the iterative diagonalization algorithm for the EOMEE calculations. ",
         ),
@@ -823,7 +823,7 @@ def load_cfour_keywords(options: Keywords) -> None:
         Keyword(
             keyword="JODA_PRINT",
             default=0,
-            validator=parsers.positive_integer,
+            validator=parsers.nonnegative_integer,
             glossary="Controls amount of debug printing performed by Joda.",
         ),
     )
@@ -883,7 +883,7 @@ def load_cfour_keywords(options: Keywords) -> None:
         Keyword(
             keyword="MEMORY_SIZE",
             default=100000000,
-            validator=parsers.parse_memory,
+            validator=parsers.positive_integer,  #parsers.parse_memory,
             glossary="Specifies the amount of core memory used.",
         ),
     )
@@ -983,7 +983,7 @@ def load_cfour_keywords(options: Keywords) -> None:
         Keyword(
             keyword="OCCUPATION",
             default="",
-            validator= lambda x: str(x),
+            validator=lambda x: x,  # should be list(s)
             glossary="Specifies the orbital occupancy of the reference function in terms of the occupation numbers of the orbitals and their irreducible representations.",
         ),
     )
@@ -1013,7 +1013,7 @@ def load_cfour_keywords(options: Keywords) -> None:
         Keyword(
             keyword="ORBITALS",
             default="STANDARD",
-            validator=parsers.enum("STANDARD SEMICANONICAL"),
+            validator=parsers.mixedenum("STANDARD SEMICANONICAL 0 1"),
             glossary="Specifies the type of molecular orbitals used in post-HF calculations.",
         ),
     )
@@ -1027,7 +1027,7 @@ def load_cfour_keywords(options: Keywords) -> None:
         Keyword(
             keyword="PERT_ORB",
             default="STANDARD",
-            validator=parsers.enum("STANDARD CANONICAL IJ_CANONICAL"),
+            validator=parsers.mixedenum("STANDARD CANONICAL IJ_CANONICAL 0 1"),
             glossary="Specifies the type of perturbed orbitals used in energy derivative calculations.",
         ),
     )
@@ -1186,8 +1186,8 @@ def load_cfour_keywords(options: Keywords) -> None:
         "cfour",
         Keyword(
             keyword="QRHF_SPIN",
-            default="",
-            validator=parsers.integer,
+            default=1,
+            validator=parsers.intenum("1 2"),  #parsers.integer,
             glossary="Specifies the spin of the electrons modified by the QRHF_GENERAL and QRHF_ORBITAL keywords, where a value of 1 means alpha spin, while 2 corresponds to a beta electron.",
         ),
     )
@@ -1225,7 +1225,7 @@ def load_cfour_keywords(options: Keywords) -> None:
     options.add(
         "cfour",
         Keyword(
-            keyword="REFERNCE",
+            keyword="REFERENCE",
             default="RHF",
             validator=parsers.enum("RHF UHF ROHF TCSCF CASSCF"),
             glossary="Specifies the type of SCF calculation to be performed.",
@@ -1357,7 +1357,7 @@ def load_cfour_keywords(options: Keywords) -> None:
         Keyword(
             keyword="SCF_DAMPING",
             default=1000,
-            validator=parsers.positive_integer,
+            validator=parsers.nonnegative_integer,
             glossary="Controls the damping (in the first iterations (specified by SCF_EXPSTART via D(new) = D(old) + X/1000 * [D(new) - D(old)] with X as the value specified by the keyword.",
         ),
     )
@@ -1646,7 +1646,7 @@ def load_cfour_keywords(options: Keywords) -> None:
         Keyword(
             keyword="XFIELD",
             default=0,
-            validator=parsers.positive_integer,
+            validator=parsers.nonnegative_integer,  #float?
             glossary="Specifies the X-component of an external electric field. ",
         ),
     )
@@ -1666,7 +1666,7 @@ def load_cfour_keywords(options: Keywords) -> None:
         Keyword(
             keyword="YFIELD",
             default=0,
-            validator=parsers.positive_integer,
+            validator=parsers.nonnegative_integer,
             glossary="Specifies the Y-component of an external electric field. ",
         ),
     )
@@ -1676,17 +1676,8 @@ def load_cfour_keywords(options: Keywords) -> None:
         Keyword(
             keyword="ZFIELD",
             default=0,
-            validator=parsers.positive_integer,
+            validator=parsers.nonnegative_integer,
             glossary="specifies the Z-component of an external electric field.",
         ),
     )
-
-
-
-
-
-
-
-
-
 
