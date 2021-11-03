@@ -65,7 +65,7 @@ def _get_molecule(program, method):
         pytest.param(
             # native keywords that CONTRADICT config.memory below
             {
-                "cfour": {"cfour_memory_size": "5000"},
+                "cfour": {"cfour_memory_size": 5000},
                 "gamess": {"gamess_system__mwords": 500},
                 "nwchem": {"nwchem_memory": 500000000},
                 "psi4": None,  # no contradictory memory keyword in psi

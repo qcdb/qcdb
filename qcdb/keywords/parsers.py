@@ -44,14 +44,38 @@ def onoff_boolean(inputval):
         raise KeywordValidationError("""Can't interpret into boolean: {}""".format(inputval))
 
 
-def intenum(inputval):
+def intenum(inputval, nullable=False):
     allowed = [int(x) for x in inputval.split()]
+    if nullable:
+        allowed.append(None)
 
     def closedenum(x, allowed=allowed):
         if x in allowed:
             return x
         else:
             raise KeywordValidationError("""Not allowed integer value: {} not in {}""".format(inputval, allowed))
+
+    return closedenum
+
+
+def mixedenum(inputval, nullable=False):
+    allowed = []
+    for x in inputval.split():
+        try:
+            val = int(x)
+        except ValueError:
+            val = x
+
+        allowed.append(val)
+
+    if nullable:
+        allowed.append(None)
+
+    def closedenum(x, allowed=allowed):
+        if x in allowed:
+            return x
+        else:
+            raise KeywordValidationError("""Not allowed mixed value: {} not in {}""".format(inputval, allowed))
 
     return closedenum
 

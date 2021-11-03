@@ -515,10 +515,10 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
 
     # generics checks
     # yapf: disable
-    assert compare(ref_block["N BASIS FUNCTIONS"], wfn["properties"]["calcinfo_nbasis"], tnm + " nbasis wfn"), f"nbasis {wfn.properties.calcinfo_nbasis} != {ref_block['N BASIS FUNCTIONS']}"
-    assert compare(ref_block["N MOLECULAR ORBITALS"], wfn["properties"]["calcinfo_nmo"], tnm + " nmo wfn"), f"nmo {wfn.properties.calcinfo_nmo} != {ref_block['N MOLECULAR ORBITALS']}"
-    assert compare(ref_block["N ALPHA ELECTRONS"], wfn["properties"]["calcinfo_nalpha"], tnm + " nalpha wfn"), f"nalpha {wfn.properties.calcinfo_nalpha} != {ref_block['N ALPHA ELECTRONS']}"
-    assert compare(ref_block["N BETA ELECTRONS"], wfn["properties"]["calcinfo_nbeta"], tnm + " nbeta wfn"), f"nbeta {wfn.properties.calcinfo_nbeta} != {ref_block['N BETA ELECTRONS']}"
+    assert compare(ref_block["N BASIS FUNCTIONS"], wfn["properties"]["calcinfo_nbasis"], tnm + " nbasis wfn"), f"nbasis {wfn['properties']['calcinfo_nbasis']} != {ref_block['N BASIS FUNCTIONS']}"
+    assert compare(ref_block["N MOLECULAR ORBITALS"], wfn["properties"]["calcinfo_nmo"], tnm + " nmo wfn"), f"nmo {wfn['properties']['calcinfo_nmo']} != {ref_block['N MOLECULAR ORBITALS']}"
+    assert compare(ref_block["N ALPHA ELECTRONS"], wfn["properties"]["calcinfo_nalpha"], tnm + " nalpha wfn"), f"nalpha {wfn['properties']['calcinfo_nalpha']} != {ref_block['N ALPHA ELECTRONS']}"
+    assert compare(ref_block["N BETA ELECTRONS"], wfn["properties"]["calcinfo_nbeta"], tnm + " nbeta wfn"), f"nbeta {wfn['properties']['calcinfo_nbeta']} != {ref_block['N BETA ELECTRONS']}"
     # yapf: enable
 
     # record

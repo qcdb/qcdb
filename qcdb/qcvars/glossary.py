@@ -13,6 +13,13 @@ qcvardefs = {}
 _dip_components = ["X", "Y", "Z"]
 _quad_components = ["XX", "XY", "XZ", "YY", "YZ", "ZZ"]
 
+qcvardefs["FINDIF NUMBER"] = {
+    "units": "",
+    "glossary": """
+    The number of single-point calculations to obtain a finite-difference derivative.
+""",
+}
+
 qcvardefs["(T) CORRECTION ENERGY"] = {
     "units": "Eh",
     "glossary": """
@@ -704,7 +711,7 @@ def define_scf_qcvars(mtd, is_dft=True, extra="", is_dh=False, do_grad=False):
     }
 
 
-def define_spin_qcvars(mtd, description, do_spin=False, do_grad=False, extra=""):
+def define_spin_qcvars(mtd, description, do_spin=False, do_grad=False, do_pole=False, extra=""):
     global qcvardefs
 
     if mtd + " TOTAL ENERGY" not in qcvardefs:
@@ -755,6 +762,27 @@ def define_spin_qcvars(mtd, description, do_spin=False, do_grad=False, extra="")
         qcvardefs[f"{mtd} DOUBLES ENERGY"] = {
             "units": "Eh",
             "glossary": rf"""The doubles portion of the {mtd} correlation energy including same-spin and opposite-spin correlations.""",
+        }
+
+    if do_pole and f"{mtd} DIPOLE" not in qcvardefs:
+        qcvardefs[f"{mtd} DIPOLE"] = {
+            "units": "e a0",
+            "dimension": "(3,)",
+            "glossary": rf"""The total dipole for the {mtd} level of theory and root *n* (number starts at GS = 0).""",
+        }
+
+    if do_pole and f"{mtd} DIPOLE GRADIENT" not in qcvardefs:
+        qcvardefs[f"{mtd} DIPOLE GRADIENT"] = {
+            "units": "Eh a0/u",  # = [(e a0/a0)^2/u]
+            "dimension": "(3 * {nat}, 3)",  # T?
+            "glossary": f"""The derivative of the {mtd} level of theory with respect to nuclear perturbations as a degree-of-freedom by dipole component array.""",
+        }
+
+    if do_pole and f"{mtd} QUADRUPOLE" not in qcvardefs:
+        qcvardefs[f"{mtd} QUADRUPOLE"] = {
+            "units": "e a0^2",
+            "dimension": ("(3,3)"),
+            "glossary": """The total quadrupole for the {mtd} level of theory and root *n* (number starts at GS = 0).""",
         }
 
 
@@ -2165,7 +2193,7 @@ define_dashd_qcvars("wpbe", dashes=["d2", "d3", "d3(bj)", "d3m", "d3m(bj)"])
 # define_dashd_qcvars('wb97x', dashes=['d'])
 define_ex_transition_qcvars(4, "ccsd", ["B1", "A1", "A2", "B2"])
 define_tddft_roots_qcvars(10, ["B1U", "AG", "B2U", "B3U", "AU"])
-define_prop_qcvars("ccsd")
+#define_prop_qcvars("ccsd")
 define_prop_qcvars("cc")  # TODO reconsider
 define_spin_qcvars("LCCD", description="linearized coupled cluster doubles", do_spin=True, do_grad=True)
 define_spin_qcvars("LCCSD", description="linearized coupled cluster singles and doubles", do_spin=True)
@@ -2225,6 +2253,7 @@ define_spin_qcvars(
     description="coupled cluster singles, doubles, and perturbative triples excitations.",
     do_spin=False,
     do_grad=True,
+    do_pole=True,
 )
 define_spin_qcvars(
     "CISD", description="configuration interaction with singles and doubles", do_spin=True, do_grad=False
@@ -2238,3 +2267,9 @@ define_spin_qcvars(
     do_spin=False,
     do_grad=False,
 )
+define_spin_qcvars(
+    "CCSD",
+    description="coupled culster singles and doubles excitations",
+    do_pole=True,
+)
+define_spin_qcvars("MP2", description="2nd-order Moller--Plesset perturbation theory", do_spin=False, do_grad=False, do_pole=True)

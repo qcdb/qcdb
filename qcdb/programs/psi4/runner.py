@@ -105,14 +105,19 @@ class QcdbPsi4Harness(Psi4Harness):
         # input_data['return_output'] = True
 
         popts = {}
+        function_kwargs = {}
         for k, v in ropts.scroll["QCDB"].items():
             if v.disputed():
                 popts[k] = v.value
 
         for k, v in ropts.scroll["PSI4"].items():
             if v.disputed():
-                popts[k] = v.value
+                if k.startswith("FUNCTION_KWARGS_"):
+                    function_kwargs[k[16:]] = v.value
+                else:
+                    popts[k] = v.value
         input_data["keywords"] = popts
+        input_data["keywords"]["function_kwargs"] = function_kwargs
 
         if "BASIS" in input_data["keywords"]:
             input_data["model"]["basis"] = input_data["keywords"]["BASIS"]
