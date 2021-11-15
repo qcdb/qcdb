@@ -55,20 +55,11 @@ jobs:
 
   release_sphinx:
     needs: [build]
+    name: Sphinx
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash -l {0}
-    strategy:
-      fail-fast: false
-      matrix:
-        cfg:
-          - conda-env: docs-cf
-            python-version: 3.6
-            label: Sphinx
-            runs-on: ubuntu-latest
-
-    name: "🐍 ${{ matrix.cfg.python-version }} • ${{ matrix.cfg.label }}"
-    runs-on: ${{ matrix.cfg.runs-on }}
 
     steps:
     - uses: actions/checkout@v2
@@ -77,8 +68,8 @@ jobs:
       uses: conda-incubator/setup-miniconda@v2
       with:
         activate-environment: test
-        environment-file: devtools/conda-envs/${{ matrix.cfg.conda-env }}.yaml
-        python-version: ${{ matrix.cfg.python-version }}
+        environment-file: devtools/conda-envs/docs-cf.yaml
+        python-version: 3.8
         auto-activate-base: false
 
     - name: Environment Information

@@ -65,6 +65,7 @@ instance/
 docs/_build/
 docs/source/api/
 docs/source/autodoc*
+docs/source/contents.rst
 
 # PyBuilder
 target/
