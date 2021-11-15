@@ -1,4 +1,4 @@
-name: CI
+name: CIlocal
 
 on:
   push:
@@ -19,8 +19,10 @@ jobs:
         cfg:
           - conda-env: docs-cf
             python-version: 3.9
-            label: CI Generic
-            runs-on: ubuntu-latest
+            label: CI Local
+            runs-on: self-hosted
+    env:
+        CONDA: /psi/toolchainconda/bin/conda
 
     name: "🐍 ${{ matrix.cfg.python-version }} • ${{ matrix.cfg.label }}"
     runs-on: ${{ matrix.cfg.runs-on }}
