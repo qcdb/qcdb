@@ -25,6 +25,8 @@ jobs:
             python-version: 3.9
             label: CI Local
             runs-on: self-hosted
+            env:
+                CONDA: /psi/toolchainconda/bin/conda
 
     name: "🐍 ${{ matrix.cfg.python-version }} • ${{ matrix.cfg.label }}"
     runs-on: ${{ matrix.cfg.runs-on }}
