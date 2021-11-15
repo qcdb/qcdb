@@ -21,6 +21,10 @@ jobs:
             python-version: 3.6
             label: CI Generic
             runs-on: ubuntu-latest
+          - conda-env: docs-cf
+            python-version: 3.9
+            label: CI Local
+            runs-on: self-hosted
 
     name: "🐍 ${{ matrix.cfg.python-version }} • ${{ matrix.cfg.label }}"
     runs-on: ${{ matrix.cfg.runs-on }}
