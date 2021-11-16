@@ -44,13 +44,13 @@
     <link rel="stylesheet" type="text/css" href="_static/psi4.css" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noticia+Text:400,i,b,bi|Open+Sans:400,i,b,bi|Roboto+Mono:400,i,b,bi&amp;display=swap" type="text/css" />
     
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     
     
@@ -100,7 +100,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g3e45af5">0+untagged.1.g3e45af5</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -147,8 +147,14 @@ databases. Contains Molecule class and physical constants from psi4 suite.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.compare_vibinfos.html#qcdb.compare_vibinfos" title="qcdb.compare_vibinfos"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare_vibinfos</span></code></a>(expected, computed, tol, label)</p></td>
 <td><p>Compare two dictionaries of vibration Datum objects.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.corl_xtpl_helgaker_2.html#qcdb.corl_xtpl_helgaker_2" title="qcdb.corl_xtpl_helgaker_2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">corl_xtpl_helgaker_2</span></code></a>(mtdname, zLO, valueLO, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.compute.html#qcdb.compute" title="qcdb.compute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute</span></code></a>(input_data, program[, ...])</p></td>
+<td><p>Run an analytic single-point specified in <code class="docutils literal notranslate"><span class="pre">input_data</span></code> through program <code class="docutils literal notranslate"><span class="pre">qcprog</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.corl_xtpl_helgaker_2.html#qcdb.corl_xtpl_helgaker_2" title="qcdb.corl_xtpl_helgaker_2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">corl_xtpl_helgaker_2</span></code></a>(mtdname, zLO, valueLO, ...)</p></td>
 <td><p>Extrapolation scheme for correlation energies with two adjacent zeta-level bases.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.diatomic.html#qcdb.diatomic" title="qcdb.diatomic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">diatomic</span></code></a>(rvals, energies, molecule[, plot_fit])</p></td>
+<td><p>Generates spectroscopic constants for a diatomic molecules.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.energy.html#qcdb.energy" title="qcdb.energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">energy</span></code></a>(name, **kwargs)</p></td>
 <td><p>Function to compute the single-point electronic energy.</p></td>
@@ -174,26 +180,32 @@ databases. Contains Molecule class and physical constants from psi4 suite.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.hessian.html#qcdb.hessian" title="qcdb.hessian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hessian</span></code></a>(name, **kwargs)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.optking.html#qcdb.optking" title="qcdb.optking"><code class="xref py py-obj docutils literal notranslate"><span class="pre">optking</span></code></a>(name, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.optimize.html#qcdb.optimize" title="qcdb.optimize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">optimize</span></code></a>(name, **kwargs)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.print_variables.html#qcdb.print_variables" title="qcdb.print_variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_variables</span></code></a>([qcvars])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.optking.html#qcdb.optking" title="qcdb.optking"><code class="xref py py-obj docutils literal notranslate"><span class="pre">optking</span></code></a>(name, **kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.print_variables.html#qcdb.print_variables" title="qcdb.print_variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_variables</span></code></a>([qcvars])</p></td>
 <td><p>Form a printable representation of qcvariables.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.properties.html#qcdb.properties" title="qcdb.properties"><code class="xref py py-obj docutils literal notranslate"><span class="pre">properties</span></code></a>(name, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.properties.html#qcdb.properties" title="qcdb.properties"><code class="xref py py-obj docutils literal notranslate"><span class="pre">properties</span></code></a>(name, **kwargs)</p></td>
 <td><p>Function to compute the single-point electronic properties.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.scf_xtpl_helgaker_2.html#qcdb.scf_xtpl_helgaker_2" title="qcdb.scf_xtpl_helgaker_2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scf_xtpl_helgaker_2</span></code></a>(mtdname, zLO, valueLO, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.scf_xtpl_helgaker_2.html#qcdb.scf_xtpl_helgaker_2" title="qcdb.scf_xtpl_helgaker_2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scf_xtpl_helgaker_2</span></code></a>(mtdname, zLO, valueLO, ...)</p></td>
 <td><p>Extrapolation scheme for reference energies with two adjacent zeta-level bases.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.scf_xtpl_helgaker_3.html#qcdb.scf_xtpl_helgaker_3" title="qcdb.scf_xtpl_helgaker_3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scf_xtpl_helgaker_3</span></code></a>(mtdname, zLO, valueLO, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.scf_xtpl_helgaker_3.html#qcdb.scf_xtpl_helgaker_3" title="qcdb.scf_xtpl_helgaker_3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scf_xtpl_helgaker_3</span></code></a>(mtdname, zLO, valueLO, ...)</p></td>
 <td><p>Extrapolation scheme for reference energies with three adjacent zeta-level bases.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.set_keywords.html#qcdb.set_keywords" title="qcdb.set_keywords"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_keywords</span></code></a>(options_dict)</p></td>
+<td><p>Set QCDB keywords from input dictionary.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.set_molecule.html#qcdb.set_molecule" title="qcdb.set_molecule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_molecule</span></code></a>(molinit[, name])</p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.set_options.html#qcdb.set_options" title="qcdb.set_options"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_options</span></code></a>(options_dict)</p></td>
-<td><p>Sets Psi4 global options from an input dictionary.</p></td>
+<td><p>Set QCDB keywords from input dictionary.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="api/qcdb.variable.html#qcdb.variable" title="qcdb.variable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variable</span></code></a>(key)</p></td>
 <td><p></p></td>
@@ -423,7 +435,7 @@ databases. Contains Molecule class and physical constants from psi4 suite.</p>
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g3e45af5">0+untagged.1.g3e45af5</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -436,8 +448,8 @@ databases. Contains Molecule class and physical constants from psi4 suite.</p>
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2021, The QCDB Project.
-      Last updated on Sunday, 12 September 2021 05:49PM.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.2.0.
+      Last updated on Tuesday, 16 November 2021 10:11PM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.0.
     </div>
     <!-- cloud_sptheme 1.4 -->
   </body>

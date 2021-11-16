@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/psi4.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noticia+Text:400,i,b,bi|Open+Sans:400,i,b,bi|Roboto+Mono:400,i,b,bi&amp;display=swap" type="text/css" />
     
     <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
@@ -90,7 +90,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/molecule/molecule.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g3e45af5">0+untagged.1.g3e45af5</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../../../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -109,11 +109,11 @@
           <div class="body" role="main">
             
   <h1>Source code for qcdb.molecule.molecule</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">hashlib</span>
-<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -254,7 +254,7 @@
         <span class="k">if</span> <span class="s1">&#39;all_variables&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="ow">and</span> <span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;all_variables&#39;</span><span class="p">]:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Molecule.init_with_xyz"><a class="viewcode-back" href="../../../api/qcdb.Molecule.html#qcdb.Molecule.init_with_xyz">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">init_with_xyz</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">xyzfilename</span><span class="p">,</span> <span class="n">no_com</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">no_reorient</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">contentsNotFilename</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -999,7 +999,7 @@
         <span class="n">molrec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">np_out</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># flip zeros</span>
-        <span class="n">molrec</span><span class="p">[</span><span class="s1">&#39;geom&#39;</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">molrec</span><span class="p">[</span><span class="s1">&#39;geom&#39;</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">ZERO</span><span class="p">))]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">molrec</span><span class="p">[</span><span class="s1">&#39;geom&#39;</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">molrec</span><span class="p">[</span><span class="s1">&#39;geom&#39;</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">prec</span><span class="p">))]</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="n">smol</span> <span class="o">=</span> <span class="n">qcel</span><span class="o">.</span><span class="n">molparse</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span>
             <span class="n">molrec</span><span class="p">,</span>
@@ -1447,6 +1447,8 @@
 
 <div class="viewcode-block" id="Molecule.B787"><a class="viewcode-back" href="../../../api/qcdb.Molecule.html#qcdb.Molecule.B787">[docs]</a>    <span class="k">def</span> <span class="nf">B787</span><span class="p">(</span><span class="n">concern_mol</span><span class="p">:</span> <span class="s2">&quot;Molecule&quot;</span><span class="p">,</span>
              <span class="n">ref_mol</span><span class="p">:</span> <span class="s2">&quot;Molecule&quot;</span><span class="p">,</span>
+             <span class="o">*</span><span class="p">,</span>
+             <span class="n">fix_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
              <span class="n">do_plot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
              <span class="n">verbose</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
              <span class="n">atoms_map</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1470,6 +1472,18 @@
 <span class="sd">            best coincidence with `ref_mol`.</span>
 <span class="sd">        ref_mol</span>
 <span class="sd">            Molecule to match.</span>
+<span class="sd">        fix_mode</span>
+<span class="sd">            {&quot;copy&quot;, &quot;true&quot;}</span>
+<span class="sd">            Relevant to the ``fix_com``, ``fix_orientation``, and ``geometry`` state of the returned Molecule.</span>
+<span class="sd">            ``fixed_mode=&quot;copy&quot;`` uses the ``fix_com`` and ``fix_orientation`` (hereafter fix_) attributes of</span>
+<span class="sd">            ``concern_mol`` (self) to create the returned molecule. The perhaps unexpected implication if fix_=F is that</span>
+<span class="sd">            the resultant molecule will be in standard orientation (pretty) and *NOT ALIGNED TO REF_MOL*. Nevertheless,</span>
+<span class="sd">            this is sometimes useful when imitating the original construction of a molecule. ``fixed_mode=&quot;true&quot; sets</span>
+<span class="sd">            ``fix_com=True`` and ``fix_orientation=True`` to create the returned molecule. The perhaps unexpected</span>
+<span class="sd">            implication if fix_=F is that the resultant molecule will *DIFFER FROM CONCERN_MOL BY MORE THAN GEOMETRY*.</span>
+<span class="sd">            Nevertheless, this is the common usage so that the returned molecule actually has the aligned geometry</span>
+<span class="sd">            regardless of ``concern_mol`` (self) fix_. Note that a possible compromise of returned molecule always</span>
+<span class="sd">            having the aligned geometry and the input fix_ is technically possible but contrary to the Molecule design.</span>
 <span class="sd">        atoms_map</span>
 <span class="sd">            Whether atom1 of `ref_mol` corresponds to atom1 of `concern_mol`, etc.</span>
 <span class="sd">            If true, specifying `True` can save much time.</span>
@@ -1521,17 +1535,29 @@
             <span class="n">run_mirror</span><span class="o">=</span><span class="n">run_mirror</span><span class="p">,</span>
             <span class="n">uno_cutoff</span><span class="o">=</span><span class="n">uno_cutoff</span><span class="p">)</span>
 
-        <span class="n">ageom</span><span class="p">,</span> <span class="n">amass</span><span class="p">,</span> <span class="n">aelem</span><span class="p">,</span> <span class="n">aelez</span><span class="p">,</span> <span class="n">auniq</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">align_system</span><span class="p">(</span><span class="n">cgeom</span><span class="p">,</span> <span class="n">cmass</span><span class="p">,</span> <span class="n">celem</span><span class="p">,</span> <span class="n">celez</span><span class="p">,</span> <span class="n">cuniq</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">adict</span> <span class="o">=</span> <span class="n">qcel</span><span class="o">.</span><span class="n">molparse</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span>
-            <span class="n">geom</span><span class="o">=</span><span class="n">ageom</span><span class="p">,</span>
-            <span class="n">mass</span><span class="o">=</span><span class="n">amass</span><span class="p">,</span>
-            <span class="n">elem</span><span class="o">=</span><span class="n">aelem</span><span class="p">,</span>
-            <span class="n">elez</span><span class="o">=</span><span class="n">aelez</span><span class="p">,</span>
-            <span class="n">units</span><span class="o">=</span><span class="s1">&#39;Bohr&#39;</span><span class="p">,</span>
-            <span class="n">molecular_charge</span><span class="o">=</span><span class="n">concern_mol</span><span class="o">.</span><span class="n">molecular_charge</span><span class="p">(),</span>
-            <span class="n">molecular_multiplicity</span><span class="o">=</span><span class="n">concern_mol</span><span class="o">.</span><span class="n">multiplicity</span><span class="p">(),</span>
-            <span class="n">fix_com</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">fix_orientation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">ageom</span> <span class="o">=</span> <span class="n">solution</span><span class="o">.</span><span class="n">align_coordinates</span><span class="p">(</span><span class="n">cgeom</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">fix_mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">]:</span>
+            <span class="n">fix_com</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">fix_orientation</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">fix_mode</span> <span class="o">==</span> <span class="s2">&quot;copy&quot;</span><span class="p">:</span>
+            <span class="n">fix_com</span> <span class="o">=</span> <span class="n">ref_mol</span><span class="o">.</span><span class="n">com_fixed</span><span class="p">()</span>
+            <span class="n">fix_orientation</span> <span class="o">=</span> <span class="n">ref_mol</span><span class="o">.</span><span class="n">orientation_fixed</span><span class="p">()</span>
+
+        <span class="n">cdict</span> <span class="o">=</span> <span class="n">concern_mol</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">aupdate</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;elem&quot;</span><span class="p">:</span> <span class="n">solution</span><span class="o">.</span><span class="n">align_atoms</span><span class="p">(</span><span class="n">celem</span><span class="p">),</span>
+            <span class="s2">&quot;geom&quot;</span><span class="p">:</span> <span class="n">solution</span><span class="o">.</span><span class="n">align_coordinates</span><span class="p">(</span><span class="n">cgeom</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+            <span class="s2">&quot;mass&quot;</span><span class="p">:</span> <span class="n">solution</span><span class="o">.</span><span class="n">align_atoms</span><span class="p">(</span><span class="n">cmass</span><span class="p">),</span>
+            <span class="s2">&quot;real&quot;</span><span class="p">:</span> <span class="n">solution</span><span class="o">.</span><span class="n">align_atoms</span><span class="p">(</span><span class="n">cdict</span><span class="p">[</span><span class="s2">&quot;real&quot;</span><span class="p">]),</span>
+            <span class="s2">&quot;elbl&quot;</span><span class="p">:</span> <span class="n">solution</span><span class="o">.</span><span class="n">align_atoms</span><span class="p">(</span><span class="n">cdict</span><span class="p">[</span><span class="s2">&quot;elbl&quot;</span><span class="p">]),</span>
+            <span class="s2">&quot;elez&quot;</span><span class="p">:</span> <span class="n">solution</span><span class="o">.</span><span class="n">align_atoms</span><span class="p">(</span><span class="n">celez</span><span class="p">),</span>
+            <span class="s2">&quot;elea&quot;</span><span class="p">:</span> <span class="n">solution</span><span class="o">.</span><span class="n">align_atoms</span><span class="p">(</span><span class="n">cdict</span><span class="p">[</span><span class="s2">&quot;elea&quot;</span><span class="p">]),</span>
+            <span class="s2">&quot;fix_com&quot;</span><span class="p">:</span> <span class="n">fix_com</span><span class="p">,</span>
+            <span class="s2">&quot;fix_orientation&quot;</span><span class="p">:</span> <span class="n">fix_orientation</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">adict</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">cdict</span><span class="p">,</span> <span class="o">**</span><span class="n">aupdate</span><span class="p">,</span> <span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="s2">&quot;Bohr&quot;</span><span class="p">}</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">concern_mol</span><span class="p">,</span> <span class="n">Molecule</span><span class="p">):</span>
             <span class="n">amol</span> <span class="o">=</span> <span class="n">Molecule</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">adict</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1553,24 +1579,41 @@
                 <span class="n">quiet</span><span class="o">=</span><span class="p">(</span><span class="n">verbose</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">))</span>
             <span class="n">compare</span><span class="p">(</span>
                 <span class="kc">True</span><span class="p">,</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">ref_mol</span><span class="o">.</span><span class="n">geometry</span><span class="p">(),</span> <span class="n">amol</span><span class="o">.</span><span class="n">geometry</span><span class="p">(),</span> <span class="n">atol</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">ref_mol</span><span class="o">.</span><span class="n">geometry</span><span class="p">(),</span> <span class="n">amol</span><span class="o">.</span><span class="n">geometry</span><span class="p">(),</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.e-4</span><span class="p">),</span>
                 <span class="s1">&#39;Q: concern_mol--&gt;returned_mol geometry matches ref_mol&#39;</span><span class="p">,</span>
                 <span class="n">quiet</span><span class="o">=</span><span class="p">(</span><span class="n">verbose</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">rmsd</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">amol</span></div>
 
+        <span class="c1"># Notes</span>
+        <span class="c1">#</span>
+        <span class="c1"># * doing the illegal (pre fix_mode) amol with aligned geom and concern_mol fix_</span>
+        <span class="c1">#   aupdate = {</span>
+        <span class="c1">#       ...</span>
+        <span class="c1">#       # signal to build returned Mol with exactly the aligned Cartesians of &quot;geom&quot; rather than psi std frame</span>
+        <span class="c1">#       &quot;fix_com&quot;: True,</span>
+        <span class="c1">#       &quot;fix_orientation&quot;: True,</span>
+        <span class="c1">#   }</span>
+        <span class="c1">#   ... amol = Molecule.from_dict(adict)</span>
+        <span class="c1">#   # correct fix_* properties of returned Mol to match self</span>
+        <span class="c1">#   amol.fix_com(concern_mol.com_fixed())</span>
+        <span class="c1">#   amol.fix_orientation(concern_mol.orientation_fixed())</span>
+
 <div class="viewcode-block" id="Molecule.scramble"><a class="viewcode-back" href="../../../api/qcdb.Molecule.html#qcdb.Molecule.scramble">[docs]</a>    <span class="k">def</span> <span class="nf">scramble</span><span class="p">(</span><span class="n">ref_mol</span><span class="p">:</span> <span class="s2">&quot;Molecule&quot;</span><span class="p">,</span>
+                 <span class="o">*</span><span class="p">,</span>
                  <span class="n">do_shift</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                  <span class="n">do_rotate</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                  <span class="n">do_resort</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                  <span class="n">deflection</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
                  <span class="n">do_mirror</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                  <span class="n">do_plot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">do_test</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                  <span class="n">run_to_completion</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                  <span class="n">run_resorting</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">fix_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                  <span class="n">verbose</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Tester for B787 by shifting, rotating, and atom shuffling `ref_mol` and</span>
-<span class="sd">        checking that the aligner returns the opposite transformation.</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Generate a Molecule with random or directed translation, rotation, and atom shuffling.</span>
+<span class="sd">        Optionally, check that the aligner returns the opposite transformation.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1593,66 +1636,123 @@
 <span class="sd">            Whether to construct the mirror image structure by inverting y-axis.</span>
 <span class="sd">        do_plot</span>
 <span class="sd">            Pops up a mpl plot showing before, after, and ref geometries.</span>
+<span class="sd">        do_test</span>
+<span class="sd">            Additionally, run the aligner on the returned Molecule and check that</span>
+<span class="sd">            opposite transformations obtained.</span>
 <span class="sd">        run_to_completion</span>
 <span class="sd">            By construction, scrambled systems are fully alignable (final RMSD=0).</span>
 <span class="sd">            Even so, `True` turns off the mechanism to stop when RMSD reaches zero</span>
 <span class="sd">            and instead proceed to worst possible time.</span>
 <span class="sd">        run_resorting</span>
 <span class="sd">            Even if atoms not shuffled, test the resorting machinery.</span>
+<span class="sd">        fix_mode</span>
+<span class="sd">            {&quot;copy&quot;, &quot;true&quot;}</span>
+<span class="sd">            Relevant to the ``fix_com``, ``fix_orientation``, and ``geometry`` state of the returned Molecule.</span>
+<span class="sd">            ``fixed_mode=&quot;copy&quot;`` uses the ``fix_com`` and ``fix_orientation`` (hereafter fix_) attributes of</span>
+<span class="sd">            ``concern_mol`` (self) to create the returned molecule. The perhaps unexpected implication if fix_=F is that</span>
+<span class="sd">            the resultant molecule will be in standard orientation (pretty) and *NOT ALIGNED TO REF_MOL*. Nevertheless,</span>
+<span class="sd">            this is sometimes useful when imitating the original construction of a molecule. ``fixed_mode=&quot;true&quot; sets</span>
+<span class="sd">            ``fix_com=True`` and ``fix_orientation=True`` to create the returned molecule. The perhaps unexpected</span>
+<span class="sd">            implication if fix_=F is that the resultant molecule will *DIFFER FROM CONCERN_MOL BY MORE THAN GEOMETRY*.</span>
+<span class="sd">            Nevertheless, this is the common usage so that the returned molecule actually has the aligned geometry</span>
+<span class="sd">            regardless of ``concern_mol`` (self) fix_. Note that a possible compromise of returned molecule always</span>
+<span class="sd">            having the aligned geometry and the input fix_ is technically possible but contrary to the Molecule design.</span>
 <span class="sd">        verbose</span>
 <span class="sd">            Print level.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        None</span>
+<span class="sd">        mol : Molecule</span>
+<span class="sd">        data : Dict[key, Any]</span>
+<span class="sd">            Molecule is scrambled copy of `ref_mol` (self).</span>
+<span class="sd">            `data[&#39;rmsd&#39;]` is RMSD [A] between `ref_mol` and the scrambled geometry.</span>
+<span class="sd">            `data[&#39;mill&#39;]` is a AlignmentMill with fields</span>
+<span class="sd">            (shift, rotation, atommap, mirror) that prescribe the transformation</span>
+<span class="sd">            from `ref_mol` to the returned geometry.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">rgeom</span><span class="p">,</span> <span class="n">rmass</span><span class="p">,</span> <span class="n">relem</span><span class="p">,</span> <span class="n">relez</span><span class="p">,</span> <span class="n">runiq</span> <span class="o">=</span> <span class="n">ref_mol</span><span class="o">.</span><span class="n">to_arrays</span><span class="p">()</span>
         <span class="n">nat</span> <span class="o">=</span> <span class="n">rgeom</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="n">perturbation</span> <span class="o">=</span> <span class="n">qcel</span><span class="o">.</span><span class="n">molutil</span><span class="o">.</span><span class="n">compute_scramble</span><span class="p">(</span>
-            <span class="n">rgeom</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">nat</span><span class="p">,</span>
             <span class="n">do_shift</span><span class="o">=</span><span class="n">do_shift</span><span class="p">,</span>
             <span class="n">do_rotate</span><span class="o">=</span><span class="n">do_rotate</span><span class="p">,</span>
             <span class="n">deflection</span><span class="o">=</span><span class="n">deflection</span><span class="p">,</span>
             <span class="n">do_resort</span><span class="o">=</span><span class="n">do_resort</span><span class="p">,</span>
             <span class="n">do_mirror</span><span class="o">=</span><span class="n">do_mirror</span><span class="p">)</span>
-        <span class="n">cgeom</span><span class="p">,</span> <span class="n">cmass</span><span class="p">,</span> <span class="n">celem</span><span class="p">,</span> <span class="n">celez</span><span class="p">,</span> <span class="n">cuniq</span> <span class="o">=</span> <span class="n">perturbation</span><span class="o">.</span><span class="n">align_system</span><span class="p">(</span><span class="n">rgeom</span><span class="p">,</span> <span class="n">rmass</span><span class="p">,</span> <span class="n">relem</span><span class="p">,</span> <span class="n">relez</span><span class="p">,</span> <span class="n">runiq</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">cmol</span> <span class="o">=</span> <span class="n">Molecule</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span>
-            <span class="n">geom</span><span class="o">=</span><span class="n">cgeom</span><span class="p">,</span>
-            <span class="n">mass</span><span class="o">=</span><span class="n">cmass</span><span class="p">,</span>
-            <span class="n">elem</span><span class="o">=</span><span class="n">celem</span><span class="p">,</span>
-            <span class="n">elez</span><span class="o">=</span><span class="n">celez</span><span class="p">,</span>
-            <span class="n">units</span><span class="o">=</span><span class="s1">&#39;Bohr&#39;</span><span class="p">,</span>
-            <span class="n">molecular_charge</span><span class="o">=</span><span class="n">ref_mol</span><span class="o">.</span><span class="n">molecular_charge</span><span class="p">(),</span>
-            <span class="n">molecular_multiplicity</span><span class="o">=</span><span class="n">ref_mol</span><span class="o">.</span><span class="n">multiplicity</span><span class="p">(),</span>
-            <span class="n">fix_com</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">fix_orientation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">fix_mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">]:</span>
+            <span class="n">fix_com</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">fix_orientation</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">fix_mode</span> <span class="o">==</span> <span class="s2">&quot;copy&quot;</span><span class="p">:</span>
+            <span class="n">fix_com</span> <span class="o">=</span> <span class="n">ref_mol</span><span class="o">.</span><span class="n">com_fixed</span><span class="p">()</span>
+            <span class="n">fix_orientation</span> <span class="o">=</span> <span class="n">ref_mol</span><span class="o">.</span><span class="n">orientation_fixed</span><span class="p">()</span>
+
+        <span class="n">rdict</span> <span class="o">=</span> <span class="n">ref_mol</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">cgeom</span> <span class="o">=</span> <span class="n">perturbation</span><span class="o">.</span><span class="n">align_coordinates</span><span class="p">(</span><span class="n">rgeom</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">cupdate</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;elem&quot;</span><span class="p">:</span> <span class="n">perturbation</span><span class="o">.</span><span class="n">align_atoms</span><span class="p">(</span><span class="n">relem</span><span class="p">),</span>
+            <span class="s2">&quot;geom&quot;</span><span class="p">:</span> <span class="n">cgeom</span><span class="p">,</span>
+            <span class="s2">&quot;mass&quot;</span><span class="p">:</span> <span class="n">perturbation</span><span class="o">.</span><span class="n">align_atoms</span><span class="p">(</span><span class="n">rmass</span><span class="p">),</span>
+            <span class="s2">&quot;real&quot;</span><span class="p">:</span> <span class="n">perturbation</span><span class="o">.</span><span class="n">align_atoms</span><span class="p">(</span><span class="n">rdict</span><span class="p">[</span><span class="s2">&quot;real&quot;</span><span class="p">]),</span>
+            <span class="s2">&quot;elbl&quot;</span><span class="p">:</span> <span class="n">perturbation</span><span class="o">.</span><span class="n">align_atoms</span><span class="p">(</span><span class="n">rdict</span><span class="p">[</span><span class="s2">&quot;elbl&quot;</span><span class="p">]),</span>
+            <span class="s2">&quot;elez&quot;</span><span class="p">:</span> <span class="n">perturbation</span><span class="o">.</span><span class="n">align_atoms</span><span class="p">(</span><span class="n">relez</span><span class="p">),</span>
+            <span class="s2">&quot;elea&quot;</span><span class="p">:</span> <span class="n">perturbation</span><span class="o">.</span><span class="n">align_atoms</span><span class="p">(</span><span class="n">rdict</span><span class="p">[</span><span class="s2">&quot;elea&quot;</span><span class="p">]),</span>
+            <span class="s2">&quot;fix_com&quot;</span><span class="p">:</span> <span class="n">fix_com</span><span class="p">,</span>
+            <span class="s2">&quot;fix_orientation&quot;</span><span class="p">:</span> <span class="n">fix_orientation</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">cdict</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">rdict</span><span class="p">,</span> <span class="o">**</span><span class="n">cupdate</span><span class="p">,</span> <span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="s2">&quot;Bohr&quot;</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ref_mol</span><span class="p">,</span> <span class="n">Molecule</span><span class="p">):</span>
+            <span class="n">cmol</span> <span class="o">=</span> <span class="n">Molecule</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">cdict</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">psi4</span> <span class="kn">import</span> <span class="n">core</span>
+            <span class="n">cmol</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">cdict</span><span class="p">)</span>
+
 
         <span class="n">rmsd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">cgeom</span> <span class="o">-</span> <span class="n">rgeom</span><span class="p">)</span> <span class="o">*</span> <span class="n">qcel</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">bohr2angstroms</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">nat</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Start RMSD = </span><span class="si">{:8.4f}</span><span class="s1"> [A]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rmsd</span><span class="p">))</span>
 
-        <span class="n">rmsd</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">amol</span> <span class="o">=</span> <span class="n">cmol</span><span class="o">.</span><span class="n">B787</span><span class="p">(</span>
-            <span class="n">ref_mol</span><span class="p">,</span>
-            <span class="n">do_plot</span><span class="o">=</span><span class="n">do_plot</span><span class="p">,</span>
-            <span class="n">atoms_map</span><span class="o">=</span><span class="p">(</span><span class="ow">not</span> <span class="n">do_resort</span><span class="p">),</span>
-            <span class="n">run_resorting</span><span class="o">=</span><span class="n">run_resorting</span><span class="p">,</span>
-            <span class="n">mols_align</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">run_to_completion</span><span class="o">=</span><span class="n">run_to_completion</span><span class="p">,</span>
-            <span class="n">run_mirror</span><span class="o">=</span><span class="n">do_mirror</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">do_test</span><span class="p">:</span>
+            <span class="n">final_rmsd</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">amol</span> <span class="o">=</span> <span class="n">cmol</span><span class="o">.</span><span class="n">B787</span><span class="p">(</span>
+                <span class="n">ref_mol</span><span class="p">,</span>
+                <span class="n">do_plot</span><span class="o">=</span><span class="n">do_plot</span><span class="p">,</span>
+                <span class="n">atoms_map</span><span class="o">=</span><span class="p">(</span><span class="ow">not</span> <span class="n">do_resort</span><span class="p">),</span>
+                <span class="n">run_resorting</span><span class="o">=</span><span class="n">run_resorting</span><span class="p">,</span>
+                <span class="n">mols_align</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">run_to_completion</span><span class="o">=</span><span class="n">run_to_completion</span><span class="p">,</span>
+                <span class="n">run_mirror</span><span class="o">=</span><span class="n">do_mirror</span><span class="p">,</span>
+                <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
 
-        <span class="n">compare</span><span class="p">(</span>
-            <span class="kc">True</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">shift</span><span class="p">,</span> <span class="n">perturbation</span><span class="o">.</span><span class="n">shift</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mi">6</span><span class="p">),</span> <span class="s1">&#39;shifts equiv&#39;</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="p">(</span><span class="n">verbose</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">))</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">do_resort</span><span class="p">:</span>
             <span class="n">compare</span><span class="p">(</span>
-                <span class="kc">True</span><span class="p">,</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">rotation</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">perturbation</span><span class="o">.</span><span class="n">rotation</span><span class="p">),</span>
-                <span class="s1">&#39;rotations transpose&#39;</span><span class="p">,</span>
-                <span class="n">quiet</span><span class="o">=</span><span class="p">(</span><span class="n">verbose</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">solution</span><span class="o">.</span><span class="n">mirror</span><span class="p">:</span>
-            <span class="n">compare</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">do_mirror</span><span class="p">,</span> <span class="s1">&#39;mirror allowed&#39;</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="p">(</span><span class="n">verbose</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">))</span></div>
+                <span class="kc">True</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">shift</span><span class="p">,</span> <span class="n">perturbation</span><span class="o">.</span><span class="n">shift</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.e-6</span><span class="p">),</span> <span class="s1">&#39;shifts equiv&#39;</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="p">(</span><span class="n">verbose</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">do_resort</span><span class="p">:</span>
+                <span class="n">compare</span><span class="p">(</span>
+                    <span class="kc">True</span><span class="p">,</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">rotation</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">perturbation</span><span class="o">.</span><span class="n">rotation</span><span class="p">),</span>
+                    <span class="s1">&#39;rotations transpose&#39;</span><span class="p">,</span>
+                    <span class="n">quiet</span><span class="o">=</span><span class="p">(</span><span class="n">verbose</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">solution</span><span class="o">.</span><span class="n">mirror</span><span class="p">:</span>
+                <span class="n">compare</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">do_mirror</span><span class="p">,</span> <span class="s1">&#39;mirror allowed&#39;</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="p">(</span><span class="n">verbose</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">cmol</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;rmsd&quot;</span><span class="p">:</span> <span class="n">rmsd</span><span class="p">,</span> <span class="s2">&quot;mill&quot;</span><span class="p">:</span> <span class="n">perturbation</span><span class="p">}</span></div>
+
+        <span class="c1"># Notes</span>
+        <span class="c1">#</span>
+        <span class="c1"># * doing the illegal (pre fix_mode) amol with aligned geom and concern_mol fix_</span>
+        <span class="c1">#   cupdate = {</span>
+        <span class="c1">#       ...</span>
+        <span class="c1">#       # signal to build returned Mol with exactly the aligned Cartesians of &quot;geom&quot; rather than psi std frame</span>
+        <span class="c1">#       &quot;fix_com&quot;: True,</span>
+        <span class="c1">#       &quot;fix_orientation&quot;: True,</span>
+        <span class="c1">#   }</span>
+        <span class="c1">#   cdict = {**rdict, **cupdate, &quot;units&quot;: &quot;Bohr&quot;}</span>
+        <span class="c1">#   ... cmol = Molecule.from_dict(cdict)</span>
+        <span class="c1">#   # correct fix_* properties of returned Mol to match self</span>
+        <span class="c1">#   cmol.fix_com(ref_mol.com_fixed())</span>
+        <span class="c1">#   cmol.fix_orientation(ref_mol.orientation_fixed())</span>
 
 <div class="viewcode-block" id="Molecule.set_fragment_pattern"><a class="viewcode-back" href="../../../api/qcdb.Molecule.html#qcdb.Molecule.set_fragment_pattern">[docs]</a>    <span class="k">def</span> <span class="nf">set_fragment_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frl</span><span class="p">,</span> <span class="n">frt</span><span class="p">,</span> <span class="n">frc</span><span class="p">,</span> <span class="n">frm</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set fragment member data through public method analogous to psi4.core.Molecule&quot;&quot;&quot;</span>
@@ -1762,7 +1862,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/molecule/molecule.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g3e45af5">0+untagged.1.g3e45af5</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../../../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -1776,8 +1876,8 @@
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2021, The QCDB Project.
-      Last updated on Sunday, 12 September 2021 05:49PM.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.2.0.
+      Last updated on Tuesday, 16 November 2021 10:11PM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.0.
     </div>
     <!-- cloud_sptheme 1.4 -->
   </body>

@@ -39,7 +39,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>set_molecule</title>
+    <title>diatomic</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/psi4.css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
@@ -71,8 +71,8 @@
     <link rel="shortcut icon" href="../_static/favicon-qcdb.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="set_options" href="qcdb.set_options.html" />
-    <link rel="prev" title="set_keywords" href="qcdb.set_keywords.html" /> 
+    <link rel="next" title="energy" href="qcdb.energy.html" />
+    <link rel="prev" title="corl_xtpl_helgaker_2" href="qcdb.corl_xtpl_helgaker_2.html" /> 
         <meta name="viewport" content="width=device-width, initial-scale=1">
   </head><body>
     <div class="relbar-top">
@@ -87,10 +87,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
         <li class="right" >
-          <a href="qcdb.set_options.html" title="set_options"
+          <a href="qcdb.energy.html" title="energy"
              accesskey="N"><i class="fa fa-long-arrow-right fa-lg"></i></a> &nbsp; &nbsp;</li>
         <li class="right" >
-          <a href="qcdb.set_keywords.html" title="set_keywords"
+          <a href="qcdb.corl_xtpl_helgaker_2.html" title="corl_xtpl_helgaker_2"
              accesskey="P"><i class="fa fa-long-arrow-left fa-lg"></i></a> &nbsp; &nbsp;</li>
         <li class="right" >
           <a href="../index.html" title="Table Of Contents"
@@ -98,7 +98,7 @@
     <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
-    <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.set_molecule.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.diatomic.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
@@ -107,7 +107,7 @@
         </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
 
           <li class="nav-item nav-item-1"><a href="../api.html" accesskey="U"><span style="font-family: Optima, sans-serif; text-transform: none;">QCDB</span> API</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
-        <li class="nav-item nav-item-this"><a href="">set_molecule</a></li> 
+        <li class="nav-item nav-item-this"><a href="">diatomic</a></li> 
       </ul>
     </div>
     </div>
@@ -118,12 +118,40 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="set-molecule">
-<h1>set_molecule<a class="headerlink" href="#set-molecule" title="Permalink to this headline">¶</a></h1>
+  <section id="diatomic">
+<h1>diatomic<a class="headerlink" href="#diatomic" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="qcdb.set_molecule">
-<span class="sig-prename descclassname"><span class="pre">qcdb.</span></span><span class="sig-name descname"><span class="pre">set_molecule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molinit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/driver/driver_helpers.html#set_molecule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.set_molecule" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="qcdb.diatomic">
+<span class="sig-prename descclassname"><span class="pre">qcdb.</span></span><span class="sig-name descname"><span class="pre">diatomic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rvals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">molecule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_fit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/driver/diatomic.html#diatomic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.diatomic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates spectroscopic constants for a diatomic molecules.
+Fits a diatomic potential energy curve using a weighted least squares approach
+(c.f. <a class="reference external" href="https://doi.org/10.1063/1.4862157">https://doi.org/10.1063/1.4862157</a>, particularly eqn. 7), locates the minimum
+energy point, and then applies second order vibrational perturbation theory to obtain spectroscopic
+constants.  Any number of points greater than 4 may be provided, and they should bracket the minimum.
+The data need not be evenly spaced, and can be provided in any order.  The data are weighted such that
+those closest to the minimum have highest impact.</p>
+<p>A dictionary with the following keys, which correspond to spectroscopic constants, is returned:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rvals</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>) – The bond lengths (in Angstrom) for which energies are
+provided, of length at least 5 and equal to the length of the energies array</p></li>
+<li><p><strong>energies</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.List" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>) – The energies (Eh) computed at the bond lengths in the rvals list</p></li>
+<li><p><strong>plot_fit</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – A string describing where to save a plot of the harmonic and anharmonic fits, the
+inputted data points, re, r0 and the first few energy levels, if matplotlib
+is available.  Set to ‘screen’ to generate an interactive plot on the screen instead. If a filename is
+provided, the image type is determined by the extension; see matplotlib for supported file types.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(<em>dict</em>) Keys: “re”, “r0”, “we”, “wexe”, “nu”, “ZPVE(harmonic)”, “ZPVE(anharmonic)”, “Be”, “B0”, “ae”, “De”
+corresponding to the spectroscopic constants in cm-1</p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 
@@ -210,10 +238,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
         <li class="right" >
-          <a href="qcdb.set_options.html" title="set_options"
+          <a href="qcdb.energy.html" title="energy"
              ><i class="fa fa-long-arrow-right fa-lg"></i></a> &nbsp; &nbsp;</li>
         <li class="right" >
-          <a href="qcdb.set_keywords.html" title="set_keywords"
+          <a href="qcdb.corl_xtpl_helgaker_2.html" title="corl_xtpl_helgaker_2"
              ><i class="fa fa-long-arrow-left fa-lg"></i></a> &nbsp; &nbsp;</li>
         <li class="right" >
           <a href="../index.html" title="Table Of Contents"
@@ -221,7 +249,7 @@
     <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
-    <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.set_molecule.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.diatomic.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
@@ -230,7 +258,7 @@
         </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
 
           <li class="nav-item nav-item-1"><a href="../api.html" ><span style="font-family: Optima, sans-serif; text-transform: none;">QCDB</span> API</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
-        <li class="nav-item nav-item-this"><a href="">set_molecule</a></li> 
+        <li class="nav-item nav-item-this"><a href="">diatomic</a></li> 
       </ul>
     </div>
     </div>

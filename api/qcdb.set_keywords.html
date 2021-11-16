@@ -39,7 +39,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>set_molecule</title>
+    <title>set_keywords</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/psi4.css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
@@ -71,8 +71,8 @@
     <link rel="shortcut icon" href="../_static/favicon-qcdb.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="set_options" href="qcdb.set_options.html" />
-    <link rel="prev" title="set_keywords" href="qcdb.set_keywords.html" /> 
+    <link rel="next" title="set_molecule" href="qcdb.set_molecule.html" />
+    <link rel="prev" title="scf_xtpl_helgaker_3" href="qcdb.scf_xtpl_helgaker_3.html" /> 
         <meta name="viewport" content="width=device-width, initial-scale=1">
   </head><body>
     <div class="relbar-top">
@@ -87,10 +87,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
         <li class="right" >
-          <a href="qcdb.set_options.html" title="set_options"
+          <a href="qcdb.set_molecule.html" title="set_molecule"
              accesskey="N"><i class="fa fa-long-arrow-right fa-lg"></i></a> &nbsp; &nbsp;</li>
         <li class="right" >
-          <a href="qcdb.set_keywords.html" title="set_keywords"
+          <a href="qcdb.scf_xtpl_helgaker_3.html" title="scf_xtpl_helgaker_3"
              accesskey="P"><i class="fa fa-long-arrow-left fa-lg"></i></a> &nbsp; &nbsp;</li>
         <li class="right" >
           <a href="../index.html" title="Table Of Contents"
@@ -98,7 +98,7 @@
     <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
-    <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.set_molecule.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.set_keywords.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
@@ -107,7 +107,7 @@
         </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
 
           <li class="nav-item nav-item-1"><a href="../api.html" accesskey="U"><span style="font-family: Optima, sans-serif; text-transform: none;">QCDB</span> API</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
-        <li class="nav-item nav-item-this"><a href="">set_molecule</a></li> 
+        <li class="nav-item nav-item-this"><a href="">set_keywords</a></li> 
       </ul>
     </div>
     </div>
@@ -118,12 +118,21 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="set-molecule">
-<h1>set_molecule<a class="headerlink" href="#set-molecule" title="Permalink to this headline">¶</a></h1>
+  <section id="set-keywords">
+<h1>set_keywords<a class="headerlink" href="#set-keywords" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="qcdb.set_molecule">
-<span class="sig-prename descclassname"><span class="pre">qcdb.</span></span><span class="sig-name descname"><span class="pre">set_molecule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molinit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/driver/driver_helpers.html#set_molecule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.set_molecule" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="qcdb.set_keywords">
+<span class="sig-prename descclassname"><span class="pre">qcdb.</span></span><span class="sig-name descname"><span class="pre">set_keywords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcdb.set_keywords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set QCDB keywords from input dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><p><strong>options_dict</strong> (<em>Dict</em><em>[</em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>Any</em><em>]</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 
@@ -210,10 +219,10 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> &nbsp; &nbsp;</li>
         <li class="right" >
-          <a href="qcdb.set_options.html" title="set_options"
+          <a href="qcdb.set_molecule.html" title="set_molecule"
              ><i class="fa fa-long-arrow-right fa-lg"></i></a> &nbsp; &nbsp;</li>
         <li class="right" >
-          <a href="qcdb.set_keywords.html" title="set_keywords"
+          <a href="qcdb.scf_xtpl_helgaker_3.html" title="scf_xtpl_helgaker_3"
              ><i class="fa fa-long-arrow-left fa-lg"></i></a> &nbsp; &nbsp;</li>
         <li class="right" >
           <a href="../index.html" title="Table Of Contents"
@@ -221,7 +230,7 @@
     <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
-    <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.set_molecule.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.set_keywords.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
@@ -230,7 +239,7 @@
         </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
 
           <li class="nav-item nav-item-1"><a href="../api.html" ><span style="font-family: Optima, sans-serif; text-transform: none;">QCDB</span> API</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
-        <li class="nav-item nav-item-this"><a href="">set_molecule</a></li> 
+        <li class="nav-item nav-item-this"><a href="">set_keywords</a></li> 
       </ul>
     </div>
     </div>

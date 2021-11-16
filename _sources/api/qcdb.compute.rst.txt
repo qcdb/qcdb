@@ -1,0 +1,6 @@
+compute
+=======
+
+.. currentmodule:: qcdb
+
+.. autofunction:: compute

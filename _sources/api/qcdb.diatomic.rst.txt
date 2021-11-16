@@ -1,0 +1,6 @@
+diatomic
+========
+
+.. currentmodule:: qcdb
+
+.. autofunction:: diatomic

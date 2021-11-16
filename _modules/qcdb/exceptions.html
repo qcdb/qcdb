@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/psi4.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noticia+Text:400,i,b,bi|Open+Sans:400,i,b,bi|Roboto+Mono:400,i,b,bi&amp;display=swap" type="text/css" />
     
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
@@ -90,7 +90,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/exceptions.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g3e45af5">0+untagged.1.g3e45af5</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -113,8 +113,7 @@
 
 
 <div class="viewcode-block" id="QcdbException"><a class="viewcode-back" href="../../api/qcdb.QcdbException.html#qcdb.QcdbException">[docs]</a><span class="k">class</span> <span class="nc">QcdbException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Error class for QCDB.&quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
+    <span class="sd">&quot;&quot;&quot;Error class for QCDB.&quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="FeatureNotImplemented"><a class="viewcode-back" href="../../api/qcdb.FeatureNotImplemented.html#qcdb.FeatureNotImplemented">[docs]</a><span class="k">class</span> <span class="nc">FeatureNotImplemented</span><span class="p">(</span><span class="n">QcdbException</span><span class="p">):</span>
@@ -122,10 +121,11 @@
 <span class="sd">    Also for functions defined that will never be implemented.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="n">QcdbException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">QcdbException: Feature </span><span class="si">%s</span><span class="s1"> is not yet implemented.</span><span class="se">\n\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">QcdbException: Feature </span><span class="si">%s</span><span class="s2"> is not yet implemented.</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="ValidationError"><a class="viewcode-back" href="../../api/qcdb.ValidationError.html#qcdb.ValidationError">[docs]</a><span class="k">class</span> <span class="nc">ValidationError</span><span class="p">(</span><span class="n">QcdbException</span><span class="p">):</span>
@@ -133,10 +133,11 @@
 <span class="sd">    error message *msg* to standard output stream.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="n">QcdbException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">QcdbException: </span><span class="si">%s</span><span class="se">\n\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">QcdbException: </span><span class="si">%s</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="IncompleteAtomError"><a class="viewcode-back" href="../../api/qcdb.IncompleteAtomError.html#qcdb.IncompleteAtomError">[docs]</a><span class="k">class</span> <span class="nc">IncompleteAtomError</span><span class="p">(</span><span class="n">QcdbException</span><span class="p">):</span>
@@ -145,6 +146,7 @@
 <span class="sd">    so message not printed but appears as traceback when error persists.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="n">QcdbException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span></div>
@@ -155,10 +157,11 @@
 <span class="sd">    error message *msg* to standard output stream.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="n">QcdbException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">QcdbException: </span><span class="si">%s</span><span class="se">\n\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">QcdbException: </span><span class="si">%s</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="FragmentCountError"><a class="viewcode-back" href="../../api/qcdb.FragmentCountError.html#qcdb.FragmentCountError">[docs]</a><span class="k">class</span> <span class="nc">FragmentCountError</span><span class="p">(</span><span class="n">QcdbException</span><span class="p">):</span>
@@ -166,51 +169,48 @@
 <span class="sd">    Prints error message *msg* to standard output stream.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="n">QcdbException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span></div>
-        <span class="c1">#print(&#39;\nQcdbException: %s\n\n&#39; % (msg))</span>
+        <span class="c1"># print(&#39;\nQcdbException: %s\n\n&#39; % (msg))</span>
 
 
 <div class="viewcode-block" id="BasisSetFileNotFound"><a class="viewcode-back" href="../../api/qcdb.BasisSetFileNotFound.html#qcdb.BasisSetFileNotFound">[docs]</a><span class="k">class</span> <span class="nc">BasisSetFileNotFound</span><span class="p">(</span><span class="n">QcdbException</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="n">QcdbException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">QcdbException BasisSetFileNotFound: </span><span class="si">%s</span><span class="se">\n\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">QcdbException BasisSetFileNotFound: </span><span class="si">%s</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="BasisSetNotFound"><a class="viewcode-back" href="../../api/qcdb.BasisSetNotFound.html#qcdb.BasisSetNotFound">[docs]</a><span class="k">class</span> <span class="nc">BasisSetNotFound</span><span class="p">(</span><span class="n">QcdbException</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">QcdbException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">silent</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">QcdbException BasisSetNotFound: </span><span class="si">%s</span><span class="se">\n\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">QcdbException BasisSetNotFound: </span><span class="si">%s</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="BasisSetNotDefined"><a class="viewcode-back" href="../../api/qcdb.BasisSetNotDefined.html#qcdb.BasisSetNotDefined">[docs]</a><span class="k">class</span> <span class="nc">BasisSetNotDefined</span><span class="p">(</span><span class="n">QcdbException</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="n">QcdbException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">QcdbException BasisSetNotDefined: </span><span class="si">%s</span><span class="se">\n\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">QcdbException BasisSetNotDefined: </span><span class="si">%s</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="Dftd3Error"><a class="viewcode-back" href="../../api/qcdb.Dftd3Error.html#qcdb.Dftd3Error">[docs]</a><span class="k">class</span> <span class="nc">Dftd3Error</span><span class="p">(</span><span class="n">QcdbException</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="n">QcdbException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Dftd3Error: </span><span class="si">%s</span><span class="se">\n\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Dftd3Error: </span><span class="si">%s</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="TestComparisonError"><a class="viewcode-back" href="../../api/qcdb.TestComparisonError.html#qcdb.TestComparisonError">[docs]</a><span class="k">class</span> <span class="nc">TestComparisonError</span><span class="p">(</span><span class="n">QcdbException</span><span class="p">):</span>
@@ -219,14 +219,16 @@
 <span class="sd">    output stream and output file.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="n">QcdbException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">QcdbException: </span><span class="si">%s</span><span class="se">\n\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">msg</span><span class="p">)</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">QcdbException: </span><span class="si">%s</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">msg</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MoleculeFormatError"><a class="viewcode-back" href="../../api/qcdb.MoleculeFormatError.html#qcdb.MoleculeFormatError">[docs]</a><span class="k">class</span> <span class="nc">MoleculeFormatError</span><span class="p">(</span><span class="n">QcdbException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Error called when a Molecule.from_string contains unparsable lines.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="n">QcdbException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span></div>
@@ -237,24 +239,27 @@
 <span class="sd">    Should suggest a replacement.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="n">QcdbException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Feature deprecated: </span><span class="si">{}</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Feature deprecated: </span><span class="si">{}</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="KeywordValidationError"><a class="viewcode-back" href="../../api/qcdb.KeywordValidationError.html#qcdb.KeywordValidationError">[docs]</a><span class="k">class</span> <span class="nc">KeywordValidationError</span><span class="p">(</span><span class="n">QcdbException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Error called when try to set illegitimate value for a keyword.&quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
         <span class="k">pass</span></div>
-        <span class="c1">#QcdbException.__init__(self, msg)</span>
-        <span class="c1">#self.msg = msg</span>
-        <span class="c1">#print(&#39;\nFeature deprecated: {}\n\n&#39;.format(msg))</span>
+        <span class="c1"># QcdbException.__init__(self, msg)</span>
+        <span class="c1"># self.msg = msg</span>
+        <span class="c1"># print(&#39;\nFeature deprecated: {}\n\n&#39;.format(msg))</span>
 
 
 <div class="viewcode-block" id="KeywordReconciliationError"><a class="viewcode-back" href="../../api/qcdb.KeywordReconciliationError.html#qcdb.KeywordReconciliationError">[docs]</a><span class="k">class</span> <span class="nc">KeywordReconciliationError</span><span class="p">(</span><span class="n">QcdbException</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Error called when conflicting values given with equal priority for a keyword.&quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
         <span class="k">pass</span></div>
 
 
@@ -268,10 +273,11 @@
 <span class="sd">    the old syntax at first error and suggest the new.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">elaboration</span><span class="p">):</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Using `</span><span class="si">{}</span><span class="s2">` instead of `</span><span class="si">{}</span><span class="s2">` is obsolete as of </span><span class="si">{}</span><span class="s2">.</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">elaboration</span><span class="p">)</span>
         <span class="n">QcdbException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">QcdbException: </span><span class="si">%s</span><span class="se">\n\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">QcdbException: </span><span class="si">%s</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">msg</span><span class="p">))</span></div>
 </pre></div>
 
             <div class="clearer"></div>
@@ -363,7 +369,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/exceptions.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g3e45af5">0+untagged.1.g3e45af5</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -377,8 +383,8 @@
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2021, The QCDB Project.
-      Last updated on Sunday, 12 September 2021 05:49PM.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.2.0.
+      Last updated on Tuesday, 16 November 2021 10:11PM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.0.
     </div>
     <!-- cloud_sptheme 1.4 -->
   </body>

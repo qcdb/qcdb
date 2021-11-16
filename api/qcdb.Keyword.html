@@ -44,13 +44,13 @@
     <link rel="stylesheet" type="text/css" href="../_static/psi4.css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noticia+Text:400,i,b,bi|Open+Sans:400,i,b,bi|Roboto+Mono:400,i,b,bi&amp;display=swap" type="text/css" />
     
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     
     
@@ -100,7 +100,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.Keyword.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g3e45af5">0+untagged.1.g3e45af5</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -122,7 +122,7 @@
 <h1>Keyword<a class="headerlink" href="#keyword" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="qcdb.Keyword">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">qcdb.</span></span><span class="sig-name descname"><span class="pre">Keyword</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">glossary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/keywords/keywords.html#Keyword"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Keyword" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">qcdb.</span></span><span class="sig-name descname"><span class="pre">Keyword</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">glossary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/keywords/keywords.html#Keyword"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Keyword" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p class="rubric">Attributes Summary</p>
 <table class="longtable docutils align-default">
@@ -150,16 +150,16 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.Keyword.disputed" title="qcdb.Keyword.disputed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">disputed</span></code></a>()</p></td>
-<td><p></p></td>
+<td><p>Whether value candidates other than the initial value have been proposed.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#qcdb.Keyword.inherit" title="qcdb.Keyword.inherit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inherit</span></code></a>(other, transform[, suggests_too])</p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.Keyword.is_default" title="qcdb.Keyword.is_default"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_default</span></code></a>()</p></td>
-<td><p></p></td>
+<td><p>Whether the present evaluated value matches the initial value (set at definition time, so default)</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#qcdb.Keyword.is_required" title="qcdb.Keyword.is_required"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_required</span></code></a>([score_cutoff])</p></td>
-<td><p></p></td>
+<td><p>Whether the present evaluated value was suggested or required (approximately).</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.Keyword.require" title="qcdb.Keyword.require"><code class="xref py py-obj docutils literal notranslate"><span class="pre">require</span></code></a>(value[, overlap, accession, verbose])</p></td>
 <td><p><dl class="field-list simple">
@@ -180,12 +180,12 @@
 <p class="rubric">Attributes Documentation</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qcdb.Keyword.mark_of_the_default">
-<span class="sig-name descname"><span class="pre">mark_of_the_default</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'ffffffff'</span></em><a class="headerlink" href="#qcdb.Keyword.mark_of_the_default" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">mark_of_the_default</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ffffffff'</span></em><a class="headerlink" href="#qcdb.Keyword.mark_of_the_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qcdb.Keyword.mark_of_the_user">
-<span class="sig-name descname"><span class="pre">mark_of_the_user</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'00000000'</span></em><a class="headerlink" href="#qcdb.Keyword.mark_of_the_user" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">mark_of_the_user</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'00000000'</span></em><a class="headerlink" href="#qcdb.Keyword.mark_of_the_user" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -197,7 +197,13 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="qcdb.Keyword.disputed">
 <span class="sig-name descname"><span class="pre">disputed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/keywords/keywords.html#Keyword.disputed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Keyword.disputed" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Whether value candidates other than the initial value have been proposed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qcdb.Keyword.inherit">
@@ -207,12 +213,27 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="qcdb.Keyword.is_default">
 <span class="sig-name descname"><span class="pre">is_default</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/keywords/keywords.html#Keyword.is_default"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Keyword.is_default" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Whether the present evaluated value matches the initial value (set at definition time, so default)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qcdb.Keyword.is_required">
 <span class="sig-name descname"><span class="pre">is_required</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">score_cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/keywords/keywords.html#Keyword.is_required"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Keyword.is_required" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Whether the present evaluated value was suggested or required (approximately).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><p><strong>score_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qcdb.Keyword.require">
@@ -220,7 +241,7 @@
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>) – Asserted value for option <cite>self</cite>. Will be checked against
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Any" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>) – Asserted value for keyword <cite>self</cite>. Will be checked against
 <cite>self.validator</cite> before function returns. May still be incompatible with
 other <cite>require</cite> calls of same priority, but that won’t be checked until
 <cite>self.value</cite> is accessed.</p></li>
@@ -230,6 +251,9 @@ is set for <cite>MAXITER</cite>, <cite>overlap=7</cite>, whereas if set for <cit
 <li><p><strong>accession</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – Tag of who is setting this option.</p></li>
 <li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.6/library/constants.html#None" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -344,7 +368,7 @@ is set for <cite>MAXITER</cite>, <cite>overlap=7</cite>, whereas if set for <cit
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.Keyword.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g3e45af5">0+untagged.1.g3e45af5</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -358,8 +382,8 @@ is set for <cite>MAXITER</cite>, <cite>overlap=7</cite>, whereas if set for <cit
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2021, The QCDB Project.
-      Last updated on Sunday, 12 September 2021 05:49PM.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.2.0.
+      Last updated on Tuesday, 16 November 2021 10:11PM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.0.
     </div>
     <!-- cloud_sptheme 1.4 -->
   </body>

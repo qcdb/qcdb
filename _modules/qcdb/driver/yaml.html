@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/psi4.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noticia+Text:400,i,b,bi|Open+Sans:400,i,b,bi|Roboto+Mono:400,i,b,bi&amp;display=swap" type="text/css" />
     
     <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
@@ -90,7 +90,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/yaml.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g3e45af5">0+untagged.1.g3e45af5</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../../../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -115,15 +115,14 @@
 <div class="viewcode-block" id="yaml_run"><a class="viewcode-back" href="../../../api/qcdb.yaml_run.html#qcdb.yaml_run">[docs]</a><span class="k">def</span> <span class="nf">yaml_run</span><span class="p">(</span><span class="n">yamlin</span><span class="p">):</span>
 
     <span class="kn">import</span> <span class="nn">yaml</span>
+
     <span class="n">cmd</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">yamlin</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">FullLoader</span><span class="p">)</span>
 
-    <span class="n">kwargs</span> <span class="o">=</span> <span class="n">cmd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;kwargs&#39;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="n">cmd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;kwargs&quot;</span><span class="p">,</span> <span class="p">{})</span>
 
-    <span class="n">_</span><span class="p">,</span> <span class="n">jrec</span> <span class="o">=</span> <span class="n">cmd</span><span class="p">[</span><span class="s1">&#39;driver&#39;</span><span class="p">](</span><span class="n">cmd</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">],</span>
-                            <span class="n">options</span><span class="o">=</span><span class="n">cmd</span><span class="p">[</span><span class="s1">&#39;options&#39;</span><span class="p">],</span>
-                            <span class="n">molecule</span><span class="o">=</span><span class="n">Molecule</span><span class="p">(</span><span class="n">cmd</span><span class="p">[</span><span class="s1">&#39;molecule&#39;</span><span class="p">]),</span>
-                            <span class="n">return_wfn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">jrec</span> <span class="o">=</span> <span class="n">cmd</span><span class="p">[</span><span class="s2">&quot;driver&quot;</span><span class="p">](</span>
+        <span class="n">cmd</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">],</span> <span class="n">options</span><span class="o">=</span><span class="n">cmd</span><span class="p">[</span><span class="s2">&quot;options&quot;</span><span class="p">],</span> <span class="n">molecule</span><span class="o">=</span><span class="n">Molecule</span><span class="p">(</span><span class="n">cmd</span><span class="p">[</span><span class="s2">&quot;molecule&quot;</span><span class="p">]),</span> <span class="n">return_wfn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">jrec</span></div>
 </pre></div>
 
@@ -216,7 +215,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/yaml.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g3e45af5">0+untagged.1.g3e45af5</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../../../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -230,8 +229,8 @@
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2021, The QCDB Project.
-      Last updated on Sunday, 12 September 2021 05:49PM.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.2.0.
+      Last updated on Tuesday, 16 November 2021 10:11PM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.0.
     </div>
     <!-- cloud_sptheme 1.4 -->
   </body>

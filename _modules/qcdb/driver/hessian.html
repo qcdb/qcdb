@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/psi4.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noticia+Text:400,i,b,bi|Open+Sans:400,i,b,bi|Roboto+Mono:400,i,b,bi&amp;display=swap" type="text/css" />
     
     <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
@@ -90,7 +90,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/hessian.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g3e45af5">0+untagged.1.g3e45af5</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../../../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -130,193 +130,194 @@
 
 <span class="n">pp</span> <span class="o">=</span> <span class="n">pprint</span><span class="o">.</span><span class="n">PrettyPrinter</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
 
-   
-
 
 <div class="viewcode-block" id="hessian"><a class="viewcode-back" href="../../../api/qcdb.hessian.html#qcdb.hessian">[docs]</a><span class="nd">@register_kwds</span><span class="p">(</span><span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="c1">#    r&quot;&quot;&quot;Function complementary to :py:func:`~frequency`. Computes force</span>
-<span class="c1">#    constants, deciding analytic, finite difference of gradients, or</span>
-<span class="c1">#    finite difference of energies.</span>
-<span class="c1">#</span>
-<span class="c1">#    :returns: :py:class:`~psi4.core.Matrix` |w--w| Total non-mass-weighted electronic Hessian in Hartrees/Bohr/Bohr.</span>
-<span class="c1">#</span>
-<span class="c1">#    :returns: (:py:class:`~psi4.core.Matrix`, :py:class:`~psi4.core.Wavefunction`) |w--w| Hessian and wavefunction when **return_wfn** specified.</span>
-<span class="c1">#</span>
-<span class="c1">#    :examples:</span>
-<span class="c1">#</span>
-<span class="c1">#    &gt;&gt;&gt; # [1] Frequency calculation without thermochemical analysis</span>
-<span class="c1">#    &gt;&gt;&gt; hessian(&#39;mp3&#39;)</span>
-<span class="c1">#</span>
-<span class="c1">#    &gt;&gt;&gt; # [2] Frequency calc w/o thermo analysis getting the Hessian</span>
-<span class="c1">#    &gt;&gt;&gt; #     in file, core.Matrix, and np.array forms</span>
-<span class="c1">#    &gt;&gt;&gt; set hessian_write on</span>
-<span class="c1">#    &gt;&gt;&gt; H, wfn = hessian(&#39;ccsd&#39;, return_wfn=True)</span>
-<span class="c1">#    &gt;&gt;&gt; wfn.hessian().print_out()</span>
-<span class="c1">#    &gt;&gt;&gt; np.array(H)</span>
-<span class="c1">#</span>
-<span class="c1">#    &quot;&quot;&quot;</span>
+    <span class="c1">#    r&quot;&quot;&quot;Function complementary to :py:func:`~frequency`. Computes force</span>
+    <span class="c1">#    constants, deciding analytic, finite difference of gradients, or</span>
+    <span class="c1">#    finite difference of energies.</span>
+    <span class="c1">#</span>
+    <span class="c1">#    :returns: :py:class:`~psi4.core.Matrix` |w--w| Total non-mass-weighted electronic Hessian in Hartrees/Bohr/Bohr.</span>
+    <span class="c1">#</span>
+    <span class="c1">#    :returns: (:py:class:`~psi4.core.Matrix`, :py:class:`~psi4.core.Wavefunction`) |w--w| Hessian and wavefunction when **return_wfn** specified.</span>
+    <span class="c1">#</span>
+    <span class="c1">#    :examples:</span>
+    <span class="c1">#</span>
+    <span class="c1">#    &gt;&gt;&gt; # [1] Frequency calculation without thermochemical analysis</span>
+    <span class="c1">#    &gt;&gt;&gt; hessian(&#39;mp3&#39;)</span>
+    <span class="c1">#</span>
+    <span class="c1">#    &gt;&gt;&gt; # [2] Frequency calc w/o thermo analysis getting the Hessian</span>
+    <span class="c1">#    &gt;&gt;&gt; #     in file, core.Matrix, and np.array forms</span>
+    <span class="c1">#    &gt;&gt;&gt; set hessian_write on</span>
+    <span class="c1">#    &gt;&gt;&gt; H, wfn = hessian(&#39;ccsd&#39;, return_wfn=True)</span>
+    <span class="c1">#    &gt;&gt;&gt; wfn.hessian().print_out()</span>
+    <span class="c1">#    &gt;&gt;&gt; np.array(H)</span>
+    <span class="c1">#</span>
+    <span class="c1">#    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">load_proc_table</span>
+
     <span class="n">kwargs</span> <span class="o">=</span> <span class="n">driver_util</span><span class="o">.</span><span class="n">kwargs_lower</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
-<span class="c1">#    # Bounce to CP if bsse kwarg (someday)</span>
-<span class="c1">#    if kwargs.get(&#39;bsse_type&#39;, None) is not None:</span>
-<span class="c1">#        raise ValidationError(&quot;Hessian: Cannot specify bsse_type for hessian yet.&quot;)</span>
+    <span class="c1">#    # Bounce to CP if bsse kwarg (someday)</span>
+    <span class="c1">#    if kwargs.get(&#39;bsse_type&#39;, None) is not None:</span>
+    <span class="c1">#        raise ValidationError(&quot;Hessian: Cannot specify bsse_type for hessian yet.&quot;)</span>
 
-<span class="c1">#    # Figure out what kind of gradient this is</span>
-<span class="c1">#    if hasattr(name, &#39;__call__&#39;):</span>
-<span class="c1">#        if name.__name__ in [&#39;cbs&#39;, &#39;complete_basis_set&#39;]:</span>
-<span class="c1">#            gradient_type = &#39;cbs_wrapper&#39;</span>
-<span class="c1">#        else:</span>
-<span class="c1">#            # Bounce to name if name is non-CBS function</span>
-<span class="c1">#            gradient_type = &#39;custom_function&#39;</span>
-<span class="c1">#    elif &#39;/&#39; in name:</span>
-<span class="c1">#        gradient_type = &#39;cbs_gufunc&#39;</span>
-<span class="c1">#    else:</span>
-<span class="c1">#        gradient_type = &#39;conventional&#39;</span>
-<span class="c1">#</span>
-<span class="c1">#    if gradient_type != &#39;conventional&#39;:</span>
-<span class="c1">#        raise ValidationError(&quot;Hessian: Does not yet support more advanced input or custom functions.&quot;)</span>
+    <span class="c1">#    # Figure out what kind of gradient this is</span>
+    <span class="c1">#    if hasattr(name, &#39;__call__&#39;):</span>
+    <span class="c1">#        if name.__name__ in [&#39;cbs&#39;, &#39;complete_basis_set&#39;]:</span>
+    <span class="c1">#            gradient_type = &#39;cbs_wrapper&#39;</span>
+    <span class="c1">#        else:</span>
+    <span class="c1">#            # Bounce to name if name is non-CBS function</span>
+    <span class="c1">#            gradient_type = &#39;custom_function&#39;</span>
+    <span class="c1">#    elif &#39;/&#39; in name:</span>
+    <span class="c1">#        gradient_type = &#39;cbs_gufunc&#39;</span>
+    <span class="c1">#    else:</span>
+    <span class="c1">#        gradient_type = &#39;conventional&#39;</span>
+    <span class="c1">#</span>
+    <span class="c1">#    if gradient_type != &#39;conventional&#39;:</span>
+    <span class="c1">#        raise ValidationError(&quot;Hessian: Does not yet support more advanced input or custom functions.&quot;)</span>
 
     <span class="n">lowername</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
     <span class="n">package</span> <span class="o">=</span> <span class="n">driver_util</span><span class="o">.</span><span class="n">get_package</span><span class="p">(</span><span class="n">lowername</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
 
     <span class="c1"># Check if this is a CBS extrapolation</span>
     <span class="k">if</span> <span class="s2">&quot;/&quot;</span> <span class="ow">in</span> <span class="n">lowername</span><span class="p">:</span>
-        <span class="n">molecule</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;molecule&#39;</span><span class="p">,</span> <span class="n">driver_helpers</span><span class="o">.</span><span class="n">get_active_molecule</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">cbs_driver</span><span class="o">.</span><span class="n">_cbs_gufunc</span><span class="p">(</span><span class="n">hessian</span><span class="p">,</span> <span class="n">lowername</span><span class="p">,</span> <span class="n">ptype</span><span class="o">=</span><span class="s1">&#39;hessian&#39;</span><span class="p">,</span> <span class="n">molecule</span><span class="o">=</span><span class="n">molecule</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">molecule</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;molecule&quot;</span><span class="p">,</span> <span class="n">driver_helpers</span><span class="o">.</span><span class="n">get_active_molecule</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">cbs_driver</span><span class="o">.</span><span class="n">_cbs_gufunc</span><span class="p">(</span><span class="n">hessian</span><span class="p">,</span> <span class="n">lowername</span><span class="p">,</span> <span class="n">ptype</span><span class="o">=</span><span class="s2">&quot;hessian&quot;</span><span class="p">,</span> <span class="n">molecule</span><span class="o">=</span><span class="n">molecule</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="n">return_wfn</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;return_wfn&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-<span class="c1">#    core.clean_variables()</span>
+    <span class="n">return_wfn</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;return_wfn&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="c1">#    core.clean_variables()</span>
     <span class="n">dertype</span> <span class="o">=</span> <span class="mi">2</span>
 
-<span class="c1">#    # Prevent methods that do not have associated energies</span>
-<span class="c1">#    if lowername in energy_only_methods:</span>
-<span class="c1">#        raise ValidationError(&quot;hessian(&#39;%s&#39;) does not have an associated hessian&quot; % name)</span>
+    <span class="c1">#    # Prevent methods that do not have associated energies</span>
+    <span class="c1">#    if lowername in energy_only_methods:</span>
+    <span class="c1">#        raise ValidationError(&quot;hessian(&#39;%s&#39;) does not have an associated hessian&quot; % name)</span>
 
-<span class="c1">#    optstash = p4util.OptionsState(</span>
-<span class="c1">#        [&#39;FINDIF&#39;, &#39;HESSIAN_WRITE&#39;],</span>
-<span class="c1">#        [&#39;FINDIF&#39;, &#39;FD_PROJECT&#39;],</span>
-<span class="c1">#        )</span>
+    <span class="c1">#    optstash = p4util.OptionsState(</span>
+    <span class="c1">#        [&#39;FINDIF&#39;, &#39;HESSIAN_WRITE&#39;],</span>
+    <span class="c1">#        [&#39;FINDIF&#39;, &#39;FD_PROJECT&#39;],</span>
+    <span class="c1">#        )</span>
 
-<span class="c1">#    # Allow specification of methods to arbitrary order</span>
-<span class="c1">#    lowername, level = driver_util._parse_arbitrary_order(lowername)</span>
-<span class="c1">#    if level:</span>
-<span class="c1">#        kwargs[&#39;level&#39;] = level</span>
+    <span class="c1">#    # Allow specification of methods to arbitrary order</span>
+    <span class="c1">#    lowername, level = driver_util._parse_arbitrary_order(lowername)</span>
+    <span class="c1">#    if level:</span>
+    <span class="c1">#        kwargs[&#39;level&#39;] = level</span>
     <span class="c1"># NOTE TODO kwargs getting overwitten by cbs_gufunc and dertype lost</span>
 
-    <span class="n">dertype</span> <span class="o">=</span> <span class="n">driver_util</span><span class="o">.</span><span class="n">find_derivative_type</span><span class="p">(</span><span class="s1">&#39;hessian&#39;</span><span class="p">,</span> <span class="n">lowername</span><span class="p">,</span>
-                                               <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;hess_dertype&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;dertype&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span>
-                                               <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;package&#39;</span><span class="p">))</span>
+    <span class="n">dertype</span> <span class="o">=</span> <span class="n">driver_util</span><span class="o">.</span><span class="n">find_derivative_type</span><span class="p">(</span>
+        <span class="s2">&quot;hessian&quot;</span><span class="p">,</span> <span class="n">lowername</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;hess_dertype&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;dertype&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;package&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
 
     <span class="c1"># Make sure the molecule the user provided is the active one</span>
-    <span class="n">molecule</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;molecule&#39;</span><span class="p">,</span> <span class="n">driver_helpers</span><span class="o">.</span><span class="n">get_active_molecule</span><span class="p">())</span>
+    <span class="n">molecule</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;molecule&quot;</span><span class="p">,</span> <span class="n">driver_helpers</span><span class="o">.</span><span class="n">get_active_molecule</span><span class="p">())</span>
     <span class="n">molecule</span><span class="o">.</span><span class="n">update_geometry</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="o">.</span><span class="n">scroll</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;EMPTY OPT&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;EMPTY OPT&quot;</span><span class="p">)</span>
         <span class="n">pe</span><span class="o">.</span><span class="n">load_options</span><span class="p">()</span>
 
-<span class="c1">#    # S/R: Mode of operation- whether finite difference freq run in one job or files farmed out</span>
-<span class="c1">#    freq_mode = kwargs.pop(&#39;mode&#39;, &#39;continuous&#39;).lower()</span>
-<span class="c1">#    if freq_mode == &#39;continuous&#39;:</span>
-<span class="c1">#        pass</span>
-<span class="c1">#    elif freq_mode == &#39;sow&#39;:</span>
-<span class="c1">#        if dertype == 2:</span>
-<span class="c1">#            raise ValidationError(&quot;&quot;&quot;Frequency execution mode &#39;sow&#39; not valid for analytic Hessian calculation.&quot;&quot;&quot;)</span>
-<span class="c1">#    elif freq_mode == &#39;reap&#39;:</span>
-<span class="c1">#        freq_linkage = kwargs.get(&#39;linkage&#39;, None)</span>
-<span class="c1">#        if freq_linkage is None:</span>
-<span class="c1">#            raise ValidationError(&quot;&quot;&quot;Frequency execution mode &#39;reap&#39; requires a linkage option.&quot;&quot;&quot;)</span>
-<span class="c1">#    else:</span>
-<span class="c1">#        raise ValidationError(&quot;&quot;&quot;Frequency execution mode &#39;%s&#39; not valid.&quot;&quot;&quot; % (freq_mode))</span>
+    <span class="c1">#    # S/R: Mode of operation- whether finite difference freq run in one job or files farmed out</span>
+    <span class="c1">#    freq_mode = kwargs.pop(&#39;mode&#39;, &#39;continuous&#39;).lower()</span>
+    <span class="c1">#    if freq_mode == &#39;continuous&#39;:</span>
+    <span class="c1">#        pass</span>
+    <span class="c1">#    elif freq_mode == &#39;sow&#39;:</span>
+    <span class="c1">#        if dertype == 2:</span>
+    <span class="c1">#            raise ValidationError(&quot;&quot;&quot;Frequency execution mode &#39;sow&#39; not valid for analytic Hessian calculation.&quot;&quot;&quot;)</span>
+    <span class="c1">#    elif freq_mode == &#39;reap&#39;:</span>
+    <span class="c1">#        freq_linkage = kwargs.get(&#39;linkage&#39;, None)</span>
+    <span class="c1">#        if freq_linkage is None:</span>
+    <span class="c1">#            raise ValidationError(&quot;&quot;&quot;Frequency execution mode &#39;reap&#39; requires a linkage option.&quot;&quot;&quot;)</span>
+    <span class="c1">#    else:</span>
+    <span class="c1">#        raise ValidationError(&quot;&quot;&quot;Frequency execution mode &#39;%s&#39; not valid.&quot;&quot;&quot; % (freq_mode))</span>
 
     <span class="c1"># Set method-dependent scf convergence criteria (test on procedures[&#39;energy&#39;] since that&#39;s guaranteed)</span>
-<span class="c1">#    optstash_conv = driver_util._set_convergence_criterion(&#39;energy&#39;, lowername, 8, 10, 8, 10, 8)</span>
+    <span class="c1">#    optstash_conv = driver_util._set_convergence_criterion(&#39;energy&#39;, lowername, 8, 10, 8, 10, 8)</span>
 
     <span class="c1"># Select certain irreps</span>
-    <span class="n">irrep</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;irrep&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">irrep</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;irrep&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">irrep</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
         <span class="k">pass</span>  <span class="c1"># do all irreps</span>
-<span class="c1">#    else:</span>
-<span class="c1">#        irrep = driver_util.parse_cotton_irreps(irrep, molecule.schoenflies_symbol())</span>
-<span class="c1">#        irrep -= 1  # A1 irrep is externally 1, internally 0</span>
-<span class="c1">#        if dertype == 2:</span>
-<span class="c1">#            core.print_out(&quot;&quot;&quot;hessian() switching to finite difference by gradients for partial Hessian calculation.\n&quot;&quot;&quot;)</span>
-<span class="c1">#            dertype = 1</span>
+    <span class="c1">#    else:</span>
+    <span class="c1">#        irrep = driver_util.parse_cotton_irreps(irrep, molecule.schoenflies_symbol())</span>
+    <span class="c1">#        irrep -= 1  # A1 irrep is externally 1, internally 0</span>
+    <span class="c1">#        if dertype == 2:</span>
+    <span class="c1">#            core.print_out(&quot;&quot;&quot;hessian() switching to finite difference by gradients for partial Hessian calculation.\n&quot;&quot;&quot;)</span>
+    <span class="c1">#            dertype = 1</span>
 
-<span class="c1">#    # At stationary point?</span>
-<span class="c1">#    G0 = gradient(lowername, molecule=molecule, **kwargs)</span>
-<span class="c1">#    translations_projection_sound, rotations_projection_sound = _energy_is_invariant(G0)</span>
-<span class="c1">#    core.print_out(&#39;\n  Based on options and gradient (rms={:.2E}), recommend {}projecting translations and {}projecting rotations.\n&#39;.</span>
-<span class="c1">#                   format(G0.rms(), &#39;&#39; if translations_projection_sound else &#39;not &#39;,</span>
-<span class="c1">#                   &#39;&#39; if rotations_projection_sound else &#39;not &#39;))</span>
-<span class="c1">#    if not core.has_option_changed(&#39;FINDIF&#39;, &#39;FD_PROJECT&#39;):</span>
-<span class="c1">#        core.set_local_option(&#39;FINDIF&#39;, &#39;FD_PROJECT&#39;, rotations_projection_sound)</span>
+    <span class="c1">#    # At stationary point?</span>
+    <span class="c1">#    G0 = gradient(lowername, molecule=molecule, **kwargs)</span>
+    <span class="c1">#    translations_projection_sound, rotations_projection_sound = _energy_is_invariant(G0)</span>
+    <span class="c1">#    core.print_out(&#39;\n  Based on options and gradient (rms={:.2E}), recommend {}projecting translations and {}projecting rotations.\n&#39;.</span>
+    <span class="c1">#                   format(G0.rms(), &#39;&#39; if translations_projection_sound else &#39;not &#39;,</span>
+    <span class="c1">#                   &#39;&#39; if rotations_projection_sound else &#39;not &#39;))</span>
+    <span class="c1">#    if not core.has_option_changed(&#39;FINDIF&#39;, &#39;FD_PROJECT&#39;):</span>
+    <span class="c1">#        core.set_local_option(&#39;FINDIF&#39;, &#39;FD_PROJECT&#39;, rotations_projection_sound)</span>
 
     <span class="c1"># Does an analytic procedure exist for the requested method?</span>
     <span class="k">if</span> <span class="n">dertype</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
         <span class="n">text</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;qcdb.hessian() will perform analytic frequency computation.</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span>
 
         <span class="c1"># We have the desired method. Do it.</span>
-        <span class="n">jobrec</span> <span class="o">=</span> <span class="n">procedures</span><span class="p">[</span><span class="s1">&#39;hessian&#39;</span><span class="p">][</span><span class="n">package</span><span class="p">][</span><span class="n">lowername</span><span class="p">](</span><span class="n">lowername</span><span class="p">,</span> <span class="n">molecule</span><span class="o">=</span><span class="n">molecule</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="p">,</span> <span class="n">ptype</span><span class="o">=</span><span class="s1">&#39;hessian&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="c1">#        wfn.set_gradient(G0)</span>
-<span class="c1">#        optstash.restore()</span>
-<span class="c1">#        optstash_conv.restore()</span>
-<span class="c1">#</span>
-<span class="c1">#        # TODO: check that current energy&#39;s being set to the right figure when this code is actually used</span>
-<span class="c1">#        core.set_variable(&#39;CURRENT ENERGY&#39;, wfn.energy())</span>
+        <span class="n">jobrec</span> <span class="o">=</span> <span class="n">procedures</span><span class="p">[</span><span class="s2">&quot;hessian&quot;</span><span class="p">][</span><span class="n">package</span><span class="p">][</span><span class="n">lowername</span><span class="p">](</span>
+            <span class="n">lowername</span><span class="p">,</span> <span class="n">molecule</span><span class="o">=</span><span class="n">molecule</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="p">,</span> <span class="n">ptype</span><span class="o">=</span><span class="s2">&quot;hessian&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+        <span class="c1">#        wfn.set_gradient(G0)</span>
+        <span class="c1">#        optstash.restore()</span>
+        <span class="c1">#        optstash_conv.restore()</span>
+        <span class="c1">#</span>
+        <span class="c1">#        # TODO: check that current energy&#39;s being set to the right figure when this code is actually used</span>
+        <span class="c1">#        core.set_variable(&#39;CURRENT ENERGY&#39;, wfn.energy())</span>
         <span class="c1"># TODO who&#39;s setting CURRENT?</span>
 
-        <span class="c1">#pp.pprint(jobrec)</span>
-        <span class="n">pe</span><span class="o">.</span><span class="n">active_qcvars</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">])</span>
+        <span class="c1"># pp.pprint(jobrec)</span>
+        <span class="n">pe</span><span class="o">.</span><span class="n">active_qcvars</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">jobrec</span><span class="p">[</span><span class="s2">&quot;qcvars&quot;</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">return_wfn</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">(</span><span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT HESSIAN&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">jobrec</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">jobrec</span><span class="p">[</span><span class="s2">&quot;qcvars&quot;</span><span class="p">][</span><span class="s2">&quot;CURRENT HESSIAN&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">jobrec</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT HESSIAN&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+            <span class="k">return</span> <span class="n">jobrec</span><span class="p">[</span><span class="s2">&quot;qcvars&quot;</span><span class="p">][</span><span class="s2">&quot;CURRENT HESSIAN&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
 
     <span class="k">elif</span> <span class="n">dertype</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="c1">#raise FeatureNotImplemented(&quot;&quot;&quot;hessian({}, dertype=1)&quot;&quot;&quot;.format(lowername))</span>
+        <span class="c1"># raise FeatureNotImplemented(&quot;&quot;&quot;hessian({}, dertype=1)&quot;&quot;&quot;.format(lowername))</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;hessian() will perform frequency computation by finite difference of analytic gradients.</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;IRREP&#39;</span><span class="p">,</span> <span class="n">irrep</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;IRREP&quot;</span><span class="p">,</span> <span class="n">irrep</span><span class="p">)</span>
         <span class="kn">import</span> <span class="nn">psi4</span>
 
         <span class="c1"># Shifting the geometry so need to copy the active molecule</span>
-        <span class="c1">#moleculeclone = molecule.clone()</span>
+        <span class="c1"># moleculeclone = molecule.clone()</span>
         <span class="n">moleculeclone</span> <span class="o">=</span> <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">molecule</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
 
-<span class="c1">#####</span>
-<span class="c1">#        # Obtain list of displacements</span>
-<span class="c1">#        findif_meta_dict = driver_findif.hessian_from_energies_geometries(molecule, irrep)</span>
-<span class="c1">#</span>
-<span class="c1">#        # Record undisplaced symmetry for projection of diplaced point groups</span>
-<span class="c1">#        core.set_global_option(&quot;PARENT_SYMMETRY&quot;, molecule.schoenflies_symbol())</span>
-<span class="c1">#</span>
-<span class="c1">#        ndisp = len(findif_meta_dict[&quot;displacements&quot;]) + 1</span>
-<span class="c1">#</span>
-<span class="c1">#        print(&#39; %d displacements needed.&#39; % ndisp)</span>
-<span class="c1">#</span>
-<span class="c1">#        wfn = _process_displacement(energy, lowername, molecule, findif_meta_dict[&quot;reference&quot;], 1, ndisp,</span>
-<span class="c1">#                                    **kwargs)</span>
-<span class="c1">#        var_dict = core.variables()</span>
-<span class="c1">#</span>
-<span class="c1">#        for n, displacement in enumerate(findif_meta_dict[&quot;displacements&quot;].values(), start=2):</span>
-<span class="c1">#            _process_displacement(</span>
-<span class="c1">#                energy, lowername, molecule, displacement, n, ndisp, write_orbitals=False, **kwargs)</span>
-<span class="c1">#</span>
-<span class="c1">#        # Reset variables</span>
-<span class="c1">#        for key, val in var_dict.items():</span>
-<span class="c1">#            core.set_variable(key, val)</span>
-<span class="c1">#</span>
-<span class="c1">#        # Assemble Hessian from energies</span>
-<span class="c1">#        H = driver_findif.assemble_hessian_from_energies(findif_meta_dict, irrep)</span>
-<span class="c1">#        wfn.set_hessian(core.Matrix.from_array(H))</span>
-<span class="c1">#        wfn.set_gradient(G0)</span>
-<span class="c1">#</span>
-<span class="c1">#####</span>
+        <span class="c1">#####</span>
+        <span class="c1">#        # Obtain list of displacements</span>
+        <span class="c1">#        findif_meta_dict = driver_findif.hessian_from_energies_geometries(molecule, irrep)</span>
+        <span class="c1">#</span>
+        <span class="c1">#        # Record undisplaced symmetry for projection of diplaced point groups</span>
+        <span class="c1">#        core.set_global_option(&quot;PARENT_SYMMETRY&quot;, molecule.schoenflies_symbol())</span>
+        <span class="c1">#</span>
+        <span class="c1">#        ndisp = len(findif_meta_dict[&quot;displacements&quot;]) + 1</span>
+        <span class="c1">#</span>
+        <span class="c1">#        print(&#39; %d displacements needed.&#39; % ndisp)</span>
+        <span class="c1">#</span>
+        <span class="c1">#        wfn = _process_displacement(energy, lowername, molecule, findif_meta_dict[&quot;reference&quot;], 1, ndisp,</span>
+        <span class="c1">#                                    **kwargs)</span>
+        <span class="c1">#        var_dict = core.variables()</span>
+        <span class="c1">#</span>
+        <span class="c1">#        for n, displacement in enumerate(findif_meta_dict[&quot;displacements&quot;].values(), start=2):</span>
+        <span class="c1">#            _process_displacement(</span>
+        <span class="c1">#                energy, lowername, molecule, displacement, n, ndisp, write_orbitals=False, **kwargs)</span>
+        <span class="c1">#</span>
+        <span class="c1">#        # Reset variables</span>
+        <span class="c1">#        for key, val in var_dict.items():</span>
+        <span class="c1">#            core.set_variable(key, val)</span>
+        <span class="c1">#</span>
+        <span class="c1">#        # Assemble Hessian from energies</span>
+        <span class="c1">#        H = driver_findif.assemble_hessian_from_energies(findif_meta_dict, irrep)</span>
+        <span class="c1">#        wfn.set_hessian(core.Matrix.from_array(H))</span>
+        <span class="c1">#        wfn.set_gradient(G0)</span>
+        <span class="c1">#</span>
+        <span class="c1">#####</span>
 
         <span class="c1"># Obtain list of displacements</span>
         <span class="n">findif_meta_dict</span> <span class="o">=</span> <span class="n">psi4</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">driver_findif</span><span class="o">.</span><span class="n">hessian_from_gradients_geometries</span><span class="p">(</span><span class="n">moleculeclone</span><span class="p">,</span> <span class="n">irrep</span><span class="p">)</span>
@@ -328,13 +329,17 @@
 
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;&quot; </span><span class="si">%d</span><span class="s2"> displacements needed.&quot;&quot;&quot;</span> <span class="o">%</span> <span class="n">ndisp</span><span class="p">)</span>
 
-        <span class="c1">#wfn = psi4.driver._process_displacement(gradient, lowername, moleculeclone, findif_meta_dict[&quot;reference&quot;], 1, ndisp, **kwargs)</span>
-        <span class="n">subjobrec</span> <span class="o">=</span> <span class="n">driver_util</span><span class="o">.</span><span class="n">_process_displacement</span><span class="p">(</span><span class="n">gradient</span><span class="p">,</span> <span class="n">lowername</span><span class="p">,</span> <span class="n">moleculeclone</span><span class="p">,</span> <span class="n">findif_meta_dict</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ndisp</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># wfn = psi4.driver._process_displacement(gradient, lowername, moleculeclone, findif_meta_dict[&quot;reference&quot;], 1, ndisp, **kwargs)</span>
+        <span class="n">subjobrec</span> <span class="o">=</span> <span class="n">driver_util</span><span class="o">.</span><span class="n">_process_displacement</span><span class="p">(</span>
+            <span class="n">gradient</span><span class="p">,</span> <span class="n">lowername</span><span class="p">,</span> <span class="n">moleculeclone</span><span class="p">,</span> <span class="n">findif_meta_dict</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ndisp</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
         <span class="n">var_dict</span> <span class="o">=</span> <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">variables</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">displacement</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">findif_meta_dict</span><span class="p">[</span><span class="s2">&quot;displacements&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">start</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-            <span class="c1">#psi4.driver._process_displacement(gradient, lowername, moleculeclone, displacement, n, ndisp, write_orbitals=False, **kwargs)</span>
-            <span class="n">driver_util</span><span class="o">.</span><span class="n">_process_displacement</span><span class="p">(</span><span class="n">gradient</span><span class="p">,</span> <span class="n">lowername</span><span class="p">,</span> <span class="n">moleculeclone</span><span class="p">,</span> <span class="n">displacement</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">ndisp</span><span class="p">,</span> <span class="n">write_orbitals</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="c1"># psi4.driver._process_displacement(gradient, lowername, moleculeclone, displacement, n, ndisp, write_orbitals=False, **kwargs)</span>
+            <span class="n">driver_util</span><span class="o">.</span><span class="n">_process_displacement</span><span class="p">(</span>
+                <span class="n">gradient</span><span class="p">,</span> <span class="n">lowername</span><span class="p">,</span> <span class="n">moleculeclone</span><span class="p">,</span> <span class="n">displacement</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">ndisp</span><span class="p">,</span> <span class="n">write_orbitals</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
 
         <span class="c1"># Reset variables</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">var_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -343,75 +348,77 @@
         <span class="c1"># Assemble Hessian from gradients</span>
         <span class="c1">#   Final disp is undisp, so wfn has mol, G, H general to freq calc</span>
         <span class="n">H</span> <span class="o">=</span> <span class="n">psi4</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">driver_findif</span><span class="o">.</span><span class="n">assemble_hessian_from_gradients</span><span class="p">(</span><span class="n">findif_meta_dict</span><span class="p">,</span> <span class="n">irrep</span><span class="p">)</span>
-<span class="c1">#        wfn.set_hessian(core.Matrix.from_array(H))</span>
-<span class="c1">#        wfn.set_gradient(G0)</span>
-<span class="c1">####</span>
-<span class="c1">#        # Obtain list of displacements</span>
-<span class="c1">#        displacements = psi4.core.fd_geoms_freq_1(moleculeclone, irrep)</span>
-<span class="c1">#        moleculeclone.reinterpret_coordentry(False)</span>
-<span class="c1">#        moleculeclone.fix_orientation(True)</span>
-<span class="c1">#</span>
-<span class="c1">#        # Record undisplaced symmetry for projection of displaced point groups</span>
-<span class="c1">#        psi4.core.set_parent_symmetry(molecule.schoenflies_symbol())</span>
-<span class="c1">#</span>
-<span class="c1">#        ndisp = len(displacements)</span>
-<span class="c1">#        print(&quot;&quot;&quot; %d displacements needed.&quot;&quot;&quot; % ndisp)</span>
-<span class="c1">#        gradients = []</span>
-<span class="c1">#        energies = []</span>
-<span class="c1">#</span>
-<span class="c1">#</span>
-<span class="c1">#        for n, displacement in enumerate(displacements):</span>
-<span class="c1">#            # Build string of title banner</span>
-<span class="c1">#            banners = util.banner(&#39; Hessian Computation: Gradient Displacement %d &#39;.format(n + 1))</span>
-<span class="c1">#</span>
-<span class="c1">#            if True:</span>
-<span class="c1">#                # Load in displacement into the active molecule (xyz coordinates only)</span>
-<span class="c1">#                moleculeclone.set_geometry(displacement)</span>
-<span class="c1">#</span>
-<span class="c1">#                # Perform the gradient calculation</span>
-<span class="c1">#                G, subjobrec = gradient(lowername, molecule=moleculeclone, return_wfn=True, **kwargs)</span>
-<span class="c1">#</span>
-<span class="c1">#                gradients.append(psi4.core.Matrix.from_array(subjobrec[&#39;qcvars&#39;][&#39;CURRENT GRADIENT&#39;].data))</span>
-<span class="c1">#                energies.append(float(subjobrec[&#39;qcvars&#39;][&#39;CURRENT ENERGY&#39;].data))</span>
-<span class="c1">#</span>
-<span class="c1">#                # clean may be necessary when changing irreps of displacements</span>
-<span class="c1">#                psi4.core.clean()</span>
-<span class="c1">#</span>
-<span class="c1">#</span>
-<span class="c1">#        # Assemble Hessian from gradients</span>
-<span class="c1">#        #   Final disp is undisp, so wfn has mol, G, H general to freq calc</span>
-<span class="c1">#        #H = psi4.core.fd_freq_1(molecule, gradients, irrep)  # TODO or moleculeclone?</span>
-<span class="c1">#        for gr in gradients:</span>
-<span class="c1">#            print(np.array(gr))</span>
-<span class="c1">#        H = psi4.core.fd_freq_1(moleculeclone, gradients, irrep)  # TODO or moleculeclone?</span>
+        <span class="c1">#        wfn.set_hessian(core.Matrix.from_array(H))</span>
+        <span class="c1">#        wfn.set_gradient(G0)</span>
+        <span class="c1">####</span>
+        <span class="c1">#        # Obtain list of displacements</span>
+        <span class="c1">#        displacements = psi4.core.fd_geoms_freq_1(moleculeclone, irrep)</span>
+        <span class="c1">#        moleculeclone.reinterpret_coordentry(False)</span>
+        <span class="c1">#        moleculeclone.fix_orientation(True)</span>
+        <span class="c1">#</span>
+        <span class="c1">#        # Record undisplaced symmetry for projection of displaced point groups</span>
+        <span class="c1">#        psi4.core.set_parent_symmetry(molecule.schoenflies_symbol())</span>
+        <span class="c1">#</span>
+        <span class="c1">#        ndisp = len(displacements)</span>
+        <span class="c1">#        print(&quot;&quot;&quot; %d displacements needed.&quot;&quot;&quot; % ndisp)</span>
+        <span class="c1">#        gradients = []</span>
+        <span class="c1">#        energies = []</span>
+        <span class="c1">#</span>
+        <span class="c1">#</span>
+        <span class="c1">#        for n, displacement in enumerate(displacements):</span>
+        <span class="c1">#            # Build string of title banner</span>
+        <span class="c1">#            banners = util.banner(&#39; Hessian Computation: Gradient Displacement %d &#39;.format(n + 1))</span>
+        <span class="c1">#</span>
+        <span class="c1">#            if True:</span>
+        <span class="c1">#                # Load in displacement into the active molecule (xyz coordinates only)</span>
+        <span class="c1">#                moleculeclone.set_geometry(displacement)</span>
+        <span class="c1">#</span>
+        <span class="c1">#                # Perform the gradient calculation</span>
+        <span class="c1">#                G, subjobrec = gradient(lowername, molecule=moleculeclone, return_wfn=True, **kwargs)</span>
+        <span class="c1">#</span>
+        <span class="c1">#                gradients.append(psi4.core.Matrix.from_array(subjobrec[&#39;qcvars&#39;][&#39;CURRENT GRADIENT&#39;].data))</span>
+        <span class="c1">#                energies.append(float(subjobrec[&#39;qcvars&#39;][&#39;CURRENT ENERGY&#39;].data))</span>
+        <span class="c1">#</span>
+        <span class="c1">#                # clean may be necessary when changing irreps of displacements</span>
+        <span class="c1">#                psi4.core.clean()</span>
+        <span class="c1">#</span>
+        <span class="c1">#</span>
+        <span class="c1">#        # Assemble Hessian from gradients</span>
+        <span class="c1">#        #   Final disp is undisp, so wfn has mol, G, H general to freq calc</span>
+        <span class="c1">#        #H = psi4.core.fd_freq_1(molecule, gradients, irrep)  # TODO or moleculeclone?</span>
+        <span class="c1">#        for gr in gradients:</span>
+        <span class="c1">#            print(np.array(gr))</span>
+        <span class="c1">#        H = psi4.core.fd_freq_1(moleculeclone, gradients, irrep)  # TODO or moleculeclone?</span>
 
-<span class="c1">#        wfn.set_hessian(H)</span>
-<span class="c1">#        wfn.set_gradient(G0)</span>
-<span class="c1">#        wfn.set_frequencies(core.get_frequencies())</span>
-        <span class="n">subjobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT HESSIAN&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">QCAspect</span><span class="p">(</span><span class="s1">&#39;CURRENT HESSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;Eh/a0/a0&#39;</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-<span class="c1">#</span>
-<span class="c1">#        # The last item in the list is the reference energy, return it</span>
-<span class="c1">#        core.set_variable(&#39;CURRENT ENERGY&#39;, energies[-1])</span>
-<span class="c1">#</span>
-<span class="c1">#        core.set_parent_symmetry(&#39;&#39;)</span>
-<span class="c1">#        optstash.restore()</span>
-<span class="c1">#        optstash_conv.restore()</span>
-<span class="c1">#</span>
-<span class="c1">#        if return_wfn:</span>
-<span class="c1">#            return (wfn.hessian(), wfn)</span>
-<span class="c1">#        else:</span>
-<span class="c1">#            return wfn.hessian()</span>
+        <span class="c1">#        wfn.set_hessian(H)</span>
+        <span class="c1">#        wfn.set_gradient(G0)</span>
+        <span class="c1">#        wfn.set_frequencies(core.get_frequencies())</span>
+        <span class="n">subjobrec</span><span class="p">[</span><span class="s2">&quot;qcvars&quot;</span><span class="p">][</span><span class="s2">&quot;CURRENT HESSIAN&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">QCAspect</span><span class="p">(</span><span class="s2">&quot;CURRENT HESSIAN&quot;</span><span class="p">,</span> <span class="s2">&quot;Eh/a0/a0&quot;</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="c1">#        # The last item in the list is the reference energy, return it</span>
+        <span class="c1">#        core.set_variable(&#39;CURRENT ENERGY&#39;, energies[-1])</span>
+        <span class="c1">#</span>
+        <span class="c1">#        core.set_parent_symmetry(&#39;&#39;)</span>
+        <span class="c1">#        optstash.restore()</span>
+        <span class="c1">#        optstash_conv.restore()</span>
+        <span class="c1">#</span>
+        <span class="c1">#        if return_wfn:</span>
+        <span class="c1">#            return (wfn.hessian(), wfn)</span>
+        <span class="c1">#        else:</span>
+        <span class="c1">#            return wfn.hessian()</span>
 
-        <span class="c1">#pp.pprint(subjobrec)</span>
-        <span class="n">pe</span><span class="o">.</span><span class="n">active_qcvars</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">subjobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">])</span>
+        <span class="c1"># pp.pprint(subjobrec)</span>
+        <span class="n">pe</span><span class="o">.</span><span class="n">active_qcvars</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">subjobrec</span><span class="p">[</span><span class="s2">&quot;qcvars&quot;</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">return_wfn</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">(</span><span class="n">subjobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT HESSIAN&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">subjobrec</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">subjobrec</span><span class="p">[</span><span class="s2">&quot;qcvars&quot;</span><span class="p">][</span><span class="s2">&quot;CURRENT HESSIAN&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">subjobrec</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">subjobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT HESSIAN&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+            <span class="k">return</span> <span class="n">subjobrec</span><span class="p">[</span><span class="s2">&quot;qcvars&quot;</span><span class="p">][</span><span class="s2">&quot;CURRENT HESSIAN&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">FeatureNotImplemented</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;hessian(</span><span class="si">{}</span><span class="s2">, dertype=0)&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lowername</span><span class="p">))</span></div>
+
+
 <span class="c1">#        core.print_out(&quot;&quot;&quot;hessian() will perform frequency computation by finite difference of analytic energies.\n&quot;&quot;&quot;)</span>
 <span class="c1">#</span>
 <span class="c1">#        # Set method-dependent scf convergence criteria (test on procedures[&#39;energy&#39;] since that&#39;s guaranteed)</span>
@@ -550,166 +557,166 @@
 
 <div class="viewcode-block" id="frequency"><a class="viewcode-back" href="../../../api/qcdb.frequency.html#qcdb.frequency">[docs]</a><span class="nd">@register_kwds</span><span class="p">(</span><span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">frequency</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="c1">#    r&quot;&quot;&quot;Function to compute harmonic vibrational frequencies.</span>
-<span class="c1">#</span>
-<span class="c1">#    :aliases: frequencies(), freq()</span>
-<span class="c1">#</span>
-<span class="c1">#    :returns: *float* |w--w| Total electronic energy in Hartrees.</span>
-<span class="c1">#</span>
-<span class="c1">#    :returns: (*float*, :py:class:`~psi4.core.Wavefunction`) |w--w| energy and wavefunction when **return_wfn** specified.</span>
-<span class="c1">#</span>
-<span class="c1">#    :type name: string</span>
-<span class="c1">#    :param name: ``&#39;scf&#39;`` || ``&#39;mp2&#39;`` || ``&#39;ci5&#39;`` || etc.</span>
-<span class="c1">#</span>
-<span class="c1">#        First argument, usually unlabeled. Indicates the computational method</span>
-<span class="c1">#        to be applied to the system.</span>
-<span class="c1">#</span>
-<span class="c1">#    :type molecule: :ref:`molecule &lt;op_py_molecule&gt;`</span>
-<span class="c1">#    :param molecule: ``h2o`` || etc.</span>
-<span class="c1">#</span>
-<span class="c1">#        The target molecule, if not the last molecule defined.</span>
-<span class="c1">#</span>
-<span class="c1">#    :type return_wfn: :ref:`boolean &lt;op_py_boolean&gt;`</span>
-<span class="c1">#    :param return_wfn: ``&#39;on&#39;`` || |dl| ``&#39;off&#39;`` |dr|</span>
-<span class="c1">#</span>
-<span class="c1">#        Indicate to additionally return the :py:class:`~psi4.core.Wavefunction`</span>
-<span class="c1">#        calculation result as the second element (after *float* energy) of a tuple.</span>
-<span class="c1">#        Arrays of frequencies and the Hessian can be accessed through the wavefunction.</span>
-<span class="c1">#</span>
-<span class="c1">#    :type func: :ref:`function &lt;op_py_function&gt;`</span>
-<span class="c1">#    :param func: |dl| ``gradient`` |dr| || ``energy`` || ``cbs``</span>
-<span class="c1">#</span>
-<span class="c1">#        Indicates the type of calculation to be performed on the molecule.</span>
-<span class="c1">#        The default dertype accesses ``&#39;gradient&#39;`` or ``&#39;energy&#39;``, while</span>
-<span class="c1">#        ``&#39;cbs&#39;`` performs a multistage finite difference calculation.</span>
-<span class="c1">#        If a nested series of python functions is intended (see :ref:`sec:intercalls`),</span>
-<span class="c1">#        use keyword ``freq_func`` instead of ``func``.</span>
-<span class="c1">#</span>
-<span class="c1">#    :type mode: string</span>
-<span class="c1">#    :param mode: |dl| ``&#39;continuous&#39;`` |dr| || ``&#39;sow&#39;`` || ``&#39;reap&#39;``</span>
-<span class="c1">#</span>
-<span class="c1">#        For a finite difference of energies or gradients frequency, indicates</span>
-<span class="c1">#        whether the calculations required to complete the frequency are to be run</span>
-<span class="c1">#        in one file (``&#39;continuous&#39;``) or are to be farmed out in an</span>
-<span class="c1">#        embarrassingly parallel fashion (``&#39;sow&#39;``/``&#39;reap&#39;``)/ For the latter,</span>
-<span class="c1">#        run an initial job with ``&#39;sow&#39;`` and follow instructions in its output file.</span>
-<span class="c1">#        For maximum flexibility, ``return_wfn`` is always on in ``&#39;reap&#39;`` mode.</span>
-<span class="c1">#</span>
-<span class="c1">#    :type dertype: :ref:`dertype &lt;op_py_dertype&gt;`</span>
-<span class="c1">#    :param dertype: |dl| ``&#39;hessian&#39;`` |dr| || ``&#39;gradient&#39;`` || ``&#39;energy&#39;``</span>
-<span class="c1">#</span>
-<span class="c1">#        Indicates whether analytic (if available- they&#39;re not), finite</span>
-<span class="c1">#        difference of gradients (if available) or finite difference of</span>
-<span class="c1">#        energies is to be performed.</span>
-<span class="c1">#</span>
-<span class="c1">#    :type irrep: int or string</span>
-<span class="c1">#    :param irrep: |dl| ``-1`` |dr| || ``1`` || ``&#39;b2&#39;`` || ``&#39;App&#39;`` || etc.</span>
-<span class="c1">#</span>
-<span class="c1">#        Indicates which symmetry block (:ref:`Cotton &lt;table:irrepOrdering&gt;` ordering) of vibrational</span>
-<span class="c1">#        frequencies to be computed. ``1``, ``&#39;1&#39;``, or ``&#39;a1&#39;`` represents</span>
-<span class="c1">#        :math:`a_1`, requesting only the totally symmetric modes.</span>
-<span class="c1">#        ``-1`` indicates a full frequency calculation.</span>
-<span class="c1">#</span>
-<span class="c1">#    .. note:: Analytic hessians are only available for RHF. For all other methods, Frequencies will</span>
-<span class="c1">#        proceed through finite differences according to availability of gradients or energies.</span>
-<span class="c1">#</span>
-<span class="c1">#    .. _`table:freq_gen`:</span>
-<span class="c1">#</span>
-<span class="c1">#    +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
-<span class="c1">#    | name                    | calls method                                                                                                  |</span>
-<span class="c1">#    +=========================+===============================================================================================================+</span>
-<span class="c1">#    | scf                     | Hartree--Fock (HF) :ref:`[manual] &lt;sec:scf&gt;`                                                                  |</span>
-<span class="c1">#    +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
-<span class="c1">#</span>
-<span class="c1">#    :examples:</span>
-<span class="c1">#</span>
-<span class="c1">#    &gt;&gt;&gt; # [1] Frequency calculation for all modes through highest available derivatives</span>
-<span class="c1">#    &gt;&gt;&gt; frequency(&#39;ccsd&#39;)</span>
-<span class="c1">#</span>
-<span class="c1">#    &gt;&gt;&gt; # [2] Frequency calculation for b2 modes through finite difference of gradients</span>
-<span class="c1">#    &gt;&gt;&gt; #     printing lowest mode frequency to screen and Hessian to output</span>
-<span class="c1">#    &gt;&gt;&gt; E, wfn = frequencies(&#39;scf&#39;, dertype=1, irrep=4, return_wfn=True)</span>
-<span class="c1">#    &gt;&gt;&gt; print wfn.frequencies().get(0, 0)</span>
-<span class="c1">#    &gt;&gt;&gt; wfn.hessian().print_out()</span>
-<span class="c1">#</span>
-<span class="c1">#    &gt;&gt;&gt; # [3] Frequency calculation at default conditions and Hessian reuse at STP</span>
-<span class="c1">#    &gt;&gt;&gt; E, wfn = freq(&#39;mp2&#39;, return_wfn=True)</span>
-<span class="c1">#    &gt;&gt;&gt; set t 273.15</span>
-<span class="c1">#    &gt;&gt;&gt; set p 100000</span>
-<span class="c1">#    &gt;&gt;&gt; thermo(wfn, wfn.frequencies())</span>
-<span class="c1">#</span>
-<span class="c1">#    &quot;&quot;&quot;</span>
+    <span class="c1">#    r&quot;&quot;&quot;Function to compute harmonic vibrational frequencies.</span>
+    <span class="c1">#</span>
+    <span class="c1">#    :aliases: frequencies(), freq()</span>
+    <span class="c1">#</span>
+    <span class="c1">#    :returns: *float* |w--w| Total electronic energy in Hartrees.</span>
+    <span class="c1">#</span>
+    <span class="c1">#    :returns: (*float*, :py:class:`~psi4.core.Wavefunction`) |w--w| energy and wavefunction when **return_wfn** specified.</span>
+    <span class="c1">#</span>
+    <span class="c1">#    :type name: string</span>
+    <span class="c1">#    :param name: ``&#39;scf&#39;`` || ``&#39;mp2&#39;`` || ``&#39;ci5&#39;`` || etc.</span>
+    <span class="c1">#</span>
+    <span class="c1">#        First argument, usually unlabeled. Indicates the computational method</span>
+    <span class="c1">#        to be applied to the system.</span>
+    <span class="c1">#</span>
+    <span class="c1">#    :type molecule: :ref:`molecule &lt;op_py_molecule&gt;`</span>
+    <span class="c1">#    :param molecule: ``h2o`` || etc.</span>
+    <span class="c1">#</span>
+    <span class="c1">#        The target molecule, if not the last molecule defined.</span>
+    <span class="c1">#</span>
+    <span class="c1">#    :type return_wfn: :ref:`boolean &lt;op_py_boolean&gt;`</span>
+    <span class="c1">#    :param return_wfn: ``&#39;on&#39;`` || |dl| ``&#39;off&#39;`` |dr|</span>
+    <span class="c1">#</span>
+    <span class="c1">#        Indicate to additionally return the :py:class:`~psi4.core.Wavefunction`</span>
+    <span class="c1">#        calculation result as the second element (after *float* energy) of a tuple.</span>
+    <span class="c1">#        Arrays of frequencies and the Hessian can be accessed through the wavefunction.</span>
+    <span class="c1">#</span>
+    <span class="c1">#    :type func: :ref:`function &lt;op_py_function&gt;`</span>
+    <span class="c1">#    :param func: |dl| ``gradient`` |dr| || ``energy`` || ``cbs``</span>
+    <span class="c1">#</span>
+    <span class="c1">#        Indicates the type of calculation to be performed on the molecule.</span>
+    <span class="c1">#        The default dertype accesses ``&#39;gradient&#39;`` or ``&#39;energy&#39;``, while</span>
+    <span class="c1">#        ``&#39;cbs&#39;`` performs a multistage finite difference calculation.</span>
+    <span class="c1">#        If a nested series of python functions is intended (see :ref:`sec:intercalls`),</span>
+    <span class="c1">#        use keyword ``freq_func`` instead of ``func``.</span>
+    <span class="c1">#</span>
+    <span class="c1">#    :type mode: string</span>
+    <span class="c1">#    :param mode: |dl| ``&#39;continuous&#39;`` |dr| || ``&#39;sow&#39;`` || ``&#39;reap&#39;``</span>
+    <span class="c1">#</span>
+    <span class="c1">#        For a finite difference of energies or gradients frequency, indicates</span>
+    <span class="c1">#        whether the calculations required to complete the frequency are to be run</span>
+    <span class="c1">#        in one file (``&#39;continuous&#39;``) or are to be farmed out in an</span>
+    <span class="c1">#        embarrassingly parallel fashion (``&#39;sow&#39;``/``&#39;reap&#39;``)/ For the latter,</span>
+    <span class="c1">#        run an initial job with ``&#39;sow&#39;`` and follow instructions in its output file.</span>
+    <span class="c1">#        For maximum flexibility, ``return_wfn`` is always on in ``&#39;reap&#39;`` mode.</span>
+    <span class="c1">#</span>
+    <span class="c1">#    :type dertype: :ref:`dertype &lt;op_py_dertype&gt;`</span>
+    <span class="c1">#    :param dertype: |dl| ``&#39;hessian&#39;`` |dr| || ``&#39;gradient&#39;`` || ``&#39;energy&#39;``</span>
+    <span class="c1">#</span>
+    <span class="c1">#        Indicates whether analytic (if available- they&#39;re not), finite</span>
+    <span class="c1">#        difference of gradients (if available) or finite difference of</span>
+    <span class="c1">#        energies is to be performed.</span>
+    <span class="c1">#</span>
+    <span class="c1">#    :type irrep: int or string</span>
+    <span class="c1">#    :param irrep: |dl| ``-1`` |dr| || ``1`` || ``&#39;b2&#39;`` || ``&#39;App&#39;`` || etc.</span>
+    <span class="c1">#</span>
+    <span class="c1">#        Indicates which symmetry block (:ref:`Cotton &lt;table:irrepOrdering&gt;` ordering) of vibrational</span>
+    <span class="c1">#        frequencies to be computed. ``1``, ``&#39;1&#39;``, or ``&#39;a1&#39;`` represents</span>
+    <span class="c1">#        :math:`a_1`, requesting only the totally symmetric modes.</span>
+    <span class="c1">#        ``-1`` indicates a full frequency calculation.</span>
+    <span class="c1">#</span>
+    <span class="c1">#    .. note:: Analytic hessians are only available for RHF. For all other methods, Frequencies will</span>
+    <span class="c1">#        proceed through finite differences according to availability of gradients or energies.</span>
+    <span class="c1">#</span>
+    <span class="c1">#    .. _`table:freq_gen`:</span>
+    <span class="c1">#</span>
+    <span class="c1">#    +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+    <span class="c1">#    | name                    | calls method                                                                                                  |</span>
+    <span class="c1">#    +=========================+===============================================================================================================+</span>
+    <span class="c1">#    | scf                     | Hartree--Fock (HF) :ref:`[manual] &lt;sec:scf&gt;`                                                                  |</span>
+    <span class="c1">#    +-------------------------+---------------------------------------------------------------------------------------------------------------+</span>
+    <span class="c1">#</span>
+    <span class="c1">#    :examples:</span>
+    <span class="c1">#</span>
+    <span class="c1">#    &gt;&gt;&gt; # [1] Frequency calculation for all modes through highest available derivatives</span>
+    <span class="c1">#    &gt;&gt;&gt; frequency(&#39;ccsd&#39;)</span>
+    <span class="c1">#</span>
+    <span class="c1">#    &gt;&gt;&gt; # [2] Frequency calculation for b2 modes through finite difference of gradients</span>
+    <span class="c1">#    &gt;&gt;&gt; #     printing lowest mode frequency to screen and Hessian to output</span>
+    <span class="c1">#    &gt;&gt;&gt; E, wfn = frequencies(&#39;scf&#39;, dertype=1, irrep=4, return_wfn=True)</span>
+    <span class="c1">#    &gt;&gt;&gt; print wfn.frequencies().get(0, 0)</span>
+    <span class="c1">#    &gt;&gt;&gt; wfn.hessian().print_out()</span>
+    <span class="c1">#</span>
+    <span class="c1">#    &gt;&gt;&gt; # [3] Frequency calculation at default conditions and Hessian reuse at STP</span>
+    <span class="c1">#    &gt;&gt;&gt; E, wfn = freq(&#39;mp2&#39;, return_wfn=True)</span>
+    <span class="c1">#    &gt;&gt;&gt; set t 273.15</span>
+    <span class="c1">#    &gt;&gt;&gt; set p 100000</span>
+    <span class="c1">#    &gt;&gt;&gt; thermo(wfn, wfn.frequencies())</span>
+    <span class="c1">#</span>
+    <span class="c1">#    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">load_proc_table</span>
-    <span class="n">kwargs</span> <span class="o">=</span> <span class="n">driver_util</span><span class="o">.</span><span class="n">kwargs_lower</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 
-<span class="c1">#    # Bounce (someday) if name is function</span>
-<span class="c1">#    if hasattr(name, &#39;__call__&#39;):</span>
-<span class="c1">#        raise ValidationError(&quot;Frequency: Cannot use custom function&quot;)</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="n">driver_util</span><span class="o">.</span><span class="n">kwargs_lower</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="c1">#    # Bounce (someday) if name is function</span>
+    <span class="c1">#    if hasattr(name, &#39;__call__&#39;):</span>
+    <span class="c1">#        raise ValidationError(&quot;Frequency: Cannot use custom function&quot;)</span>
 
     <span class="n">lowername</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
-<span class="c1">#    old_global_basis = None</span>
-<span class="c1">#    if &quot;/&quot; in lowername:</span>
-<span class="c1">#        if (&quot;+&quot; in lowername) or (&quot;[&quot; in lowername) or (lowername.count(&#39;/&#39;) &gt; 1):</span>
-<span class="c1">#            raise ValidationError(&quot;Frequency: Cannot extrapolate or delta correct frequencies yet.&quot;)</span>
-<span class="c1">#        else:</span>
-<span class="c1">#            old_global_basis = core.get_global_option(&quot;BASIS&quot;)</span>
-<span class="c1">#            lowername, new_basis = lowername.split(&#39;/&#39;)</span>
-<span class="c1">#            core.set_global_option(&#39;BASIS&#39;, new_basis)</span>
-<span class="c1">#</span>
-<span class="c1">#    if kwargs.get(&#39;bsse_type&#39;, None) is not None:</span>
-<span class="c1">#        raise ValdiationError(&quot;Frequency: Does not currently support &#39;bsse_type&#39; arguements&quot;)</span>
+    <span class="c1">#    old_global_basis = None</span>
+    <span class="c1">#    if &quot;/&quot; in lowername:</span>
+    <span class="c1">#        if (&quot;+&quot; in lowername) or (&quot;[&quot; in lowername) or (lowername.count(&#39;/&#39;) &gt; 1):</span>
+    <span class="c1">#            raise ValidationError(&quot;Frequency: Cannot extrapolate or delta correct frequencies yet.&quot;)</span>
+    <span class="c1">#        else:</span>
+    <span class="c1">#            old_global_basis = core.get_global_option(&quot;BASIS&quot;)</span>
+    <span class="c1">#            lowername, new_basis = lowername.split(&#39;/&#39;)</span>
+    <span class="c1">#            core.set_global_option(&#39;BASIS&#39;, new_basis)</span>
+    <span class="c1">#</span>
+    <span class="c1">#    if kwargs.get(&#39;bsse_type&#39;, None) is not None:</span>
+    <span class="c1">#        raise ValdiationError(&quot;Frequency: Does not currently support &#39;bsse_type&#39; arguements&quot;)</span>
 
-    <span class="n">return_wfn</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;return_wfn&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">return_wfn</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;return_wfn&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
-<span class="c1">#    # are we in sow/reap mode?</span>
-<span class="c1">#    freq_mode = kwargs.get(&#39;mode&#39;, &#39;continuous&#39;).lower()</span>
-<span class="c1">#    if freq_mode not in [&#39;continuous&#39;, &#39;sow&#39;, &#39;reap&#39;]:</span>
-<span class="c1">#        raise ValidationError(&quot;&quot;&quot;Frequency execution mode &#39;%s&#39; not valid.&quot;&quot;&quot; % (freq_mode))</span>
+    <span class="c1">#    # are we in sow/reap mode?</span>
+    <span class="c1">#    freq_mode = kwargs.get(&#39;mode&#39;, &#39;continuous&#39;).lower()</span>
+    <span class="c1">#    if freq_mode not in [&#39;continuous&#39;, &#39;sow&#39;, &#39;reap&#39;]:</span>
+    <span class="c1">#        raise ValidationError(&quot;&quot;&quot;Frequency execution mode &#39;%s&#39; not valid.&quot;&quot;&quot; % (freq_mode))</span>
 
     <span class="c1"># Make sure the molecule the user provided is the active one</span>
-    <span class="n">molecule</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;molecule&#39;</span><span class="p">,</span> <span class="n">driver_helpers</span><span class="o">.</span><span class="n">get_active_molecule</span><span class="p">())</span>
+    <span class="n">molecule</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;molecule&quot;</span><span class="p">,</span> <span class="n">driver_helpers</span><span class="o">.</span><span class="n">get_active_molecule</span><span class="p">())</span>
     <span class="n">molecule</span><span class="o">.</span><span class="n">update_geometry</span><span class="p">()</span>
 
     <span class="c1"># Compute the hessian</span>
-    <span class="n">H</span><span class="p">,</span> <span class="n">jobrec</span><span class="o">=</span> <span class="n">hessian</span><span class="p">(</span><span class="n">lowername</span><span class="p">,</span> <span class="n">return_wfn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">molecule</span><span class="o">=</span><span class="n">molecule</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">H</span><span class="p">,</span> <span class="n">jobrec</span> <span class="o">=</span> <span class="n">hessian</span><span class="p">(</span><span class="n">lowername</span><span class="p">,</span> <span class="n">return_wfn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">molecule</span><span class="o">=</span><span class="n">molecule</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<span class="c1">#    # S/R: Quit after getting new displacements</span>
-<span class="c1">#    if freq_mode == &#39;sow&#39;:</span>
-<span class="c1">#        return 0.0</span>
-<span class="c1">#</span>
-<span class="c1">#    # Project final frequencies?</span>
-<span class="c1">#    translations_projection_sound, rotations_projection_sound = _energy_is_invariant(wfn.gradient())</span>
+    <span class="c1">#    # S/R: Quit after getting new displacements</span>
+    <span class="c1">#    if freq_mode == &#39;sow&#39;:</span>
+    <span class="c1">#        return 0.0</span>
+    <span class="c1">#</span>
+    <span class="c1">#    # Project final frequencies?</span>
+    <span class="c1">#    translations_projection_sound, rotations_projection_sound = _energy_is_invariant(wfn.gradient())</span>
     <span class="c1"># TODO hack!!!</span>
     <span class="n">translations_projection_sound</span><span class="p">,</span> <span class="n">rotations_projection_sound</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span>
-    <span class="n">project_trans</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;project_trans&#39;</span><span class="p">,</span> <span class="n">translations_projection_sound</span><span class="p">)</span>
-    <span class="n">project_rot</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;project_rot&#39;</span><span class="p">,</span> <span class="n">rotations_projection_sound</span><span class="p">)</span>
+    <span class="n">project_trans</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;project_trans&quot;</span><span class="p">,</span> <span class="n">translations_projection_sound</span><span class="p">)</span>
+    <span class="n">project_rot</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;project_rot&quot;</span><span class="p">,</span> <span class="n">rotations_projection_sound</span><span class="p">)</span>
 
-    <span class="n">irrep</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;irrep&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">irrep</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;irrep&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="n">vibinfo</span> <span class="o">=</span> <span class="n">vibanal_jobrec</span><span class="p">(</span><span class="n">jobrec</span><span class="p">,</span> <span class="n">irrep</span><span class="o">=</span><span class="n">irrep</span><span class="p">,</span> <span class="n">project_trans</span><span class="o">=</span><span class="n">project_trans</span><span class="p">,</span> <span class="n">project_rot</span><span class="o">=</span><span class="n">project_rot</span><span class="p">)</span>
-    <span class="n">vibonly</span> <span class="o">=</span> <span class="n">vib</span><span class="o">.</span><span class="n">filter_nonvib</span><span class="p">(</span><span class="n">vibinfo</span><span class="p">)</span>
-<span class="c1">#    wfn.set_frequencies(core.Vector.from_array(qcdb.vib.filter_omega_to_real(vibonly[&#39;omega&#39;].data)))</span>
-<span class="c1">#    wfn.frequency_analysis = vibinfo</span>
-    <span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;frequency_analysis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vibinfo</span>
+    <span class="n">vib</span><span class="o">.</span><span class="n">filter_nonvib</span><span class="p">(</span><span class="n">vibinfo</span><span class="p">)</span>
+    <span class="c1">#    wfn.set_frequencies(core.Vector.from_array(qcdb.vib.filter_omega_to_real(vibonly[&#39;omega&#39;].data)))</span>
+    <span class="c1">#    wfn.frequency_analysis = vibinfo</span>
+    <span class="n">jobrec</span><span class="p">[</span><span class="s2">&quot;frequency_analysis&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vibinfo</span>
 
-<span class="c1">#    for postcallback in hooks[&#39;frequency&#39;][&#39;post&#39;]:</span>
-<span class="c1">#        postcallback(lowername, wfn=wfn, **kwargs)</span>
-<span class="c1">#</span>
-<span class="c1">#    # Reset old global basis if needed</span>
-<span class="c1">#    if not old_global_basis is None:</span>
-<span class="c1">#        core.set_global_option(&quot;BASIS&quot;, old_global_basis)</span>
+    <span class="c1">#    for postcallback in hooks[&#39;frequency&#39;][&#39;post&#39;]:</span>
+    <span class="c1">#        postcallback(lowername, wfn=wfn, **kwargs)</span>
+    <span class="c1">#</span>
+    <span class="c1">#    # Reset old global basis if needed</span>
+    <span class="c1">#    if not old_global_basis is None:</span>
+    <span class="c1">#        core.set_global_option(&quot;BASIS&quot;, old_global_basis)</span>
 
     <span class="k">if</span> <span class="n">return_wfn</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT ENERGY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">jobrec</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">jobrec</span><span class="p">[</span><span class="s2">&quot;qcvars&quot;</span><span class="p">][</span><span class="s2">&quot;CURRENT ENERGY&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">jobrec</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT ENERGY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span></div>
+        <span class="k">return</span> <span class="n">jobrec</span><span class="p">[</span><span class="s2">&quot;qcvars&quot;</span><span class="p">][</span><span class="s2">&quot;CURRENT ENERGY&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span></div>
 
 
 <span class="k">def</span> <span class="nf">vibanal_str</span><span class="p">(</span><span class="n">mass</span><span class="p">,</span> <span class="n">coord</span><span class="p">,</span> <span class="n">fcm</span><span class="p">,</span> <span class="n">hess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">project_trans</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">project_rot</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 
     <span class="k">if</span> <span class="n">hess</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">nmwhess</span> <span class="o">=</span> <span class="n">load_hessian</span><span class="p">(</span><span class="n">fcm</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;fcmfinal&#39;</span><span class="p">)</span>
+        <span class="n">nmwhess</span> <span class="o">=</span> <span class="n">load_hessian</span><span class="p">(</span><span class="n">fcm</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;fcmfinal&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">nmwhess</span> <span class="o">=</span> <span class="n">hess</span>
 
@@ -722,10 +729,11 @@
     <span class="n">wfn</span> <span class="o">=</span> <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Wavefunction</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="s2">&quot;STO-3G&quot;</span><span class="p">)</span>  <span class="c1"># dummy, obviously. only used for SALCs</span>
     <span class="n">basisset</span> <span class="o">=</span> <span class="n">wfn</span><span class="o">.</span><span class="n">basisset</span><span class="p">()</span>
 
-    <span class="n">vibinfo</span><span class="p">,</span> <span class="n">vibtext</span> <span class="o">=</span> <span class="n">qcdb</span><span class="o">.</span><span class="n">vib</span><span class="o">.</span><span class="n">harmonic_analysis</span><span class="p">(</span><span class="n">nmwhess</span><span class="p">,</span> <span class="n">geom</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">basisset</span><span class="p">,</span> <span class="n">irrep_labels</span><span class="p">,</span>
-                                                  <span class="n">project_trans</span><span class="o">=</span><span class="n">project_trans</span><span class="p">,</span> <span class="n">project_rot</span><span class="o">=</span><span class="n">project_rot</span><span class="p">)</span>
+    <span class="n">vibinfo</span><span class="p">,</span> <span class="n">vibtext</span> <span class="o">=</span> <span class="n">qcdb</span><span class="o">.</span><span class="n">vib</span><span class="o">.</span><span class="n">harmonic_analysis</span><span class="p">(</span>
+        <span class="n">nmwhess</span><span class="p">,</span> <span class="n">geom</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">basisset</span><span class="p">,</span> <span class="n">irrep_labels</span><span class="p">,</span> <span class="n">project_trans</span><span class="o">=</span><span class="n">project_trans</span><span class="p">,</span> <span class="n">project_rot</span><span class="o">=</span><span class="n">project_rot</span>
+    <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">vibtext</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">qcdb</span><span class="o">.</span><span class="n">vib</span><span class="o">.</span><span class="n">print_vibs</span><span class="p">(</span><span class="n">vibinfo</span><span class="p">,</span> <span class="n">shortlong</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">normco</span><span class="o">=</span><span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="n">atom_lbl</span><span class="o">=</span><span class="n">symbols</span><span class="p">))</span> <span class="c1">#, groupby=-1))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">qcdb</span><span class="o">.</span><span class="n">vib</span><span class="o">.</span><span class="n">print_vibs</span><span class="p">(</span><span class="n">vibinfo</span><span class="p">,</span> <span class="n">shortlong</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">normco</span><span class="o">=</span><span class="s2">&quot;q&quot;</span><span class="p">,</span> <span class="n">atom_lbl</span><span class="o">=</span><span class="n">symbols</span><span class="p">))</span>  <span class="c1"># , groupby=-1))</span>
 
     <span class="k">return</span> <span class="n">vibinfo</span>
 
@@ -733,80 +741,90 @@
 <span class="k">def</span> <span class="nf">vibanal_jobrec</span><span class="p">(</span><span class="n">jobrec</span><span class="p">,</span> <span class="n">hess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">irrep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">molecule</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">project_trans</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">project_rot</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 
     <span class="k">if</span> <span class="n">hess</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">nmwhess</span> <span class="o">=</span> <span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT HESSIAN&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
-<span class="c1">#        nmwhess = np.asarray(wfn.hessian())</span>
-<span class="c1">#    else:</span>
-<span class="c1">#        nmwhess = hess</span>
+        <span class="n">nmwhess</span> <span class="o">=</span> <span class="n">jobrec</span><span class="p">[</span><span class="s2">&quot;qcvars&quot;</span><span class="p">][</span><span class="s2">&quot;CURRENT HESSIAN&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+    <span class="c1">#        nmwhess = np.asarray(wfn.hessian())</span>
+    <span class="c1">#    else:</span>
+    <span class="c1">#        nmwhess = hess</span>
 
-    <span class="n">molrec</span> <span class="o">=</span> <span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;molecule&#39;</span><span class="p">]</span>
-    <span class="n">molecule</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;molecule&#39;</span><span class="p">])</span>
-    <span class="n">geom</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">molrec</span><span class="p">[</span><span class="s1">&#39;geom&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-    <span class="n">symbols</span> <span class="o">=</span> <span class="n">molrec</span><span class="p">[</span><span class="s1">&#39;elem&#39;</span><span class="p">]</span>
+    <span class="n">molrec</span> <span class="o">=</span> <span class="n">jobrec</span><span class="p">[</span><span class="s2">&quot;molecule&quot;</span><span class="p">]</span>  <span class="c1"># actually qcsk</span>
+    <span class="n">pp</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">molrec</span><span class="p">)</span>
+    <span class="n">molecule</span> <span class="o">=</span> <span class="n">Molecule</span><span class="o">.</span><span class="n">from_schema</span><span class="p">(</span><span class="n">jobrec</span><span class="p">[</span><span class="s2">&quot;molecule&quot;</span><span class="p">])</span>
+    <span class="c1">#    geom = np.array(molrec[&#39;geom&#39;]).reshape((-1, 3))</span>
+    <span class="c1">#    symbols = molrec[&#39;elem&#39;]</span>
+    <span class="n">geom</span> <span class="o">=</span> <span class="n">molrec</span><span class="p">[</span><span class="s2">&quot;geometry&quot;</span><span class="p">]</span>
+    <span class="n">symbols</span> <span class="o">=</span> <span class="n">molrec</span><span class="p">[</span><span class="s2">&quot;symbols&quot;</span><span class="p">]</span>
 
-<span class="c1">#    if molecule is not None:</span>
-<span class="c1">#        molecule.update_geometry()</span>
-<span class="c1">#        if mol.natom() != molecule.natom():</span>
-<span class="c1">#            raise ValidationError(&#39;Impostor molecule trying to be analyzed! natom {} != {}&#39;.format(mol.natom(), molecule.natom()))</span>
-<span class="c1">#        if abs(mol.nuclear_repulsion_energy() - molecule.nuclear_repulsion_energy()) &gt; 1.e-6:</span>
-<span class="c1">#            raise ValidationError(&#39;Impostor molecule trying to be analyzed! NRE {} != {}&#39;.format(mol.nuclear_repulsion_energy(), molecule.nuclear_repulsion_energy()))</span>
-<span class="c1">#        if not np.allclose(np.asarray(mol.geometry()), np.asarray(molecule.geometry()), atol=1.e-6):</span>
-<span class="c1">#            core.print_out(&#39;Warning: geometry center/orientation mismatch. Normal modes may not be in expected coordinate system.&#39;)</span>
-<span class="c1">#        #    raise ValidationError(&#39;Impostor molecule trying to be analyzed! geometry\n{}\n   !=\n{}&#39;.format(</span>
-<span class="c1">#        #        np.asarray(mol.geometry()), np.asarray(molecule.geometry())))</span>
-<span class="c1">#        mol = molecule</span>
-            
-    <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">molrec</span><span class="p">[</span><span class="s1">&#39;mass&#39;</span><span class="p">])</span>
+    <span class="c1">#    if molecule is not None:</span>
+    <span class="c1">#        molecule.update_geometry()</span>
+    <span class="c1">#        if mol.natom() != molecule.natom():</span>
+    <span class="c1">#            raise ValidationError(&#39;Impostor molecule trying to be analyzed! natom {} != {}&#39;.format(mol.natom(), molecule.natom()))</span>
+    <span class="c1">#        if abs(mol.nuclear_repulsion_energy() - molecule.nuclear_repulsion_energy()) &gt; 1.e-6:</span>
+    <span class="c1">#            raise ValidationError(&#39;Impostor molecule trying to be analyzed! NRE {} != {}&#39;.format(mol.nuclear_repulsion_energy(), molecule.nuclear_repulsion_energy()))</span>
+    <span class="c1">#        if not np.allclose(np.asarray(mol.geometry()), np.asarray(molecule.geometry()), atol=1.e-6):</span>
+    <span class="c1">#            core.print_out(&#39;Warning: geometry center/orientation mismatch. Normal modes may not be in expected coordinate system.&#39;)</span>
+    <span class="c1">#        #    raise ValidationError(&#39;Impostor molecule trying to be analyzed! geometry\n{}\n   !=\n{}&#39;.format(</span>
+    <span class="c1">#        #        np.asarray(mol.geometry()), np.asarray(molecule.geometry())))</span>
+    <span class="c1">#        mol = molecule</span>
+
+    <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">molrec</span><span class="p">[</span><span class="s2">&quot;masses&quot;</span><span class="p">])</span>
     <span class="n">irrep_labels</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">irrep_labels</span><span class="p">()</span>
 
     <span class="kn">import</span> <span class="nn">psi4</span>
-    <span class="n">wfn</span> <span class="o">=</span> <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Wavefunction</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">molrec</span><span class="p">),</span> <span class="s2">&quot;STO-3G&quot;</span><span class="p">)</span>  <span class="c1"># dummy, obviously. only used for SALCs</span>
+
+    <span class="c1"># wfn = psi4.core.Wavefunction.build(psi4.core.Molecule.from_dict(molrec), &quot;STO-3G&quot;)  # dummy, obviously. only used for SALCs</span>
+    <span class="n">wfn</span> <span class="o">=</span> <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Wavefunction</span><span class="o">.</span><span class="n">build</span><span class="p">(</span>
+        <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">molecule</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()),</span> <span class="s2">&quot;STO-3G&quot;</span>
+    <span class="p">)</span>  <span class="c1"># dummy, obviously. only used for SALCs</span>
     <span class="n">basisset</span> <span class="o">=</span> <span class="n">wfn</span><span class="o">.</span><span class="n">basisset</span><span class="p">()</span>
 
-    <span class="n">vibinfo</span><span class="p">,</span> <span class="n">vibtext</span> <span class="o">=</span> <span class="n">vib</span><span class="o">.</span><span class="n">harmonic_analysis</span><span class="p">(</span><span class="n">nmwhess</span><span class="p">,</span> <span class="n">geom</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">basisset</span><span class="p">,</span> <span class="n">irrep_labels</span><span class="p">,</span>
-                                             <span class="n">project_trans</span><span class="o">=</span><span class="n">project_trans</span><span class="p">,</span> <span class="n">project_rot</span><span class="o">=</span><span class="n">project_rot</span><span class="p">)</span>
+    <span class="n">vibinfo</span><span class="p">,</span> <span class="n">vibtext</span> <span class="o">=</span> <span class="n">vib</span><span class="o">.</span><span class="n">harmonic_analysis</span><span class="p">(</span>
+        <span class="n">nmwhess</span><span class="p">,</span> <span class="n">geom</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">basisset</span><span class="p">,</span> <span class="n">irrep_labels</span><span class="p">,</span> <span class="n">project_trans</span><span class="o">=</span><span class="n">project_trans</span><span class="p">,</span> <span class="n">project_rot</span><span class="o">=</span><span class="n">project_rot</span>
+    <span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="n">vibtext</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">vib</span><span class="o">.</span><span class="n">print_vibs</span><span class="p">(</span><span class="n">vibinfo</span><span class="p">,</span> <span class="n">shortlong</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">normco</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">atom_lbl</span><span class="o">=</span><span class="n">symbols</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">vib</span><span class="o">.</span><span class="n">print_vibs</span><span class="p">(</span><span class="n">vibinfo</span><span class="p">,</span> <span class="n">shortlong</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">normco</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">atom_lbl</span><span class="o">=</span><span class="n">symbols</span><span class="p">))</span>
 
-<span class="c1">#    if core.has_option_changed(&#39;THERMO&#39;, &#39;ROTATIONAL_SYMMETRY_NUMBER&#39;):</span>
-<span class="c1">#        rsn = core.get_option(&#39;THERMO&#39;, &#39;ROTATIONAL_SYMMETRY_NUMBER&#39;)</span>
-<span class="c1">#    else:</span>
-<span class="c1">#        rsn = mol.rotational_symmetry_number()</span>
+    <span class="c1">#    if core.has_option_changed(&#39;THERMO&#39;, &#39;ROTATIONAL_SYMMETRY_NUMBER&#39;):</span>
+    <span class="c1">#        rsn = core.get_option(&#39;THERMO&#39;, &#39;ROTATIONAL_SYMMETRY_NUMBER&#39;)</span>
+    <span class="c1">#    else:</span>
+    <span class="c1">#        rsn = mol.rotational_symmetry_number()</span>
     <span class="n">rsn</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">rotational_symmetry_number</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">irrep</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">therminfo</span><span class="p">,</span> <span class="n">thermtext</span> <span class="o">=</span> <span class="n">vib</span><span class="o">.</span><span class="n">thermo</span><span class="p">(</span><span class="n">vibinfo</span><span class="p">,</span>
-                                          <span class="n">T</span><span class="o">=</span><span class="mf">298.15</span><span class="p">,</span> <span class="c1">#core.get_option(&quot;THERMO&quot;, &quot;T&quot;),  # 298.15</span>
-                                          <span class="n">P</span><span class="o">=</span><span class="mi">101325</span><span class="p">,</span> <span class="c1">#core.get_option(&quot;THERMO&quot;, &quot;P&quot;),  # 101325.</span>
-                                          <span class="n">multiplicity</span><span class="o">=</span><span class="n">molrec</span><span class="p">[</span><span class="s1">&#39;molecular_multiplicity&#39;</span><span class="p">],</span>
-                                          <span class="n">molecular_mass</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">m</span><span class="p">),</span>
-                                          <span class="n">sigma</span><span class="o">=</span><span class="n">rsn</span><span class="p">,</span>
-                                          <span class="n">rotor_type</span><span class="o">=</span><span class="n">molecule</span><span class="o">.</span><span class="n">rotor_type</span><span class="p">(),</span>
-                                          <span class="n">rot_const</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">molecule</span><span class="o">.</span><span class="n">rotational_constants</span><span class="p">()),</span>
-                                          <span class="n">E0</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT ENERGY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+        <span class="n">therminfo</span><span class="p">,</span> <span class="n">thermtext</span> <span class="o">=</span> <span class="n">vib</span><span class="o">.</span><span class="n">thermo</span><span class="p">(</span>
+            <span class="n">vibinfo</span><span class="p">,</span>
+            <span class="n">T</span><span class="o">=</span><span class="mf">298.15</span><span class="p">,</span>  <span class="c1"># core.get_option(&quot;THERMO&quot;, &quot;T&quot;),  # 298.15</span>
+            <span class="n">P</span><span class="o">=</span><span class="mi">101325</span><span class="p">,</span>  <span class="c1"># core.get_option(&quot;THERMO&quot;, &quot;P&quot;),  # 101325.</span>
+            <span class="n">multiplicity</span><span class="o">=</span><span class="n">molrec</span><span class="p">[</span><span class="s2">&quot;molecular_multiplicity&quot;</span><span class="p">],</span>
+            <span class="n">molecular_mass</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">m</span><span class="p">),</span>
+            <span class="n">sigma</span><span class="o">=</span><span class="n">rsn</span><span class="p">,</span>
+            <span class="n">rotor_type</span><span class="o">=</span><span class="n">molecule</span><span class="o">.</span><span class="n">rotor_type</span><span class="p">(),</span>
+            <span class="n">rot_const</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">molecule</span><span class="o">.</span><span class="n">rotational_constants</span><span class="p">()),</span>
+            <span class="n">E0</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">jobrec</span><span class="p">[</span><span class="s2">&quot;qcvars&quot;</span><span class="p">][</span><span class="s2">&quot;CURRENT ENERGY&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">),</span>
+        <span class="p">)</span>
 
-<span class="c1">#        core.set_variable(&quot;ZPVE&quot;, therminfo[&#39;ZPE_corr&#39;].data)</span>
-<span class="c1">#        core.set_variable(&quot;THERMAL ENERGY CORRECTION&quot;, therminfo[&#39;E_corr&#39;].data)</span>
-<span class="c1">#        core.set_variable(&quot;ENTHALPY CORRECTION&quot;, therminfo[&#39;H_corr&#39;].data)</span>
-<span class="c1">#        core.set_variable(&quot;GIBBS FREE ENERGY CORRECTION&quot;, therminfo[&#39;G_corr&#39;].data)</span>
-<span class="c1">#</span>
-<span class="c1">#        core.set_variable(&quot;ZERO K ENTHALPHY&quot;, therminfo[&#39;ZPE_tot&#39;].data)</span>
-<span class="c1">#        core.set_variable(&quot;THERMAL ENERGY&quot;, therminfo[&#39;E_tot&#39;].data)</span>
-<span class="c1">#        core.set_variable(&quot;ENTHALPY&quot;, therminfo[&#39;H_tot&#39;].data)</span>
-<span class="c1">#        core.set_variable(&quot;GIBBS FREE ENERGY&quot;, therminfo[&#39;G_tot&#39;].data)</span>
+        <span class="c1">#        core.set_variable(&quot;ZPVE&quot;, therminfo[&#39;ZPE_corr&#39;].data)</span>
+        <span class="c1">#        core.set_variable(&quot;THERMAL ENERGY CORRECTION&quot;, therminfo[&#39;E_corr&#39;].data)</span>
+        <span class="c1">#        core.set_variable(&quot;ENTHALPY CORRECTION&quot;, therminfo[&#39;H_corr&#39;].data)</span>
+        <span class="c1">#        core.set_variable(&quot;GIBBS FREE ENERGY CORRECTION&quot;, therminfo[&#39;G_corr&#39;].data)</span>
+        <span class="c1">#</span>
+        <span class="c1">#        core.set_variable(&quot;ZERO K ENTHALPHY&quot;, therminfo[&#39;ZPE_tot&#39;].data)</span>
+        <span class="c1">#        core.set_variable(&quot;THERMAL ENERGY&quot;, therminfo[&#39;E_tot&#39;].data)</span>
+        <span class="c1">#        core.set_variable(&quot;ENTHALPY&quot;, therminfo[&#39;H_tot&#39;].data)</span>
+        <span class="c1">#        core.set_variable(&quot;GIBBS FREE ENERGY&quot;, therminfo[&#39;G_tot&#39;].data)</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="n">thermtext</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  Thermochemical analysis skipped for partial frequency calculation.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Thermochemical analysis skipped for partial frequency calculation.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">vibinfo</span>
 
 
 <span class="c1">## Aliases</span>
-<span class="c1">#opt = optimize</span>
-<span class="c1">#freq = frequency</span>
-<span class="c1">#frequencies = frequency</span>
-<span class="c1">#prop = properties</span>
+<span class="c1"># opt = optimize</span>
+<span class="c1"># freq = frequency</span>
+<span class="c1"># frequencies = frequency</span>
+<span class="c1"># prop = properties</span>
 </pre></div>
 
             <div class="clearer"></div>
@@ -898,7 +916,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/hessian.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g3e45af5">0+untagged.1.g3e45af5</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../../../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -912,8 +930,8 @@
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2021, The QCDB Project.
-      Last updated on Sunday, 12 September 2021 05:49PM.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.2.0.
+      Last updated on Tuesday, 16 November 2021 10:11PM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.0.
     </div>
     <!-- cloud_sptheme 1.4 -->
   </body>

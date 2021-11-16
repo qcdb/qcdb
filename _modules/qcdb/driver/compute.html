@@ -1,0 +1,312 @@
+<!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>qcdb.driver.compute</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/psi4.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noticia+Text:400,i,b,bi|Open+Sans:400,i,b,bi|Roboto+Mono:400,i,b,bi&amp;display=swap" type="text/css" />
+    
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../../../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../../../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../../../_static/cloud.js"></script>
+    
+
+    <link rel="shortcut icon" href="../../../_static/favicon-qcdb.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">Index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../index.html" title="Table Of Contents"
+             accesskey="C"><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="https://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/compute.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../../../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">qcdb.driver.compute</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qcdb.driver.compute</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">qcelemental</span> <span class="k">as</span> <span class="nn">qcel</span>
+<span class="kn">import</span> <span class="nn">qcengine</span> <span class="k">as</span> <span class="nn">qcng</span>
+
+<span class="kn">from</span> <span class="nn">..util</span> <span class="kn">import</span> <span class="n">program_prefix</span>
+<span class="kn">from</span> <span class="nn">.driver_util</span> <span class="kn">import</span> <span class="n">pkgprefix</span>
+
+<span class="n">prefixpkg</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pkgprefix</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+
+<div class="viewcode-block" id="compute"><a class="viewcode-back" href="../../../api/qcdb.compute.html#qcdb.compute">[docs]</a><span class="k">def</span> <span class="nf">compute</span><span class="p">(</span>
+    <span class="n">input_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="s2">&quot;AtomicInput&quot;</span><span class="p">],</span>
+    <span class="n">program</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="c1"># raise_error: bool = False,</span>
+    <span class="n">local_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">mode_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="c1"># return_dict: bool = False,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;AtomicResult&quot;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Run an analytic single-point specified in ``input_data`` through program ``qcprog``.&quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">input_model</span> <span class="o">=</span> <span class="n">qcng</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">model_wrapper</span><span class="p">(</span><span class="n">input_data</span><span class="p">,</span> <span class="n">qcel</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">AtomicInput</span><span class="p">)</span>
+
+        <span class="c1">## Echo the infile on the outfile</span>
+        <span class="c1"># core.print_out(&quot;\n  ==&gt; Input QCSchema &lt;==\n&quot;)</span>
+        <span class="c1"># core.print_out(&quot;\n--------------------------------------------------------------------------\n&quot;)</span>
+        <span class="c1"># core.print_out(pp.pformat(json.loads(input_model.json())))</span>
+        <span class="c1"># core.print_out(&quot;\n--------------------------------------------------------------------------\n&quot;)</span>
+
+        <span class="c1"># keep_wfn = input_model.protocols.wavefunction != &#39;none&#39;</span>
+
+        <span class="kn">import</span> <span class="nn">qcdb</span>
+
+        <span class="n">driver_call</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;energy&quot;</span><span class="p">:</span> <span class="n">qcdb</span><span class="o">.</span><span class="n">energy</span><span class="p">,</span> <span class="s2">&quot;gradient&quot;</span><span class="p">:</span> <span class="n">qcdb</span><span class="o">.</span><span class="n">gradient</span><span class="p">,</span> <span class="s2">&quot;hessian&quot;</span><span class="p">:</span> <span class="n">qcdb</span><span class="o">.</span><span class="n">hessian</span><span class="p">}</span>
+        <span class="n">qmol</span> <span class="o">=</span> <span class="n">qcdb</span><span class="o">.</span><span class="n">Molecule</span><span class="o">.</span><span class="n">from_schema</span><span class="p">(</span><span class="n">input_model</span><span class="o">.</span><span class="n">molecule</span><span class="o">.</span><span class="n">dict</span><span class="p">())</span>
+
+        <span class="n">mode_config</span> <span class="o">=</span> <span class="n">qcdb</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_mode_config</span><span class="p">(</span><span class="n">mode_options</span><span class="o">=</span><span class="n">mode_options</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mode_config</span><span class="o">.</span><span class="n">implicit_program</span> <span class="o">==</span> <span class="s2">&quot;qcdb&quot;</span><span class="p">:</span>
+            <span class="n">keywords</span> <span class="o">=</span> <span class="n">input_model</span><span class="o">.</span><span class="n">keywords</span>
+            <span class="n">mtd_call</span> <span class="o">=</span> <span class="n">prefixpkg</span><span class="p">[</span><span class="n">program</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">+</span> <span class="n">input_model</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">method</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">input_model</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">basis</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># check consis mode_options and program?</span>
+            <span class="n">keywords</span> <span class="o">=</span> <span class="p">{(</span><span class="n">program</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">input_model</span><span class="o">.</span><span class="n">keywords</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="n">mtd_call</span> <span class="o">=</span> <span class="n">program_prefix</span><span class="p">(</span><span class="n">program</span><span class="p">)</span> <span class="o">+</span> <span class="n">input_model</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">method</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">input_model</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">basis</span>
+
+        <span class="n">retres</span><span class="p">,</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">driver_call</span><span class="p">[</span><span class="n">input_model</span><span class="o">.</span><span class="n">driver</span><span class="p">](</span>
+            <span class="n">mtd_call</span><span class="p">,</span>
+            <span class="n">molecule</span><span class="o">=</span><span class="n">qmol</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="n">keywords</span><span class="p">,</span>
+            <span class="n">return_wfn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">local_options</span><span class="o">=</span><span class="n">local_options</span><span class="p">,</span>
+            <span class="n">mode_options</span><span class="o">=</span><span class="n">mode_options</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1">## qcschema should be copied</span>
+        <span class="c1"># ret_data = run_json_qcschema(input_model.dict(), clean, False, keep_wfn=keep_wfn)</span>
+        <span class="c1"># ret_data[&quot;provenance&quot;].update({</span>
+        <span class="c1">#    &quot;creator&quot;: &quot;Psi4&quot;,</span>
+        <span class="c1">#    &quot;version&quot;: __version__,</span>
+        <span class="c1">#    &quot;routine&quot;: &quot;psi4.schema_runner.run_qcschema&quot;</span>
+        <span class="c1"># })</span>
+
+        <span class="c1"># exit_printing(start_time=start_time, success=True)</span>
+
+        <span class="c1"># import pprint</span>
+        <span class="c1"># pprint.pprint(ret)</span>
+        <span class="c1"># ret = atres</span>
+
+        <span class="n">ret</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;qcvars&quot;</span><span class="p">)</span>  <span class="c1"># duplicated in extras[&quot;qcvars&quot;]</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">qcel</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">AtomicResult</span><span class="p">(</span><span class="o">**</span><span class="n">ret</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">input_data</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+
+        <span class="n">input_data</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">qcel</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">FailedOperation</span><span class="p">(</span>
+            <span class="n">input_data</span><span class="o">=</span><span class="n">input_data</span><span class="p">,</span>
+            <span class="n">success</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">error</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;error_type&quot;</span><span class="p">:</span> <span class="nb">type</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                <span class="s2">&quot;error_message&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exception</span><span class="p">(</span><span class="o">*</span><span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())),</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ret</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../../index.html" title="index">
+          <img class="logo" src="../../../_static/qcdbsquare.png" alt="Logo"/>
+        </a></p><!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+<div id="searchbox" style="display: none" role="search">
+  <!--<h3>Quick search</h3>-->
+    <form class="search" action="../../../search.html" method="get">
+      <!--<div><input type="text" name="q" placeholder="search docs" /></div>-->
+      <div><input type="text" name="q" placeholder="&#xF002;" style="font-family:FontAwesome, Ariel" /></div>
+      <!--<div><input type="submit" value="Go" /></div>-->
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >Index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../index.html" title="Table Of Contents"
+             ><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="https://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/compute.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../../../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">qcdb.driver.compute</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013-2021, The QCDB Project.
+      Last updated on Tuesday, 16 November 2021 10:11PM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.0.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

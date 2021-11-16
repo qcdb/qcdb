@@ -1,0 +1,6 @@
+set_keywords
+============
+
+.. currentmodule:: qcdb
+
+.. autofunction:: set_keywords

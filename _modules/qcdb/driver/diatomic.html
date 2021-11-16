@@ -1,0 +1,465 @@
+<!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>qcdb.driver.diatomic</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/psi4.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noticia+Text:400,i,b,bi|Open+Sans:400,i,b,bi|Roboto+Mono:400,i,b,bi&amp;display=swap" type="text/css" />
+    
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+
+    
+    
+     
+        <script src="../../../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../../../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../../../_static/cloud.js"></script>
+    
+
+    <link rel="shortcut icon" href="../../../_static/favicon-qcdb.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">Index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../index.html" title="Table Of Contents"
+             accesskey="C"><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="https://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/diatomic.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../../../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">qcdb.driver.diatomic</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qcdb.driver.diatomic</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="c1">#from psi4.driver.p4util.exceptions import *</span>
+<span class="kn">from</span> <span class="nn">qcelemental</span> <span class="kn">import</span> <span class="n">constants</span>
+
+
+<span class="k">def</span> <span class="nf">least_squares_fit_polynomial</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">fvals</span><span class="p">,</span> <span class="n">localization_point</span><span class="p">,</span> <span class="n">no_factorials</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">polynomial_order</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Performs and unweighted least squares fit of a polynomial, with specified order</span>
+<span class="sd">       to an array of input function values (fvals) evaluated at given locations (xvals).</span>
+<span class="sd">       See https://doi.org/10.1063/1.4862157, particularly eqn (7) for details. &quot;&quot;&quot;</span>
+    <span class="n">xpts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xvals</span><span class="p">)</span> <span class="o">-</span> <span class="n">localization_point</span>
+    <span class="k">if</span> <span class="n">weighted</span><span class="p">:</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">p_nu</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1e-3</span>
+        <span class="n">zvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">xpts</span><span class="o">/</span><span class="n">R</span><span class="p">)</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">zvals</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">zvals</span><span class="o">**</span><span class="n">p_nu</span> <span class="o">+</span> <span class="n">epsilon</span><span class="o">**</span><span class="n">p_nu</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">xpts</span><span class="p">,</span> <span class="n">fvals</span><span class="p">,</span> <span class="n">polynomial_order</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+    <span class="c1"># Remove the 1/n! coefficients</span>
+    <span class="k">if</span> <span class="n">no_factorials</span><span class="p">:</span>
+        <span class="n">scalefac</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">polynomial_order</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">scalefac</span> <span class="o">*=</span> <span class="n">n</span>
+            <span class="n">fit</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">*=</span> <span class="n">scalefac</span>
+    <span class="k">return</span> <span class="n">fit</span>
+
+
+<span class="c1">#def anharmonicity(rvals: List, energies: List, molecule, plot_fit: str = &#39;&#39;) -&gt; Dict:</span>
+<div class="viewcode-block" id="diatomic"><a class="viewcode-back" href="../../../api/qcdb.diatomic.html#qcdb.diatomic">[docs]</a><span class="k">def</span> <span class="nf">diatomic</span><span class="p">(</span><span class="n">rvals</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">energies</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">plot_fit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Generates spectroscopic constants for a diatomic molecules.</span>
+<span class="sd">       Fits a diatomic potential energy curve using a weighted least squares approach</span>
+<span class="sd">       (c.f. https://doi.org/10.1063/1.4862157, particularly eqn. 7), locates the minimum</span>
+<span class="sd">       energy point, and then applies second order vibrational perturbation theory to obtain spectroscopic</span>
+<span class="sd">       constants.  Any number of points greater than 4 may be provided, and they should bracket the minimum.</span>
+<span class="sd">       The data need not be evenly spaced, and can be provided in any order.  The data are weighted such that</span>
+<span class="sd">       those closest to the minimum have highest impact.</span>
+
+<span class="sd">       A dictionary with the following keys, which correspond to spectroscopic constants, is returned:</span>
+
+<span class="sd">       :param rvals: The bond lengths (in Angstrom) for which energies are</span>
+<span class="sd">           provided, of length at least 5 and equal to the length of the energies array</span>
+
+<span class="sd">       :param energies: The energies (Eh) computed at the bond lengths in the rvals list</span>
+
+<span class="sd">       :param plot_fit: A string describing where to save a plot of the harmonic and anharmonic fits, the</span>
+<span class="sd">           inputted data points, re, r0 and the first few energy levels, if matplotlib</span>
+<span class="sd">           is available.  Set to &#39;screen&#39; to generate an interactive plot on the screen instead. If a filename is</span>
+<span class="sd">           provided, the image type is determined by the extension; see matplotlib for supported file types.</span>
+
+<span class="sd">       :returns: (*dict*) Keys: &quot;re&quot;, &quot;r0&quot;, &quot;we&quot;, &quot;wexe&quot;, &quot;nu&quot;, &quot;ZPVE(harmonic)&quot;, &quot;ZPVE(anharmonic)&quot;, &quot;Be&quot;, &quot;B0&quot;, &quot;ae&quot;, &quot;De&quot;</span>
+<span class="sd">                 corresponding to the spectroscopic constants in cm-1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="mf">1.0</span> <span class="o">/</span> <span class="n">constants</span><span class="o">.</span><span class="n">bohr2angstroms</span>
+    <span class="n">angstrom_to_meter</span> <span class="o">=</span> <span class="mf">10e-10</span>
+
+    <span class="c1"># Make sure the input is valid</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rvals</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">energies</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;The number of energies must match the number of distances&quot;</span><span class="p">)</span>
+    <span class="n">npoints</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rvals</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">npoints</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;At least 5 data points must be provided to compute anharmonicity&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">Performing a fit to </span><span class="si">%d</span><span class="s2"> data points</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">npoints</span><span class="p">)</span>
+
+    <span class="c1"># Sort radii and values first from lowest to highest radius</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">rvals</span><span class="p">)</span>
+    <span class="n">rvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rvals</span><span class="p">)[</span><span class="n">indices</span><span class="p">]</span>
+    <span class="n">energies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">energies</span><span class="p">)[</span><span class="n">indices</span><span class="p">]</span>
+
+    <span class="c1"># Make sure the molecule the user provided is the active one</span>
+    <span class="n">molecule</span><span class="o">.</span><span class="n">update_geometry</span><span class="p">()</span>
+    <span class="n">natoms</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">natom</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">natoms</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;The current molecule must be a diatomic for this code to work!&quot;</span><span class="p">)</span>
+    <span class="n">m1</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">mass</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">m2</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">mass</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Find rval of the minimum of energies, check number of points left and right</span>
+    <span class="n">min_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">min_index</span> <span class="o">&lt;</span> <span class="mi">3</span> <span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Warning: fewer than 3 points provided with a r &lt; r(min(E))!</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">min_index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span> <span class="o">-</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Warning: fewer than 3 points provided with a r &gt; r(min(E))!</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Optimize the geometry, refitting the surface around each new geometry</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Optimizing geometry based on current surface:</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">re</span> <span class="o">=</span> <span class="n">rvals</span><span class="p">[</span><span class="n">min_index</span><span class="p">]</span>
+    <span class="n">maxit</span> <span class="o">=</span> <span class="mi">30</span>
+    <span class="n">thres</span> <span class="o">=</span> <span class="mf">1.0e-9</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">maxit</span><span class="p">):</span>
+        <span class="n">derivs</span> <span class="o">=</span> <span class="n">least_squares_fit_polynomial</span><span class="p">(</span><span class="n">rvals</span><span class="p">,</span><span class="n">energies</span><span class="p">,</span><span class="n">localization_point</span><span class="o">=</span><span class="n">re</span><span class="p">)</span>
+        <span class="n">e</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">H</span> <span class="o">=</span> <span class="n">derivs</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;       E = </span><span class="si">%20.14f</span><span class="s2">, x = </span><span class="si">%14.7f</span><span class="s2">, grad = </span><span class="si">%20.14f</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">g</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">thres</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">re</span> <span class="o">-=</span> <span class="n">g</span><span class="o">/</span><span class="n">H</span><span class="p">;</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">maxit</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ConvergenceError</span><span class="p">(</span><span class="s2">&quot;diatomic geometry optimization&quot;</span><span class="p">,</span> <span class="n">maxit</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; Final E = </span><span class="si">%20.14f</span><span class="s2">, x = </span><span class="si">%14.7f</span><span class="s2">, grad = </span><span class="si">%20.14f</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">g</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">re</span> <span class="o">&lt;</span> <span class="nb">min</span><span class="p">(</span><span class="n">rvals</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Minimum energy point is outside range of points provided.  Use a lower range of r values.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">re</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">rvals</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Minimum energy point is outside range of points provided.  Use a higher range of r values.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Convert to convenient units, and compute spectroscopic constants</span>
+    <span class="n">d0</span><span class="p">,</span><span class="n">d1</span><span class="p">,</span><span class="n">d2</span><span class="p">,</span><span class="n">d3</span><span class="p">,</span><span class="n">d4</span> <span class="o">=</span> <span class="n">derivs</span><span class="o">*</span><span class="n">constants</span><span class="o">.</span><span class="n">hartree2aJ</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Equilibrium Energy </span><span class="si">%20.14f</span><span class="s2"> Hartrees</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">e</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gradient           </span><span class="si">%20.14f</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">g</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Quadratic Force Constant </span><span class="si">%14.7f</span><span class="s2"> MDYNE/A</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">d2</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cubic Force Constant     </span><span class="si">%14.7f</span><span class="s2"> MDYNE/A**2</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">d3</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Quartic Force Constant   </span><span class="si">%14.7f</span><span class="s2"> MDYNE/A**3</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">d4</span><span class="p">)</span>
+
+    <span class="n">constants</span><span class="o">.</span><span class="n">h</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="p">((</span><span class="n">m1</span><span class="o">*</span><span class="n">m2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">m1</span><span class="o">+</span><span class="n">m2</span><span class="p">))</span><span class="o">*</span><span class="n">constants</span><span class="o">.</span><span class="n">amu2kg</span>
+    <span class="n">we</span> <span class="o">=</span> <span class="mf">5.3088375e-11</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d2</span><span class="o">/</span><span class="n">mu</span><span class="p">)</span>
+    <span class="n">wexe</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.2415491e-6</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">we</span><span class="o">/</span><span class="n">d2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">((</span><span class="mf">5.0</span><span class="o">*</span><span class="n">d3</span><span class="o">*</span><span class="n">d3</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">3.0</span><span class="o">*</span><span class="n">d2</span><span class="p">)</span><span class="o">-</span><span class="n">d4</span><span class="p">)</span>
+
+    <span class="c1"># Rotational constant: Be</span>
+    <span class="n">I</span> <span class="o">=</span> <span class="p">((</span><span class="n">m1</span><span class="o">*</span><span class="n">m2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">m1</span><span class="o">+</span><span class="n">m2</span><span class="p">))</span> <span class="o">*</span> <span class="n">constants</span><span class="o">.</span><span class="n">amu2kg</span> <span class="o">*</span> <span class="p">(</span><span class="n">re</span> <span class="o">*</span> <span class="n">angstrom_to_meter</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">h</span> <span class="o">/</span> <span class="p">(</span><span class="mf">8.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">constants</span><span class="o">.</span><span class="n">c</span> <span class="o">*</span> <span class="n">I</span><span class="p">)</span>
+
+    <span class="c1"># alpha_e and quartic centrifugal distortion constant</span>
+    <span class="n">ae</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="mf">6.0</span> <span class="o">*</span> <span class="n">B</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">we</span><span class="p">)</span> <span class="o">*</span> <span class="p">((</span><span class="mf">1.05052209e-3</span><span class="o">*</span><span class="n">we</span><span class="o">*</span><span class="n">d3</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">B</span> <span class="o">*</span> <span class="n">d2</span><span class="o">**</span><span class="mi">3</span><span class="p">))</span><span class="o">+</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">de</span> <span class="o">=</span> <span class="mf">4.0</span><span class="o">*</span><span class="n">B</span><span class="o">**</span><span class="mi">3</span> <span class="o">/</span> <span class="n">we</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="c1"># B0 and r0 (plus re check using Be)</span>
+    <span class="n">B0</span> <span class="o">=</span> <span class="n">B</span> <span class="o">-</span> <span class="n">ae</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="n">r0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">h</span> <span class="o">/</span> <span class="p">(</span><span class="mf">8.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">mu</span> <span class="o">*</span> <span class="n">constants</span><span class="o">.</span><span class="n">c</span> <span class="o">*</span> <span class="n">B0</span><span class="p">))</span>
+    <span class="n">recheck</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">h</span> <span class="o">/</span> <span class="p">(</span><span class="mf">8.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">mu</span> <span class="o">*</span> <span class="n">constants</span><span class="o">.</span><span class="n">c</span> <span class="o">*</span> <span class="n">B</span><span class="p">))</span>
+    <span class="n">r0</span> <span class="o">/=</span> <span class="n">angstrom_to_meter</span>
+    <span class="n">recheck</span> <span class="o">/=</span> <span class="n">angstrom_to_meter</span>
+
+    <span class="c1"># Fundamental frequency nu</span>
+    <span class="n">nu</span> <span class="o">=</span> <span class="n">we</span> <span class="o">-</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">wexe</span>
+    <span class="n">zpve_nu</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">we</span> <span class="o">-</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">wexe</span>
+    <span class="n">zpve_we</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">we</span>
+
+    <span class="c1"># Generate pretty pictures, if requested</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">plot_fit</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">Plot not generated; matplotlib is not installed on this machine.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="c1"># Correct the derivatives for the missing factorial prefactors</span>
+        <span class="n">dvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">dvals</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">derivs</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span>
+        <span class="n">dvals</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/=</span> <span class="mi">2</span>
+        <span class="n">dvals</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">/=</span> <span class="mi">6</span>
+        <span class="n">dvals</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">/=</span> <span class="mi">24</span>
+
+        <span class="c1"># Default plot range, before considering energy levels</span>
+        <span class="n">minE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span>
+        <span class="n">maxE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">energies</span><span class="p">)</span>
+        <span class="n">minR</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rvals</span><span class="p">)</span>
+        <span class="n">maxR</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">rvals</span><span class="p">)</span>
+
+        <span class="c1"># Plot vibrational energy levels</span>
+        <span class="n">we_au</span> <span class="o">=</span> <span class="n">we</span> <span class="o">/</span> <span class="n">constants</span><span class="o">.</span><span class="n">hartree2wavenumbers</span>
+        <span class="n">wexe_au</span> <span class="o">=</span> <span class="n">wexe</span> <span class="o">/</span> <span class="n">constants</span><span class="o">.</span><span class="n">hartree2wavenumbers</span>
+        <span class="n">coefs2</span> <span class="o">=</span> <span class="p">[</span> <span class="n">dvals</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">dvals</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dvals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">]</span>
+        <span class="n">coefs4</span> <span class="o">=</span> <span class="p">[</span> <span class="n">dvals</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">dvals</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">dvals</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">dvals</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dvals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">]</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">Eharm</span> <span class="o">=</span> <span class="n">we_au</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="n">Evpt2</span> <span class="o">=</span> <span class="n">Eharm</span> <span class="o">-</span> <span class="n">wexe_au</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mf">0.5</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">coefs2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">Eharm</span>
+            <span class="n">coefs4</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">Evpt2</span>
+            <span class="n">roots2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roots</span><span class="p">(</span><span class="n">coefs2</span><span class="p">)</span>
+            <span class="n">roots4</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roots</span><span class="p">(</span><span class="n">coefs4</span><span class="p">)</span>
+            <span class="n">xvals2</span> <span class="o">=</span> <span class="n">roots2</span> <span class="o">+</span> <span class="n">re</span>
+            <span class="n">xvals4</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">choose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isreal</span><span class="p">(</span><span class="n">roots4</span><span class="p">)),</span> <span class="n">roots4</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="n">re</span>
+            <span class="n">Eharm</span> <span class="o">+=</span> <span class="n">dvals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">Evpt2</span> <span class="o">+=</span> <span class="n">dvals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xvals2</span><span class="p">,</span> <span class="p">[</span><span class="n">Eharm</span><span class="p">,</span> <span class="n">Eharm</span><span class="p">],</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xvals4</span><span class="p">,</span> <span class="p">[</span><span class="n">Evpt2</span><span class="p">,</span> <span class="n">Evpt2</span><span class="p">],</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">maxE</span> <span class="o">=</span> <span class="n">Eharm</span>
+            <span class="n">maxR</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">([</span><span class="n">xvals2</span><span class="p">,</span><span class="n">xvals4</span><span class="p">])</span>
+            <span class="n">minR</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">([</span><span class="n">xvals2</span><span class="p">,</span><span class="n">xvals4</span><span class="p">])</span>
+
+        <span class="c1"># Find ranges for the plot</span>
+        <span class="n">dE</span> <span class="o">=</span> <span class="n">maxE</span> <span class="o">-</span> <span class="n">minE</span>
+        <span class="n">minE</span> <span class="o">-=</span> <span class="mf">0.2</span><span class="o">*</span><span class="n">dE</span>
+        <span class="n">maxE</span> <span class="o">+=</span> <span class="mf">0.4</span><span class="o">*</span><span class="n">dE</span>
+        <span class="n">dR</span> <span class="o">=</span> <span class="n">maxR</span> <span class="o">-</span> <span class="n">minR</span>
+        <span class="n">minR</span> <span class="o">-=</span> <span class="mf">0.2</span><span class="o">*</span><span class="n">dR</span>
+        <span class="n">maxR</span> <span class="o">+=</span> <span class="mf">0.2</span><span class="o">*</span><span class="n">dR</span>
+
+        <span class="c1"># Generate the fitted PES</span>
+        <span class="n">xpts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">minR</span><span class="p">,</span> <span class="n">maxR</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+        <span class="n">xrel</span> <span class="o">=</span> <span class="n">xpts</span> <span class="o">-</span> <span class="n">re</span>
+        <span class="n">xpows</span> <span class="o">=</span> <span class="n">xrel</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">**</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">fit2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;xd,d&#39;</span><span class="p">,</span> <span class="n">xpows</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">dvals</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span>
+        <span class="n">fit4</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;xd,d&#39;</span><span class="p">,</span> <span class="n">xpows</span><span class="p">,</span> <span class="n">dvals</span><span class="p">)</span>
+
+        <span class="c1"># Make / display the plot</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xpts</span><span class="p">,</span> <span class="n">fit2</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Harmonic (quadratic) fit&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xpts</span><span class="p">,</span> <span class="n">fit4</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Anharmonic (quartic) fit&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">re</span><span class="p">,</span> <span class="n">re</span><span class="p">],</span> <span class="p">[</span><span class="n">minE</span><span class="p">,</span> <span class="n">maxE</span><span class="p">],</span> <span class="s1">&#39;b--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">r0</span><span class="p">,</span> <span class="n">r0</span><span class="p">],</span> <span class="p">[</span><span class="n">minE</span><span class="p">,</span> <span class="n">maxE</span><span class="p">],</span> <span class="s1">&#39;g--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">rvals</span><span class="p">,</span> <span class="n">energies</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;Black&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Input Data&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Bond length (Angstroms)&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Energy (Eh)&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">minR</span><span class="p">,</span> <span class="n">maxR</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">minE</span><span class="p">,</span> <span class="n">maxE</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">plot_fit</span> <span class="o">==</span> <span class="s1">&#39;screen&#39;</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">plot_fit</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">PES fit saved to </span><span class="si">%s</span><span class="s2">.</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">plot_fit</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">re       = </span><span class="si">%10.6f</span><span class="s2"> A  check: </span><span class="si">%10.6f</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">re</span><span class="p">,</span> <span class="n">recheck</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;r0       = </span><span class="si">%10.6f</span><span class="s2"> A</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">r0</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;E at re  = </span><span class="si">%17.10f</span><span class="s2"> Eh</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">e</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;we       = </span><span class="si">%10.4f</span><span class="s2"> cm-1</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">we</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;wexe     = </span><span class="si">%10.4f</span><span class="s2"> cm-1</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">wexe</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;nu       = </span><span class="si">%10.4f</span><span class="s2"> cm-1</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">nu</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ZPVE(we) = </span><span class="si">%10.4f</span><span class="s2"> cm-1</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">zpve_we</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ZPVE(nu) = </span><span class="si">%10.4f</span><span class="s2"> cm-1</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">zpve_nu</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Be       = </span><span class="si">%10.4f</span><span class="s2"> cm-1</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">B</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;B0       = </span><span class="si">%10.4f</span><span class="s2"> cm-1</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">B0</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ae       = </span><span class="si">%10.4f</span><span class="s2"> cm-1</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ae</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;De       = </span><span class="si">%10.7f</span><span class="s2"> cm-1</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">de</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">{</span>
+               <span class="s2">&quot;re&quot;</span>               <span class="p">:</span>  <span class="n">re</span><span class="p">,</span>
+               <span class="s2">&quot;r0&quot;</span>               <span class="p">:</span>  <span class="n">r0</span><span class="p">,</span>
+               <span class="s2">&quot;we&quot;</span>               <span class="p">:</span>  <span class="n">we</span><span class="p">,</span>
+               <span class="s2">&quot;wexe&quot;</span>             <span class="p">:</span>  <span class="n">wexe</span><span class="p">,</span>
+               <span class="s2">&quot;nu&quot;</span>               <span class="p">:</span>  <span class="n">nu</span><span class="p">,</span>
+               <span class="s2">&quot;E(re)&quot;</span>            <span class="p">:</span>  <span class="n">e</span><span class="p">,</span>
+               <span class="s2">&quot;ZPVE(harmonic)&quot;</span>   <span class="p">:</span>  <span class="n">zpve_we</span><span class="p">,</span>
+               <span class="s2">&quot;ZPVE(anharmonic)&quot;</span> <span class="p">:</span>  <span class="n">zpve_nu</span><span class="p">,</span>
+               <span class="s2">&quot;Be&quot;</span>               <span class="p">:</span>  <span class="n">B</span><span class="p">,</span>
+               <span class="s2">&quot;B0&quot;</span>               <span class="p">:</span>  <span class="n">B0</span><span class="p">,</span>
+               <span class="s2">&quot;ae&quot;</span>               <span class="p">:</span>  <span class="n">ae</span><span class="p">,</span>
+               <span class="s2">&quot;De&quot;</span>               <span class="p">:</span>  <span class="n">de</span>
+              <span class="p">}</span>
+    <span class="k">return</span> <span class="n">results</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../../../index.html" title="index">
+          <img class="logo" src="../../../_static/qcdbsquare.png" alt="Logo"/>
+        </a></p><!-- 
+#
+# @BEGIN LICENSE
+#
+# Psi4: an open-source quantum chemistry software package
+#
+# Copyright (c) 2007-2017 The Psi4 Developers.
+#
+# The copyrights for code used from other parties are included in
+# the corresponding files.
+#
+# This file is part of Psi4.
+#
+# Psi4 is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# Psi4 is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License along
+# with Psi4; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# @END LICENSE
+# -->
+
+
+<div id="searchbox" style="display: none" role="search">
+  <!--<h3>Quick search</h3>-->
+    <form class="search" action="../../../search.html" method="get">
+      <!--<div><input type="text" name="q" placeholder="search docs" /></div>-->
+      <div><input type="text" name="q" placeholder="&#xF002;" style="font-family:FontAwesome, Ariel" /></div>
+      <!--<div><input type="submit" value="Go" /></div>-->
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >Index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../../../index.html" title="Table Of Contents"
+             ><i class="fa fa-book fa-lg"></i></a> &nbsp; &nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/blob/master/README.md"><i class="fa fa-home fa-lg"></i></a></li>
+    <li><a href="https://github.com/qcdb/qcdb"><i class="fa fa-github fa-lg"></i></a></li>
+    <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
+    <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/diatomic.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
+    <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
+    <li class="nav-item nav-item-0"><a href="../../../index.html">
+        <span style="font-family: Optima, sans-serif;">QCDB</span>
+        </a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a><i class="fa fa-angle-double-right" style="color: #a2a7b3; text-shadow: none;"></i></li>
+        <li class="nav-item nav-item-this"><a href="">qcdb.driver.diatomic</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013-2021, The QCDB Project.
+      Last updated on Tuesday, 16 November 2021 10:11PM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.0.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

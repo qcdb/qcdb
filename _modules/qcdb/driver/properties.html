@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/psi4.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noticia+Text:400,i,b,bi|Open+Sans:400,i,b,bi|Roboto+Mono:400,i,b,bi&amp;display=swap" type="text/css" />
     
     <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
@@ -90,7 +90,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/properties.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g3e45af5">0+untagged.1.g3e45af5</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../../../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -114,16 +114,14 @@
 <span class="sd">functionality, namely properties calculations</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="c1">#import copy</span>
+<span class="c1"># import copy</span>
 <span class="kn">import</span> <span class="nn">pprint</span>
 
 <span class="kn">from</span> <span class="nn">..keywords</span> <span class="kn">import</span> <span class="n">register_kwds</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">pe</span>  <span class="c1"># keep this at top of imports</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">driver_helpers</span><span class="p">,</span> <span class="n">driver_util</span>
-<span class="kn">from</span> <span class="nn">.proc_table</span> <span class="kn">import</span> <span class="n">procedures</span>
 
 <span class="n">pp</span> <span class="o">=</span> <span class="n">pprint</span><span class="o">.</span><span class="n">PrettyPrinter</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
-
 
 
 <div class="viewcode-block" id="properties"><a class="viewcode-back" href="../../../api/qcdb.properties.html#qcdb.properties">[docs]</a><span class="nd">@register_kwds</span><span class="p">(</span><span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="p">)</span>
@@ -131,36 +129,36 @@
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Function to compute the single-point electronic properties.&quot;&quot;&quot;</span>
 
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">load_proc_table</span>
+
     <span class="n">kwargs</span> <span class="o">=</span> <span class="n">driver_util</span><span class="o">.</span><span class="n">kwargs_lower</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="s1">&#39;options&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-        <span class="n">driver_helpers</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;options&#39;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="s2">&quot;options&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">driver_helpers</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;options&quot;</span><span class="p">))</span>
 
     <span class="c1"># Bounce if name is function</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;__call__&#39;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">name</span><span class="p">(</span><span class="n">properties</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;custom function&#39;</span><span class="p">),</span> <span class="n">ptype</span><span class="o">=</span><span class="s1">&#39;properties&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;__call__&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">name</span><span class="p">(</span><span class="n">properties</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;custom function&quot;</span><span class="p">),</span> <span class="n">ptype</span><span class="o">=</span><span class="s2">&quot;properties&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="c1"># Allow specification of methods to arbitrary order</span>
     <span class="n">lowername</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
     <span class="n">lowername</span><span class="p">,</span> <span class="n">level</span> <span class="o">=</span> <span class="n">driver_helpers</span><span class="o">.</span><span class="n">_parse_arbitrary_order</span><span class="p">(</span><span class="n">lowername</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">level</span><span class="p">:</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">level</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">level</span>
 
     <span class="c1"># Make sure the molecule the user provided is the active one</span>
-    <span class="n">molecule</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;molecule&#39;</span><span class="p">,</span> <span class="n">driver_helpers</span><span class="o">.</span><span class="n">get_active_molecule</span><span class="p">())</span>
+    <span class="n">molecule</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;molecule&quot;</span><span class="p">,</span> <span class="n">driver_helpers</span><span class="o">.</span><span class="n">get_active_molecule</span><span class="p">())</span>
     <span class="n">molecule</span><span class="o">.</span><span class="n">update_geometry</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="o">.</span><span class="n">scroll</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="c1">#print(&#39;EMPTY OPT&#39;)</span>
+        <span class="c1"># print(&#39;EMPTY OPT&#39;)</span>
         <span class="n">pe</span><span class="o">.</span><span class="n">load_options</span><span class="p">()</span>
 
-    <span class="c1">#return_wfn = kwargs.pop(&#39;return_wfn&#39;, False)</span>
+    <span class="c1"># return_wfn = kwargs.pop(&#39;return_wfn&#39;, False)</span>
     <span class="n">pe</span><span class="o">.</span><span class="n">active_qcvars</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="n">package</span> <span class="o">=</span> <span class="n">driver_util</span><span class="o">.</span><span class="n">get_package</span><span class="p">(</span><span class="n">lowername</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span></div>
-    
-    <span class="c1">#jobrec = procedures[&#39;properties&#39;][package][lowername](lowername, molecule=molecule, options=pe.nu_options, ptype=&#39;properties&#39;, **kwargs)</span>
+    <span class="n">driver_util</span><span class="o">.</span><span class="n">get_package</span><span class="p">(</span><span class="n">lowername</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span></div>
 
+    <span class="c1"># jobrec = procedures[&#39;properties&#39;][package][lowername](lowername, molecule=molecule, options=pe.nu_options, ptype=&#39;properties&#39;, **kwargs)</span>
 </pre></div>
 
             <div class="clearer"></div>
@@ -252,7 +250,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/properties.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g3e45af5">0+untagged.1.g3e45af5</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../../../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -266,8 +264,8 @@
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2021, The QCDB Project.
-      Last updated on Sunday, 12 September 2021 05:49PM.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.2.0.
+      Last updated on Tuesday, 16 November 2021 10:11PM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.0.
     </div>
     <!-- cloud_sptheme 1.4 -->
   </body>

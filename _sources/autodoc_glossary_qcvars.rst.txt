@@ -3,10 +3,43 @@
 QCVariables by Alpha
 ====================
 
+.. qcvar:: (Q) CORRECTION ENERGY
+
+   The coupled-cluster perturbative quadruples correction.
+   units: [Eh]
+
 .. qcvar:: (T) CORRECTION ENERGY
 
    The coupled-cluster perturbative triples correction.
    units: [Eh]
+
+.. qcvar:: A-(T) CORRECTION ENERGY
+
+   The coupled-cluster asymmetric perturbative triples correction.
+   Identical to the "(AT)" and the "Lambda-CCSD(T)" correction.
+   units: [Eh]
+
+.. qcvar:: A-CCSD(T) CORRELATION ENERGY
+
+   The correlation energy for the coupled cluster singles, doubles, and asymmetric perturbative triples excitations. Also known as Lambda-CCSD(T) or CCSD(AT). level of theory.
+   units: [Eh]
+
+.. qcvar:: A-CCSD(T) TOTAL ENERGY
+
+   The total electronic energy for the coupled cluster singles, doubles, and asymmetric perturbative triples excitations. Also known as Lambda-CCSD(T) or CCSD(AT). level of theory.
+   units: [Eh]
+
+.. qcvar:: A-CCSD(T) TOTAL GRADIENT
+
+   The total electronic gradient for the coupled cluster singles, doubles, and asymmetric perturbative triples excitations. Also known as Lambda-CCSD(T) or CCSD(AT). level of theory.
+   units: [Eh/a0]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: A-CCSD(T) TOTAL HESSIAN
+
+   The total electronic Hessian for the coupled cluster singles, doubles, and asymmetric perturbative triples excitations. Also known as Lambda-CCSD(T) or CCSD(AT). level of theory.
+   units: [Eh/a0/a0]
+   dimension: [(3 * {nat}, 3 * {nat})]
 
 .. qcvar:: B2GPPLYP DIPOLE
 
@@ -184,6 +217,12 @@ QCVariables by Alpha
    The total electronic energy for the B3LYP level of theory.
    units: [Eh]
 
+.. qcvar:: B3LYP TOTAL GRADIENT
+
+   The total electronic gradient for the B3LYP DFT level of theory.
+   units: [Eh/a0]
+   dimension: [({nat}, 3)]
+
 .. qcvar:: B3LYP-D2 DISPERSION CORRECTION ENERGY
 
    The dispersion correction defined for appending to underlying functional
@@ -301,6 +340,12 @@ QCVariables by Alpha
 
    The total electronic energy for the B3LYP5 level of theory.
    units: [Eh]
+
+.. qcvar:: B3LYP5 TOTAL GRADIENT
+
+   The total electronic gradient for the B3LYP5 DFT level of theory.
+   units: [Eh/a0]
+   dimension: [({nat}, 3)]
 
 .. qcvar:: B3LYP5-D2 DISPERSION CORRECTION ENERGY
 
@@ -832,12 +877,27 @@ QCVariables by Alpha
    The total electronic energy for the compound method requested through cbs().
    units: [Eh]
 
+.. qcvar:: CC D1 DIAGNOSTIC
+
+   Diagnostic of multireference character.
+   units: []
+
+.. qcvar:: CC D2 DIAGNOSTIC
+
+   Diagnostic of multireference character.
+   units: []
+
 .. qcvar:: CC DIPOLE
 
    The total dipole for the CC level of theory
    and root *n* (number starts at GS = 0).
    units: [e a0]
    dimension: [(3,)]
+
+.. qcvar:: CC NEW D1 DIAGNOSTIC
+
+   Diagnostic of multireference character.
+   units: []
 
 .. qcvar:: CC QUADRUPOLE
 
@@ -846,9 +906,34 @@ QCVariables by Alpha
    units: [e a0^2]
    dimension: [(3,3)]
 
+.. qcvar:: CC T1 DIAGNOSTIC
+
+   Diagnostic of multireference character.
+   units: []
+
 .. qcvar:: CCD CORRELATION ENERGY
 
    The correlation energy component for the coupled cluster doubles level of theory.
+   units: [Eh]
+
+.. qcvar:: CCD DOUBLES ENERGY
+
+   The doubles portion of the CCD correlation energy including same-spin and opposite-spin correlations.
+   units: [Eh]
+
+.. qcvar:: CCD OPPOSITE-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the CCD correlation energy from opposite-spin or singlet doubles correlations.
+   units: [Eh]
+
+.. qcvar:: CCD SAME-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the CCD correlation energy from same-spin or triplet doubles correlations.
+   units: [Eh]
+
+.. qcvar:: CCD SINGLES ENERGY
+
+   The singles portion of the CCD correlation energy. Zero except in ROHF.
    units: [Eh]
 
 .. qcvar:: CCD TOTAL ENERGY
@@ -856,6 +941,18 @@ QCVariables by Alpha
    The total electronic energy
    for the coupled cluster doubles level of theory.
    units: [Eh]
+
+.. qcvar:: CCD TOTAL GRADIENT
+
+   The total electronic gradient for the coupled cluster doubles level of theory.
+   units: [Eh/a0]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: CCD TOTAL HESSIAN
+
+   The total electronic Hessian for the coupled cluster doubles level of theory.
+   units: [Eh/a0/a0]
+   dimension: [(3 * {nat}, 3 * {nat})]
 
 .. qcvar:: CCSD CORRELATION ENERGY
 
@@ -884,10 +981,15 @@ QCVariables by Alpha
 
 .. qcvar:: CCSD DIPOLE
 
-   The total dipole for the CCSD level of theory
-   and root *n* (number starts at GS = 0).
+   The total dipole for the CCSD level of theory and root *n* (number starts at GS = 0).
    units: [e a0]
    dimension: [(3,)]
+
+.. qcvar:: CCSD DIPOLE GRADIENT
+
+   The derivative of the CCSD level of theory with respect to nuclear perturbations as a degree-of-freedom by dipole component array.
+   units: [Eh a0/u]
+   dimension: [(3 * {nat}, 3)]
 
 .. qcvar:: CCSD DOUBLES ENERGY
 
@@ -910,8 +1012,7 @@ QCVariables by Alpha
 
 .. qcvar:: CCSD QUADRUPOLE
 
-   The total quadrupole for the CCSD level of theory
-   and root *n* (number starts at GS = 0).
+   The total quadrupole for the {mtd} level of theory and root *n* (number starts at GS = 0).
    units: [e a0^2]
    dimension: [(3,3)]
 
@@ -940,19 +1041,64 @@ QCVariables by Alpha
 
    The total electronic gradient
    for the coupled cluster singles and doubles level of theory.
-   units: [Eh/a0/a0]
+   units: [Eh/a0]
    dimension: [({nat}, 3)]
+
+.. qcvar:: CCSD TOTAL HESSIAN
+
+   The total electronic Hessian
+   for the coupled cluster singles and doubles level of theory.
+   units: [Eh/a0/a0]
+   dimension: [(3 * {nat}, 3 * {nat})]
 
 .. qcvar:: CCSD(T) CORRELATION ENERGY
 
-   The correlation energy component
-   for the coupled cluster singles and doubles plus perturbative triples level of theory.
+   The correlation energy for the coupled cluster singles, doubles, and perturbative triples excitations. level of theory.
    units: [Eh]
+
+.. qcvar:: CCSD(T) DIPOLE
+
+   The total dipole for the CCSD(T) level of theory and root *n* (number starts at GS = 0).
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: CCSD(T) DIPOLE GRADIENT
+
+   The derivative of the CCSD(T) level of theory with respect to nuclear perturbations as a degree-of-freedom by dipole component array.
+   units: [Eh a0/u]
+   dimension: [(3 * {nat}, 3)]
+
+.. qcvar:: CCSD(T) QUADRUPOLE
+
+   The total quadrupole for the {mtd} level of theory and root *n* (number starts at GS = 0).
+   units: [e a0^2]
+   dimension: [(3,3)]
 
 .. qcvar:: CCSD(T) TOTAL ENERGY
 
-   The total electronic energy
-   for the coupled cluster singles and doubles plus perturbative triples level of theory.
+   The total electronic energy for the coupled cluster singles, doubles, and perturbative triples excitations. level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSD(T) TOTAL GRADIENT
+
+   The total electronic gradient for the coupled cluster singles, doubles, and perturbative triples excitations. level of theory.
+   units: [Eh/a0]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: CCSD(T) TOTAL HESSIAN
+
+   The total electronic Hessian for the coupled cluster singles, doubles, and perturbative triples excitations. level of theory.
+   units: [Eh/a0/a0]
+   dimension: [(3 * {nat}, 3 * {nat})]
+
+.. qcvar:: CCSD+T(CCSD) CORRELATION ENERGY
+
+   The correlation energy for the coupled cluster singles and doubles with triples evaluated at converged CCSD amplitudes level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSD+T(CCSD) TOTAL ENERGY
+
+   The total electronic energy for the coupled cluster singles and doubles with triples evaluated at converged CCSD amplitudes level of theory.
    units: [Eh]
 
 .. qcvar:: CCSDT (PBE) CORRELATION ENERGY
@@ -982,15 +1128,152 @@ QCVariables by Alpha
 
 .. qcvar:: CCSDT CORRELATION ENERGY
 
-   The correlation energy component
-   for the coupled cluster singles and doubles plus perturbative triples level of theory.
+   The correlation energy for the coupled cluster singles, doubles, and triples excitations level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSDT DOUBLES ENERGY
+
+   The doubles portion of the CCSDT correlation energy including same-spin and opposite-spin correlations.
+   units: [Eh]
+
+.. qcvar:: CCSDT OPPOSITE-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the CCSDT correlation energy from opposite-spin or singlet doubles correlations.
+   units: [Eh]
+
+.. qcvar:: CCSDT SAME-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the CCSDT correlation energy from same-spin or triplet doubles correlations.
+   units: [Eh]
+
+.. qcvar:: CCSDT SINGLES ENERGY
+
+   The singles portion of the CCSDT correlation energy. Zero except in ROHF.
    units: [Eh]
 
 .. qcvar:: CCSDT TOTAL ENERGY
 
-   The total electronic energy
-   for the coupled cluster singles and doubles plus perturbative triples level of theory.
+   The total electronic energy for the coupled cluster singles, doubles, and triples excitations level of theory.
    units: [Eh]
+
+.. qcvar:: CCSDT TOTAL GRADIENT
+
+   The total electronic gradient for the coupled cluster singles, doubles, and triples excitations level of theory.
+   units: [Eh/a0]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: CCSDT TOTAL HESSIAN
+
+   The total electronic Hessian for the coupled cluster singles, doubles, and triples excitations level of theory.
+   units: [Eh/a0/a0]
+   dimension: [(3 * {nat}, 3 * {nat})]
+
+.. qcvar:: CCSDT(Q) CORRELATION ENERGY
+
+   The correlation energy component
+   for the coupled cluster singles and doubles and triples plus perturbative quadruples level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSDT(Q) TOTAL ENERGY
+
+   The total electronic energy
+   for the coupled cluster singles doubles triples plus perturbative quadruples level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSDT(Q) TOTAL GRADIENT
+
+   The total electronic gradient
+   for the coupled cluster singles, doubles, and triples, plus perturbative quadruples level of theory.
+   units: [Eh/a0]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: CCSDT-1A CORRELATION ENERGY
+
+   The correlation energy for the coupled cluster singles, doubles, and triples excitations at approximation 1a level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSDT-1A TOTAL ENERGY
+
+   The total electronic energy for the coupled cluster singles, doubles, and triples excitations at approximation 1a level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSDT-1A TOTAL GRADIENT
+
+   The total electronic gradient for the coupled cluster singles, doubles, and triples excitations at approximation 1a level of theory.
+   units: [Eh/a0]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: CCSDT-1A TOTAL HESSIAN
+
+   The total electronic Hessian for the coupled cluster singles, doubles, and triples excitations at approximation 1a level of theory.
+   units: [Eh/a0/a0]
+   dimension: [(3 * {nat}, 3 * {nat})]
+
+.. qcvar:: CCSDT-1B CORRELATION ENERGY
+
+   The correlation energy for the coupled cluster singles, doubles, and triples excitations at approximation 1b level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSDT-1B TOTAL ENERGY
+
+   The total electronic energy for the coupled cluster singles, doubles, and triples excitations at approximation 1b level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSDT-1B TOTAL GRADIENT
+
+   The total electronic gradient for the coupled cluster singles, doubles, and triples excitations at approximation 1b level of theory.
+   units: [Eh/a0]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: CCSDT-1B TOTAL HESSIAN
+
+   The total electronic Hessian for the coupled cluster singles, doubles, and triples excitations at approximation 1b level of theory.
+   units: [Eh/a0/a0]
+   dimension: [(3 * {nat}, 3 * {nat})]
+
+.. qcvar:: CCSDT-2 CORRELATION ENERGY
+
+   The correlation energy for the coupled cluster singles, doubles, and triples excitations at approximation 2 level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSDT-2 TOTAL ENERGY
+
+   The total electronic energy for the coupled cluster singles, doubles, and triples excitations at approximation 2 level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSDT-2 TOTAL GRADIENT
+
+   The total electronic gradient for the coupled cluster singles, doubles, and triples excitations at approximation 2 level of theory.
+   units: [Eh/a0]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: CCSDT-2 TOTAL HESSIAN
+
+   The total electronic Hessian for the coupled cluster singles, doubles, and triples excitations at approximation 2 level of theory.
+   units: [Eh/a0/a0]
+   dimension: [(3 * {nat}, 3 * {nat})]
+
+.. qcvar:: CCSDT-3 CORRELATION ENERGY
+
+   The correlation energy for the coupled cluster singles, doubles, and triples excitations at approximation 3 level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSDT-3 TOTAL ENERGY
+
+   The total electronic energy for the coupled cluster singles, doubles, and triples excitations at approximation 3 level of theory.
+   units: [Eh]
+
+.. qcvar:: CCSDT-3 TOTAL GRADIENT
+
+   The total electronic gradient for the coupled cluster singles, doubles, and triples excitations at approximation 3 level of theory.
+   units: [Eh/a0]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: CCSDT-3 TOTAL HESSIAN
+
+   The total electronic Hessian for the coupled cluster singles, doubles, and triples excitations at approximation 3 level of theory.
+   units: [Eh/a0/a0]
+   dimension: [(3 * {nat}, 3 * {nat})]
 
 .. qcvar:: CCSDTQ CORRELATION ENERGY
 
@@ -1011,6 +1294,32 @@ QCVariables by Alpha
       
    units: [Eh]
 
+.. qcvar:: CCSDTQ DOUBLES ENERGY
+
+   The doubles portion of the CCSDTQ correlation energy
+   including same-spin and opposite-spin correlations.
+   :math:`E_{\text{D}}` in Eq. :eq:`CCSDTQcorl`.
+   units: [Eh]
+
+.. qcvar:: CCSDTQ OPPOSITE-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the CCSDTQ correlation energy
+   from opposite-spin or singlet doubles correlations.
+   units: [Eh]
+
+.. qcvar:: CCSDTQ SAME-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the CCSDTQ correlation energy
+   from same-spin or triplet doubles correlations.
+   units: [Eh]
+
+.. qcvar:: CCSDTQ SINGLES ENERGY
+
+   The singles portion of the CCSDTQ correlation energy.
+   Zero except in ROHF.
+   :math:`E_{\text{S}}` in Eq. :eq:`CCSDTQcorl`.
+   units: [Eh]
+
 .. qcvar:: CCSDTQ TOTAL ENERGY
 
    The total electronic energy
@@ -1018,16 +1327,53 @@ QCVariables by Alpha
    .. qcvar:: CCSDTQ TOTAL ENERGY
    units: [Eh]
 
-.. qcvar:: CCSD[T] CORRELATION ENERGY
+.. qcvar:: CCSDTQ TOTAL GRADIENT
+
+   The total electronic gradient
+   for the coupled cluster singles, doubles, triples, and quadruples level of theory.
+   units: [Eh/a0]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: CCSDT[Q] CORRELATION ENERGY
 
    The correlation energy component
-   for the coupled cluster singles and doubles plus bracket perturbative triples level of theory.
+   for the coupled cluster singles and doubles and triples plus bracket perturbative quadruples level of theory.
    units: [Eh]
 
-.. qcvar:: CCSD[T] TOTAL ENERGY
+.. qcvar:: CCSDT[Q] TOTAL ENERGY
 
    The total electronic energy
-   for the coupled cluster singles and doubles plus bracket perturbative triples level of theory.
+   for the coupled cluster singles doubles triples plus bracket perturbative quadruples level of theory.
+   units: [Eh]
+
+.. qcvar:: CEPA(0) CORRELATION ENERGY
+
+   The correlation energy for the coupled electron pair approximation, variant 0 level of theory.
+   units: [Eh]
+
+.. qcvar:: CEPA(0) DOUBLES ENERGY
+
+   The doubles portion of the CEPA(0) correlation energy including same-spin and opposite-spin correlations.
+   units: [Eh]
+
+.. qcvar:: CEPA(0) OPPOSITE-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the CEPA(0) correlation energy from opposite-spin or singlet doubles correlations.
+   units: [Eh]
+
+.. qcvar:: CEPA(0) SAME-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the CEPA(0) correlation energy from same-spin or triplet doubles correlations.
+   units: [Eh]
+
+.. qcvar:: CEPA(0) SINGLES ENERGY
+
+   The singles portion of the CEPA(0) correlation energy. Zero except in ROHF.
+   units: [Eh]
+
+.. qcvar:: CEPA(0) TOTAL ENERGY
+
+   The total electronic energy for the coupled electron pair approximation, variant 0 level of theory.
    units: [Eh]
 
 .. qcvar:: CI CORRELATION ENERGY
@@ -1100,12 +1446,32 @@ QCVariables by Alpha
 
 .. qcvar:: CISD CORRELATION ENERGY
 
-   The correlation energy corresponding to configuration interaction with single and doubles calculation.
+   The correlation energy for the configuration interaction with singles and doubles level of theory.
+   units: [Eh]
+
+.. qcvar:: CISD DOUBLES ENERGY
+
+   The doubles portion of the CISD correlation energy including same-spin and opposite-spin correlations.
+   units: [Eh]
+
+.. qcvar:: CISD OPPOSITE-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the CISD correlation energy from opposite-spin or singlet doubles correlations.
+   units: [Eh]
+
+.. qcvar:: CISD SAME-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the CISD correlation energy from same-spin or triplet doubles correlations.
+   units: [Eh]
+
+.. qcvar:: CISD SINGLES ENERGY
+
+   The singles portion of the CISD correlation energy. Zero except in ROHF.
    units: [Eh]
 
 .. qcvar:: CISD TOTAL ENERGY
 
-   The total energy for a configuration interaction with singles and doubles calculation.
+   The total electronic energy for the configuration interaction with singles and doubles level of theory.
    units: [Eh]
 
 .. qcvar:: CISDT CORRELATION ENERGY
@@ -1292,6 +1658,11 @@ QCVariables by Alpha
    :qcvar:`DFT FUNCTIONAL TOTAL ENERGY`.
    units: [Eh]
 
+.. qcvar:: DFT TOTAL GRADIENT
+
+   The total electronic gradient for the requested DFT method.
+   units: [Eh/a0]
+
 .. qcvar:: DFT VV10 ENERGY
 
    The functional energy contribution to the total SCF energy (DFT only).
@@ -1472,6 +1843,11 @@ QCVariables by Alpha
    for the full configuration interaction level of theory.
    units: [Eh]
 
+.. qcvar:: FINDIF NUMBER
+
+   The number of single-point calculations to obtain a finite-difference derivative.
+   units: []
+
 .. qcvar:: FT97 DIPOLE
 
    The total dipole for the FT97 level of theory.
@@ -1494,6 +1870,21 @@ QCVariables by Alpha
 
    The total electronic energy for the FT97 level of theory.
    units: [Eh]
+
+.. qcvar:: GRID ELECTRONS ALPHA
+
+   The number of alpha electrons integrated by the xc quadrature grid.
+   units: []
+
+.. qcvar:: GRID ELECTRONS BETA
+
+   The number of beta electrons integrated by the xc quadrature grid.
+   units: []
+
+.. qcvar:: GRID ELECTRONS TOTAL
+
+   The number of total electrons integrated by the xc quadrature grid.
+   units: []
 
 .. qcvar:: GROUND-STATE SYMMETRY
 
@@ -1530,7 +1921,7 @@ QCVariables by Alpha
 .. qcvar:: HF TOTAL GRADIENT
 
    The total electronic gradient of the Hartree--Fock method.
-   units: [Eh/a0/a0]
+   units: [Eh/a0]
    dimension: [({nat}, 3)]
 
 .. qcvar:: HF TOTAL HESSIAN
@@ -1550,14 +1941,66 @@ QCVariables by Alpha
    The correlation energy for linearized coupled cluster doubles level of theory.
    units: [Eh]
 
+.. qcvar:: LCCD DOUBLES ENERGY
+
+   The doubles portion of the LCCD correlation energy including same-spin and opposite-spin correlations.
+   units: [Eh]
+
+.. qcvar:: LCCD OPPOSITE-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the LCCD correlation energy from opposite-spin or singlet doubles correlations.
+   units: [Eh]
+
+.. qcvar:: LCCD SAME-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the LCCD correlation energy from same-spin or triplet doubles correlations.
+   units: [Eh]
+
+.. qcvar:: LCCD SINGLES ENERGY
+
+   The singles portion of the LCCD correlation energy. Zero except in ROHF.
+   units: [Eh]
+
 .. qcvar:: LCCD TOTAL ENERGY
 
    The total energy for linearized coupled cluster doubles level of theory.
    units: [Eh]
 
+.. qcvar:: LCCD TOTAL GRADIENT
+
+   The total electronic gradient for the linearized coupled cluster doubles level of theory.
+   units: [Eh/a0]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: LCCD TOTAL HESSIAN
+
+   The total electronic Hessian for the linearized coupled cluster doubles level of theory.
+   units: [Eh/a0/a0]
+   dimension: [(3 * {nat}, 3 * {nat})]
+
 .. qcvar:: LCCSD CORRELATION ENERGY
 
    The correlation energy for linearized coupled cluster singles and doubles level of theory.
+   units: [Eh]
+
+.. qcvar:: LCCSD DOUBLES ENERGY
+
+   The doubles portion of the LCCSD correlation energy including same-spin and opposite-spin correlations.
+   units: [Eh]
+
+.. qcvar:: LCCSD OPPOSITE-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the LCCSD correlation energy from opposite-spin or singlet doubles correlations.
+   units: [Eh]
+
+.. qcvar:: LCCSD SAME-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the LCCSD correlation energy from same-spin or triplet doubles correlations.
+   units: [Eh]
+
+.. qcvar:: LCCSD SINGLES ENERGY
+
+   The singles portion of the LCCSD correlation energy. Zero except in ROHF.
    units: [Eh]
 
 .. qcvar:: LCCSD TOTAL ENERGY
@@ -1618,6 +2061,18 @@ QCVariables by Alpha
       
    units: [Eh]
 
+.. qcvar:: MP2 DIPOLE
+
+   The total dipole for the MP2 level of theory and root *n* (number starts at GS = 0).
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: MP2 DIPOLE GRADIENT
+
+   The derivative of the MP2 level of theory with respect to nuclear perturbations as a degree-of-freedom by dipole component array.
+   units: [Eh a0/u]
+   dimension: [(3 * {nat}, 3)]
+
 .. qcvar:: MP2 DOUBLES ENERGY
 
    The doubles portion of the MP2 correlation energy
@@ -1631,6 +2086,12 @@ QCVariables by Alpha
    from opposite-spin or singlet doubles correlations.
    :math:`E_{\text{OS}}` in Eq. :eq:`MP2corl`.
    units: [Eh]
+
+.. qcvar:: MP2 QUADRUPOLE
+
+   The total quadrupole for the {mtd} level of theory and root *n* (number starts at GS = 0).
+   units: [e a0^2]
+   dimension: [(3,3)]
 
 .. qcvar:: MP2 SAME-SPIN CORRELATION ENERGY
 
@@ -1656,8 +2117,14 @@ QCVariables by Alpha
 .. qcvar:: MP2 TOTAL GRADIENT
 
    The total electronic gradient of the MP2 method.
-   units: [Eh/a0/a0]
+   units: [Eh/a0]
    dimension: [({nat}, 3)]
+
+.. qcvar:: MP2 TOTAL HESSIAN
+
+   The total electronic Hessian of the MP2 method.
+   units: [Eh/a0/a0]
+   dimension: [(3 * {nat}, 3 * {nat})]
 
 .. qcvar:: MP2.5 CORRELATION ENERGY
 
@@ -1715,52 +2182,45 @@ QCVariables by Alpha
 
 .. qcvar:: MP3 CORRELATION ENERGY
 
-   The correlation energy component for 3-order Perturbation theory.
-      
-   .. math::
-      :nowrap:
-      :label: MP3corl
-      
-         \begin{align*}
-            E_{\text{MP3corl}} & = E_{\text{S}} + E_{\text{SS}} + E_{\text{OS}} \\
-                               & = E_{\text{S}} + E_{\text{D}}
-         \end{align*}
-      
+   The correlation energy for the 3rd-order Moller--Plesset perturbation theory level of theory.
    units: [Eh]
 
 .. qcvar:: MP3 DOUBLES ENERGY
 
-   The doubles portion of the MP3 correlation energy
-   including same-spin and opposite-spin correlations.
-   :math:`E_{\text{D}}` in Eq. :eq:`MP3corl`.
+   The doubles portion of the MP3 correlation energy including same-spin and opposite-spin correlations.
    units: [Eh]
 
 .. qcvar:: MP3 OPPOSITE-SPIN CORRELATION ENERGY
 
-   The unscaled portion of the MP3 correlation energy
-   from opposite-spin or singlet doubles correlations.
-   :math:`E_{\text{OS}}` in Eq. :eq:`MP3corl`.
+   The unscaled portion of the MP3 correlation energy from opposite-spin or singlet doubles correlations.
    units: [Eh]
 
 .. qcvar:: MP3 SAME-SPIN CORRELATION ENERGY
 
-   The unscaled portion of the MP3 correlation energy
-   from same-spin or triplet doubles correlations.
-   canonical_corl(os_scale=1, ss_scale=1) = singles + os_scale * (tot_corl - ss_corl) + ss_scale * ss_corl
-   :math:`E_{\text{SS}}` in Eq. :eq:`MP3corl`.
+   The unscaled portion of the MP3 correlation energy from same-spin or triplet doubles correlations.
    units: [Eh]
 
 .. qcvar:: MP3 SINGLES ENERGY
 
-   The singles portion of the MP3 correlation energy.
-   Zero except in ROHF.
-   :math:`E_{\text{S}}` in Eq. :eq:`MP3corl`.
+   The singles portion of the MP3 correlation energy. Zero except in ROHF.
    units: [Eh]
 
 .. qcvar:: MP3 TOTAL ENERGY
 
-   The total electronic energy for 3-order Perturbation theory.
+   The total electronic energy for the 3rd-order Moller--Plesset perturbation theory level of theory.
    units: [Eh]
+
+.. qcvar:: MP3 TOTAL GRADIENT
+
+   The total electronic gradient for the 3rd-order Moller--Plesset perturbation theory level of theory.
+   units: [Eh/a0]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: MP3 TOTAL HESSIAN
+
+   The total electronic Hessian for the 3rd-order Moller--Plesset perturbation theory level of theory.
+   units: [Eh/a0/a0]
+   dimension: [(3 * {nat}, 3 * {nat})]
 
 .. qcvar:: MP4 CORRECTION ENERGY
 
@@ -1775,6 +2235,31 @@ QCVariables by Alpha
 .. qcvar:: MP4 TOTAL ENERGY
 
    The total electronic energy for 4-order Perturbation theory.
+   units: [Eh]
+
+.. qcvar:: MP4(SDQ) CORRELATION ENERGY
+
+   The correlation energy for the 4rd-order Moller--Plesset perturbation theory without triples excitations level of theory.
+   units: [Eh]
+
+.. qcvar:: MP4(SDQ) TOTAL ENERGY
+
+   The total electronic energy for the 4rd-order Moller--Plesset perturbation theory without triples excitations level of theory.
+   units: [Eh]
+
+.. qcvar:: MP4(SDTQ) CORRELATION ENERGY
+
+   The correlation energy for the 4rd-order Moller--Plesset perturbation theory level of theory.
+   units: [Eh]
+
+.. qcvar:: MP4(SDTQ) TOTAL ENERGY
+
+   The total electronic energy for the 4rd-order Moller--Plesset perturbation theory level of theory.
+   units: [Eh]
+
+.. qcvar:: MP4(T) CORRECTION ENERGY
+
+   The MP4 triples component. Difference between MP4 and MP4(SDQ).
    units: [Eh]
 
 .. qcvar:: MP5 CORRELATION ENERGY
@@ -1822,8 +2307,8 @@ QCVariables by Alpha
 
 .. qcvar:: N ALPHA ELECTRONS
 
-   The number of alpha electrons
-   units: [Eh]
+   The number of alpha electrons.
+   units: []
 
 .. qcvar:: N ATOMS
 
@@ -1842,8 +2327,8 @@ QCVariables by Alpha
 
 .. qcvar:: N BETA ELECTRONS
 
-   The number of beta electrons
-   units: [Eh]
+   The number of beta electrons.
+   units: []
 
 .. qcvar:: N MO
 
@@ -1893,6 +2378,12 @@ QCVariables by Alpha
 
    The total electronic energy for the PBE level of theory.
    units: [Eh]
+
+.. qcvar:: PBE TOTAL GRADIENT
+
+   The total electronic gradient for the PBE DFT level of theory.
+   units: [Eh/a0]
+   dimension: [({nat}, 3)]
 
 .. qcvar:: PBE-D2 DISPERSION CORRECTION ENERGY
 
@@ -2304,12 +2795,47 @@ QCVariables by Alpha
 
 .. qcvar:: QCISD CORRELATION ENERGY
 
-   The correlation energy for a quadratic configuration interaction with singles and doubles calculation.
+   The correlation energy for the quadratic configuration interaction singles and doubles level of theory.
+   units: [Eh]
+
+.. qcvar:: QCISD DOUBLES ENERGY
+
+   The doubles portion of the QCISD correlation energy including same-spin and opposite-spin correlations.
+   units: [Eh]
+
+.. qcvar:: QCISD OPPOSITE-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the QCISD correlation energy from opposite-spin or singlet doubles correlations.
+   units: [Eh]
+
+.. qcvar:: QCISD SAME-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the QCISD correlation energy from same-spin or triplet doubles correlations.
+   units: [Eh]
+
+.. qcvar:: QCISD SINGLES ENERGY
+
+   The singles portion of the QCISD correlation energy. Zero except in ROHF.
    units: [Eh]
 
 .. qcvar:: QCISD TOTAL ENERGY
 
-   The total energy for a quadratic configuration interaction with singles and doubles calculation.
+   The total electronic energy for the quadratic configuration interaction singles and doubles level of theory.
+   units: [Eh]
+
+.. qcvar:: QCISD(T) CORRECTION ENERGY
+
+   The quadratice configuration interaction singles and doubles triples correction.
+   units: [Eh]
+
+.. qcvar:: QCISD(T) CORRELATION ENERGY
+
+   The correlation energy for the quadratic configuration interaction singles and doubles with perturbative triples level of theory.
+   units: [Eh]
+
+.. qcvar:: QCISD(T) TOTAL ENERGY
+
+   The total electronic energy for the quadratic configuration interaction singles and doubles with perturbative triples level of theory.
    units: [Eh]
 
 .. qcvar:: SCF DIPOLE
@@ -2368,7 +2894,7 @@ QCVariables by Alpha
 
    The total electronic gradient of the SCF stage of a calculation.
    May be HF or DFT.
-   units: [Eh/a0/a0]
+   units: [Eh/a0]
    dimension: [({nat}, 3)]
 
 .. qcvar:: SCF TOTAL HESSIAN
@@ -2489,104 +3015,700 @@ QCVariables by Alpha
    The total electronic energy for the SVWN level of theory.
    units: [Eh]
 
-.. qcvar:: TDDFT ROOT 1 EXCITATION ENERGY - [] SYMMETRY
+.. qcvar:: T(CCSD) CORRECTION ENERGY
 
-   The excitation energy of time-dependent DFT in [] symmetry from 0 to root 1
+   The coupled-cluster triples correction evaluated with CCSD amplitudes.
+   Identical to the "[T]" bracket T correction.
    units: [Eh]
 
-.. qcvar:: TDDFT ROOT 1 EXCITED STATE ENERGY - [] SYMMETRY
+.. qcvar:: TDDFT ROOT 0 -> ROOT 1 DIPOLE
 
-   The excited state energy of time dependent DFT from root 0 to root 1 in [] symmetry
+   The transition dipole array between roots 0 and 1 for the TDDFT level of theory (number starts at GS = 0).
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 1 OSCILLATOR STRENGTH (LEN)
+
+   The oscillator strength in length or velocity gauge of named method
+   from ground state to root m in h symmetry (if available). DFT
+   functional labeled if canonical.
+   units: []
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 1 QUADRUPOLE
+
+   The redundant transition quadrupole between roots {i} and {j} for the {mtd} level of theory (number starts at GS = 0). {extra}
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 10 DIPOLE
+
+   The transition dipole array between roots 0 and 10 for the TDDFT level of theory (number starts at GS = 0).
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 10 OSCILLATOR STRENGTH (LEN)
+
+   The oscillator strength in length or velocity gauge of named method
+   from ground state to root m in h symmetry (if available). DFT
+   functional labeled if canonical.
+   units: []
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 10 QUADRUPOLE
+
+   The redundant transition quadrupole between roots {i} and {j} for the {mtd} level of theory (number starts at GS = 0). {extra}
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 2 DIPOLE
+
+   The transition dipole array between roots 0 and 2 for the TDDFT level of theory (number starts at GS = 0).
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 2 OSCILLATOR STRENGTH (LEN)
+
+   The oscillator strength in length or velocity gauge of named method
+   from ground state to root m in h symmetry (if available). DFT
+   functional labeled if canonical.
+   units: []
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 2 QUADRUPOLE
+
+   The redundant transition quadrupole between roots {i} and {j} for the {mtd} level of theory (number starts at GS = 0). {extra}
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 3 DIPOLE
+
+   The transition dipole array between roots 0 and 3 for the TDDFT level of theory (number starts at GS = 0).
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 3 OSCILLATOR STRENGTH (LEN)
+
+   The oscillator strength in length or velocity gauge of named method
+   from ground state to root m in h symmetry (if available). DFT
+   functional labeled if canonical.
+   units: []
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 3 QUADRUPOLE
+
+   The redundant transition quadrupole between roots {i} and {j} for the {mtd} level of theory (number starts at GS = 0). {extra}
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 4 DIPOLE
+
+   The transition dipole array between roots 0 and 4 for the TDDFT level of theory (number starts at GS = 0).
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 4 OSCILLATOR STRENGTH (LEN)
+
+   The oscillator strength in length or velocity gauge of named method
+   from ground state to root m in h symmetry (if available). DFT
+   functional labeled if canonical.
+   units: []
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 4 QUADRUPOLE
+
+   The redundant transition quadrupole between roots {i} and {j} for the {mtd} level of theory (number starts at GS = 0). {extra}
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 5 DIPOLE
+
+   The transition dipole array between roots 0 and 5 for the TDDFT level of theory (number starts at GS = 0).
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 5 OSCILLATOR STRENGTH (LEN)
+
+   The oscillator strength in length or velocity gauge of named method
+   from ground state to root m in h symmetry (if available). DFT
+   functional labeled if canonical.
+   units: []
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 5 QUADRUPOLE
+
+   The redundant transition quadrupole between roots {i} and {j} for the {mtd} level of theory (number starts at GS = 0). {extra}
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 6 DIPOLE
+
+   The transition dipole array between roots 0 and 6 for the TDDFT level of theory (number starts at GS = 0).
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 6 OSCILLATOR STRENGTH (LEN)
+
+   The oscillator strength in length or velocity gauge of named method
+   from ground state to root m in h symmetry (if available). DFT
+   functional labeled if canonical.
+   units: []
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 6 QUADRUPOLE
+
+   The redundant transition quadrupole between roots {i} and {j} for the {mtd} level of theory (number starts at GS = 0). {extra}
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 7 DIPOLE
+
+   The transition dipole array between roots 0 and 7 for the TDDFT level of theory (number starts at GS = 0).
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 7 OSCILLATOR STRENGTH (LEN)
+
+   The oscillator strength in length or velocity gauge of named method
+   from ground state to root m in h symmetry (if available). DFT
+   functional labeled if canonical.
+   units: []
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 7 QUADRUPOLE
+
+   The redundant transition quadrupole between roots {i} and {j} for the {mtd} level of theory (number starts at GS = 0). {extra}
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 8 DIPOLE
+
+   The transition dipole array between roots 0 and 8 for the TDDFT level of theory (number starts at GS = 0).
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 8 OSCILLATOR STRENGTH (LEN)
+
+   The oscillator strength in length or velocity gauge of named method
+   from ground state to root m in h symmetry (if available). DFT
+   functional labeled if canonical.
+   units: []
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 8 QUADRUPOLE
+
+   The redundant transition quadrupole between roots {i} and {j} for the {mtd} level of theory (number starts at GS = 0). {extra}
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 9 DIPOLE
+
+   The transition dipole array between roots 0 and 9 for the TDDFT level of theory (number starts at GS = 0).
+   units: [e a0]
+   dimension: [(3,)]
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 9 OSCILLATOR STRENGTH (LEN)
+
+   The oscillator strength in length or velocity gauge of named method
+   from ground state to root m in h symmetry (if available). DFT
+   functional labeled if canonical.
+   units: []
+
+.. qcvar:: TDDFT ROOT 0 -> ROOT 9 QUADRUPOLE
+
+   The redundant transition quadrupole between roots {i} and {j} for the {mtd} level of theory (number starts at GS = 0). {extra}
+   units: [e a0^2]
+   dimension: [(3,3)]
+
+.. qcvar:: TDDFT ROOT 1 EXCITATION ENERGY - AG SYMMETRY
+
+   The excitation energy of time-dependent DFT in AG symmetry from 0 to root 1
    units: [Eh]
 
-.. qcvar:: TDDFT ROOT 10 EXCITATION ENERGY - [] SYMMETRY
+.. qcvar:: TDDFT ROOT 1 EXCITATION ENERGY - AU SYMMETRY
 
-   The excitation energy of time-dependent DFT in [] symmetry from 0 to root 10
+   The excitation energy of time-dependent DFT in AU symmetry from 0 to root 1
    units: [Eh]
 
-.. qcvar:: TDDFT ROOT 10 EXCITED STATE ENERGY - [] SYMMETRY
+.. qcvar:: TDDFT ROOT 1 EXCITATION ENERGY - B1U SYMMETRY
 
-   The excited state energy of time dependent DFT from root 0 to root 10 in [] symmetry
+   The excitation energy of time-dependent DFT in B1U symmetry from 0 to root 1
    units: [Eh]
 
-.. qcvar:: TDDFT ROOT 2 EXCITATION ENERGY - [] SYMMETRY
+.. qcvar:: TDDFT ROOT 1 EXCITATION ENERGY - B2U SYMMETRY
 
-   The excitation energy of time-dependent DFT in [] symmetry from 0 to root 2
+   The excitation energy of time-dependent DFT in B2U symmetry from 0 to root 1
    units: [Eh]
 
-.. qcvar:: TDDFT ROOT 2 EXCITED STATE ENERGY - [] SYMMETRY
+.. qcvar:: TDDFT ROOT 1 EXCITATION ENERGY - B3U SYMMETRY
 
-   The excited state energy of time dependent DFT from root 0 to root 2 in [] symmetry
+   The excitation energy of time-dependent DFT in B3U symmetry from 0 to root 1
    units: [Eh]
 
-.. qcvar:: TDDFT ROOT 3 EXCITATION ENERGY - [] SYMMETRY
+.. qcvar:: TDDFT ROOT 1 EXCITED STATE ENERGY - AG SYMMETRY
 
-   The excitation energy of time-dependent DFT in [] symmetry from 0 to root 3
+   The excited state energy of time dependent DFT from root 0 to root 1 in AG symmetry
    units: [Eh]
 
-.. qcvar:: TDDFT ROOT 3 EXCITED STATE ENERGY - [] SYMMETRY
+.. qcvar:: TDDFT ROOT 1 EXCITED STATE ENERGY - AU SYMMETRY
 
-   The excited state energy of time dependent DFT from root 0 to root 3 in [] symmetry
+   The excited state energy of time dependent DFT from root 0 to root 1 in AU symmetry
    units: [Eh]
 
-.. qcvar:: TDDFT ROOT 4 EXCITATION ENERGY - [] SYMMETRY
+.. qcvar:: TDDFT ROOT 1 EXCITED STATE ENERGY - B1U SYMMETRY
 
-   The excitation energy of time-dependent DFT in [] symmetry from 0 to root 4
+   The excited state energy of time dependent DFT from root 0 to root 1 in B1U symmetry
    units: [Eh]
 
-.. qcvar:: TDDFT ROOT 4 EXCITED STATE ENERGY - [] SYMMETRY
+.. qcvar:: TDDFT ROOT 1 EXCITED STATE ENERGY - B2U SYMMETRY
 
-   The excited state energy of time dependent DFT from root 0 to root 4 in [] symmetry
+   The excited state energy of time dependent DFT from root 0 to root 1 in B2U symmetry
    units: [Eh]
 
-.. qcvar:: TDDFT ROOT 5 EXCITATION ENERGY - [] SYMMETRY
+.. qcvar:: TDDFT ROOT 1 EXCITED STATE ENERGY - B3U SYMMETRY
 
-   The excitation energy of time-dependent DFT in [] symmetry from 0 to root 5
+   The excited state energy of time dependent DFT from root 0 to root 1 in B3U symmetry
    units: [Eh]
 
-.. qcvar:: TDDFT ROOT 5 EXCITED STATE ENERGY - [] SYMMETRY
+.. qcvar:: TDDFT ROOT 10 EXCITATION ENERGY - AG SYMMETRY
 
-   The excited state energy of time dependent DFT from root 0 to root 5 in [] symmetry
+   The excitation energy of time-dependent DFT in AG symmetry from 0 to root 10
    units: [Eh]
 
-.. qcvar:: TDDFT ROOT 6 EXCITATION ENERGY - [] SYMMETRY
+.. qcvar:: TDDFT ROOT 10 EXCITATION ENERGY - AU SYMMETRY
 
-   The excitation energy of time-dependent DFT in [] symmetry from 0 to root 6
+   The excitation energy of time-dependent DFT in AU symmetry from 0 to root 10
    units: [Eh]
 
-.. qcvar:: TDDFT ROOT 6 EXCITED STATE ENERGY - [] SYMMETRY
+.. qcvar:: TDDFT ROOT 10 EXCITATION ENERGY - B1U SYMMETRY
 
-   The excited state energy of time dependent DFT from root 0 to root 6 in [] symmetry
+   The excitation energy of time-dependent DFT in B1U symmetry from 0 to root 10
    units: [Eh]
 
-.. qcvar:: TDDFT ROOT 7 EXCITATION ENERGY - [] SYMMETRY
+.. qcvar:: TDDFT ROOT 10 EXCITATION ENERGY - B2U SYMMETRY
 
-   The excitation energy of time-dependent DFT in [] symmetry from 0 to root 7
+   The excitation energy of time-dependent DFT in B2U symmetry from 0 to root 10
    units: [Eh]
 
-.. qcvar:: TDDFT ROOT 7 EXCITED STATE ENERGY - [] SYMMETRY
+.. qcvar:: TDDFT ROOT 10 EXCITATION ENERGY - B3U SYMMETRY
 
-   The excited state energy of time dependent DFT from root 0 to root 7 in [] symmetry
+   The excitation energy of time-dependent DFT in B3U symmetry from 0 to root 10
    units: [Eh]
 
-.. qcvar:: TDDFT ROOT 8 EXCITATION ENERGY - [] SYMMETRY
+.. qcvar:: TDDFT ROOT 10 EXCITED STATE ENERGY - AG SYMMETRY
 
-   The excitation energy of time-dependent DFT in [] symmetry from 0 to root 8
+   The excited state energy of time dependent DFT from root 0 to root 10 in AG symmetry
    units: [Eh]
 
-.. qcvar:: TDDFT ROOT 8 EXCITED STATE ENERGY - [] SYMMETRY
+.. qcvar:: TDDFT ROOT 10 EXCITED STATE ENERGY - AU SYMMETRY
 
-   The excited state energy of time dependent DFT from root 0 to root 8 in [] symmetry
+   The excited state energy of time dependent DFT from root 0 to root 10 in AU symmetry
    units: [Eh]
 
-.. qcvar:: TDDFT ROOT 9 EXCITATION ENERGY - [] SYMMETRY
+.. qcvar:: TDDFT ROOT 10 EXCITED STATE ENERGY - B1U SYMMETRY
 
-   The excitation energy of time-dependent DFT in [] symmetry from 0 to root 9
+   The excited state energy of time dependent DFT from root 0 to root 10 in B1U symmetry
    units: [Eh]
 
-.. qcvar:: TDDFT ROOT 9 EXCITED STATE ENERGY - [] SYMMETRY
+.. qcvar:: TDDFT ROOT 10 EXCITED STATE ENERGY - B2U SYMMETRY
 
-   The excited state energy of time dependent DFT from root 0 to root 9 in [] symmetry
+   The excited state energy of time dependent DFT from root 0 to root 10 in B2U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 10 EXCITED STATE ENERGY - B3U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 10 in B3U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 2 EXCITATION ENERGY - AG SYMMETRY
+
+   The excitation energy of time-dependent DFT in AG symmetry from 0 to root 2
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 2 EXCITATION ENERGY - AU SYMMETRY
+
+   The excitation energy of time-dependent DFT in AU symmetry from 0 to root 2
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 2 EXCITATION ENERGY - B1U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B1U symmetry from 0 to root 2
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 2 EXCITATION ENERGY - B2U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B2U symmetry from 0 to root 2
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 2 EXCITATION ENERGY - B3U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B3U symmetry from 0 to root 2
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 2 EXCITED STATE ENERGY - AG SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 2 in AG symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 2 EXCITED STATE ENERGY - AU SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 2 in AU symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 2 EXCITED STATE ENERGY - B1U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 2 in B1U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 2 EXCITED STATE ENERGY - B2U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 2 in B2U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 2 EXCITED STATE ENERGY - B3U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 2 in B3U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 3 EXCITATION ENERGY - AG SYMMETRY
+
+   The excitation energy of time-dependent DFT in AG symmetry from 0 to root 3
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 3 EXCITATION ENERGY - AU SYMMETRY
+
+   The excitation energy of time-dependent DFT in AU symmetry from 0 to root 3
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 3 EXCITATION ENERGY - B1U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B1U symmetry from 0 to root 3
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 3 EXCITATION ENERGY - B2U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B2U symmetry from 0 to root 3
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 3 EXCITATION ENERGY - B3U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B3U symmetry from 0 to root 3
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 3 EXCITED STATE ENERGY - AG SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 3 in AG symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 3 EXCITED STATE ENERGY - AU SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 3 in AU symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 3 EXCITED STATE ENERGY - B1U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 3 in B1U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 3 EXCITED STATE ENERGY - B2U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 3 in B2U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 3 EXCITED STATE ENERGY - B3U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 3 in B3U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 4 EXCITATION ENERGY - AG SYMMETRY
+
+   The excitation energy of time-dependent DFT in AG symmetry from 0 to root 4
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 4 EXCITATION ENERGY - AU SYMMETRY
+
+   The excitation energy of time-dependent DFT in AU symmetry from 0 to root 4
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 4 EXCITATION ENERGY - B1U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B1U symmetry from 0 to root 4
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 4 EXCITATION ENERGY - B2U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B2U symmetry from 0 to root 4
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 4 EXCITATION ENERGY - B3U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B3U symmetry from 0 to root 4
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 4 EXCITED STATE ENERGY - AG SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 4 in AG symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 4 EXCITED STATE ENERGY - AU SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 4 in AU symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 4 EXCITED STATE ENERGY - B1U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 4 in B1U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 4 EXCITED STATE ENERGY - B2U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 4 in B2U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 4 EXCITED STATE ENERGY - B3U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 4 in B3U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 5 EXCITATION ENERGY - AG SYMMETRY
+
+   The excitation energy of time-dependent DFT in AG symmetry from 0 to root 5
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 5 EXCITATION ENERGY - AU SYMMETRY
+
+   The excitation energy of time-dependent DFT in AU symmetry from 0 to root 5
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 5 EXCITATION ENERGY - B1U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B1U symmetry from 0 to root 5
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 5 EXCITATION ENERGY - B2U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B2U symmetry from 0 to root 5
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 5 EXCITATION ENERGY - B3U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B3U symmetry from 0 to root 5
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 5 EXCITED STATE ENERGY - AG SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 5 in AG symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 5 EXCITED STATE ENERGY - AU SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 5 in AU symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 5 EXCITED STATE ENERGY - B1U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 5 in B1U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 5 EXCITED STATE ENERGY - B2U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 5 in B2U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 5 EXCITED STATE ENERGY - B3U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 5 in B3U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 6 EXCITATION ENERGY - AG SYMMETRY
+
+   The excitation energy of time-dependent DFT in AG symmetry from 0 to root 6
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 6 EXCITATION ENERGY - AU SYMMETRY
+
+   The excitation energy of time-dependent DFT in AU symmetry from 0 to root 6
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 6 EXCITATION ENERGY - B1U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B1U symmetry from 0 to root 6
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 6 EXCITATION ENERGY - B2U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B2U symmetry from 0 to root 6
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 6 EXCITATION ENERGY - B3U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B3U symmetry from 0 to root 6
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 6 EXCITED STATE ENERGY - AG SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 6 in AG symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 6 EXCITED STATE ENERGY - AU SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 6 in AU symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 6 EXCITED STATE ENERGY - B1U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 6 in B1U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 6 EXCITED STATE ENERGY - B2U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 6 in B2U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 6 EXCITED STATE ENERGY - B3U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 6 in B3U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 7 EXCITATION ENERGY - AG SYMMETRY
+
+   The excitation energy of time-dependent DFT in AG symmetry from 0 to root 7
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 7 EXCITATION ENERGY - AU SYMMETRY
+
+   The excitation energy of time-dependent DFT in AU symmetry from 0 to root 7
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 7 EXCITATION ENERGY - B1U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B1U symmetry from 0 to root 7
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 7 EXCITATION ENERGY - B2U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B2U symmetry from 0 to root 7
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 7 EXCITATION ENERGY - B3U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B3U symmetry from 0 to root 7
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 7 EXCITED STATE ENERGY - AG SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 7 in AG symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 7 EXCITED STATE ENERGY - AU SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 7 in AU symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 7 EXCITED STATE ENERGY - B1U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 7 in B1U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 7 EXCITED STATE ENERGY - B2U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 7 in B2U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 7 EXCITED STATE ENERGY - B3U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 7 in B3U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 8 EXCITATION ENERGY - AG SYMMETRY
+
+   The excitation energy of time-dependent DFT in AG symmetry from 0 to root 8
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 8 EXCITATION ENERGY - AU SYMMETRY
+
+   The excitation energy of time-dependent DFT in AU symmetry from 0 to root 8
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 8 EXCITATION ENERGY - B1U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B1U symmetry from 0 to root 8
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 8 EXCITATION ENERGY - B2U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B2U symmetry from 0 to root 8
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 8 EXCITATION ENERGY - B3U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B3U symmetry from 0 to root 8
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 8 EXCITED STATE ENERGY - AG SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 8 in AG symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 8 EXCITED STATE ENERGY - AU SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 8 in AU symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 8 EXCITED STATE ENERGY - B1U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 8 in B1U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 8 EXCITED STATE ENERGY - B2U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 8 in B2U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 8 EXCITED STATE ENERGY - B3U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 8 in B3U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 9 EXCITATION ENERGY - AG SYMMETRY
+
+   The excitation energy of time-dependent DFT in AG symmetry from 0 to root 9
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 9 EXCITATION ENERGY - AU SYMMETRY
+
+   The excitation energy of time-dependent DFT in AU symmetry from 0 to root 9
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 9 EXCITATION ENERGY - B1U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B1U symmetry from 0 to root 9
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 9 EXCITATION ENERGY - B2U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B2U symmetry from 0 to root 9
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 9 EXCITATION ENERGY - B3U SYMMETRY
+
+   The excitation energy of time-dependent DFT in B3U symmetry from 0 to root 9
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 9 EXCITED STATE ENERGY - AG SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 9 in AG symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 9 EXCITED STATE ENERGY - AU SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 9 in AU symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 9 EXCITED STATE ENERGY - B1U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 9 in B1U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 9 EXCITED STATE ENERGY - B2U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 9 in B2U symmetry
+   units: [Eh]
+
+.. qcvar:: TDDFT ROOT 9 EXCITED STATE ENERGY - B3U SYMMETRY
+
+   The excited state energy of time dependent DFT from root 0 to root 9 in B3U symmetry
    units: [Eh]
 
 .. qcvar:: TWO-ELECTRON ENERGY
@@ -2787,7 +3909,7 @@ QCVariables by Alpha
    requested DFT method wpbe, with dispersion correction.
    units: [Eh]
 
-.. qcvar:: [T] CORRECTION ENERGY
+.. qcvar:: [Q] CORRECTION ENERGY
 
-   The coupled-cluster bracket perturbative triples correction.
+   The coupled-cluster bracket perturbative quadruples correction.
    units: [Eh]

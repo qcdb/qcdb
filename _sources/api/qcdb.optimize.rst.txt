@@ -1,0 +1,6 @@
+optimize
+========
+
+.. currentmodule:: qcdb
+
+.. autofunction:: optimize

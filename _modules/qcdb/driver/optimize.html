@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/psi4.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" type="text/css" />
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noticia+Text|Open+Sans|Droid+Sans+Mono" type="text/css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noticia+Text:400,i,b,bi|Open+Sans:400,i,b,bi|Roboto+Mono:400,i,b,bi&amp;display=swap" type="text/css" />
     
     <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
@@ -90,7 +90,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/optimize.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g3e45af5">0+untagged.1.g3e45af5</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../../../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -127,8 +127,7 @@
 <span class="c1">#   import numpy as np</span>
 
 
-
-<span class="c1">#def optimize(name, **kwargs):</span>
+<span class="c1"># def optimize(name, **kwargs):</span>
 <span class="c1">#    r&quot;&quot;&quot;Function to perform a geometry optimization.</span>
 <span class="c1">#</span>
 <span class="c1">#    :aliases: opt()</span>
@@ -289,158 +288,159 @@
 <span class="c1">#    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="optking"><a class="viewcode-back" href="../../../api/qcdb.optking.html#qcdb.optking">[docs]</a><span class="k">def</span> <span class="nf">optking</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">load_proc_table</span>
+
     <span class="n">kwargs</span> <span class="o">=</span> <span class="n">driver_util</span><span class="o">.</span><span class="n">kwargs_lower</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;__call__&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;__call__&quot;</span><span class="p">):</span>
         <span class="n">lowername</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="n">custom_gradient</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">lowername</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-        <span class="n">custom_gradient</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="n">return_wfn</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;return_wfn&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">return_wfn</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;return_wfn&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
     <span class="kn">import</span> <span class="nn">psi4</span>
+
     <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
     <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">clean_options</span><span class="p">()</span>
-    <span class="c1">#psi4.set_output_file(&quot;pytest_output.dat&quot;, True)</span>
+    <span class="c1"># psi4.set_output_file(&quot;pytest_output.dat&quot;, True)</span>
 
-<span class="c1">#    return_history = kwargs.pop(&#39;return_history&#39;, False)</span>
-<span class="c1">#    if return_history:</span>
-<span class="c1">#        # Add wfn once the deep copy issues are worked out</span>
-<span class="c1">#        step_energies      = []</span>
-<span class="c1">#        step_gradients     = []</span>
-<span class="c1">#        step_coordinates   = []</span>
-<span class="c1">#</span>
-    <span class="c1"># For CBS wrapper, need to set retention on INTCO file</span>
-    <span class="k">if</span> <span class="n">custom_gradient</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;/&#39;</span> <span class="ow">in</span> <span class="n">lowername</span><span class="p">):</span>
-        <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">IOManager</span><span class="o">.</span><span class="n">shared_object</span><span class="p">()</span><span class="o">.</span><span class="n">set_specific_retention</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#    return_history = kwargs.pop(&#39;return_history&#39;, False)</span>
+    <span class="c1">#    if return_history:</span>
+    <span class="c1">#        # Add wfn once the deep copy issues are worked out</span>
+    <span class="c1">#        step_energies      = []</span>
+    <span class="c1">#        step_gradients     = []</span>
+    <span class="c1">#        step_coordinates   = []</span>
+    <span class="c1">#</span>
+    <span class="c1">#    # For CBS wrapper, need to set retention on INTCO file</span>
+    <span class="c1">#    if custom_gradient or (&#39;/&#39; in lowername):</span>
+    <span class="c1">#        psi4.core.IOManager.shared_object().set_specific_retention(1, True)</span>
 
-<span class="c1">#    if kwargs.get(&#39;bsse_type&#39;, None) is not None:</span>
-<span class="c1">#        raise ValidationError(&quot;Optimize: Does not currently support &#39;bsse_type&#39; arguements&quot;)</span>
-<span class="c1">#</span>
-<span class="c1">#    full_hess_every = core.get_option(&#39;OPTKING&#39;, &#39;FULL_HESS_EVERY&#39;)</span>
-<span class="c1">#    steps_since_last_hessian = 0</span>
-<span class="c1">#</span>
-<span class="c1">#    if custom_gradient and core.has_option_changed(&#39;OPTKING&#39;, &#39;FULL_HESS_EVERY&#39;):</span>
-<span class="c1">#        raise ValidationError(&quot;Optimize: Does not support custom Hessian&#39;s yet.&quot;)</span>
-<span class="c1">#    else:</span>
-<span class="c1">#        hessian_with_method = kwargs.get(&#39;hessian_with&#39;, lowername)</span>
-<span class="c1">#</span>
-<span class="c1">#    # are we in sow/reap mode?</span>
-<span class="c1">#    opt_mode = kwargs.get(&#39;mode&#39;, &#39;continuous&#39;).lower()</span>
-<span class="c1">#    if opt_mode not in [&#39;continuous&#39;, &#39;sow&#39;, &#39;reap&#39;]:</span>
-<span class="c1">#        raise ValidationError(&quot;&quot;&quot;Optimize execution mode &#39;%s&#39; not valid.&quot;&quot;&quot; % (opt_mode))</span>
-<span class="c1">#</span>
-<span class="c1">#    optstash = p4util.OptionsState(</span>
-<span class="c1">#        [&#39;OPTKING&#39;, &#39;INTRAFRAG_STEP_LIMIT&#39;],</span>
-<span class="c1">#        [&#39;FINDIF&#39;, &#39;HESSIAN_WRITE&#39;],</span>
-<span class="c1">#        [&#39;OPTKING&#39;, &#39;CART_HESS_READ&#39;],</span>
-<span class="c1">#        [&#39;SCF&#39;, &#39;GUESS_PERSIST&#39;],  # handle on behalf of cbs()</span>
-<span class="c1">#        [&#39;SCF&#39;, &#39;GUESS&#39;])</span>
+    <span class="c1">#    if kwargs.get(&#39;bsse_type&#39;, None) is not None:</span>
+    <span class="c1">#        raise ValidationError(&quot;Optimize: Does not currently support &#39;bsse_type&#39; arguements&quot;)</span>
+    <span class="c1">#</span>
+    <span class="c1">#    full_hess_every = core.get_option(&#39;OPTKING&#39;, &#39;FULL_HESS_EVERY&#39;)</span>
+    <span class="c1">#    steps_since_last_hessian = 0</span>
+    <span class="c1">#</span>
+    <span class="c1">#    if custom_gradient and core.has_option_changed(&#39;OPTKING&#39;, &#39;FULL_HESS_EVERY&#39;):</span>
+    <span class="c1">#        raise ValidationError(&quot;Optimize: Does not support custom Hessian&#39;s yet.&quot;)</span>
+    <span class="c1">#    else:</span>
+    <span class="c1">#        hessian_with_method = kwargs.get(&#39;hessian_with&#39;, lowername)</span>
+    <span class="c1">#</span>
+    <span class="c1">#    # are we in sow/reap mode?</span>
+    <span class="c1">#    opt_mode = kwargs.get(&#39;mode&#39;, &#39;continuous&#39;).lower()</span>
+    <span class="c1">#    if opt_mode not in [&#39;continuous&#39;, &#39;sow&#39;, &#39;reap&#39;]:</span>
+    <span class="c1">#        raise ValidationError(&quot;&quot;&quot;Optimize execution mode &#39;%s&#39; not valid.&quot;&quot;&quot; % (opt_mode))</span>
+    <span class="c1">#</span>
+    <span class="c1">#    optstash = p4util.OptionsState(</span>
+    <span class="c1">#        [&#39;OPTKING&#39;, &#39;INTRAFRAG_STEP_LIMIT&#39;],</span>
+    <span class="c1">#        [&#39;FINDIF&#39;, &#39;HESSIAN_WRITE&#39;],</span>
+    <span class="c1">#        [&#39;OPTKING&#39;, &#39;CART_HESS_READ&#39;],</span>
+    <span class="c1">#        [&#39;SCF&#39;, &#39;GUESS_PERSIST&#39;],  # handle on behalf of cbs()</span>
+    <span class="c1">#        [&#39;SCF&#39;, &#39;GUESS&#39;])</span>
 
-    <span class="n">iopt</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;opt_iter&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">iopt</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;opt_iter&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># Make sure the molecule the user provided is the active one</span>
-    <span class="n">molecule</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;molecule&#39;</span><span class="p">,</span> <span class="n">driver_helpers</span><span class="o">.</span><span class="n">get_active_molecule</span><span class="p">())</span>
+    <span class="n">molecule</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;molecule&quot;</span><span class="p">,</span> <span class="n">driver_helpers</span><span class="o">.</span><span class="n">get_active_molecule</span><span class="p">())</span>
     <span class="n">molecule</span><span class="o">.</span><span class="n">update_geometry</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="o">.</span><span class="n">scroll</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;EMPTY OPT&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;EMPTY OPT&quot;</span><span class="p">)</span>
         <span class="n">pe</span><span class="o">.</span><span class="n">load_options</span><span class="p">()</span>
 
-<span class="c1">#    # If we are freezing cartesian, do not orient or COM</span>
-<span class="c1">#    if core.get_local_option(&quot;OPTKING&quot;, &quot;FROZEN_CARTESIAN&quot;):</span>
-<span class="c1">#        molecule.fix_orientation(True)</span>
-<span class="c1">#        molecule.fix_com(True)</span>
-<span class="c1">#    molecule.update_geometry()</span>
-<span class="c1">#</span>
-<span class="c1">#    # Shifting the geometry so need to copy the active molecule</span>
+    <span class="c1">#    # If we are freezing cartesian, do not orient or COM</span>
+    <span class="c1">#    if core.get_local_option(&quot;OPTKING&quot;, &quot;FROZEN_CARTESIAN&quot;):</span>
+    <span class="c1">#        molecule.fix_orientation(True)</span>
+    <span class="c1">#        molecule.fix_com(True)</span>
+    <span class="c1">#    molecule.update_geometry()</span>
+    <span class="c1">#</span>
+    <span class="c1">#    # Shifting the geometry so need to copy the active molecule</span>
     <span class="n">moleculeclone</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
-<span class="c1">#</span>
-<span class="c1">#    initial_sym = moleculeclone.schoenflies_symbol()</span>
-<span class="c1">#    while iopt &lt;= core.get_option(&#39;OPTKING&#39;, &#39;GEOM_MAXITER&#39;):</span>
+    <span class="c1">#</span>
+    <span class="c1">#    initial_sym = moleculeclone.schoenflies_symbol()</span>
+    <span class="c1">#    while iopt &lt;= core.get_option(&#39;OPTKING&#39;, &#39;GEOM_MAXITER&#39;):</span>
 
-    <span class="k">while</span> <span class="n">iopt</span> <span class="o">&lt;=</span> <span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="o">.</span><span class="n">scroll</span><span class="p">[</span><span class="s1">&#39;QCDB&#39;</span><span class="p">][</span><span class="s1">&#39;GEOM_MAXITER&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
-<span class="c1">#        current_sym = moleculeclone.schoenflies_symbol()</span>
-<span class="c1">#        if initial_sym != current_sym:</span>
-<span class="c1">#            raise ValidationError(&quot;&quot;&quot;Point group changed! (%s &lt;-- %s) You should restart &quot;&quot;&quot;</span>
-<span class="c1">#                                  &quot;&quot;&quot;using the last geometry in the output, after &quot;&quot;&quot;</span>
-<span class="c1">#                                  &quot;&quot;&quot;carefully making sure all symmetry-dependent &quot;&quot;&quot;</span>
-<span class="c1">#                                  &quot;&quot;&quot;input, such as DOCC, is correct.&quot;&quot;&quot; %</span>
-<span class="c1">#                                  (current_sym, initial_sym))</span>
-<span class="c1">#        kwargs[&#39;opt_iter&#39;] = iopt</span>
-<span class="c1">#</span>
-<span class="c1">#        # Use orbitals from previous iteration as a guess</span>
-<span class="c1">#        #   set within loop so that can be influenced by fns to optimize (e.g., cbs)</span>
-<span class="c1">#        if (iopt &gt; 1) and (opt_mode == &#39;continuous&#39;) and (not core.get_option(&#39;SCF&#39;, &#39;GUESS_PERSIST&#39;)):</span>
-<span class="c1">#            core.set_local_option(&#39;SCF&#39;, &#39;GUESS&#39;, &#39;READ&#39;)</span>
-<span class="c1">#</span>
-<span class="c1">#        # Before computing gradient, save previous molecule and wavefunction if this is an IRC optimization</span>
-<span class="c1">#        if (iopt &gt; 1) and (core.get_option(&#39;OPTKING&#39;, &#39;OPT_TYPE&#39;) == &#39;IRC&#39;):</span>
-<span class="c1">#            old_thisenergy = core.get_variable(&#39;CURRENT ENERGY&#39;)</span>
+    <span class="k">while</span> <span class="n">iopt</span> <span class="o">&lt;=</span> <span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="o">.</span><span class="n">scroll</span><span class="p">[</span><span class="s2">&quot;QCDB&quot;</span><span class="p">][</span><span class="s2">&quot;GEOM_MAXITER&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+        <span class="c1">#        current_sym = moleculeclone.schoenflies_symbol()</span>
+        <span class="c1">#        if initial_sym != current_sym:</span>
+        <span class="c1">#            raise ValidationError(&quot;&quot;&quot;Point group changed! (%s &lt;-- %s) You should restart &quot;&quot;&quot;</span>
+        <span class="c1">#                                  &quot;&quot;&quot;using the last geometry in the output, after &quot;&quot;&quot;</span>
+        <span class="c1">#                                  &quot;&quot;&quot;carefully making sure all symmetry-dependent &quot;&quot;&quot;</span>
+        <span class="c1">#                                  &quot;&quot;&quot;input, such as DOCC, is correct.&quot;&quot;&quot; %</span>
+        <span class="c1">#                                  (current_sym, initial_sym))</span>
+        <span class="c1">#        kwargs[&#39;opt_iter&#39;] = iopt</span>
+        <span class="c1">#</span>
+        <span class="c1">#        # Use orbitals from previous iteration as a guess</span>
+        <span class="c1">#        #   set within loop so that can be influenced by fns to optimize (e.g., cbs)</span>
+        <span class="c1">#        if (iopt &gt; 1) and (opt_mode == &#39;continuous&#39;) and (not core.get_option(&#39;SCF&#39;, &#39;GUESS_PERSIST&#39;)):</span>
+        <span class="c1">#            core.set_local_option(&#39;SCF&#39;, &#39;GUESS&#39;, &#39;READ&#39;)</span>
+        <span class="c1">#</span>
+        <span class="c1">#        # Before computing gradient, save previous molecule and wavefunction if this is an IRC optimization</span>
+        <span class="c1">#        if (iopt &gt; 1) and (core.get_option(&#39;OPTKING&#39;, &#39;OPT_TYPE&#39;) == &#39;IRC&#39;):</span>
+        <span class="c1">#            old_thisenergy = core.get_variable(&#39;CURRENT ENERGY&#39;)</span>
 
-        <span class="c1"># Compute the gradient</span>
+        <span class="c1"># Compute the gradient - preserve opt data despite core.clean calls in gradient</span>
+        <span class="c1">#        psi4.core.IOManager.shared_object().set_specific_retention(1, True)</span>
         <span class="n">G</span><span class="p">,</span> <span class="n">jobrec</span> <span class="o">=</span> <span class="n">gradient</span><span class="p">(</span><span class="n">lowername</span><span class="p">,</span> <span class="n">return_wfn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">molecule</span><span class="o">=</span><span class="n">moleculeclone</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">thisenergy</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT ENERGY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">thisenergy</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jobrec</span><span class="p">[</span><span class="s2">&quot;qcvars&quot;</span><span class="p">][</span><span class="s2">&quot;CURRENT ENERGY&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 
-<span class="c1">#        # above, used to be getting energy as last of energy list from gradient()</span>
-<span class="c1">#        # thisenergy below should ultimately be testing on wfn.energy()</span>
-<span class="c1">#</span>
-<span class="c1">#        # Record optimization steps</span>
-<span class="c1">#        # Add wavefunctions later</span>
-<span class="c1">#        if return_history:</span>
-<span class="c1">#            step_energies.append(thisenergy)</span>
-<span class="c1">#            step_coordinates.append(moleculeclone.geometry())</span>
-<span class="c1">#            step_gradients.append(G.clone())</span>
-<span class="c1">#</span>
-<span class="c1">#        # S/R: Quit after getting new displacements or if forming gradient fails</span>
-<span class="c1">#        if opt_mode == &#39;sow&#39;:</span>
-<span class="c1">#            return (0.0, None)</span>
-<span class="c1">#        elif opt_mode == &#39;reap&#39; and thisenergy == 0.0:</span>
-<span class="c1">#            return (0.0, None)</span>
+        <span class="c1">#        # above, used to be getting energy as last of energy list from gradient()</span>
+        <span class="c1">#        # thisenergy below should ultimately be testing on wfn.energy()</span>
+        <span class="c1">#</span>
+        <span class="c1">#        # Record optimization steps</span>
+        <span class="c1">#        # Add wavefunctions later</span>
+        <span class="c1">#        if return_history:</span>
+        <span class="c1">#            step_energies.append(thisenergy)</span>
+        <span class="c1">#            step_coordinates.append(moleculeclone.geometry())</span>
+        <span class="c1">#            step_gradients.append(G.clone())</span>
+        <span class="c1">#</span>
+        <span class="c1">#        # S/R: Quit after getting new displacements or if forming gradient fails</span>
+        <span class="c1">#        if opt_mode == &#39;sow&#39;:</span>
+        <span class="c1">#            return (0.0, None)</span>
+        <span class="c1">#        elif opt_mode == &#39;reap&#39; and thisenergy == 0.0:</span>
+        <span class="c1">#            return (0.0, None)</span>
 
-        <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">set_variable</span><span class="p">(</span><span class="s1">&#39;CURRENT ENERGY&#39;</span><span class="p">,</span> <span class="n">thisenergy</span><span class="p">)</span>
+        <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">set_variable</span><span class="p">(</span><span class="s2">&quot;CURRENT ENERGY&quot;</span><span class="p">,</span> <span class="n">thisenergy</span><span class="p">)</span>
         <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">set_gradient</span><span class="p">(</span><span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Matrix</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">G</span><span class="p">))</span>
 
-<span class="c1">#        # S/R: Move opt data file from last pass into namespace for this pass</span>
-<span class="c1">#        if opt_mode == &#39;reap&#39; and iopt != 0:</span>
-<span class="c1">#            core.IOManager.shared_object().set_specific_retention(1, True)</span>
-<span class="c1">#            core.IOManager.shared_object().set_specific_path(1, &#39;./&#39;)</span>
-<span class="c1">#            if &#39;opt_datafile&#39; in kwargs:</span>
-<span class="c1">#                restartfile = kwargs.pop(&#39;opt_datafile&#39;)</span>
-<span class="c1">#                shutil.copy(restartfile, p4util.get_psifile(1))</span>
-<span class="c1">#</span>
-<span class="c1">#        # opt_func = kwargs.get(&#39;opt_func&#39;, kwargs.get(&#39;func&#39;, energy))</span>
-<span class="c1">#        # if opt_func.__name__ == &#39;complete_basis_set&#39;:</span>
-<span class="c1">#        #     core.IOManager.shared_object().set_specific_retention(1, True)</span>
-<span class="c1">#</span>
-<span class="c1">#        if full_hess_every &gt; -1:</span>
-<span class="c1">#            core.set_global_option(&#39;HESSIAN_WRITE&#39;, True)</span>
-<span class="c1">#</span>
-<span class="c1">#        # compute Hessian as requested; frequency wipes out gradient so stash it</span>
-<span class="c1">#        if ((full_hess_every &gt; -1) and (iopt == 1)) or (steps_since_last_hessian + 1 == full_hess_every):</span>
-<span class="c1">#            G = core.get_gradient()  # TODO</span>
-<span class="c1">#            core.IOManager.shared_object().set_specific_retention(1, True)</span>
-<span class="c1">#            core.IOManager.shared_object().set_specific_path(1, &#39;./&#39;)</span>
-<span class="c1">#            frequencies(hessian_with_method, **kwargs)</span>
-<span class="c1">#            steps_since_last_hessian = 0</span>
-<span class="c1">#            core.set_gradient(G)</span>
-<span class="c1">#            core.set_global_option(&#39;CART_HESS_READ&#39;, True)</span>
-<span class="c1">#        elif (full_hess_every == -1) and core.get_global_option(&#39;CART_HESS_READ&#39;) and (iopt == 1):</span>
-<span class="c1">#            pass</span>
-<span class="c1">#            # Do nothing; user said to read existing hessian once</span>
-<span class="c1">#        else:</span>
-<span class="c1">#            core.set_global_option(&#39;CART_HESS_READ&#39;, False)</span>
-<span class="c1">#            steps_since_last_hessian += 1</span>
+        <span class="c1">#        # S/R: Move opt data file from last pass into namespace for this pass</span>
+        <span class="c1">#        if opt_mode == &#39;reap&#39; and iopt != 0:</span>
+        <span class="c1">#            core.IOManager.shared_object().set_specific_retention(1, True)</span>
+        <span class="c1">#            core.IOManager.shared_object().set_specific_path(1, &#39;./&#39;)</span>
+        <span class="c1">#            if &#39;opt_datafile&#39; in kwargs:</span>
+        <span class="c1">#                restartfile = kwargs.pop(&#39;opt_datafile&#39;)</span>
+        <span class="c1">#                shutil.copy(restartfile, p4util.get_psifile(1))</span>
+        <span class="c1">#</span>
+        <span class="c1">#        # opt_func = kwargs.get(&#39;opt_func&#39;, kwargs.get(&#39;func&#39;, energy))</span>
+        <span class="c1">#        # if opt_func.__name__ == &#39;complete_basis_set&#39;:</span>
+        <span class="c1">#        #     core.IOManager.shared_object().set_specific_retention(1, True)</span>
+        <span class="c1">#</span>
+        <span class="c1">#        if full_hess_every &gt; -1:</span>
+        <span class="c1">#            core.set_global_option(&#39;HESSIAN_WRITE&#39;, True)</span>
+        <span class="c1">#</span>
+        <span class="c1">#        # compute Hessian as requested; frequency wipes out gradient so stash it</span>
+        <span class="c1">#        if ((full_hess_every &gt; -1) and (iopt == 1)) or (steps_since_last_hessian + 1 == full_hess_every):</span>
+        <span class="c1">#            G = core.get_gradient()  # TODO</span>
+        <span class="c1">#            core.IOManager.shared_object().set_specific_retention(1, True)</span>
+        <span class="c1">#            core.IOManager.shared_object().set_specific_path(1, &#39;./&#39;)</span>
+        <span class="c1">#            frequencies(hessian_with_method, **kwargs)</span>
+        <span class="c1">#            steps_since_last_hessian = 0</span>
+        <span class="c1">#            core.set_gradient(G)</span>
+        <span class="c1">#            core.set_global_option(&#39;CART_HESS_READ&#39;, True)</span>
+        <span class="c1">#        elif (full_hess_every == -1) and core.get_global_option(&#39;CART_HESS_READ&#39;) and (iopt == 1):</span>
+        <span class="c1">#            pass</span>
+        <span class="c1">#            # Do nothing; user said to read existing hessian once</span>
+        <span class="c1">#        else:</span>
+        <span class="c1">#            core.set_global_option(&#39;CART_HESS_READ&#39;, False)</span>
+        <span class="c1">#            steps_since_last_hessian += 1</span>
 
         <span class="n">popts</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="o">.</span><span class="n">scroll</span><span class="p">[</span><span class="s1">&#39;QCDB&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">disputed</span><span class="p">()</span> <span class="ow">and</span> <span class="n">k</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;G_CONVERGENCE&#39;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="o">.</span><span class="n">scroll</span><span class="p">[</span><span class="s2">&quot;QCDB&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">disputed</span><span class="p">()</span> <span class="ow">and</span> <span class="n">k</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;G_CONVERGENCE&quot;</span><span class="p">):</span>
                 <span class="n">popts</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">value</span>
 
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="o">.</span><span class="n">scroll</span><span class="p">[</span><span class="s1">&#39;PSI4&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">disputed</span><span class="p">()</span> <span class="ow">and</span> <span class="n">k</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;G_CONVERGENCE&#39;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="o">.</span><span class="n">scroll</span><span class="p">[</span><span class="s2">&quot;PSI4&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">disputed</span><span class="p">()</span> <span class="ow">and</span> <span class="n">k</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;G_CONVERGENCE&quot;</span><span class="p">):</span>
                 <span class="n">popts</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">value</span>
         <span class="n">psi4</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">p4util</span><span class="o">.</span><span class="n">python_helpers</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">popts</span><span class="p">)</span>
 
@@ -450,132 +450,137 @@
         <span class="n">moleculeclone</span> <span class="o">=</span> <span class="n">Molecule</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">get_legacy_molecule</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
         <span class="n">moleculeclone</span><span class="o">.</span><span class="n">update_geometry</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">optking_rval</span> <span class="o">==</span> <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">PsiReturnType</span><span class="o">.</span><span class="n">EndLoop</span><span class="p">:</span>
-<span class="c1">#            # if this is the end of an IRC run, set wfn, energy, and molecule to that</span>
-<span class="c1">#            # of the last optimized IRC point</span>
-<span class="c1">#            if core.get_option(&#39;OPTKING&#39;, &#39;OPT_TYPE&#39;) == &#39;IRC&#39;:</span>
-<span class="c1">#                thisenergy = old_thisenergy</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Optimizer: Optimization complete!&#39;</span><span class="p">)</span>
-<span class="c1">#            core.print_out(&#39;\n    Final optimized geometry and variables:\n&#39;)</span>
-<span class="c1">#            moleculeclone.print_in_input_format()</span>
-<span class="c1">#            # Check if user wants to see the intcos; if so, don&#39;t delete them.</span>
-<span class="c1">#            if core.get_option(&#39;OPTKING&#39;, &#39;INTCOS_GENERATE_EXIT&#39;) == False:</span>
-<span class="c1">#                if core.get_option(&#39;OPTKING&#39;, &#39;KEEP_INTCOS&#39;) == False:</span>
+            <span class="c1">#            # if this is the end of an IRC run, set wfn, energy, and molecule to that</span>
+            <span class="c1">#            # of the last optimized IRC point</span>
+            <span class="c1">#            if core.get_option(&#39;OPTKING&#39;, &#39;OPT_TYPE&#39;) == &#39;IRC&#39;:</span>
+            <span class="c1">#                thisenergy = old_thisenergy</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Optimizer: Optimization complete!&quot;</span><span class="p">)</span>
+            <span class="c1">#            core.print_out(&#39;\n    Final optimized geometry and variables:\n&#39;)</span>
+            <span class="c1">#            moleculeclone.print_in_input_format()</span>
+            <span class="c1">#            # Check if user wants to see the intcos; if so, don&#39;t delete them.</span>
+            <span class="c1">#            if core.get_option(&#39;OPTKING&#39;, &#39;INTCOS_GENERATE_EXIT&#39;) == False:</span>
+            <span class="c1">#                if core.get_option(&#39;OPTKING&#39;, &#39;KEEP_INTCOS&#39;) == False:</span>
             <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">opt_clean</span><span class="p">()</span>
-<span class="c1">#                    core.opt_clean()</span>
+            <span class="c1">#                    core.opt_clean()</span>
             <span class="c1"># Changing environment to optimized geometry as expected by user</span>
             <span class="n">molecule</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span><span class="n">moleculeclone</span><span class="o">.</span><span class="n">geometry</span><span class="p">())</span>
-<span class="c1">#            for postcallback in hooks[&#39;optimize&#39;][&#39;post&#39;]:</span>
-<span class="c1">#                postcallback(lowername, wfn=wfn, **kwargs)</span>
-<span class="c1">#            core.clean()</span>
+            <span class="c1">#            for postcallback in hooks[&#39;optimize&#39;][&#39;post&#39;]:</span>
+            <span class="c1">#                postcallback(lowername, wfn=wfn, **kwargs)</span>
+            <span class="c1">#            core.clean()</span>
             <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
 
-<span class="c1">#            # S/R: Clean up opt input file</span>
-<span class="c1">#            if opt_mode == &#39;reap&#39;:</span>
-<span class="c1">#                with open(&#39;OPT-master.in&#39;, &#39;wb&#39;) as fmaster:</span>
-<span class="c1">#                    fmaster.write(&#39;# This is a psi4 input file auto-generated from the gradient() wrapper.\n\n&#39;.encode(&#39;utf-8&#39;))</span>
-<span class="c1">#                    fmaster.write(&#39;# Optimization complete!\n\n&#39;.encode(&#39;utf-8&#39;))</span>
-<span class="c1">#</span>
-<span class="c1">#            # Cleanup binary file 1</span>
-<span class="c1">#            if custom_gradient or (&#39;/&#39; in lowername):</span>
-<span class="c1">#                core.IOManager.shared_object().set_specific_retention(1, False)</span>
-<span class="c1">#</span>
-<span class="c1">#            optstash.restore()</span>
-<span class="c1">#</span>
-<span class="c1">#            if return_history:</span>
-<span class="c1">#                history = { &#39;energy&#39;        : step_energies ,</span>
-<span class="c1">#                            &#39;gradient&#39;      : step_gradients ,</span>
-<span class="c1">#                            &#39;coordinates&#39;   : step_coordinates,</span>
-<span class="c1">#                          }</span>
+            <span class="c1">#            # S/R: Clean up opt input file</span>
+            <span class="c1">#            if opt_mode == &#39;reap&#39;:</span>
+            <span class="c1">#                with open(&#39;OPT-master.in&#39;, &#39;wb&#39;) as fmaster:</span>
+            <span class="c1">#                    fmaster.write(&#39;# This is a psi4 input file auto-generated from the gradient() wrapper.\n\n&#39;.encode(&#39;utf-8&#39;))</span>
+            <span class="c1">#                    fmaster.write(&#39;# Optimization complete!\n\n&#39;.encode(&#39;utf-8&#39;))</span>
+            <span class="c1">#</span>
+            <span class="c1">#            # Cleanup binary file 1</span>
+            <span class="c1">#            if custom_gradient or (&#39;/&#39; in lowername):</span>
+            <span class="c1">#                psi4.core.IOManager.shared_object().set_specific_retention(1, False)</span>
+            <span class="c1">#</span>
+            <span class="c1">#            optstash.restore()</span>
+            <span class="c1">#</span>
+            <span class="c1">#            if return_history:</span>
+            <span class="c1">#                history = { &#39;energy&#39;        : step_energies ,</span>
+            <span class="c1">#                            &#39;gradient&#39;      : step_gradients ,</span>
+            <span class="c1">#                            &#39;coordinates&#39;   : step_coordinates,</span>
+            <span class="c1">#                          }</span>
 
-<span class="c1">#            if return_wfn and return_history:</span>
-<span class="c1">#                return (thisenergy, wfn, history)</span>
-<span class="c1">#            elif return_wfn and not return_history:</span>
-<span class="c1">#                return (thisenergy, wfn)</span>
-<span class="c1">#            elif return_history and not return_wfn:</span>
-<span class="c1">#                return (thisenergy, history)</span>
+            <span class="c1">#            if return_wfn and return_history:</span>
+            <span class="c1">#                return (thisenergy, wfn, history)</span>
+            <span class="c1">#            elif return_wfn and not return_history:</span>
+            <span class="c1">#                return (thisenergy, wfn)</span>
+            <span class="c1">#            elif return_history and not return_wfn:</span>
+            <span class="c1">#                return (thisenergy, history)</span>
             <span class="k">if</span> <span class="n">return_wfn</span><span class="p">:</span>
                 <span class="k">return</span> <span class="p">(</span><span class="n">thisenergy</span><span class="p">,</span> <span class="n">jobrec</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">thisenergy</span>
 
         <span class="k">elif</span> <span class="n">optking_rval</span> <span class="o">==</span> <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">PsiReturnType</span><span class="o">.</span><span class="n">Failure</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Optimizer: Optimization failed!&#39;</span><span class="p">)</span>
-<span class="c1">#            if (core.get_option(&#39;OPTKING&#39;, &#39;KEEP_INTCOS&#39;) == False):</span>
-<span class="c1">#                core.opt_clean()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Optimizer: Optimization failed!&quot;</span><span class="p">)</span>
+            <span class="c1">#            if (core.get_option(&#39;OPTKING&#39;, &#39;KEEP_INTCOS&#39;) == False):</span>
+            <span class="c1">#                core.opt_clean()</span>
             <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">opt_clean</span><span class="p">()</span>
             <span class="n">molecule</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span><span class="n">moleculeclone</span><span class="o">.</span><span class="n">geometry</span><span class="p">())</span>
             <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
-<span class="c1">#            optstash.restore()</span>
-<span class="c1">#            raise OptimizationConvergenceError(&quot;&quot;&quot;geometry optimization&quot;&quot;&quot;, iopt - 1, wfn)</span>
+            <span class="c1">#            optstash.restore()</span>
+            <span class="c1">#            raise OptimizationConvergenceError(&quot;&quot;&quot;geometry optimization&quot;&quot;&quot;, iopt - 1, wfn)</span>
             <span class="k">return</span> <span class="n">thisenergy</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">    Structure for next step:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">    Structure for next step:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">moleculeclone</span><span class="p">)</span>
-<span class="c1">#        moleculeclone.print_in_input_format()</span>
+        <span class="c1">#        moleculeclone.print_in_input_format()</span>
 
-<span class="c1">#        # S/R: Preserve opt data file for next pass and switch modes to get new displacements</span>
-<span class="c1">#        if opt_mode == &#39;reap&#39;:</span>
-<span class="c1">#            kwargs[&#39;opt_datafile&#39;] = p4util.get_psifile(1)</span>
-<span class="c1">#            kwargs[&#39;mode&#39;] = &#39;sow&#39;</span>
+        <span class="c1">#        # S/R: Preserve opt data file for next pass and switch modes to get new displacements</span>
+        <span class="c1">#        if opt_mode == &#39;reap&#39;:</span>
+        <span class="c1">#            kwargs[&#39;opt_datafile&#39;] = p4util.get_psifile(1)</span>
+        <span class="c1">#            kwargs[&#39;mode&#39;] = &#39;sow&#39;</span>
 
         <span class="n">iopt</span> <span class="o">+=</span> <span class="mi">1</span>
 
-<span class="c1">#    if core.get_option(&#39;OPTKING&#39;, &#39;INTCOS_GENERATE_EXIT&#39;) == False:</span>
-<span class="c1">#        if core.get_option(&#39;OPTKING&#39;, &#39;KEEP_INTCOS&#39;) == False:</span>
-<span class="c1">#            core.opt_clean()</span>
+    <span class="c1">#    if core.get_option(&#39;OPTKING&#39;, &#39;INTCOS_GENERATE_EXIT&#39;) == False:</span>
+    <span class="c1">#        if core.get_option(&#39;OPTKING&#39;, &#39;KEEP_INTCOS&#39;) == False:</span>
+    <span class="c1">#            core.opt_clean()</span>
+    <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">IOManager</span><span class="o">.</span><span class="n">shared_object</span><span class="p">()</span><span class="o">.</span><span class="n">set_specific_retention</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
     <span class="n">psi4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">opt_clean</span><span class="p">()</span></div>
+
 
 <span class="c1">#    optstash.restore()</span>
 <span class="c1">#    raise OptimizationConvergenceError(&quot;&quot;&quot;geometry optimization&quot;&quot;&quot;, iopt - 1, wfn)</span>
 
+<span class="n">optimize</span> <span class="o">=</span> <span class="n">optking</span>
+
 
 <div class="viewcode-block" id="geometric"><a class="viewcode-back" href="../../../api/qcdb.geometric.html#qcdb.geometric">[docs]</a><span class="k">def</span> <span class="nf">geometric</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">load_proc_table</span>
+
     <span class="n">kwargs</span> <span class="o">=</span> <span class="n">driver_util</span><span class="o">.</span><span class="n">kwargs_lower</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;__call__&#39;</span><span class="p">):</span>
-        <span class="n">lowername</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="n">custom_gradient</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;__call__&quot;</span><span class="p">):</span>
+        <span class="k">pass</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">lowername</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-        <span class="n">custom_gradient</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
-    <span class="n">return_wfn</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;return_wfn&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">return_wfn</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;return_wfn&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
     <span class="c1"># Make sure the molecule the user provided is the active one</span>
-    <span class="n">molecule</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;molecule&#39;</span><span class="p">,</span> <span class="n">driver_helpers</span><span class="o">.</span><span class="n">get_active_molecule</span><span class="p">())</span>
+    <span class="n">molecule</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;molecule&quot;</span><span class="p">,</span> <span class="n">driver_helpers</span><span class="o">.</span><span class="n">get_active_molecule</span><span class="p">())</span>
     <span class="n">molecule</span><span class="o">.</span><span class="n">update_geometry</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pe</span><span class="o">.</span><span class="n">nu_options</span><span class="o">.</span><span class="n">scroll</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;EMPTY OPT&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;EMPTY OPT&quot;</span><span class="p">)</span>
         <span class="n">pe</span><span class="o">.</span><span class="n">load_options</span><span class="p">()</span>
 
     <span class="kn">import</span> <span class="nn">yaml</span>
-    <span class="n">tricin</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">tricin</span><span class="p">[</span><span class="s1">&#39;molecule&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">np_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_units</span><span class="o">=</span><span class="s1">&#39;Angstrom&#39;</span><span class="p">)</span>
-    <span class="n">cereal</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">cereal</span><span class="p">[</span><span class="s1">&#39;driver&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gradient</span>
-    <span class="n">cereal</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
-    <span class="n">cereal</span><span class="p">[</span><span class="s1">&#39;options&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># outrageous</span>
-    <span class="n">qwer</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;template&#39;</span><span class="p">:</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">cereal</span><span class="p">),</span>
-            <span class="s1">&#39;molecule&#39;</span><span class="p">:</span> <span class="n">molecule</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">np_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_units</span><span class="o">=</span><span class="s1">&#39;Angstrom&#39;</span><span class="p">)}</span>
-    <span class="n">tricin</span><span class="p">[</span><span class="s1">&#39;template&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">qwer</span><span class="p">)</span>
-    <span class="n">tricin</span><span class="p">[</span><span class="s1">&#39;argparse&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="p">[</span><span class="s1">&#39;--qcdb&#39;</span><span class="p">,</span> <span class="s1">&#39;tmp_tricin.yaml&#39;</span><span class="p">]</span> <span class="c1">#prepare_options_for_geometric({&#39;qcdb&#39;: True}).split()</span>
-    
-    <span class="kn">import</span> <span class="nn">geometric</span>
-    <span class="n">otricrec</span> <span class="o">=</span> <span class="n">geometric</span><span class="o">.</span><span class="n">json_run</span><span class="p">(</span><span class="n">tricin</span><span class="p">)</span>
-    <span class="c1">#pp.pprint(otricrec)</span>
 
-    <span class="n">ngeom</span> <span class="o">=</span> <span class="n">otricrec</span><span class="p">[</span><span class="s1">&#39;coords&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">tricin</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">tricin</span><span class="p">[</span><span class="s2">&quot;molecule&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">molecule</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">np_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_units</span><span class="o">=</span><span class="s2">&quot;Angstrom&quot;</span><span class="p">)</span>
+    <span class="n">cereal</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">cereal</span><span class="p">[</span><span class="s2">&quot;driver&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gradient</span>
+    <span class="n">cereal</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+    <span class="n">cereal</span><span class="p">[</span><span class="s2">&quot;options&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># outrageous</span>
+    <span class="n">qwer</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;template&quot;</span><span class="p">:</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">cereal</span><span class="p">),</span> <span class="s2">&quot;molecule&quot;</span><span class="p">:</span> <span class="n">molecule</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">np_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_units</span><span class="o">=</span><span class="s2">&quot;Angstrom&quot;</span><span class="p">)}</span>
+    <span class="n">tricin</span><span class="p">[</span><span class="s2">&quot;template&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">qwer</span><span class="p">)</span>
+    <span class="n">tricin</span><span class="p">[</span><span class="s2">&quot;argparse&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;--qcdb&quot;</span><span class="p">,</span> <span class="s2">&quot;tmp_tricin.yaml&quot;</span><span class="p">]</span>  <span class="c1"># prepare_options_for_geometric({&#39;qcdb&#39;: True}).split()</span>
+
+    <span class="kn">import</span> <span class="nn">geometric</span>
+
+    <span class="n">otricrec</span> <span class="o">=</span> <span class="n">geometric</span><span class="o">.</span><span class="n">json_run</span><span class="p">(</span><span class="n">tricin</span><span class="p">)</span>
+    <span class="c1"># pp.pprint(otricrec)</span>
+
+    <span class="n">ngeom</span> <span class="o">=</span> <span class="n">otricrec</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
     <span class="n">molecule</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span><span class="n">ngeom</span><span class="p">)</span>
 
     <span class="c1"># going to do an extra grad to get E, G, wfn until better tric comm</span>
     <span class="n">G</span><span class="p">,</span> <span class="n">jobrec</span> <span class="o">=</span> <span class="n">gradient</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">return_wfn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="n">E</span> <span class="o">=</span> <span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">][</span><span class="s1">&#39;CURRENT ENERGY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+    <span class="n">E</span> <span class="o">=</span> <span class="n">jobrec</span><span class="p">[</span><span class="s2">&quot;qcvars&quot;</span><span class="p">][</span><span class="s2">&quot;CURRENT ENERGY&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
 
-    <span class="c1">#jobrec[&#39;qcvars&#39;] = {info.lbl: info for info in calcinfo}</span>
+    <span class="c1"># jobrec[&#39;qcvars&#39;] = {info.lbl: info for info in calcinfo}</span>
     <span class="n">pp</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">jobrec</span><span class="p">)</span>
-    <span class="n">pe</span><span class="o">.</span><span class="n">active_qcvars</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">jobrec</span><span class="p">[</span><span class="s1">&#39;qcvars&#39;</span><span class="p">])</span>
+    <span class="n">pe</span><span class="o">.</span><span class="n">active_qcvars</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">jobrec</span><span class="p">[</span><span class="s2">&quot;qcvars&quot;</span><span class="p">])</span>
 
     <span class="k">if</span> <span class="n">return_wfn</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">jobrec</span><span class="p">)</span>
@@ -585,11 +590,12 @@
 
 <span class="k">def</span> <span class="nf">prepare_options_for_geometric</span><span class="p">(</span><span class="n">dicary</span><span class="p">):</span>
 
-    <span class="n">sysargv</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;--&#39;</span> <span class="o">+</span> <span class="n">k</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dicary</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
-    <span class="n">sysargv</span> <span class="o">+=</span> <span class="s1">&#39; tmp_tricin.yaml&#39;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;sysargv&#39;</span><span class="p">,</span> <span class="n">sysargv</span><span class="p">)</span>
+    <span class="n">sysargv</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;--&quot;</span> <span class="o">+</span> <span class="n">k</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dicary</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+    <span class="n">sysargv</span> <span class="o">+=</span> <span class="s2">&quot; tmp_tricin.yaml&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;sysargv&quot;</span><span class="p">,</span> <span class="n">sysargv</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">sysargv</span>
+
 
 <span class="c1">#    jrec = {}</span>
 <span class="c1">#    jrec[&#39;molecule&#39;] = mymol.to_dict(np_out=False)</span>
@@ -607,7 +613,7 @@
 <span class="c1">#        yaml.dump(jrec, handle)</span>
 
 
-<span class="c1">#molecule:</span>
+<span class="c1"># molecule:</span>
 <span class="c1">#  elbl: [&#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;]</span>
 <span class="c1">#  elea: [16, 1, 1, 16, 1, 1, 16, 1, 1]</span>
 <span class="c1">#  elem: [O, H, H, O, H, H, O, H, H]</span>
@@ -630,12 +636,10 @@
 <span class="c1">#  molecular_multiplicity: 1</span>
 <span class="c1">#  real: [true, true, true, true, true, true, true, true, true]</span>
 <span class="c1">#  units: Angstrom</span>
-<span class="c1">#template: &quot;\ndriver: !!python/name:qcdb.gradient\nmethod: hf\noptions:\n  basis: cc-pvdz\n&quot;</span>
+<span class="c1"># template: &quot;\ndriver: !!python/name:qcdb.gradient\nmethod: hf\noptions:\n  basis: cc-pvdz\n&quot;</span>
 
 
-
-
-<span class="c1">#PYTHONPATH=/home/psilocaluser/miniconda3/envs/idp35p4/lib/python3.5/site-packages:/home/psilocaluser/gits/geomeTRIC:/home/psilocaluser/miniconda3/envs/tric35/lib/python3.5/site-packages/:$PYTHONPATH /home/psilocaluser/gits/geomeTRIC/geometric/optimize.py --qcdb trictest3.yaml</span>
+<span class="c1"># PYTHONPATH=/home/psilocaluser/miniconda3/envs/idp35p4/lib/python3.5/site-packages:/home/psilocaluser/gits/geomeTRIC:/home/psilocaluser/miniconda3/envs/tric35/lib/python3.5/site-packages/:$PYTHONPATH /home/psilocaluser/gits/geomeTRIC/geometric/optimize.py --qcdb trictest3.yaml</span>
 </pre></div>
 
             <div class="clearer"></div>
@@ -727,7 +731,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/driver/optimize.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g3e45af5">0+untagged.1.g3e45af5</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g85c8284">0+untagged.1.g85c8284</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../../../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -741,8 +745,8 @@
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2021, The QCDB Project.
-      Last updated on Sunday, 12 September 2021 05:49PM.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.2.0.
+      Last updated on Tuesday, 16 November 2021 10:11PM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.0.
     </div>
     <!-- cloud_sptheme 1.4 -->
   </body>
