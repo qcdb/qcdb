@@ -1,8 +1,7 @@
 from typing import Dict, List
 
 import numpy as np
-from psi4 import core
-from psi4.driver.p4util.exceptions import *
+#from psi4.driver.p4util.exceptions import *
 from qcelemental import constants
 
 
@@ -87,7 +86,7 @@ def diatomic(rvals: List, energies: List, molecule, plot_fit: str = '') -> Dict:
         print("\nWarning: fewer than 3 points provided with a r > r(min(E))!\n")
 
     # Optimize the geometry, refitting the surface around each new geometry
-    core.print_out("\nOptimizing geometry based on current surface:\n\n")
+    print("\nOptimizing geometry based on current surface:\n\n")
     re = rvals[min_index]
     maxit = 30
     thres = 1.0e-9

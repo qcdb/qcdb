@@ -37,6 +37,7 @@ jobs:
         environment-file: devtools/conda-envs/${{ matrix.cfg.conda-env }}.yaml
         python-version: ${{ matrix.cfg.python-version }}
         auto-activate-base: false
+        remove-profiles: false
 
     - name: Environment Information
       run: |
