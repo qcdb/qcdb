@@ -41,6 +41,7 @@ jobs:
 
     - name: Environment Information
       run: |
+        conda init bash
         conda info
         conda list --show-channel-urls
 
