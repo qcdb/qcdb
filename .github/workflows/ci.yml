@@ -63,7 +63,7 @@ jobs:
       matrix:
         cfg:
           - conda-env: docs-cf
-            python-version: 3.6
+            python-version: 3.9
             label: Sphinx
             runs-on: ubuntu-latest
 
