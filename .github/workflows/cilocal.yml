@@ -42,7 +42,6 @@ jobs:
 
     - name: Environment Information
       run: |
-        eval "$(/psi/ghaconda/bin/conda shell.bash hook)"
         conda info
         conda list --show-channel-urls
 
