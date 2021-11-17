@@ -52,6 +52,7 @@ jobs:
     - name: PyTest
       shell: bash -l {0}
       run: |
+        source /theoryfs2/common/software/intel2021/oneapi/setvars.sh --config="/theoryfs2/common/software/intel2021/oneapi/config-no-intelpython.txt" intel64
         export PATH=/psi/gits/hrw-ddd-main/objdir39d41/stage/bin:$PATH  # psi4 executable
         export PYTHONPATH=/psi/gits/hrw-ddd-main/objdir39d41/stage/lib//:$PYTHONPATH  # psi4 pymodule
         export PATH=/psi/gits/gamess:$PATH  # gamess script
