@@ -52,7 +52,13 @@ jobs:
     - name: PyTest
       shell: bash -l {0}
       run: |
-        pytest -rws -v --cov=qcdb --color=yes --cov-report=xml qcdb/
+        export PATH=/psi/gits/hrw-ddd-main/objdir39d41/stage/bin:$PATH  # psi4 executable
+        export PYTHONPATH=/psi/gits/hrw-ddd-main/objdir39d41/stage/lib//:$PYTHONPATH  # psi4 pymodule
+        export PATH=/psi/gits/gamess:$PATH  # gamess script
+        export PATH=/psi/gits/nwchem/bin/LINUX64:$PATH  # nwchem exe
+        export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH  # nwchem pylink
+        export PATH=/psi/gits/cfour-public/bin:$PATH  # cfour exe
+        pytest -rws -v --cov=qcdb --color=yes --cov-report=xml -k test_tu qcdb/
 
     - name: CodeCov
       uses: codecov/codecov-action@v1
