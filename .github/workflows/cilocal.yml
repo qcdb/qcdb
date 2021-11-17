@@ -47,7 +47,7 @@ jobs:
     - name: Install QCDB
       shell: bash -l {0}
       run: |
-        python -m pip install . --no-deps
+        python -m pip install . --no-deps --no-use-pep517
 
     - name: PyTest
       run: |
