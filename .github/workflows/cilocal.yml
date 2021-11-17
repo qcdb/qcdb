@@ -50,6 +50,7 @@ jobs:
         python -m pip install . --no-deps --no-use-pep517
 
     - name: PyTest
+      shell: bash -l {0}
       run: |
         pytest -rws -v --cov=qcdb --color=yes --cov-report=xml qcdb/
 
