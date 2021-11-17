@@ -10,9 +10,9 @@ on:
 
 jobs:
   build:
-    defaults:
-      run:
-        shell: bash -l {0}
+    #defaults:
+    #  run:
+    #    shell: bash -l {0}
     strategy:
       fail-fast: false
       matrix:
@@ -37,7 +37,7 @@ jobs:
         environment-file: devtools/conda-envs/${{ matrix.cfg.conda-env }}.yaml
         python-version: ${{ matrix.cfg.python-version }}
         auto-activate-base: false
-        remove-profiles: false
+        remove-profiles: true
 
     - name: Environment Information
       run: |
