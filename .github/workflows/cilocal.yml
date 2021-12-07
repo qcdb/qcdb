@@ -23,6 +23,7 @@ jobs:
             runs-on: self-hosted
     env:
         CONDA: /psi/ghaconda
+        CONDA_PKGS_DIRS: /psi/ghaconda/pkgs/
 
     name: "🐍 ${{ matrix.cfg.python-version }} • ${{ matrix.cfg.label }}"
     runs-on: ${{ matrix.cfg.runs-on }}

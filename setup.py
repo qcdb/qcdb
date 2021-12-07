@@ -29,7 +29,7 @@ if __name__ == "__main__":
         package_data={'': ['qcdb/basis/GENBAS', 'qcdb/basis/*.gbs']},
         setup_requires=[] + pytest_runner,
         python_requires=">=3.9",
-        install_requires=["numpy >= 1.12.0", "qcelemental >= 0.22.1", "qcengine >= 0.19.1", "networkx>=2.4.0"],
+        install_requires=["numpy >= 1.12.0", "qcelemental >= 0.24.0", "qcengine >= 0.21.0", "networkx>=2.4.0"],
         extras_require={
 #            'docs': [
 #                'numpydoc',
