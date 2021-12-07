@@ -18,20 +18,20 @@ def fcell(winnowed):
         status = winnowed[0]["status"]
         note = winnowed[0]["note"]
         if status == "pass":
-            cell = "Y"
-            cell = u'\u2713'
-#            cell = '✅'
-            cell = u'\u2705'
-            cell = '✅'
+            # cell = "Y"
+            # cell = u'\u2713'
+            # cell = '✅'
+            # cell = u'\u2705'
+            # cell = '✅'
             cell = u'\u2713'
         elif status == "fd":
             cell = "fd"
         elif status == "error":
-            cell = "---"
+            # cell = "---"
             cell = u'\u2717'
         elif status == "wrong":
-            cell = "bad"
-            cell = '💥 '
+            # cell = "bad"
+            # cell = '💥 '
             cell = u'\u25a0'
 
         if note:
@@ -41,7 +41,7 @@ def fcell(winnowed):
             cell += f" [#f{idx}]_"
             
     else:
-        cell = "?"
+        # cell = "?"
         cell = ""
 
     return cell

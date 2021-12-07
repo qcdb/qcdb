@@ -1,6 +1,5 @@
 import pprint
 import sys
-import traceback
 import uuid
 from typing import Dict
 
