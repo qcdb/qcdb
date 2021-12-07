@@ -50,7 +50,7 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     
     
@@ -100,7 +100,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.Molecule.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g2e1522e">0+untagged.1.g2e1522e</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g2381e70">0+untagged.1.g2381e70</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -129,7 +129,7 @@ charge, multiplicity of a molecule. Largely replicates psi4’s libmints
 Molecule class, developed by Justin M. Turney and Andy M. Simmonett
 with incremental improvements by other psi4 developers. Major</p>
 <p>This class extends LibmintsMolecule and occasionally
-<a class="reference external" href="https://psicode.org/psi4manual/master/api/psi4.core.Molecule.html#psi4.core.Molecule" title="(in Psi4 v1.5a1.dev179)"><code class="xref py py-class docutils literal notranslate"><span class="pre">psi4.core.Molecule</span></code></a> itself.</p>
+<a class="reference external" href="https://psicode.org/psi4manual/master/api/psi4.core.Molecule.html#psi4.core.Molecule" title="(in Psi4 v1.6a1.dev8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">psi4.core.Molecule</span></code></a> itself.</p>
 <p class="rubric">Methods Summary</p>
 <table class="longtable docutils align-default">
 <colgroup>
@@ -242,7 +242,7 @@ with incremental improvements by other psi4 developers. Major</p>
 <dd><p>Finds shift, rotation, and atom reordering of <cite>concern_mol</cite> that best
 aligns with <cite>ref_mol</cite>.</p>
 <p>Wraps <code class="xref py py-func docutils literal notranslate"><span class="pre">qcelemental.molutil.align.B787()</span></code> for <a class="reference internal" href="#qcdb.Molecule" title="qcdb.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">qcdb.Molecule</span></code></a> or
-<a class="reference external" href="https://psicode.org/psi4manual/master/api/psi4.core.Molecule.html#psi4.core.Molecule" title="(in Psi4 v1.5a1.dev179)"><code class="xref py py-class docutils literal notranslate"><span class="pre">psi4.core.Molecule</span></code></a>. Employs the Kabsch, Hungarian, and
+<a class="reference external" href="https://psicode.org/psi4manual/master/api/psi4.core.Molecule.html#psi4.core.Molecule" title="(in Psi4 v1.6a1.dev8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">psi4.core.Molecule</span></code></a>. Employs the Kabsch, Hungarian, and
 Uno algorithms to exhaustively locate the best alignment for
 non-oriented, non-ordered structures.</p>
 <dl class="field-list simple">
@@ -289,7 +289,7 @@ at optimally aligned (and atom-ordered) geometry. Return type
 determined by <cite>concern_mol</cite> type.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)">float</a>, <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#tuple" title="(in Python v3.6)">tuple</a>, <a class="reference internal" href="#qcdb.Molecule" title="qcdb.Molecule">qcdb.Molecule</a> or <a class="reference external" href="https://psicode.org/psi4manual/master/api/psi4.core.Molecule.html#psi4.core.Molecule" title="(in Psi4 v1.5a1.dev179)">psi4.core.Molecule</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)">float</a>, <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#tuple" title="(in Python v3.6)">tuple</a>, <a class="reference internal" href="#qcdb.Molecule" title="qcdb.Molecule">qcdb.Molecule</a> or <a class="reference external" href="https://psicode.org/psi4manual/master/api/psi4.core.Molecule.html#psi4.core.Molecule" title="(in Psi4 v1.6a1.dev8)">psi4.core.Molecule</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -410,11 +410,11 @@ to the active atoms in Molecule. Basis sets are loaded from Psi4 basis sets libr
 <dt class="sig sig-object py" id="qcdb.Molecule.from_arrays">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elea</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elez</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">real</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elbl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Angstrom'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_units_to_au</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fix_com</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fix_orientation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fix_symmetry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fragment_separators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fragment_charges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fragment_multiplicities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">molecular_charge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">molecular_multiplicity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">provenance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connectivity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">missing_enabled_return</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'error'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tooclose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zero_ghost_fragments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nonphysical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/molecule/molecule.html#Molecule.from_arrays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.Molecule.from_arrays" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct Molecule from unvalidated arrays and variables.</p>
-<p>Light wrapper around <a class="reference external" href="https://psicode.org/psi4manual/master/external_apis.html#qcelemental.molparse.from_arrays" title="(in Psi4 v1.5a1.dev179)"><code class="xref py py-func docutils literal notranslate"><span class="pre">from_arrays()</span></code></a>
+<p>Light wrapper around <a class="reference external" href="https://psicode.org/psi4manual/master/external_apis.html#qcelemental.molparse.from_arrays" title="(in Psi4 v1.6a1.dev8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">from_arrays()</span></code></a>
 that is a full-featured constructor to dictionary representa-
 tion of Molecule. This follows one step further to return
 Molecule instance.</p>
-<p>:param See <a class="reference external" href="https://psicode.org/psi4manual/master/external_apis.html#qcelemental.molparse.from_arrays" title="(in Psi4 v1.5a1.dev179)"><code class="xref py py-func docutils literal notranslate"><span class="pre">from_arrays()</span></code></a>.:
+<p>:param See <a class="reference external" href="https://psicode.org/psi4manual/master/external_apis.html#qcelemental.molparse.from_arrays" title="(in Psi4 v1.6a1.dev8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">from_arrays()</span></code></a>.:
 :param return_dict: Additionally return Molecule dictionary intermediate.
 :type return_dict: bool, optional</p>
 <dl class="field-list simple">
@@ -822,7 +822,7 @@ preserved but fragmentation, chgmult, and dummy/ghost is lost.</p></li>
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.Molecule.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g2e1522e">0+untagged.1.g2e1522e</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.g2381e70">0+untagged.1.g2381e70</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -836,8 +836,8 @@ preserved but fragmentation, chgmult, and dummy/ghost is lost.</p></li>
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2021, The QCDB Project.
-      Last updated on Wednesday, 17 November 2021 05:25AM.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.0.
+      Last updated on Tuesday, 07 December 2021 07:06PM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
     </div>
     <!-- cloud_sptheme 1.4 -->
   </body>
