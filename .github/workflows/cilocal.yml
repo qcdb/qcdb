@@ -14,7 +14,7 @@ jobs:
     #  run:
     #    shell: bash -l {0}
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         cfg:
           - conda-env: base
@@ -60,7 +60,8 @@ jobs:
         export PATH=/psi/gits/nwchem/bin/LINUX64:$PATH  # nwchem exe
         export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH  # nwchem pylink
         export PATH=/psi/gits/cfour-public/bin:$PATH  # cfour exe
-        pytest -rws -v --cov=qcdb --color=yes --cov-report=xml -k test_tu qcdb/
+        qcengine info
+        pytest -rws -v --cov=qcdb --color=yes --cov-report=xml -n8 -k test_tu qcdb/
 
     - name: CodeCov
       uses: codecov/codecov-action@v1

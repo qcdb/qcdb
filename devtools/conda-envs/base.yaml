@@ -25,6 +25,7 @@ dependencies:
     # Testing
   - pytest>=4.0.0
   - pytest-cov
+  - pytest-xdist
   - codecov
 
   #- pip:
