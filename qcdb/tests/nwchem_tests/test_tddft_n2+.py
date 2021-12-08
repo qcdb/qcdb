@@ -2,6 +2,7 @@
 # Need to check out tddft excited states compared to harvester
 import os
 import sys
+import pytest
 
 import qcdb
 
@@ -109,6 +110,7 @@ def check_tddft(return_value):
     )
 
 
+@pytest.mark.xfail(True, reason="NWChem switches symmetry in 7, Winter 2021", run=True)
 @using("nwchem")
 def test_1_dft():
     n2_plus = qcdb.set_molecule(
