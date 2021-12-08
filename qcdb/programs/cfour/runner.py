@@ -1,7 +1,5 @@
 import copy
 import inspect
-import sys
-import traceback
 from typing import Any, Dict, Optional
 
 import qcelemental as qcel
@@ -40,6 +38,7 @@ def run_cfour(name: str, molecule: "Molecule", options: "Keywords", **kwargs) ->
                 "basis": "(auto)",
             },
             "molecule": molecule.to_schema(dtype=2) | {"fix_com": True, "fix_orientation": True},
+            "protocols": {"native_files": "input"},
             "provenance": provenance_stamp(__name__),
         }
     )
@@ -55,7 +54,7 @@ def run_cfour(name: str, molecule: "Molecule", options: "Keywords", **kwargs) ->
 
 
 class QcdbCFOURHarness(CFOURHarness):
-    def compute(self, input_model: AtomicInput, config: "JobConfig") -> "AtomicResult":
+    def compute(self, input_model: AtomicInput, config: "TaskConfig") -> "AtomicResult":
         self.found(raise_error=True)
 
         verbose = 1
@@ -76,6 +75,7 @@ class QcdbCFOURHarness(CFOURHarness):
 
         dexe["outfiles"]["stdout"] = dexe["stdout"]
         dexe["outfiles"]["stderr"] = dexe["stderr"]
+        dexe["outfiles"]["input"] = job_inputs["infiles"]["ZMAT"]
         output_model = self.parse_output(dexe["outfiles"], input_model)
 
         print_jobrec(f"[4a] {self.name} RESULT POST-HARVEST", output_model.dict(), verbose >= 5)
@@ -168,12 +168,7 @@ class QcdbCFOURHarness(CFOURHarness):
         try:
             qcvars.build_out(dqcvars)
         except ValueError:
-            raise InputError(
-                "STDOUT:\n"
-                + output_model.stdout
-                + "\nTRACEBACK:\n"
-                + "".join(traceback.format_exception(*sys.exc_info()))
-            )
+            raise InputError(error_stamp(output_model.native_files["input"], output_model.stdout, output_model.stderr))
         calcinfo = qcvars.certify_and_datumize(dqcvars, plump=True, nat=len(output_model.molecule.symbols))
         output_model.extras["qcdb:qcvars"] = calcinfo
 

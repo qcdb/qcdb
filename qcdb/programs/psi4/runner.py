@@ -10,21 +10,24 @@ from qcengine.programs.psi4 import Psi4Harness
 from qcengine.programs.util import PreservingDict
 
 from ... import qcvars
+from ...driver.config import get_mode_config
 from ...util import print_jobrec, provenance_stamp
 from .germinate import muster_inherited_keywords
 
-pp = pprint.PrettyPrinter(width=120)
+pp = pprint.PrettyPrinter(width=200)
 
 
 def run_psi4(name: str, molecule: "Molecule", options: "Keywords", **kwargs) -> Dict:
 
     local_options = kwargs.get("local_options", None)
+    mode_options = get_mode_config(mode_options=kwargs.get("mode_options"))
 
     resi = AtomicInput(
         **{
             "driver": inspect.stack()[1][3],
             "extras": {
                 "qcdb:options": copy.deepcopy(options),
+                "qcdb:mode_config": mode_options,
             },
             "model": {
                 "method": name,
@@ -82,10 +85,11 @@ class QcdbPsi4Harness(Psi4Harness):
         input_data = input_model.dict()
 
         ropts = input_model.extras["qcdb:options"]
+        mode_config = input_model.extras["qcdb:mode_config"]
 
         ropts.require("QCDB", "MEMORY", f"{config.memory} gib", accession="00000000", verbose=False)
 
-        muster_inherited_keywords(ropts)
+        muster_inherited_keywords(ropts, mode_config)
         mtd = input_data["model"]["method"]
         mtd = mtd[3:] if mtd.startswith("p4-") else mtd
         input_data["model"]["method"] = mtd
@@ -101,14 +105,19 @@ class QcdbPsi4Harness(Psi4Harness):
         # input_data['return_output'] = True
 
         popts = {}
+        function_kwargs = {}
         for k, v in ropts.scroll["QCDB"].items():
             if v.disputed():
                 popts[k] = v.value
 
         for k, v in ropts.scroll["PSI4"].items():
             if v.disputed():
-                popts[k] = v.value
+                if k.startswith("FUNCTION_KWARGS_"):
+                    function_kwargs[k[16:]] = v.value
+                else:
+                    popts[k] = v.value
         input_data["keywords"] = popts
+        input_data["keywords"]["function_kwargs"] = function_kwargs
 
         if "BASIS" in input_data["keywords"]:
             input_data["model"]["basis"] = input_data["keywords"]["BASIS"]

@@ -7,22 +7,30 @@ dependencies:
   - numpy
   - nomkl
   - python
-  #- qcelemental
-  #- qcengine
+  - qcelemental>=0.24.0
+  - qcengine>=0.21.0
   - pint
   - pip
-  - pydantic>=1.8.1
+  - pydantic>=1.8.2
+  - pyyaml
+  - py-cpuinfo
+  - psutil
 
     # Optional depends
-  - networkx
+  - msgpack-python
+  - networkx>=2.4.0
 
     # Building
 
     # Testing
   - pytest>=4.0.0
   - pytest-cov
+  - pytest-xdist
   - codecov
 
-  - pip:
-    - git+https://github.com/MolSSI/QCEngine.git@master#egg=qcengine
-    - git+https://github.com/MolSSI/QCElemental.git@master#egg=qcelemental
+  #- pip:
+    #- git+https://github.com/MolSSI/QCElemental.git@loriab-patch-1#egg=qcelemental
+    #- git+https://github.com/loriab/QCEngine.git@sept21qcdb_rb2#egg=qcengine
+    #- git+https://github.com/MolSSI/QCEngine.git@master#egg=qcengine
+    #- git+https://github.com/MolSSI/QCElemental.git@master#egg=qcelemental
+

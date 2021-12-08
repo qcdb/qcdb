@@ -4,9 +4,10 @@ from .. import data_dir  # lgtm: [py/unused-import]
 from ..keywords import Keywords
 from ..keywords.read_options import load_qcdb_keywords
 from ..molecule import Molecule
+from ..programs.cfour.read_options import load_cfour_keywords
 from ..programs.gamess.read_options import load_gamess_keywords
 from ..programs.nwchem.read_options import load_nwchem_keywords
-from ..programs.psi4.read_options import load_cfour_keywords_from_psi4, load_psi4_keywords
+from ..programs.psi4.read_options import load_psi4_keywords
 
 
 def clean_options() -> None:
@@ -27,8 +28,8 @@ def load_program_options(options: Keywords) -> None:
     """Initialize program keywords with defaults onto `options`."""
 
     load_qcdb_keywords(options)
-    if which("xcfour") and which_import("psi4"):
-        load_cfour_keywords_from_psi4(options)
+    if which("xcfour"):
+        load_cfour_keywords(options)
     if which("nwchem"):
         load_nwchem_keywords(options)
     if which("rungms"):

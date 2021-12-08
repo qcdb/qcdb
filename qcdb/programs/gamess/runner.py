@@ -10,7 +10,7 @@ from qcelemental.util import which
 from qcengine.exceptions import InputError
 from qcengine.programs.gamess import GAMESSHarness
 from qcengine.programs.gamess.keywords import format_keywords
-from qcengine.programs.util import PreservingDict
+from qcengine.programs.util import PreservingDict, error_stamp
 
 from ... import qcvars
 from ...basisset import BasisSet
@@ -51,7 +51,7 @@ def run_gamess(name: str, molecule: "Molecule", options: "Keywords", **kwargs) -
 
 
 class QcdbGAMESSHarness(GAMESSHarness):
-    def compute(self, input_model: AtomicInput, config: "JobConfig") -> "AtomicResult":
+    def compute(self, input_model: AtomicInput, config: "TaskConfig") -> "AtomicResult":
         self.found(raise_error=True)
 
         verbose = 1
@@ -67,7 +67,7 @@ class QcdbGAMESSHarness(GAMESSHarness):
         print_jobrec(f"[3] {self.name}REC POST-ENGINE", dexe, verbose >= 4)
 
         if "INPUT HAS AT LEAST ONE SPELLING OR LOGIC MISTAKE" in dexe["stdout"]:
-            raise InputError(dexe["stdout"])
+            raise InputError(error_stamp(job_inputs["infiles"]["gamess.inp"], dexe["stdout"], dexe["stderr"]))
 
         if not success:
             output_model = input_model
@@ -75,9 +75,7 @@ class QcdbGAMESSHarness(GAMESSHarness):
 
         dexe["outfiles"]["stdout"] = dexe["stdout"]
         dexe["outfiles"]["stderr"] = dexe["stderr"]
-        dexe["outfiles"]["dsl_input"] = job_inputs["infiles"][
-            "gamess.inp"
-        ]  # full DSL input not available in stdout, so stash the file
+        dexe["outfiles"]["input"] = job_inputs["infiles"]["gamess.inp"]
         output_model = self.parse_output(dexe["outfiles"], input_model)
 
         print_jobrec(f"[4a] {self.name} RESULT POST-HARVEST", output_model.dict(), verbose >= 5)
@@ -99,9 +97,6 @@ class QcdbGAMESSHarness(GAMESSHarness):
 
         kwgs = {"accession": accession_stamp(), "verbose": 1}
         ropts = input_model.extras["qcdb:options"]
-
-        if not all(input_model.molecule.real):
-            raise InputError("GAMESS can't handle ghost atoms yet.")
 
         mf_mol, mf_data = get_master_frame(input_model.molecule, config.scratch_directory)
 

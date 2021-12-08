@@ -36,8 +36,8 @@ def muster_basisset(molrec: Dict, ropts: "Keywords", native_puream: bool, verbos
     text = "\n".join(text)
 
     ropts.require("CFOUR", "BASIS", "SPECIAL", accession=accession, verbose=verbose)
-    # ropts.suggest('CFOUR', 'SPHERICAL', native_puream, accession=accession, verbose=verbose)
-    ropts.suggest("QCDB", "PUREAM", native_puream, accession=accession, verbose=verbose)
+    ropts.suggest("CFOUR", "SPHERICAL", native_puream, accession=accession, verbose=verbose)
+    # ropts.suggest("QCDB", "PUREAM", native_puream, accession=accession, verbose=verbose)  # longstanding
     # cfour or qcdb keywords here?
     # req or sugg for puream?
 

@@ -1,6 +1,6 @@
 import collections
 
-from ...keywords import Keyword, Keywords
+from ...keywords import Keyword, Keywords, parsers
 
 
 def load_psi4_keywords(options: Keywords) -> None:
@@ -22,6 +22,16 @@ def load_psi4_keywords(options: Keywords) -> None:
                 keyword = m + "__" + o
 
             options.add("psi4", Keyword(keyword=keyword, default=v["value"], validator=p4_validator))
+
+    options.add(
+        "psi4",
+        Keyword(
+            keyword="function_kwargs_dertype",
+            default=None,
+            validator=parsers.intenum("0 1 2", nullable=True),
+            glossary="User dertype for gradients and Hessians.",
+        ),
+    )
 
 
 def _basic_validator(val):
@@ -67,33 +77,34 @@ def _query_options_defaults_from_psi(changedOnly=False):
         "CCLAMBDA",
         "CCHBAR",
         "CCRESPONSE",
-        "CCSORT",
+        "CCTRANSORT",
         "CCTRIPLES",
-        "CLAG",
         "CPHF",
-        "CIS",
         "DCT",
         "DETCI",
+        "DFEP2",
         "DFMP2",
-        "DFTSAPT",
+        "DFOCC",
+        "DLPNO",
         "FINDIF",
+        "FISAPT",
         "FNOCC",
-        "LMP2",
         "MCSCF",
         "MINTS",
         "MRCC",
         "OCC",
         "OPTKING",
         "PSIMRCC",
-        "RESPONSE",
         "SAPT",
         "SCF",
-        "STABILITY",
         "THERMO",
-        "TRANSQT",
-        "TRANSQT2",
         # External Modules
         "CFOUR",
+        # "DMRG",
+        # "EFP",
+        # "GDMA",
+        # "PCM",
+        # "PE",
     ]
 
     options = collections.defaultdict(dict)

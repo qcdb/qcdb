@@ -563,16 +563,18 @@ def test_40_m06_l(h2o):
     check_m06_l(val)
 
 
-def check_hcth147(return_value):
-    hcth147 = -76.406989374352
-    assert compare_values(hcth147, qcdb.variable("DFT TOTAL ENERGY"), 5, "dft hcth147")
-
-
-@using("nwchem")
-def test_41_hcth147(h2o):
-    qcdb.set_options({"basis": "cc-pvdz", "nwchem_dft__xc": "hcth147"})
-    val = qcdb.energy("nwc-hcth147", molecule=h2o)
-    check_hcth147(val)
+# <<<  HCTH deprecated by 7.0 so just cancelling test Nov 2021  >>>
+#
+# def check_hcth147(return_value):
+#     hcth147 = -76.406989374352
+#     assert compare_values(hcth147, qcdb.variable("DFT TOTAL ENERGY"), 5, "dft hcth147")
+#
+#
+# @using("nwchem")
+# def test_41_hcth147(h2o):
+#     qcdb.set_options({"basis": "cc-pvdz", "nwchem_dft__xc": "hcth147"})
+#     val = qcdb.energy("nwc-hcth147", molecule=h2o)
+#     check_hcth147(val)
 
 
 def check_pw91(return_value):

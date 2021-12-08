@@ -10,13 +10,13 @@ from qcelemental.models import AtomicInput, AtomicResult, FailedOperation
 from qcengine.exceptions import InputError
 from qcengine.programs.nwchem import NWChemHarness
 from qcengine.programs.nwchem.keywords import format_keywords
-from qcengine.programs.util import PreservingDict
+from qcengine.programs.util import PreservingDict, error_stamp
 
 from ... import qcvars
 from ...basisset import BasisSet
 from ...driver.config import get_mode_config
 from ...molecule import Molecule
-from ...util import accession_stamp, format_error, print_jobrec, provenance_stamp
+from ...util import accession_stamp, print_jobrec, provenance_stamp
 from .germinate import muster_basisset, muster_inherited_keywords, muster_modelchem, muster_molecule
 
 pp = pprint.PrettyPrinter(width=120)
@@ -40,6 +40,7 @@ def run_nwchem(name: str, molecule: "Molecule", options: "Keywords", **kwargs) -
                 "basis": "(auto)",
             },
             "molecule": molecule.to_schema(dtype=2) | {"fix_com": True, "fix_orientation": True},
+            "protocols": {"native_files": "input"},
             "provenance": provenance_stamp(__name__),
         }
     )
@@ -55,7 +56,7 @@ def run_nwchem(name: str, molecule: "Molecule", options: "Keywords", **kwargs) -
 
 
 class QcdbNWChemHarness(NWChemHarness):
-    def compute(self, input_model: AtomicInput, config: "JobConfig") -> "AtomicResult":
+    def compute(self, input_model: AtomicInput, config: "TaskConfig") -> "AtomicResult":
         self.found(raise_error=True)
 
         verbose = 1
@@ -70,15 +71,20 @@ class QcdbNWChemHarness(NWChemHarness):
 
         success, dexe = self.execute(job_inputs)
 
-        dexe["outfiles"]["stdout"] = dexe["stdout"]
-        dexe["outfiles"]["stderr"] = dexe["stderr"]
+        stdin = job_inputs["infiles"]["nwchem.nw"]
 
         print_jobrec(f"[3] {self.name}REC POST-ENGINE", dexe, verbose >= 4)
 
         if "There is an error in the input file" in dexe["stdout"]:
-            raise InputError(dexe["stdout"])  # for nwc, stderr also works
+            raise InputError(error_stamp(stdin, dexe["stdout"], dexe["stderr"]))
+        if "not compiled" in dexe["stdout"]:
+            # recoverable with a different compilation with optional modules
+            raise InputError(error_stamp(stdin, dexe["stdout"], dexe["stderr"]))
 
         if success:
+            dexe["outfiles"]["stdout"] = dexe["stdout"]
+            dexe["outfiles"]["stderr"] = dexe["stderr"]
+            dexe["outfiles"]["input"] = stdin
             output_model = self.parse_output(dexe["outfiles"], input_model)
 
             print_jobrec(f"[4a] {self.name} RESULT POST-HARVEST", output_model.dict(), verbose >= 5)
@@ -92,7 +98,7 @@ class QcdbNWChemHarness(NWChemHarness):
                 success=False,
                 error={
                     "error_type": "execution_error",
-                    "error_message": format_error(stdout=dexe["stdout"], stderr=dexe["stderr"]),
+                    "error_message": error_stamp(stdin, dexe["stdout"], dexe["stderr"]),
                 },
                 input_data=input_model.dict(),
             )
@@ -147,8 +153,8 @@ class QcdbNWChemHarness(NWChemHarness):
         # create a qcdb.Molecule to reset PG to c1 so all atoms. but print_detail isn't transmitting in a way nwc is picking up on, so per-element for now
         # qmol = Molecule(jobrec['molecule'])
         # qmol.reset_point_group('c1')  # need basis printed for *every* atom
-        # qbs = BasisSet.pyconstruct(qmol, 'BASIS', _qcdb_basis)
-        qbs = BasisSet.pyconstruct(molrec, "BASIS", _qcdb_basis)
+        qbs = BasisSet.pyconstruct(qmol, "BASIS", _qcdb_basis)
+        # qbs = BasisSet.pyconstruct(molrec, "BASIS", _qcdb_basis)
 
         # if qbs.has_ECP(): #    raise ValidationError("""ECPs not hooked up for Cfour""")
         bascmd = muster_basisset(molrec, ropts, qbs, verbose=1)
@@ -166,6 +172,7 @@ class QcdbNWChemHarness(NWChemHarness):
         # OLD    optcmd = moptions.prepare_options_for_nwchem(jobrec['options'])
         #    resolved_options = {k: v.value for k, v in jobrec['options'].scroll['NWCHEM'].items() if v.disputed()}
         skma_options = {key: ropt.value for key, ropt in sorted(ropts.scroll["NWCHEM"].items()) if ropt.disputed()}
+        skma_options = {k: (int(v/8.0) if k == "MEMORY" else v) for k, v in skma_options.items()}
         optcmd = format_keywords(skma_options)
 
         # Handle text to be passed untouched to cfour
@@ -182,6 +189,8 @@ class QcdbNWChemHarness(NWChemHarness):
         if input_model.driver == "gradient":
             # Get the name of the theory used for computing the gradients
             theory = re.search(r"^task\s+(.+)\s+grad", mdccmd, re.MULTILINE).group(1)
+            if theory == "ccsd(t)":
+                theory = "ccsd"
             # logger.debug(f"Adding a Python task to retrieve gradients. Theory: {theory}")
             print(f"Adding a Python task to retrieve gradients. Theory: {theory}")
 
@@ -190,14 +199,15 @@ class QcdbNWChemHarness(NWChemHarness):
             #  (not 6 significant figures)
             pycmd = f"""
 python
-   try:  
+   try:
+      #rtdb_print(1)
       grad = rtdb_get('{theory}:gradient')
       if ga_nodeid() == 0:
           import json
           with open('nwchem.grad', 'w') as fp:
               json.dump(grad, fp)
-   except NWChemError, message:  
-        pass
+   except NWChemError as message:
+       pass
 end
 
 task python

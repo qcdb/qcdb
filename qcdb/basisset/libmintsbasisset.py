@@ -1388,7 +1388,7 @@ class BasisSet(object):
 
             for Q in range(n_shell):
                 if not numbersonly:
-                    text += """%s%s%d """ % ("" if self.molecule.Z(A) > 0 else "bq", self.molecule.symbol(A).capitalize(), A + 1)
+                    text += """%s%s%d """ % ("" if self.molecule.Z(A) > 0 else "bq", self.molecule.symbol(A).capitalize(), uA + 1)
                     # TODO revisit and figure out right mixture of unique/numbered for mixed basis sets incl. ghost
                 text += self.shells[Q + first_shell].pyprint_nwchem(outfile=None)
         text += """\n"""
