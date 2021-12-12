@@ -90,7 +90,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/keywords/keywords.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.ga43ff39">0+untagged.1.ga43ff39</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.gb199daf">0+untagged.1.gb199daf</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../../../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -217,6 +217,7 @@
             <span class="c1"># if ropt.endswith(ukey):</span>
             <span class="k">if</span> <span class="n">ropt</span> <span class="o">==</span> <span class="n">ukey</span> <span class="ow">or</span> <span class="n">ropt</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;__&quot;</span> <span class="o">+</span> <span class="n">ukey</span><span class="p">):</span>  <span class="c1"># psi wants</span>
                 <span class="n">overlap</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="c1"># print(overlap, key)</span>
                 <span class="k">if</span> <span class="n">imperative</span><span class="p">:</span>
                     <span class="n">oropt</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="n">overlap</span><span class="p">,</span> <span class="n">accession</span><span class="o">=</span><span class="n">accession</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -287,11 +288,22 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_compute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The all-important `self.value` is read-only and computed on-the-fly from `self.history`.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">use</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The all-important `self.value` is read-only and computed on-the-fly from `self.history`.</span>
 
-        <span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">cand</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mi">100</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">cand</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">cand</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">]</span>
-        <span class="n">max_score</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        use</span>
+<span class="sd">            {&quot;all&quot;, &quot;skip-default&quot;}</span>
+<span class="sd">            Entries in ``self.history`` to consider.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">use</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+            <span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">cand</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mi">100</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">cand</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">cand</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">use</span> <span class="o">==</span> <span class="s2">&quot;skip-default&quot;</span><span class="p">:</span>
+            <span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">cand</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mi">100</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">cand</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">cand</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="k">if</span> <span class="n">cand</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mark_of_the_default</span><span class="p">]</span>
+        <span class="c1">#print(&quot;SCORES&quot;, scores)</span>
+        <span class="n">max_score</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span> <span class="k">if</span> <span class="n">scores</span> <span class="k">else</span> <span class="mi">0</span>
 
         <span class="c1"># only catch user and driver reqd of highest relevance and most recent vintage</span>
         <span class="n">user</span> <span class="o">=</span> <span class="kc">None</span>
@@ -302,9 +314,14 @@
 
         <span class="n">driver</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">score</span><span class="p">,</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">scores</span><span class="p">),</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="n">score</span> <span class="o">==</span> <span class="n">max_score</span> <span class="ow">and</span> <span class="n">candidate</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mark_of_the_user</span><span class="p">:</span>
-                <span class="n">driver</span> <span class="o">=</span> <span class="n">candidate</span>
-                <span class="k">break</span>
+            <span class="k">if</span> <span class="n">use</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">score</span> <span class="o">==</span> <span class="n">max_score</span> <span class="ow">and</span> <span class="n">candidate</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mark_of_the_user</span><span class="p">:</span>
+                    <span class="n">driver</span> <span class="o">=</span> <span class="n">candidate</span>
+                    <span class="k">break</span>
+            <span class="k">elif</span> <span class="n">use</span> <span class="o">==</span> <span class="s2">&quot;skip-default&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">score</span> <span class="o">==</span> <span class="n">max_score</span> <span class="ow">and</span> <span class="n">candidate</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mark_of_the_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mark_of_the_default</span><span class="p">]:</span>
+                    <span class="n">driver</span> <span class="o">=</span> <span class="n">candidate</span>
+                    <span class="k">break</span>
 
         <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">driver</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">KeywordReconciliationError</span><span class="p">(</span><span class="s2">&quot;No info&quot;</span><span class="p">)</span>
@@ -325,7 +342,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">val</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">hist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute</span><span class="p">()</span>
+        <span class="n">val</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">hist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute</span><span class="p">(</span><span class="n">use</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">val</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">value2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">val</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">hist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute</span><span class="p">(</span><span class="n">use</span><span class="o">=</span><span class="s2">&quot;skip-default&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">val</span>
 
 <div class="viewcode-block" id="Keyword.inherit"><a class="viewcode-back" href="../../../api/qcdb.Keyword.html#qcdb.Keyword.inherit">[docs]</a>    <span class="k">def</span> <span class="nf">inherit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="n">suggests_too</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>  <span class="c1"># score_cutoff=100):</span>
@@ -399,6 +421,14 @@
 <div class="viewcode-block" id="Keyword.disputed"><a class="viewcode-back" href="../../../api/qcdb.Keyword.html#qcdb.Keyword.disputed">[docs]</a>    <span class="k">def</span> <span class="nf">disputed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Whether value candidates other than the initial value have been proposed.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="Keyword.disputed2"><a class="viewcode-back" href="../../../api/qcdb.Keyword.html#qcdb.Keyword.disputed2">[docs]</a>    <span class="k">def</span> <span class="nf">disputed2</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Whether value candidates other than the initial value have been proposed for exactly the keyword, not a partial overlap keyword.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+                <span class="k">if</span> <span class="n">candidate</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keyword</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="Keyword.is_required"><a class="viewcode-back" href="../../../api/qcdb.Keyword.html#qcdb.Keyword.is_required">[docs]</a>    <span class="k">def</span> <span class="nf">is_required</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">score_cutoff</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Whether the present evaluated value was suggested or required (approximately).&quot;&quot;&quot;</span>
@@ -495,7 +525,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/_modules/qcdb/keywords/keywords.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.ga43ff39">0+untagged.1.ga43ff39</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.gb199daf">0+untagged.1.gb199daf</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../../../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -509,7 +539,7 @@
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2021, The QCDB Project.
-      Last updated on Wednesday, 08 December 2021 05:23AM.
+      Last updated on Sunday, 12 December 2021 06:38AM.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
     </div>
     <!-- cloud_sptheme 1.4 -->

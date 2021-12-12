@@ -13,12 +13,14 @@ Keyword
       ~Keyword.mark_of_the_default
       ~Keyword.mark_of_the_user
       ~Keyword.value
+      ~Keyword.value2
 
    .. rubric:: Methods Summary
 
    .. autosummary::
 
       ~Keyword.disputed
+      ~Keyword.disputed2
       ~Keyword.inherit
       ~Keyword.is_default
       ~Keyword.is_required
@@ -31,10 +33,12 @@ Keyword
    .. autoattribute:: mark_of_the_default
    .. autoattribute:: mark_of_the_user
    .. autoattribute:: value
+   .. autoattribute:: value2
 
    .. rubric:: Methods Documentation
 
    .. automethod:: disputed
+   .. automethod:: disputed2
    .. automethod:: inherit
    .. automethod:: is_default
    .. automethod:: is_required
