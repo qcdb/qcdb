@@ -56,7 +56,7 @@ class ModeConfig(BaseModel):
         extra = "forbid"
 
     @root_validator(pre=True)
-    def check_passwords_match(cls, values):
+    def setup_modes_aggregate(cls, values):
         mode = values.get("mode")
         if mode == "unified":
             values["module_fallback"] = values.get("module_fallback", True)

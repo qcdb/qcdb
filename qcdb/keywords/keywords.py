@@ -106,7 +106,6 @@ class Keywords:
             # if ropt.endswith(ukey):
             if ropt == ukey or ropt.endswith("__" + ukey):  # psi wants
                 overlap = len(key)
-                # print(overlap, key)
                 if imperative:
                     oropt.require(value, overlap=overlap, accession=accession, verbose=verbose)
                 else:
@@ -191,7 +190,6 @@ class Keyword:
             scores = [cand[2] + 100 * int(cand[1]) for cand in self.history]
         elif use == "skip-default":
             scores = [cand[2] + 100 * int(cand[1]) for cand in self.history if cand[3] != self.mark_of_the_default]
-        #print("SCORES", scores)
         max_score = max(scores) if scores else 0
 
         # only catch user and driver reqd of highest relevance and most recent vintage

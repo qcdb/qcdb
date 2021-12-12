@@ -85,6 +85,16 @@ def muster_inherited_keywords(ropts: "Keywords", mcfg: "ModeConfig", verbose: in
     if val != "skip":
         ropts.suggest("PSI4", "E_CONVERGENCE", val, **kwgs)
 
+    # qcdb/d_convergence --> psi4/d_convergence
+    qopt = ropts.scroll["QCDB"]["D_CONVERGENCE"]
+    if qopt.disputed():
+        val = qopt.value
+    else:
+        val = "skip"
+
+    if val != "skip":
+        ropts.suggest("PSI4", "D_CONVERGENCE", val, **kwgs)
+
     # qcdb/qc_module --> psi4/qc_module
     qopt = ropts.scroll["QCDB"]["QC_MODULE"]
     if qopt.disputed():
