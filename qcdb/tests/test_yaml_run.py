@@ -16,7 +16,7 @@ kwargs:
   scf_scheme: !!python/name:qcdb.scf_xtpl_helgaker_3
 options:
   reference: rohf
-  scf_type: pk
+  scf_type: conv  # longstanding pk
   psi4_df_scf_guess: false
 """
 ans_hf3 = -7.4326961561955551

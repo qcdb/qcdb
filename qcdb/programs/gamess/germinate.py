@@ -242,7 +242,7 @@ def muster_molecule_and_basisset(
     return "\n".join(data_group_uniq)
 
 
-def muster_modelchem(name: str, dertype: int, ropts: "Keywords", sysinfo: Dict, verbose: int = 1) -> None:
+def muster_modelchem(name: str, dertype: int, ropts: "Keywords", mcfg: "ModeConfig", sysinfo: Dict, verbose: int = 1) -> None:
     lowername = name.lower()
     accession = uuid.uuid4()
 
@@ -412,7 +412,7 @@ def muster_modelchem(name: str, dertype: int, ropts: "Keywords", sysinfo: Dict, 
         raise ValidationError(f"""Requested GAMESS computational methods {lowername} is not available.""")
 
 
-def muster_inherited_keywords(ropts: "Keywords", sysinfo: Dict, verbose: int = 1) -> None:
+def muster_inherited_keywords(ropts: "Keywords", mcfg: "ModeConfig", sysinfo: Dict, verbose: int = 1) -> None:
     accession = uuid.uuid4()
 
     kwgs = {"accession": accession, "verbose": verbose}
@@ -446,12 +446,42 @@ def muster_inherited_keywords(ropts: "Keywords", sysinfo: Dict, verbose: int = 1
         conv = conv_float2negexp(qopt.value)
         ropts.suggest("GAMESS", "ccinp__iconv", conv, **kwgs)
 
-    # qcdb/freeze_core --> gamess/
+# longstanding
+#    # qcdb/freeze_core --> gamess/
+#    qopt = ropts.scroll["QCDB"]["FREEZE_CORE"]
+#    if qopt.disputed():
+#        if qopt.value is True:
+#            ncore = sysinfo["fc"]["ncore"]
+#        elif qopt.value is False:
+#            ncore = 0
+#        ropts.suggest("GAMESS", "ccinp__ncore", ncore, accession=accession, verbose=verbose)
+#        ropts.suggest("GAMESS", "mp2__nacore", ncore, accession=accession, verbose=verbose)
+
+    # qcdb/freeze_core --> gamess/?core
     qopt = ropts.scroll["QCDB"]["FREEZE_CORE"]
-    if qopt.disputed():
-        if qopt.value is True:
+    val = "skip"
+    if mcfg.translate_orbital_space is True:
+        val = qopt.value
+    elif qopt.disputed():
+        val = qopt.value2
+
+    if val != "skip":
+        if val is True:
             ncore = sysinfo["fc"]["ncore"]
-        elif qopt.value is False:
+        elif val is False:
             ncore = 0
         ropts.suggest("GAMESS", "ccinp__ncore", ncore, accession=accession, verbose=verbose)
         ropts.suggest("GAMESS", "mp2__nacore", ncore, accession=accession, verbose=verbose)
+
+    # qcdb/scf_type --> gamess/DNE
+    qopt = ropts.scroll["QCDB"]["SCF_TYPE"]
+    if mcfg.translate_method_algorithm is True:
+        val = qopt.value
+    elif qopt.disputed():
+        val = qopt.value2
+    else:
+        val = "skip"
+
+    if val not in ["skip", "CONV"]:
+        raise ValidationError(f"""Requested GAMESS SCF_TYPE '{val}' is not available.""")
+

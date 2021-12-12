@@ -176,11 +176,21 @@ class Keyword:
         )
         return "\n".join(text)
 
-    def _compute(self):
-        """The all-important `self.value` is read-only and computed on-the-fly from `self.history`."""
+    def _compute(self, use="all"):
+        """The all-important `self.value` is read-only and computed on-the-fly from `self.history`.
 
-        scores = [cand[2] + 100 * int(cand[1]) for cand in self.history]
-        max_score = max(scores)
+        Parameters
+        ----------
+        use
+            {"all", "skip-default"}
+            Entries in ``self.history`` to consider.
+
+        """
+        if use == "all":
+            scores = [cand[2] + 100 * int(cand[1]) for cand in self.history]
+        elif use == "skip-default":
+            scores = [cand[2] + 100 * int(cand[1]) for cand in self.history if cand[3] != self.mark_of_the_default]
+        max_score = max(scores) if scores else 0
 
         # only catch user and driver reqd of highest relevance and most recent vintage
         user = None
@@ -191,9 +201,14 @@ class Keyword:
 
         driver = None
         for score, candidate in zip(reversed(scores), reversed(self.history)):
-            if score == max_score and candidate[3] != self.mark_of_the_user:
-                driver = candidate
-                break
+            if use == "all":
+                if score == max_score and candidate[3] != self.mark_of_the_user:
+                    driver = candidate
+                    break
+            elif use == "skip-default":
+                if score == max_score and candidate[3] not in [self.mark_of_the_user, self.mark_of_the_default]:
+                    driver = candidate
+                    break
 
         if user is None and driver is None:
             raise KeywordReconciliationError("No info")
@@ -214,7 +229,12 @@ class Keyword:
 
     @property
     def value(self):
-        val, score, hist = self._compute()
+        val, score, hist = self._compute(use="all")
+        return val
+
+    @property
+    def value2(self):
+        val, score, hist = self._compute(use="skip-default")
         return val
 
     def inherit(self, other, transform, suggests_too=True):  # score_cutoff=100):
@@ -288,6 +308,14 @@ class Keyword:
     def disputed(self) -> bool:
         """Whether value candidates other than the initial value have been proposed."""
         return len(self.history) > 1
+
+    def disputed2(self) -> bool:
+        """Whether value candidates other than the initial value have been proposed for exactly the keyword, not a partial overlap keyword."""
+        if len(self.history) > 1:
+            for candidate in self.history[1:]:
+                if candidate[2] == len(self.keyword):
+                    return True
+        return False
 
     def is_required(self, score_cutoff: int = 100) -> bool:
         """Whether the present evaluated value was suggested or required (approximately)."""

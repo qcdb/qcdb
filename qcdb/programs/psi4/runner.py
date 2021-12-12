@@ -104,20 +104,27 @@ class QcdbPsi4Harness(Psi4Harness):
         # input_data['kwargs'] = jobrec['kwargs']
         # input_data['return_output'] = True
 
+        # print("Touched Keywords")  # debug
+        # print(ropts.print_changed(history=True))  # debug
+
         popts = {}
         function_kwargs = {}
-        for k, v in ropts.scroll["QCDB"].items():
-            if v.disputed():
-                popts[k] = v.value
+        # was recently active
+        # for k, v in ropts.scroll["QCDB"].items():
+        #     if v.disputed():
+        #         popts[k] = v.value
 
         for k, v in ropts.scroll["PSI4"].items():
-            if v.disputed():
+            if v.disputed2():
                 if k.startswith("FUNCTION_KWARGS_"):
                     function_kwargs[k[16:]] = v.value
                 else:
                     popts[k] = v.value
         input_data["keywords"] = popts
         input_data["keywords"]["function_kwargs"] = function_kwargs
+
+        # print("Collected Keywords")  # debug
+        # pp.pprint(popts)  # debug
 
         if "BASIS" in input_data["keywords"]:
             input_data["model"]["basis"] = input_data["keywords"]["BASIS"]

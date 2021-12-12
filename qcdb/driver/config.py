@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Any, Dict
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, root_validator
 
 
 class FrameEnum(str, Enum):
@@ -19,15 +19,24 @@ class ProgramEnum(str, Enum):
     qcdb = "qcdb"
 
 
+class ModeEnum(str, Enum):
+
+    sandwich = "sandwich"
+    unified = "unified"
+
+
 class ModeConfig(BaseModel):
     """Description of the configuration used to formulate and interpret a task."""
 
     # Specifications
     #    result_frame: FrameEnum = Field(None, description="Orientation/frame/alignment for returned results")
+    mode: ModeEnum = Field(None, description="Broad mode of operation specifying degree of interoperability. `sandwich` aims for unified interface. `unified` aims for unified results. Usually, set only this as it sets further fields, but other fields can be tweaked to override broad mode.")
     implicit_program: ProgramEnum = Field(
         ProgramEnum.qcdb, description="Program to use without prefixing method or keywords"
     )
     module_fallback: bool = Field(None, description="")
+    translate_method_algorithm: bool = Field(None, description="Suggest the QCDB value for QC method algorithm, e.g., conventional vs. density-fitted")
+    translate_orbital_space: bool = Field(None, description="Suggest the QCDB value for frozen core")
 
     #    ncores: int = pydantic.Field(None, description="Number cores per task on each node")
     #    nnodes: int = pydantic.Field(None, description="Number of nodes per task")
@@ -45,6 +54,19 @@ class ModeConfig(BaseModel):
 
     class Config:
         extra = "forbid"
+
+    @root_validator(pre=True)
+    def setup_modes_aggregate(cls, values):
+        mode = values.get("mode")
+        if mode == "unified":
+            values["module_fallback"] = values.get("module_fallback", True)
+            values["translate_method_algorithm"] = values.get("translate_method_algorithm", True)
+            values["translate_orbital_space"] = values.get("translate_orbital_space", True)
+        elif mode == "sandwich":
+            values["module_fallback"] = values.get("module_fallback", False)
+            values["translate_method_algorithm"] = values.get("translate_method_algorithm", False)
+            values["translate_orbital_space"] = values.get("translate_orbital_space", False)
+        return values
 
 
 # def get_mode_config(key: str = None):

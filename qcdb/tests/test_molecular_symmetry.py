@@ -978,7 +978,7 @@ def test_molsymm_calc(subject, qcprog):
     }
     qcdb.set_options(
         {
-            "scf_type": "pk",
+            "scf_type": "conv",  # longstanding "pk"
             "e_convergence": 9,
             "d_convergence": 9,
             "reference": "r{}hf".format("" if symmol.multiplicity() == 1 else "o"),

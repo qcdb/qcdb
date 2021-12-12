@@ -1577,7 +1577,7 @@ def test_ccsd_energy_default(inp, dertype, basis, subjects, clsd_open_pmols, req
     inpcopy["driver"] = "energy"
     if not any([k.lower() in _basis_keywords for k in inpcopy["keywords"]]):
         inpcopy["keywords"]["basis"] = basis
-    inpcopy["scf_type"] = "pk"
+    inpcopy["scf_type"] = "conv"  # longstanding "pk"
     inpcopy["corl_type"] = "conv"
     inpcopy["qc_module"] = "-".join(
         [qcprog, inp["keywords"].get("qc_module", inp["keywords"].get("cfour_cc_program", ""))]
@@ -2854,7 +2854,7 @@ def test_ccsdt_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, r
 @pytest.mark.parametrize(
     "dertype",
     [
-        pytest.param(2, id="hes2"),
+        pytest.param(2, id="hes2", marks=pytest.mark.cilong),
         # pytest.param(1, id="hes1", marks=pytest.mark.long),
         # pytest.param(0, id="hes0", marks=pytest.mark.long),
     ],
@@ -3376,7 +3376,7 @@ def _processor(inp, dertype, basis, subjects, clsd_open_pmols, request, driver, 
     inpcopy["driver"] = driver
     if not any([k.lower() in _basis_keywords for k in inpcopy["keywords"]]):
         inpcopy["keywords"]["basis"] = basis
-    inpcopy["scf_type"] = "pk"
+    inpcopy["scf_type"] = "conv"  # longstanding "pk"
     inpcopy["corl_type"] = "conv"
     inpcopy["qc_module"] = "-".join(
         [

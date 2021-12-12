@@ -221,7 +221,7 @@ def muster_modelchem(name: str, dertype: int, ropts: "Keywords", verbose: int = 
         raise ValidationError(f"""Requested Cfour computational method '{lowername}' is not available.""")
 
 
-def muster_inherited_keywords(ropts: "Keywords", verbose: int = 1) -> None:
+def muster_inherited_keywords(ropts: "Keywords", mcfg: "ModeConfig", verbose: int = 1) -> None:
     """Translate psi4 keywords *opt* that have been explicitly set into
     their Cfour counterparts. Since explicitly set Cfour module keyword
     values will always be used preferentially to these inferred from
@@ -268,7 +268,28 @@ def muster_inherited_keywords(ropts: "Keywords", verbose: int = 1) -> None:
     ropts.suggest("CFOUR", "SCF_DAMPING", damp, **kwgs)
 
     # qcdb/freeze_core --> cfour/frozen_core
-    ropts.suggest("CFOUR", "FROZEN_CORE", ropts.scroll["QCDB"]["FREEZE_CORE"].value, **kwgs)
+    # longstanding: ropts.suggest("CFOUR", "FROZEN_CORE", ropts.scroll["QCDB"]["FREEZE_CORE"].value, **kwgs)
+    qopt = ropts.scroll["QCDB"]["FREEZE_CORE"]
+    val = "skip"
+    if mcfg.translate_orbital_space is True:
+        val = qopt.value
+    elif qopt.disputed():
+        val = qopt.value2
+
+    if val != "skip":
+        ropts.suggest("CFOUR", "FROZEN_CORE", val, **kwgs)
+
+    # qcdb/scf_type --> cfour/DNE
+    qopt = ropts.scroll["QCDB"]["SCF_TYPE"]
+    if mcfg.translate_method_algorithm is True:
+        val = qopt.value
+    elif qopt.disputed():
+        val = qopt.value2
+    else:
+        val = "skip"
+
+    if val not in ["skip", "CONV"]:
+        raise ValidationError(f"""Requested Cfour SCF_TYPE '{val}' is not available.""")
 
 
 if __name__ == "__main__":

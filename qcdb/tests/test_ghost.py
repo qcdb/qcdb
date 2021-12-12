@@ -38,7 +38,7 @@ def test_simple_ghost(qcp):
         {
             "basis": "aug-cc-pVDZ",
             "freeze_core": True,
-            "scf_type": "pk",
+            "scf_type": "conv",  # longstanding "pk"
             "d_convergence": 8,
         }
     )

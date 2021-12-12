@@ -265,10 +265,10 @@ def test_fig2cd_api(qcprog, part, request):
     """
     if part == "c":
         datin = _fig2_ins[qcprog]["c"]
-        mo = None
+        mo = {"mode": "sandwich"}
     elif part == "d":
         datin = _fig2_ins["all"]["d"]
-        mo = {"module_fallback": True}
+        mo = {"mode": "unified"}
 
     qcskmol = qcel.models.Molecule(**datin["molecule"])
     qcdbmol = qcdb.Molecule.from_schema(qcskmol.dict())
