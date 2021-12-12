@@ -996,7 +996,7 @@ def test_qcisd_prt_pr_energy_module(inp, dertype, basis, subjects, clsd_open_pmo
     "inp",
     [
         # yapf: disable
-        pytest.param({"call": "gms-fci", "reference": "rhf",  "fcae": "ae", "keywords": {"freeze_core": False},                                                                                                                            }, id="fci  rhf ae: gamess",     marks=using("gamess")),
+        pytest.param({"call": "gms-fci", "reference": "rhf",  "fcae": "ae", "keywords": {"freeze_core": False},                                                                                                                            }, id="fci  rhf ae: gamess",     marks=[using("gamess"), pytest.mark.cilong]),
         pytest.param({"call": "p4-fci",  "reference": "rhf",  "fcae": "ae", "keywords": {"psi4_qc_module": "detci"},                                                                                                                       }, id="fci  rhf ae: psi4-detci",   marks=using("psi4")),
 
         pytest.param({"call": "gms-fci", "reference": "rhf",  "fcae": "fc", "keywords": {"freeze_core": True},                                                                                                                             }, id="fci  rhf fc: gamess",     marks=using("gamess")),
@@ -1998,7 +1998,7 @@ def test_ccsd_prt_pr_gradient_module(inp, dertype, basis, subjects, clsd_open_pm
     [
         pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
         pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
-        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=[pytest.mark.long, pytest.mark.cilong]),
     ],
 )
 @pytest.mark.parametrize(
@@ -2854,7 +2854,7 @@ def test_ccsdt_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, r
 @pytest.mark.parametrize(
     "dertype",
     [
-        pytest.param(2, id="hes2", marks=pytest.mark.cilong),
+        pytest.param(2, id="hes2"),
         # pytest.param(1, id="hes1", marks=pytest.mark.long),
         # pytest.param(0, id="hes0", marks=pytest.mark.long),
     ],
@@ -2864,7 +2864,7 @@ def test_ccsdt_gradient_module(inp, dertype, basis, subjects, clsd_open_pmols, r
     [
         pytest.param("cc-pvdz", ["hf", "bh3p", "bh3p"], id="dz"),
         pytest.param("aug-cc-pvdz", ["h2o", "nh2", "nh2"], id="adz", marks=pytest.mark.long),
-        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=pytest.mark.long),
+        pytest.param("cfour-qz2p", ["h2o", "nh2", "nh2"], id="qz2p", marks=[pytest.mark.long, pytest.mark.cilong]),
     ],
 )
 @pytest.mark.parametrize(
