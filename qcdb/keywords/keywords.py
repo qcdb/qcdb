@@ -106,7 +106,6 @@ class Keywords:
             # if ropt.endswith(ukey):
             if ropt == ukey or ropt.endswith("__" + ukey):  # psi wants
                 overlap = len(key)
-                # print(overlap, key)
                 if imperative:
                     oropt.require(value, overlap=overlap, accession=accession, verbose=verbose)
                 else:
