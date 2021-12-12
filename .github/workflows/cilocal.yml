@@ -61,7 +61,7 @@ jobs:
         export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH  # nwchem pylink
         export PATH=/psi/gits/cfour-public/bin:$PATH  # cfour exe
         qcengine info
-        pytest -rws -v --cov=qcdb --color=yes --cov-report=xml -n8 qcdb/
+        pytest -rws -v --cov=qcdb --color=yes --cov-report=xml --durations=20 -k "not cilong" -n8 qcdb/
         # -k test_tu
 
     - name: CodeCov

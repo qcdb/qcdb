@@ -8,6 +8,7 @@ def pytest_configure(config):
     config.addinivalue_line("markers", """slow: marks tests as slow (deselect with '-m "not slow"')""")
     config.addinivalue_line("markers", "smoke")
     config.addinivalue_line("markers", "quick")
+    config.addinivalue_line("markers", """cilong: marks tests that add half an hour to GHA checks""")
 
 
 @pytest.fixture(scope="function", autouse=True)

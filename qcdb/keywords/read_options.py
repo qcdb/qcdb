@@ -53,6 +53,16 @@ def load_qcdb_keywords(options: Keywords) -> None:
 
     options.add(
         "qcdb",
+        Keyword(
+            keyword="d_convergence",
+            default=1.0e-6,
+            validator=parsers.parse_convergence,
+            glossary="Convergence criterion for density (psi: which is defined as the RMS value of the orbital gradient.",
+        ),
+    )
+
+    options.add(
+        "qcdb",
         Keyword(  # derived shorthand global
             keyword="scf__d_convergence",
             default=1.0e-6,
@@ -101,7 +111,7 @@ def load_qcdb_keywords(options: Keywords) -> None:
         "qcdb",
         Keyword(
             keyword="scf_type",  # TODO ditto, 2-leveled
-            default="",
+            default="CONV",
             validator=lambda x: x.upper(),  # TODO
             glossary="""What algorithm to use for the SCF computation. See Table :ref:`SCF
     Convergence & Algorithm <table:conv_scf>` for default algorithm for
@@ -110,17 +120,17 @@ def load_qcdb_keywords(options: Keywords) -> None:
     )
     # options.add_str("SCF_TYPE", "PK", "DIRECT DF PK OUT_OF_CORE CD GTFOCK");
 
-    options.add(
-        "qcdb",
-        Keyword(
-            keyword="scf__scf_type",
-            default="",
-            validator=lambda x: x.upper(),  # TODO
-            glossary="""What algorithm to use for the SCF computation. See Table :ref:`SCF
-    Convergence & Algorithm <table:conv_scf>` for default algorithm for
-    different calculation types.""",
-        ),
-    )
+#    options.add(
+#        "qcdb",
+#        Keyword(
+#            keyword="scf__scf_type",
+#            default="",
+#            validator=lambda x: x.upper(),  # TODO
+#            glossary="""What algorithm to use for the SCF computation. See Table :ref:`SCF
+#    Convergence & Algorithm <table:conv_scf>` for default algorithm for
+#    different calculation types.""",
+#        ),
+#    )
     # options.add_str("SCF_TYPE", "PK", "DIRECT DF PK OUT_OF_CORE CD GTFOCK");
 
     options.add(
@@ -151,8 +161,9 @@ def load_qcdb_keywords(options: Keywords) -> None:
     options.add(
         "qcdb",
         Keyword(
-            keyword="mp2__mp2_type",
-            default="",
+            #keyword="mp2__mp2_type",
+            keyword="mp2_type",
+            default="CONV",
             validator=lambda x: x.upper(),  # TODO
             glossary="""What algorithm to use for MP2 computation. See 
         :ref:`Cross-module Redundancies <table:managedmethods>` for details.""",

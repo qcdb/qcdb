@@ -29,7 +29,7 @@ options:
   basis: '6-31g**'
   reference: uhf
   puream: cart
-  scf_type: pk
+  scf_type: conv  # longstanding pk
 """
 
     import yaml
@@ -60,7 +60,7 @@ options:
   basis: '6-31g**'
   reference: uhf
   puream: cart
-  scf_type: pk
+  scf_type: conv  # longstanding pk
 """
 
     import yaml
@@ -91,7 +91,7 @@ options:
   basis: '6-31g**'
   reference: uhf
   puream: cart
-  scf_type: pk
+  scf_type: conv  # longstanding pk
 """
 
     import yaml
@@ -122,7 +122,7 @@ options:
   basis: '6-31g**'
   reference: uhf
   puream: cart
-  scf_type: pk
+  scf_type: conv  # longstanding pk
 """
 
     import yaml

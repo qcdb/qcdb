@@ -94,6 +94,9 @@ class QcdbNWChemHarness(NWChemHarness):
             print_jobrec(f"[4] {self.name} RESULT POST-POST-HARVEST", output_model.dict(), verbose >= 2)
 
         else:
+            ## Check if any of the errors are known
+            #for error in all_errors:
+            #    error.detect_error(dexe)
             output_model = FailedOperation(
                 success=False,
                 error={
@@ -142,7 +145,7 @@ class QcdbNWChemHarness(NWChemHarness):
 
         # Handle qcdb keywords implying nwchem keyword values
         # used to be before molecule formatting -- was that necessary?
-        muster_inherited_keywords(ropts)
+        muster_inherited_keywords(ropts, mode_config)
 
         _qcdb_basis = ropts.scroll["QCDB"]["BASIS"].value
         # TODO _gamess_basis = ropts.scroll['NWCHEM']['BASIS'].value

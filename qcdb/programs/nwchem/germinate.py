@@ -111,7 +111,7 @@ def muster_modelchem(name: str, dertype: int, ropts: "Keywords", mode_config, ve
             #    mdccmd = f'task tce {runtyp}\n\n'
 
         if mode_config.module_fallback is True:
-            if ropts.scroll["NWCHEM"]["SCF__ROHF"].value is True:
+            if ropts.scroll["NWCHEM"]["SCF__ROHF"].value is True or ropts.scroll["NWCHEM"]["SCF__UHF"].value is True:
                 mdccmd = f"task tce {runtyp}\n\n"
                 ropts.require("NWCHEM", "tce__ccsd", True, **kwgs)
 
@@ -456,7 +456,7 @@ def muster_modelchem(name: str, dertype: int, ropts: "Keywords", mode_config, ve
     return mdccmd
 
 
-def muster_inherited_keywords(ropts: "Keywords", verbose: int = 1) -> None:
+def muster_inherited_keywords(ropts: "Keywords", mcfg: "ModeConfig", verbose: int = 1) -> None:
     accession = sys._getframe().f_code.co_name + "_" + str(uuid.uuid4())
     kwgs = {"accession": accession, "verbose": verbose}
 
@@ -494,13 +494,46 @@ def muster_inherited_keywords(ropts: "Keywords", verbose: int = 1) -> None:
         ropts.suggest("NWCHEM", "ccsd__thresh", conv, **kwgs)
         ropts.suggest("NWCHEM", "dft__convergence__energy", conv, **kwgs)
 
+# longstanding
+#    # qcdb/freeze_core --> nwchem/[mp2|ccsd|tce]__freeze
+#    fcae = ropts.scroll["QCDB"]["FREEZE_CORE"].value
+#    if fcae is True:
+#        ropts.suggest("NWCHEM", "mp2__freeze__atomic", True, **kwgs)
+#        ropts.suggest("NWCHEM", "ccsd__freeze__atomic", True, **kwgs)
+#        ropts.suggest("NWCHEM", "tce__freeze__atomic", True, **kwgs)
+#    elif fcae is False:
+#        ropts.suggest("NWCHEM", "mp2__freeze", 0, **kwgs)
+#        ropts.suggest("NWCHEM", "ccsd__freeze", 0, **kwgs)
+#        ropts.suggest("NWCHEM", "tce__freeze", 0, **kwgs)
+
     # qcdb/freeze_core --> nwchem/[mp2|ccsd|tce]__freeze
-    fcae = ropts.scroll["QCDB"]["FREEZE_CORE"].value
-    if fcae is True:
-        ropts.suggest("NWCHEM", "mp2__freeze__atomic", True, **kwgs)
-        ropts.suggest("NWCHEM", "ccsd__freeze__atomic", True, **kwgs)
-        ropts.suggest("NWCHEM", "tce__freeze__atomic", True, **kwgs)
-    elif fcae is False:
-        ropts.suggest("NWCHEM", "mp2__freeze", 0, **kwgs)
-        ropts.suggest("NWCHEM", "ccsd__freeze", 0, **kwgs)
-        ropts.suggest("NWCHEM", "tce__freeze", 0, **kwgs)
+    qopt = ropts.scroll["QCDB"]["FREEZE_CORE"]
+    val = "skip"
+    if mcfg.translate_orbital_space is True:
+        val = qopt.value
+    elif qopt.disputed():
+        val = qopt.value2
+
+    if val != "skip":
+        if val is True:
+            ropts.suggest("NWCHEM", "mp2__freeze__atomic", True, **kwgs)
+            ropts.suggest("NWCHEM", "ccsd__freeze__atomic", True, **kwgs)
+            ropts.suggest("NWCHEM", "tce__freeze__atomic", True, **kwgs)
+        elif val is False:
+            ropts.suggest("NWCHEM", "mp2__freeze", 0, **kwgs)
+            ropts.suggest("NWCHEM", "ccsd__freeze", 0, **kwgs)
+            ropts.suggest("NWCHEM", "tce__freeze", 0, **kwgs)
+
+    # qcdb/scf_type --> nwchem/DNE
+    qopt = ropts.scroll["QCDB"]["SCF_TYPE"]
+    if mcfg.translate_method_algorithm is True:
+        val = qopt.value
+    elif qopt.disputed():
+        val = qopt.value2
+    else:
+        val = "skip"
+
+    if val not in ["skip", "CONV"]:
+        raise ValidationError(f"""Requested NWChem SCF_TYPE '{val}' is not available.""")
+
+

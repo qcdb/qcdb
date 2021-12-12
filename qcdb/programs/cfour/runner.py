@@ -12,6 +12,7 @@ from qcengine.programs.util import PreservingDict
 
 from ... import qcvars
 from ...basisset import BasisSet
+from ...driver.config import get_mode_config
 from ...util import accession_stamp, print_jobrec, provenance_stamp
 from .germinate import (
     extract_basis_from_genbas,
@@ -26,12 +27,14 @@ def run_cfour(name: str, molecule: "Molecule", options: "Keywords", **kwargs) ->
     """QCDB API to QCEngine connection for CFOUR."""
 
     local_options = kwargs.get("local_options", None)
+    mode_options = get_mode_config(mode_options=kwargs.get("mode_options"))
 
     resi = AtomicInput(
         **{
             "driver": inspect.stack()[1][3],
             "extras": {
                 "qcdb:options": copy.deepcopy(options),
+                "qcdb:mode_config": mode_options,
             },
             "model": {
                 "method": name,
@@ -99,13 +102,14 @@ class QcdbCFOURHarness(CFOURHarness):
         molrec = qcel.molparse.from_schema(input_model.molecule.dict())
         molrec["fix_symmetry"] = "c1"  # write _all_ atoms to GENBAS
         ropts = input_model.extras["qcdb:options"]
+        mode_config = input_model.extras["qcdb:mode_config"]
 
         ropts.require("QCDB", "MEMORY", f"{config.memory} gib", **kwgs)
 
         molcmd = muster_molecule(molrec, ropts, verbose=1)
 
         # Handle qcdb keywords implying cfour keyword values
-        muster_inherited_keywords(ropts)
+        muster_inherited_keywords(ropts, mode_config)
 
         _qcdb_basis = ropts.scroll["QCDB"]["BASIS"].value
         _cfour_basis = ropts.scroll["CFOUR"]["BASIS"].value

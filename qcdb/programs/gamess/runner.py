@@ -15,6 +15,7 @@ from qcengine.programs.util import PreservingDict, error_stamp
 from ... import qcvars
 from ...basisset import BasisSet
 from ...molecule import Molecule
+from ...driver.config import get_mode_config
 from ...util import accession_stamp, print_jobrec, provenance_stamp
 from .germinate import get_master_frame, muster_inherited_keywords, muster_modelchem, muster_molecule_and_basisset
 
@@ -24,12 +25,14 @@ pp = pprint.PrettyPrinter(width=120)
 def run_gamess(name: str, molecule: "Molecule", options: "Keywords", **kwargs) -> Dict:
 
     local_options = kwargs.get("local_options", None)
+    mode_options = get_mode_config(mode_options=kwargs.get("mode_options"))
 
     resi = AtomicInput(
         **{
             "driver": inspect.stack()[1][3],
             "extras": {
                 "qcdb:options": copy.deepcopy(options),
+                "qcdb:mode_config": mode_options,
             },
             "model": {
                 "method": name,
@@ -97,6 +100,7 @@ class QcdbGAMESSHarness(GAMESSHarness):
 
         kwgs = {"accession": accession_stamp(), "verbose": 1}
         ropts = input_model.extras["qcdb:options"]
+        mode_config = input_model.extras["qcdb:mode_config"]
 
         mf_mol, mf_data = get_master_frame(input_model.molecule, config.scratch_directory)
 
@@ -130,14 +134,14 @@ class QcdbGAMESSHarness(GAMESSHarness):
         }
 
         # Handle qcdb keywords implying gamess keyword values
-        muster_inherited_keywords(ropts, sysinfo)
+        muster_inherited_keywords(ropts, mode_config, sysinfo)
 
         molbascmd = muster_molecule_and_basisset(
             mf_qmol_c1.to_dict(), qbs, ropts, mf_data["unique"], mf_data["symmetry_card"]
         )
 
         # Handle calc type and quantum chemical method
-        muster_modelchem(input_model.model.method, input_model.driver.derivative_int(), ropts, sysinfo)
+        muster_modelchem(input_model.model.method, input_model.driver.derivative_int(), ropts, mode_config, sysinfo)
 
         ropts.require("QCDB", "MEMORY", f"{config.memory} gib", **kwgs)
 

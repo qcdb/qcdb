@@ -49,7 +49,7 @@ def system1():
 
     qcdb.set_options(
         {
-            "scf_type": "pk",
+            "scf_type": "conv",  # longstanding "pk"
             "mp2_type": "conv",
             "g_convergence": "GAU_VERYTIGHT",
             "e_convergence": 1.0e-10,

@@ -118,7 +118,7 @@ def system1():
     # Get a reasonable guess, to save some iterations
     qcdb.set_options(
         {
-            "scf_type": "pk",
+            "scf_type": "conv",  # longstanding "pk"
             "mp2_type": "conv",
             "reference": "rhf",
         }
@@ -141,7 +141,7 @@ def system2():
     # Get a reasonable guess, to save some iterations
     qcdb.set_options(
         {
-            "scf_type": "pk",
+            "scf_type": "conv",  # longstanding "pk"
             "mp2_type": "conv",
             "reference": "rhf",
         }
