@@ -597,9 +597,9 @@ def frequency(name, **kwargs):
     #        core.set_global_option("BASIS", old_global_basis)
 
     if return_wfn:
-        return (jobrec["qcvars"]["CURRENT ENERGY"].data, jobrec)
+        return (float(jobrec["qcvars"]["CURRENT ENERGY"].data), jobrec)
     else:
-        return jobrec["qcvars"]["CURRENT ENERGY"].data
+        return float(jobrec["qcvars"]["CURRENT ENERGY"].data)
 
 
 def vibanal_str(mass, coord, fcm, hess=None, project_trans=True, project_rot=True):
