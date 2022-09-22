@@ -34,10 +34,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>QCDB API</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -49,6 +49,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
@@ -100,7 +101,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.gd9e156e">0+untagged.1.gd9e156e</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.gb924127">0+untagged.1.gb924127</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -118,19 +119,15 @@
           <div class="body" role="main">
             
   <section id="qcdb-api">
-<span id="sec-api"></span><h1><span style="font-family: Optima, sans-serif; text-transform: none;">QCDB</span> API<a class="headerlink" href="#qcdb-api" title="Permalink to this headline">¶</a></h1>
+<span id="sec-api"></span><h1><span style="font-family: Optima, sans-serif; text-transform: none;">QCDB</span> API<a class="headerlink" href="#qcdb-api" title="Permalink to this heading">¶</a></h1>
 <section id="module-qcdb">
-<span id="qcdb-package"></span><h2>qcdb Package<a class="headerlink" href="#module-qcdb" title="Permalink to this headline">¶</a></h2>
+<span id="qcdb-package"></span><h2>qcdb Package<a class="headerlink" href="#module-qcdb" title="Permalink to this heading">¶</a></h2>
 <p>Module to facilitate quantum chemical computations on chemical
 databases. Contains Molecule class and physical constants from psi4 suite.</p>
 <p>isort:skip_file</p>
 <section id="functions">
-<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.activate.html#qcdb.activate" title="qcdb.activate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">activate</span></code></a>(mol)</p></td>
 <td><p></p></td>
@@ -223,12 +220,8 @@ databases. Contains Molecule class and physical constants from psi4 suite.</p>
 </table>
 </section>
 <section id="classes">
-<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="api/qcdb.AliasKeyword.html#qcdb.AliasKeyword" title="qcdb.AliasKeyword"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AliasKeyword</span></code></a>(alias, target)</p></td>
 <td><p></p></td>
@@ -297,7 +290,7 @@ databases. Contains Molecule class and physical constants from psi4 suite.</p>
 </table>
 </section>
 <section id="class-inheritance-diagram">
-<h3>Class Inheritance Diagram<a class="headerlink" href="#class-inheritance-diagram" title="Permalink to this headline">¶</a></h3>
+<h3>Class Inheritance Diagram<a class="headerlink" href="#class-inheritance-diagram" title="Permalink to this heading">¶</a></h3>
 <div class="graphviz"><img src="_images/inheritance-6b38df88ce1906d26ce7a44ff3e09ceed6aca7fb.png" alt="Inheritance diagram of qcdb.keywords.keywords.AliasKeyword, qcdb.basisset.libmintsbasisset.BasisSet, qcdb.exceptions.BasisSetFileNotFound, qcdb.exceptions.BasisSetNotDefined, qcdb.exceptions.BasisSetNotFound, qcdb.exceptions.Dftd3Error, qcdb.exceptions.FeatureDeprecated, qcdb.exceptions.FeatureNotImplemented, qcdb.exceptions.FragmentCountError, qcdb.exceptions.IncompleteAtomError, qcdb.keywords.keywords.Keyword, qcdb.exceptions.KeywordReconciliationError, qcdb.exceptions.KeywordValidationError, qcdb.keywords.keywords.Keywords, qcdb.molecule.molecule.Molecule, qcdb.exceptions.MoleculeFormatError, qcdb.exceptions.ParsingValidationError, qcdb.exceptions.QcdbException, qcdb.exceptions.TestComparisonError, qcdb.exceptions.UpgradeHelper, qcdb.exceptions.ValidationError" usemap="#inheritanceb048907585" class="inheritance graphviz" /></div>
 <map id="inheritanceb048907585" name="inheritanceb048907585">
 <area shape="rect" id="node1" href="api/qcdb.AliasKeyword.html#qcdb.AliasKeyword" target="_top" title="AliasKeyword" alt="" coords="19,499,129,524"/>
@@ -435,7 +428,7 @@ databases. Contains Molecule class and physical constants from psi4 suite.</p>
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.gd9e156e">0+untagged.1.gd9e156e</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.gb924127">0+untagged.1.gb924127</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -447,9 +440,9 @@ databases. Contains Molecule class and physical constants from psi4 suite.</p>
     </div>
 
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2013-2021, The QCDB Project.
-      Last updated on Sunday, 12 December 2021 11:54PM.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+        &#169; Copyright 2013-2022, The QCDB Project.
+      Last updated on Thursday, 22 September 2022 10:50PM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
     </div>
     <!-- cloud_sptheme 1.4 -->
   </body>

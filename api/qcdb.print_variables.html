@@ -34,10 +34,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>print_variables</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -49,6 +49,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
@@ -100,7 +101,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.print_variables.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.gd9e156e">0+untagged.1.gd9e156e</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.gb924127">0+untagged.1.gb924127</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -119,19 +120,19 @@
           <div class="body" role="main">
             
   <section id="print-variables">
-<h1>print_variables<a class="headerlink" href="#print-variables" title="Permalink to this headline">¶</a></h1>
+<h1>print_variables<a class="headerlink" href="#print-variables" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="qcdb.print_variables">
 <span class="sig-prename descclassname"><span class="pre">qcdb.</span></span><span class="sig-name descname"><span class="pre">print_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qcvars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/driver/driver_helpers.html#print_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.print_variables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Form a printable representation of qcvariables.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>qcvars</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://psicode.org/psi4manual/master/external_apis.html#qcelemental.datum.Datum" title="(in Psi4 v1.6a1.dev9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Datum</span></code></a>]]) – Group of Datumobjects to print. If <cite>None</cite>, will use <cite>qcdb.pe.active_qcvars</cite>.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>qcvars</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Datum</span></code>]]) – Group of Datumobjects to print. If <cite>None</cite>, will use <cite>qcdb.pe.active_qcvars</cite>.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Printable string representation of label, data, and unit in Datum-s.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a></p>
 </dd>
 </dl>
@@ -235,7 +236,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.print_variables.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.gd9e156e">0+untagged.1.gd9e156e</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.gb924127">0+untagged.1.gb924127</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -248,9 +249,9 @@
     </div>
 
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2013-2021, The QCDB Project.
-      Last updated on Sunday, 12 December 2021 11:54PM.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+        &#169; Copyright 2013-2022, The QCDB Project.
+      Last updated on Thursday, 22 September 2022 10:50PM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
     </div>
     <!-- cloud_sptheme 1.4 -->
   </body>

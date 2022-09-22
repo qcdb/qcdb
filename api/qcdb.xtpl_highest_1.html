@@ -34,10 +34,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>xtpl_highest_1</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -49,6 +49,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
@@ -100,7 +101,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.xtpl_highest_1.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.gd9e156e">0+untagged.1.gd9e156e</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.gb924127">0+untagged.1.gb924127</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -119,7 +120,7 @@
           <div class="body" role="main">
             
   <section id="xtpl-highest-1">
-<h1>xtpl_highest_1<a class="headerlink" href="#xtpl-highest-1" title="Permalink to this headline">¶</a></h1>
+<h1>xtpl_highest_1<a class="headerlink" href="#xtpl-highest-1" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="qcdb.xtpl_highest_1">
 <span class="sig-prename descclassname"><span class="pre">qcdb.</span></span><span class="sig-name descname"><span class="pre">xtpl_highest_1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mtdname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zHI</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valueHI</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/driver/cbs_helpers.html#xtpl_highest_1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.xtpl_highest_1" title="Permalink to this definition">¶</a></dt>
@@ -128,19 +129,19 @@ zeta-level among an array of bases. Used by <a class="reference internal" href="
 <div class="math notranslate nohighlight">
 \[E_{\textrm{total}}^X = E_{\textrm{total}}^X\]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>mtdname</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Method name (e.g., ‘mp2’) used in summary printing.</p></li>
 <li><p><strong>zHI</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Zeta number of the basis set.</p></li>
-<li><p><strong>valueHI</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>]) – Energy, gradient, or Hessian value at the basis set.</p></li>
+<li><p><strong>valueHI</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>]) – Energy, gradient, or Hessian value at the basis set.</p></li>
 <li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Controls volume of printing.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Eponymous function applied to input zetas and values; type from <cite>valueHI</cite>.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -248,7 +249,7 @@ zeta-level among an array of bases. Used by <a class="reference internal" href="
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.xtpl_highest_1.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.gd9e156e">0+untagged.1.gd9e156e</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.gb924127">0+untagged.1.gb924127</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -261,9 +262,9 @@ zeta-level among an array of bases. Used by <a class="reference internal" href="
     </div>
 
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2013-2021, The QCDB Project.
-      Last updated on Sunday, 12 December 2021 11:54PM.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+        &#169; Copyright 2013-2022, The QCDB Project.
+      Last updated on Thursday, 22 September 2022 10:50PM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
     </div>
     <!-- cloud_sptheme 1.4 -->
   </body>

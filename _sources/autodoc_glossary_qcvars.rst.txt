@@ -41,6 +41,11 @@ QCVariables by Alpha
    units: [Eh/a0/a0]
    dimension: [(3 * {nat}, 3 * {nat})]
 
+.. qcvar:: B(T) CORRECTION ENERGY
+
+   The Brueckner coupled-cluster perturbative triples correction.
+   units: [Eh]
+
 .. qcvar:: B2GPPLYP DIPOLE
 
    The total dipole for the B2GPPLYP level of theory.
@@ -580,6 +585,26 @@ QCVariables by Alpha
    requested DFT method b97, with dispersion correction.
    units: [Eh]
 
+.. qcvar:: BCCD CORRELATION ENERGY
+
+   The correlation energy for the Brueckner coupled cluster doubles level of theory.
+   units: [Eh]
+
+.. qcvar:: BCCD TOTAL ENERGY
+
+   The total electronic energy for the Brueckner coupled cluster doubles level of theory.
+   units: [Eh]
+
+.. qcvar:: BCCD(T) CORRELATION ENERGY
+
+   The correlation energy for the Brueckner coupled cluster doubles with perturbative triples level of theory.
+   units: [Eh]
+
+.. qcvar:: BCCD(T) TOTAL ENERGY
+
+   The total electronic energy for the Brueckner coupled cluster doubles with perturbative triples level of theory.
+   units: [Eh]
+
 .. qcvar:: BLYP DIPOLE
 
    The total dipole for the BLYP level of theory.
@@ -910,6 +935,78 @@ QCVariables by Alpha
 
    Diagnostic of multireference character.
    units: []
+
+.. qcvar:: CC2 CORRELATION ENERGY
+
+   The correlation energy for the coupled cluster 2nd-order approximation level of theory.
+   units: [Eh]
+
+.. qcvar:: CC2 DOUBLES ENERGY
+
+   The doubles portion of the CC2 correlation energy including same-spin and opposite-spin correlations.
+   units: [Eh]
+
+.. qcvar:: CC2 OPPOSITE-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the CC2 correlation energy from opposite-spin or singlet doubles correlations.
+   units: [Eh]
+
+.. qcvar:: CC2 SAME-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the CC2 correlation energy from same-spin or triplet doubles correlations.
+   units: [Eh]
+
+.. qcvar:: CC2 SINGLES ENERGY
+
+   The singles portion of the CC2 correlation energy. Zero except in ROHF.
+   units: [Eh]
+
+.. qcvar:: CC2 TOTAL ENERGY
+
+   The total electronic energy for the coupled cluster 2nd-order approximation level of theory.
+   units: [Eh]
+
+.. qcvar:: CC2 TOTAL GRADIENT
+
+   The total electronic gradient for the coupled cluster 2nd-order approximation level of theory.
+   units: [Eh/a0]
+   dimension: [({nat}, 3)]
+
+.. qcvar:: CC2 TOTAL HESSIAN
+
+   The total electronic Hessian for the coupled cluster 2nd-order approximation level of theory.
+   units: [Eh/a0/a0]
+   dimension: [(3 * {nat}, 3 * {nat})]
+
+.. qcvar:: CC3 CORRELATION ENERGY
+
+   The correlation energy for the coupled cluster 3rd-order approximation level of theory.
+   units: [Eh]
+
+.. qcvar:: CC3 DOUBLES ENERGY
+
+   The doubles portion of the CC3 correlation energy including same-spin and opposite-spin correlations.
+   units: [Eh]
+
+.. qcvar:: CC3 OPPOSITE-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the CC3 correlation energy from opposite-spin or singlet doubles correlations.
+   units: [Eh]
+
+.. qcvar:: CC3 SAME-SPIN CORRELATION ENERGY
+
+   The unscaled portion of the CC3 correlation energy from same-spin or triplet doubles correlations.
+   units: [Eh]
+
+.. qcvar:: CC3 SINGLES ENERGY
+
+   The singles portion of the CC3 correlation energy. Zero except in ROHF.
+   units: [Eh]
+
+.. qcvar:: CC3 TOTAL ENERGY
+
+   The total electronic energy for the coupled cluster 3rd-order approximation level of theory.
+   units: [Eh]
 
 .. qcvar:: CCD CORRELATION ENERGY
 
@@ -2007,6 +2104,21 @@ QCVariables by Alpha
 
    The total energy for linearized coupled cluster singles and doubles level of theory.
    units: [Eh]
+
+.. qcvar:: LEFT-RIGHT CC2 EIGENVECTOR OVERLAP
+
+   The overlap between the right-hand coupled coupled cluster eigenvector and the left-hand eigenvector from the coupled cluster lambda (response) equations.
+   units: []
+
+.. qcvar:: LEFT-RIGHT CCSD EIGENVECTOR OVERLAP
+
+   The overlap between the right-hand coupled coupled cluster eigenvector and the left-hand eigenvector from the coupled cluster lambda (response) equations.
+   units: []
+
+.. qcvar:: LEFT-RIGHT CCSD(T) EIGENVECTOR OVERLAP
+
+   The overlap between the right-hand coupled coupled cluster eigenvector and the left-hand eigenvector from the coupled cluster lambda (response) equations.
+   units: []
 
 .. qcvar:: LUMO
 
@@ -3907,6 +4019,86 @@ QCVariables by Alpha
 
    The total electronic energy for the underlying functional of the
    requested DFT method wpbe, with dispersion correction.
+   units: [Eh]
+
+.. qcvar:: ZAPT2 CORRELATION ENERGY
+
+   The correlation energy for the {pt}th-order Z-averaged perturbation theory level of theory.
+   units: [Eh]
+
+.. qcvar:: ZAPT2 TOTAL ENERGY
+
+   The total electronic energy for the {pt}th-order Z-averaged perturbation theory level of theory.
+   units: [Eh]
+
+.. qcvar:: ZAPT3 CORRELATION ENERGY
+
+   The correlation energy for the {pt}th-order Z-averaged perturbation theory level of theory.
+   units: [Eh]
+
+.. qcvar:: ZAPT3 TOTAL ENERGY
+
+   The total electronic energy for the {pt}th-order Z-averaged perturbation theory level of theory.
+   units: [Eh]
+
+.. qcvar:: ZAPT4 CORRELATION ENERGY
+
+   The correlation energy for the {pt}th-order Z-averaged perturbation theory level of theory.
+   units: [Eh]
+
+.. qcvar:: ZAPT4 TOTAL ENERGY
+
+   The total electronic energy for the {pt}th-order Z-averaged perturbation theory level of theory.
+   units: [Eh]
+
+.. qcvar:: ZAPT5 CORRELATION ENERGY
+
+   The correlation energy for the {pt}th-order Z-averaged perturbation theory level of theory.
+   units: [Eh]
+
+.. qcvar:: ZAPT5 TOTAL ENERGY
+
+   The total electronic energy for the {pt}th-order Z-averaged perturbation theory level of theory.
+   units: [Eh]
+
+.. qcvar:: ZAPT6 CORRELATION ENERGY
+
+   The correlation energy for the {pt}th-order Z-averaged perturbation theory level of theory.
+   units: [Eh]
+
+.. qcvar:: ZAPT6 TOTAL ENERGY
+
+   The total electronic energy for the {pt}th-order Z-averaged perturbation theory level of theory.
+   units: [Eh]
+
+.. qcvar:: ZAPT7 CORRELATION ENERGY
+
+   The correlation energy for the {pt}th-order Z-averaged perturbation theory level of theory.
+   units: [Eh]
+
+.. qcvar:: ZAPT7 TOTAL ENERGY
+
+   The total electronic energy for the {pt}th-order Z-averaged perturbation theory level of theory.
+   units: [Eh]
+
+.. qcvar:: ZAPT8 CORRELATION ENERGY
+
+   The correlation energy for the {pt}th-order Z-averaged perturbation theory level of theory.
+   units: [Eh]
+
+.. qcvar:: ZAPT8 TOTAL ENERGY
+
+   The total electronic energy for the {pt}th-order Z-averaged perturbation theory level of theory.
+   units: [Eh]
+
+.. qcvar:: ZAPT9 CORRELATION ENERGY
+
+   The correlation energy for the {pt}th-order Z-averaged perturbation theory level of theory.
+   units: [Eh]
+
+.. qcvar:: ZAPT9 TOTAL ENERGY
+
+   The total electronic energy for the {pt}th-order Z-averaged perturbation theory level of theory.
    units: [Eh]
 
 .. qcvar:: [Q] CORRECTION ENERGY

@@ -34,10 +34,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>BasisSet</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -49,6 +49,7 @@
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
@@ -100,7 +101,7 @@
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.BasisSet.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.gd9e156e">0+untagged.1.gd9e156e</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.gb924127">0+untagged.1.gb924127</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -119,7 +120,7 @@
           <div class="body" role="main">
             
   <section id="basisset">
-<h1>BasisSet<a class="headerlink" href="#basisset" title="Permalink to this headline">¶</a></h1>
+<h1>BasisSet<a class="headerlink" href="#basisset" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="qcdb.BasisSet">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">qcdb.</span></span><span class="sig-name descname"><span class="pre">BasisSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcdb/basisset/libmintsbasisset.html#BasisSet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcdb.BasisSet" title="Permalink to this definition">¶</a></dt>
@@ -129,11 +130,7 @@ Reads the basis set from a checkpoint file object. Also reads the molecule
 from the checkpoint file storing the information in an internal Molecule class
 which can be accessed using molecule().</p>
 <p class="rubric">Attributes Summary</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.LIBINT_MAX_AM" title="qcdb.BasisSet.LIBINT_MAX_AM"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LIBINT_MAX_AM</span></code></a></p></td>
 <td><p></p></td>
@@ -147,11 +144,7 @@ which can be accessed using molecule().</p>
 </tbody>
 </table>
 <p class="rubric">Methods Summary</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#qcdb.BasisSet.add" title="qcdb.BasisSet.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a>(b)</p></td>
 <td><p>Adds this plus another basis set and returns the result.</p></td>
@@ -378,7 +371,7 @@ JKFIT, or RIFIT), whereupon empty atoms are assigned to <em>key</em>
 from the BasisFamily. This function is significantly
 re-worked from its libmints analog.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>mol</strong> (<a class="reference internal" href="qcdb.Molecule.html#qcdb.Molecule" title="qcdb.molecule.molecule.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a>) – A molecule object for which every atom has had a basisset set for <cite>key</cite></p></li>
 <li><p><strong>basstrings</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Optional" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>]) – Additional source for basis data. Keys are regularized basis names and values are gbs strings.</p></li>
@@ -617,7 +610,7 @@ used to look up a suitable default basis in BasisFamily.
 <code class="docutils literal notranslate"><span class="pre">pyconstruct(smol,</span> <span class="pre">&quot;DF_BASIS_MP2&quot;,</span> <span class="pre">basisspec_psi4_yo_ccpvdzri,</span> <span class="pre">'RIFIT',</span> <span class="pre">basisspec_psi4_yo_631pg_d_p_)</span></code>
 <code class="docutils literal notranslate"><span class="pre">pyconstruct(mol,</span> <span class="pre">&quot;DF_BASIS_MP2&quot;,</span> <span class="pre">&quot;&quot;,</span> <span class="pre">&quot;RIFIT&quot;,</span> <span class="pre">&quot;6-31+G(d,p)&quot;)</span></code></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>mol</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Union" title="(in Python v3.6)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference internal" href="qcdb.Molecule.html#qcdb.Molecule" title="qcdb.molecule.molecule.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Molecule</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/typing.html#typing.Dict" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>, <a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – If not a <a class="reference internal" href="qcdb.Molecule.html#qcdb.Molecule" title="qcdb.Molecule"><code class="xref py py-class docutils literal notranslate"><span class="pre">qcdb.Molecule</span></code></a>, something that can be converted into one.
 If the latter, the basisset dict is returned rather than the BasisSet object.
@@ -636,7 +629,7 @@ the definitions for the orbital basis.</p></li>
 <li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>bas</strong> (<a class="reference internal" href="#qcdb.BasisSet" title="qcdb.BasisSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">qcdb.BasisSet</span></code></a>) – Built BasisSet object for <cite>mol</cite>.</p></li>
 <li><p><strong>dbas</strong> (<em>dict, optional</em>) – Only returned if <cite>return_dict=True</cite>. Suitable for feeding to libmints.</p></li>
@@ -844,7 +837,7 @@ at the origin with an exponent of 0.0 and contraction of 1.0.
     <li><a href="http://forum.psicode.org"><i class="fa fa-comments-o fa-lg"></i></a></li>
     <li><a href="https://github.com/qcdb/qcdb/edit/master/docs/sphinx/api/qcdb.BasisSet.rst"><i class="fa fa-pencil fa-lg"></i></a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
-    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.gd9e156e">0+untagged.1.gd9e156e</a></li>
+    <li><a href="https://github.com/qcdb/qcdb/tree/0+untagged.1.gb924127">0+untagged.1.gb924127</a></li>
     <li style="color: #1a4162">&nbsp;&middot;&nbsp;</li>
     <li class="nav-item nav-item-0"><a href="../index.html">
         <span style="font-family: Optima, sans-serif;">QCDB</span>
@@ -857,9 +850,9 @@ at the origin with an exponent of 0.0 and contraction of 1.0.
     </div>
 
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2013-2021, The QCDB Project.
-      Last updated on Sunday, 12 December 2021 11:54PM.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+        &#169; Copyright 2013-2022, The QCDB Project.
+      Last updated on Thursday, 22 September 2022 10:50PM.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
     </div>
     <!-- cloud_sptheme 1.4 -->
   </body>
