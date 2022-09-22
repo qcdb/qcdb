@@ -129,6 +129,15 @@ def gridradang(inputval):
         return {"": (positive_integer(rad), positive_integer(ang))}
 
 
+def bool_or_conv(inputval):
+    if isinstance(inputval, str):
+        inputval = inputval.lower().replace("d", "e")
+    try:
+        return float(inputval)
+    except ValueError:
+        return boolean(inputval)
+
+
 def bool_or_elem_dict(inputval):
     if isinstance(inputval, dict):
         retdict = {k.capitalize(): positive_integer(v) for k, v in inputval.items()}

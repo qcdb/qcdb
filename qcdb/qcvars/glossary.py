@@ -43,6 +43,13 @@ qcvardefs["T(CCSD) CORRECTION ENERGY"] = {
 """,
 }
 
+qcvardefs["B(T) CORRECTION ENERGY"] = {
+    "units": "Eh",
+    "glossary": """
+   The Brueckner coupled-cluster perturbative triples correction.
+""",
+}
+
 qcvardefs["QCISD(T) CORRECTION ENERGY"] = {
     "units": "Eh",
     "glossary": """
@@ -711,7 +718,7 @@ def define_scf_qcvars(mtd, is_dft=True, extra="", is_dh=False, do_grad=False):
     }
 
 
-def define_spin_qcvars(mtd, description, do_spin=False, do_grad=False, do_pole=False, extra=""):
+def define_spin_qcvars(mtd, description, do_spin=False, do_grad=False, do_pole=False, do_overlap=False, extra=""):
     global qcvardefs
 
     if mtd + " TOTAL ENERGY" not in qcvardefs:
@@ -783,6 +790,12 @@ def define_spin_qcvars(mtd, description, do_spin=False, do_grad=False, do_pole=F
             "units": "e a0^2",
             "dimension": ("(3,3)"),
             "glossary": """The total quadrupole for the {mtd} level of theory and root *n* (number starts at GS = 0).""",
+        }
+
+    if do_overlap and f"LEFT-RIGHT {mtd} EIGENVECTOR OVERLAP" not in qcvardefs:
+        qcvardefs[f"LEFT-RIGHT {mtd} EIGENVECTOR OVERLAP"] = {
+            "units": "",
+            "glossary": rf"""The overlap between the right-hand coupled coupled cluster eigenvector and the left-hand eigenvector from the coupled cluster lambda (response) equations.""",
         }
 
 
@@ -2138,13 +2151,7 @@ qcvardefs["GRID ELECTRONS TOTAL"] = {
 #   Related variable :qcvar:`CP-CORRECTED 2-BODY INTERACTION ENERGY <CP-CORRECTED2-BODYINTERACTIONENERGY>`.
 #
 #   .. math:: E_{\text{IE}} = E_{dimer} - \sum_{monomer}^{n}{E_{monomer}^{\text{unCP}}}
-#
-# .. qcvar:: ZAPTn TOTAL ENERGY
-#   ZAPTn CORRELATION ENERGY
-#
-#   The total electronic energy [H] and correlation energy component [H]
-#   for the labeled Z-averaged perturbation theory level.
-#   *n* is ZAPT perturbation order.
+
 define_scf_qcvars("HF", is_dft=False)
 define_scf_qcvars("B3LYP", is_dh=False, do_grad=True)
 define_scf_qcvars("B3LYP5", is_dh=False, do_grad=True)
@@ -2254,6 +2261,7 @@ define_spin_qcvars(
     do_spin=False,
     do_grad=True,
     do_pole=True,
+    do_overlap=True,
 )
 define_spin_qcvars(
     "CISD", description="configuration interaction with singles and doubles", do_spin=True, do_grad=False
@@ -2271,5 +2279,24 @@ define_spin_qcvars(
     "CCSD",
     description="coupled culster singles and doubles excitations",
     do_pole=True,
+    do_overlap=True,
 )
 define_spin_qcvars("MP2", description="2nd-order Moller--Plesset perturbation theory", do_spin=False, do_grad=False, do_pole=True)
+define_spin_qcvars(
+    "CC2",
+    description="coupled cluster 2nd-order approximation",
+    do_spin=True,
+    do_grad=True,
+    do_overlap=True,
+)
+define_spin_qcvars(
+    "CC3",
+    description="coupled cluster 3rd-order approximation",
+    do_spin=True,
+    do_grad=False,
+)
+define_spin_qcvars("BCCD", description="Brueckner coupled cluster doubles", do_spin=False, do_grad=False)
+define_spin_qcvars("BCCD(T)", description="Brueckner coupled cluster doubles with perturbative triples", do_spin=False, do_grad=False)
+for pt in range(2, 10):
+    define_spin_qcvars(f"ZAPT{pt}", description="{pt}th-order Z-averaged perturbation theory", do_spin=False, do_grad=False, do_pole=False)
+

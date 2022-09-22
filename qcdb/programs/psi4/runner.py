@@ -38,7 +38,7 @@ def run_psi4(name: str, molecule: "Molecule", options: "Keywords", **kwargs) -> 
         }
     )
 
-    jobrec = qcng.compute(resi, "qcdb-psi4", local_options=local_options, raise_error=True).dict()
+    jobrec = qcng.compute(resi, "qcdb-psi4", task_config=local_options, raise_error=True).dict()
     hold_qcvars = jobrec["extras"].pop("qcdb:qcvars")
     jobrec["qcvars"] = {key: qcel.Datum(**dval) for key, dval in hold_qcvars.items()}
 

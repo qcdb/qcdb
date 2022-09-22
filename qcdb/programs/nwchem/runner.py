@@ -45,7 +45,7 @@ def run_nwchem(name: str, molecule: "Molecule", options: "Keywords", **kwargs) -
         }
     )
 
-    jobrec = qcng.compute(resi, "qcdb-nwchem", local_options=local_options, raise_error=True).dict()
+    jobrec = qcng.compute(resi, "qcdb-nwchem", task_config=local_options, raise_error=True).dict()
 
     hold_qcvars = jobrec["extras"].pop("qcdb:qcvars")
     jobrec["qcvars"] = {key: qcel.Datum(**dval) for key, dval in hold_qcvars.items()}
@@ -176,6 +176,7 @@ class QcdbNWChemHarness(NWChemHarness):
         #    resolved_options = {k: v.value for k, v in jobrec['options'].scroll['NWCHEM'].items() if v.disputed()}
         skma_options = {key: ropt.value for key, ropt in sorted(ropts.scroll["NWCHEM"].items()) if ropt.disputed()}
         skma_options = {k: (int(v/8.0) if k == "MEMORY" else v) for k, v in skma_options.items()}
+        skma_options = {k: v for k, v in skma_options.items() if not k.startswith("GEOMETRY__")}
         optcmd = format_keywords(skma_options)
 
         # Handle text to be passed untouched to cfour

@@ -93,7 +93,7 @@ def get_master_frame(
 
         try:
             atres = qcng.compute(
-                atin, "gamess", local_options={"nnodes": 1, "ncores": 1, "memory": 1}, raise_error=True
+                atin, "gamess", task_config={"nnodes": 1, "ncores": 1, "memory": 1}, raise_error=True
             )
         except qcng.exceptions.UnknownError as e:
             mobj = re.search(
@@ -273,6 +273,12 @@ def muster_modelchem(name: str, dertype: int, ropts: "Keywords", mcfg: "ModeConf
         ropts.require("GAMESS", "contrl__mplevl", 2, accession=accession, verbose=verbose)
         ropts.require("GAMESS", "contrl__cityp", "none", accession=accession, verbose=verbose)
         ropts.require("GAMESS", "contrl__cctyp", "none", accession=accession, verbose=verbose)
+
+    elif lowername == "gms-zapt2":
+        ropts.require("GAMESS", "contrl__mplevl", 2, accession=accession, verbose=verbose)
+        ropts.require("GAMESS", "contrl__cityp", "none", accession=accession, verbose=verbose)
+        ropts.require("GAMESS", "contrl__cctyp", "none", accession=accession, verbose=verbose)
+        ropts.require("GAMESS", "mp2__ospt", "zapt", accession=accession, verbose=verbose)
 
     elif lowername == "gms-cisd":
         # todo qc_module CITYP

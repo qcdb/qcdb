@@ -5,36 +5,7 @@ from typing import Any, Dict
 import numpy as np
 import pytest
 from qcelemental.molutil import compute_scramble
-from qcengine.programs.tests.standard_suite_contracts import (
-    contractual_accsd_prt_pr,
-    contractual_ccd,
-    contractual_ccsd,
-    contractual_ccsd_prt_pr,
-    contractual_ccsdpt_prccsd_pr,
-    contractual_ccsdt,
-    contractual_ccsdt1a,
-    contractual_ccsdt1b,
-    contractual_ccsdt2,
-    contractual_ccsdt3,
-    contractual_ccsdt_prq_pr,
-    contractual_ccsdtq,
-    contractual_cisd,
-    contractual_current,
-    contractual_dft_current,
-    contractual_fci,
-    contractual_hf,
-    contractual_lccd,
-    contractual_lccsd,
-    contractual_mp2,
-    contractual_mp2p5,
-    contractual_mp3,
-    contractual_mp4,
-    contractual_mp4_prsdq_pr,
-    contractual_qcisd,
-    contractual_qcisd_prt_pr,
-    query_has_qcvar,
-    query_qcvar,
-)
+from qcengine.programs.tests.standard_suite_contracts import *
 from qcengine.programs.tests.standard_suite_ref import answer_hash, std_suite
 from qcengine.programs.util import mill_qcvars
 
@@ -53,6 +24,7 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
     driver = inp["driver"]
     reference = inp["reference"]
     fcae = inp["fcae"]
+    sdsc = inp.get("sdsc", "") or ("sc" if reference == "rohf" else "sd")
     mode_options = inp.get("cfg", {})
 
     if qc_module_in == "nwchem-tce" and basis == "cc-pvdz":
@@ -104,6 +76,7 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
     corl_natural_values = {
         "hf": "conv",  # dummy to assure df/cd/conv scf_type refs available
         "mp2": mp2_type,
+        "zapt2": mp_type,
         "mp3": mp_type,
         "mp4(sdq)": mp_type,
         "mp4": mp_type,
@@ -114,10 +87,14 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
         "lccd": cc_type,
         "lccsd": cc_type,
         "ccd": cc_type,
+        "bccd": cc_type,
+        "cc2": cc_type,
         "ccsd": cc_type,
         "ccsd+t(ccsd)": cc_type,
         "ccsd(t)": cc_type,
         "a-ccsd(t)": cc_type,
+        "bccd(t)": cc_type,
+        "cc3": cc_type,
         "ccsdt-1a": cc_type,
         "ccsdt-1b": cc_type,
         "ccsdt-2": cc_type,
@@ -128,6 +105,7 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
         "pbe": "conv",
         "b3lyp": "conv",
         "b3lyp5": "conv",
+        "b2plyp": "conv",
         "mrccsdt-1a": cc_type,
         "mrccsdt-1b": cc_type,
         "mrccsdt-2": cc_type,
@@ -140,7 +118,8 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
     natural_values = {"pk": "pk", "direct": "pk", "df": "df", "mem_df": "df", "disk_df": "df", "cd": "cd"}
     scf_type = natural_values[scf_type]
 
-    is_dft = method in ["pbe", "b3lyp", "b3lyp5"]
+    is_dft = method in ["pbe", "b3lyp", "b3lyp5", "b2plyp"]
+    is_dhdft = method in ["b2plyp"]
 
     # * absolute and relative tolerances function approx as `or` operation. see https://numpy.org/doc/stable/reference/generated/numpy.allclose.html
     # * can't go lower on atol_e because hit digit limits accessible for reference values
@@ -170,6 +149,7 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
         scf_type=scf_type,
         reference=reference,
         corl_type=corl_type,
+        sdsc=sdsc,
     )
     ref_block = std_suite[chash]
 
@@ -183,6 +163,7 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
         reference=reference,
         corl_type="conv",
         scf_type="pk",
+        sdsc=sdsc,
     )
     ref_block_conv = std_suite[chash_conv]
 
@@ -312,6 +293,7 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
         method,
         corl_type,
         fcae,
+        sdsc,
     ]
     asserter_args = [
         [qcdb, wfn["qcvars"]],
@@ -345,6 +327,8 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
             _asserter(asserter_args, contractual_args, contractual_mp3)
             _asserter(asserter_args, contractual_args, contractual_mp4_prsdq_pr)
             _asserter(asserter_args, contractual_args, contractual_mp4)
+        elif method == "zapt2":
+            _asserter(asserter_args, contractual_args, contractual_zapt2)
         elif method == "cisd":
             _asserter(asserter_args, contractual_args, contractual_cisd)
         elif method == "qcisd":
@@ -365,6 +349,14 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
         elif method == "ccd":
             _asserter(asserter_args, contractual_args, contractual_mp2)
             _asserter(asserter_args, contractual_args, contractual_ccd)
+        elif method == "bccd":
+            # note: for cfour, mp2 and ccsd from initial iteration difficult to extract and/or differ slightly from canonical, so skipped
+            _asserter(asserter_args, contractual_args, contractual_mp2)
+            _asserter(asserter_args, contractual_args, contractual_ccsd)
+            _asserter(asserter_args, contractual_args, contractual_bccd)
+        elif method == "cc2":
+            _asserter(asserter_args, contractual_args, contractual_mp2)
+            _asserter(asserter_args, contractual_args, contractual_cc2)
         elif method == "ccsd":
             _asserter(asserter_args, contractual_args, contractual_mp2)
             _asserter(asserter_args, contractual_args, contractual_ccsd)
@@ -380,6 +372,16 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
             _asserter(asserter_args, contractual_args, contractual_mp2)
             _asserter(asserter_args, contractual_args, contractual_ccsd)
             _asserter(asserter_args, contractual_args, contractual_accsd_prt_pr)
+        elif method == "bccd(t)":
+            # note: for cfour, mp2 and ccsd from initial iteration difficult to extract and/or differ slightly from canonical, so skipped
+            _asserter(asserter_args, contractual_args, contractual_mp2)
+            _asserter(asserter_args, contractual_args, contractual_ccsd)
+            _asserter(asserter_args, contractual_args, contractual_bccd)
+            _asserter(asserter_args, contractual_args, contractual_ccsd_prt_pr)  # assert skipped
+            _asserter(asserter_args, contractual_args, contractual_bccd_prt_pr)
+        elif method == "cc3":
+            _asserter(asserter_args, contractual_args, contractual_mp2)
+            _asserter(asserter_args, contractual_args, contractual_cc3)
         elif method == "ccsdt-1a":
             _asserter(asserter_args, contractual_args, contractual_mp2)
             _asserter(asserter_args, contractual_args, contractual_ccsdt1a)
@@ -406,7 +408,7 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
 
     if "wrong" in inp:
         if basis == "cc-pvdz" and contractual_args in [
-            ["cfour-ecc", "gradient", "rhf", mtd, "conv", "fc"]
+            ["cfour-ecc", "gradient", "rhf", mtd, "conv", "fc", "sd"]
             for mtd in ["ccsdt-1a", "ccsdt-1b", "ccsdt-2", "ccsdt-3"]
         ]:
             # these four tests have pass/fail too close for dz to "get it right" with general tolerances
@@ -441,7 +443,9 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
         assert qc_module_out == qc_module_xptd, f"QC_MODULE used ({qc_module_out}) != expected ({qc_module_xptd})"
 
     # aliases checks
-    if is_dft:
+    if is_dhdft:
+        _asserter(asserter_args, contractual_args, contractual_dhdft_current)
+    elif is_dft:
         _asserter(asserter_args, contractual_args, contractual_dft_current)
     else:
         _asserter(asserter_args, contractual_args, contractual_current)
@@ -458,7 +462,8 @@ def runner_asserter(inp, ref_subject, method, basis, tnm, scramble, frame):
             atol=atol_e,
             rtol=rtol_e,
         )
-        assert compare_values(ref_block[f"{method.upper()} TOTAL ENERGY"], ret, tnm + " return")
+        tf, errmsg = compare_values(ref_block[f"{method.upper()} TOTAL ENERGY"], ret, return_message=True, quiet=True)
+        assert compare_values(ref_block[f"{method.upper()} TOTAL ENERGY"], ret, tnm + " return"), errmsg
 
     elif driver == "gradient":
         assert compare_values(

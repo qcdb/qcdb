@@ -46,7 +46,7 @@ def run_cfour(name: str, molecule: "Molecule", options: "Keywords", **kwargs) ->
         }
     )
 
-    jobrec = qcng.compute(resi, "qcdb-cfour", local_options=local_options, raise_error=True).dict()
+    jobrec = qcng.compute(resi, "qcdb-cfour", task_config=local_options, raise_error=True).dict()
 
     hold_qcvars = jobrec["extras"].pop("qcdb:qcvars")
     jobrec["qcvars"] = {key: qcel.Datum(**dval) for key, dval in hold_qcvars.items()}
