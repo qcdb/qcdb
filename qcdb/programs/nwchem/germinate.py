@@ -1,8 +1,10 @@
+import re
 import sys
 import uuid
 from typing import Dict
 
 import qcelemental as qcel
+from qcengine.programs.nwchem.keywords import format_keyword
 
 from ...exceptions import ValidationError
 from ...util import conv_float2negexp
@@ -17,6 +19,11 @@ def muster_molecule(molrec: Dict, qmol, ropts: "Keywords", verbose: int = 1) -> 
 
     for key, val in moldata["keywords"].items():
         ropts.require("NWCHEM", key, val, **kwgs)
+
+    for key, ropt in ropts.scroll["NWCHEM"].items():
+        if key.startswith("GEOMETRY__") and ropt.disputed():
+            k, v = format_keyword(key, ropt.value, lop_off=False)
+            molcmd = re.sub(r"geometry ([^\n]*)", rf"geometry \1 {k[10:]} {v}", molcmd)
 
     return molcmd
 
@@ -384,7 +391,8 @@ def muster_modelchem(name: str, dertype: int, ropts: "Keywords", mode_config, ve
         ropts.suggest("NWCHEM", "xc", "hfexch 0.25 becke88 0.75 perdew91", **kwgs)
         mdccmd = f"task dft {runtyp} \n\n"
     elif lowername == "nwc-b2plyp":
-        ropts.suggest("NWCHEM", "xc", "hfexch 0.53 becke88 0.47 lyp 0.73", **kwgs)
+        ropts.suggest("NWCHEM", "dft__xc", "hfexch 0.53 becke88 0.47 lyp 0.73 mp2 0.27", **kwgs)
+        ropts.require("NWCHEM", "dft__dftmp2", True, **kwgs)
         mdccmd = f"task dft {runtyp} \n\n"
 
     elif lowername == "nwc-b3lyp5":

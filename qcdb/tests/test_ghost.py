@@ -2,6 +2,7 @@ import pprint
 import re
 
 import pytest
+import numpy as np
 import qcengine
 from qcelemental import constants
 from qcengine.programs.tests.test_dftd3_mp2d import eneyne_ne_qcdbmols
@@ -13,6 +14,7 @@ import qcdb
 from .utils import *
 
 
+@pytest.mark.parametrize("driver", ["energy", "gradient"])
 @pytest.mark.parametrize(
     "qcp",
     [
@@ -22,7 +24,7 @@ from .utils import *
         pytest.param("gms-", marks=using("gamess")),
     ],
 )
-def test_simple_ghost(qcp):
+def test_simple_ghost(driver, qcp):
 
     dimer = qcdb.set_molecule(
         f"""
@@ -43,7 +45,8 @@ def test_simple_ghost(qcp):
         }
     )
 
-    ene, wfn = qcdb.energy(qcp + "hf", return_wfn=True, molecule=monomer)
+    fdriver = {"energy": qcdb.energy, "gradient": qcdb.gradient}[driver]
+    res, wfn = fdriver(qcp + "hf", return_wfn=True, molecule=monomer)
     pprint.pprint(wfn, width=200)
 
     atol = 1.0e-6
@@ -51,16 +54,24 @@ def test_simple_ghost(qcp):
     assert compare_values(0.0, wfn["properties"]["nuclear_repulsion_energy"], atol=atol, label="nre")
     assert compare(32, wfn["properties"]["calcinfo_nbasis"], label="nbas")
     assert compare(32, wfn["properties"]["calcinfo_nmo"], label="nmo")
-    assert compare_values(-2.8557143339397539, ene, atol=atol, label="ene")
+    ref_ene = -2.8557143339397539
+    ref_grad = np.array([
+             0.000000000000,    0.000000000000,    0.000004317771,
+             0.000000000000,    0.000000000000,   -0.000004317771,
+    ]).reshape((-1, 3))
+    assert compare_values(ref_ene, qcdb.variable("CURRENT ENERGY"), atol=atol, label="ene")
+    retres = {"energy": ref_ene, "gradient": ref_grad}[driver]
+    assert compare_values(retres, res, atol=atol, label="res")
 
 
+@pytest.mark.parametrize("driver", ["energy", "gradient"])
 @pytest.mark.parametrize("subject", ["dimer", "mA", "mB", "mAgB", "gAmB"])
 @pytest.mark.parametrize(
     "qcprog, keywords",
     [
         pytest.param("cfour", {}, id="cfour", marks=using("cfour")),
         pytest.param("gamess", {"gamess_mp2__nacore": 0}, id="gamess", marks=using("gamess")),
-        pytest.param("nwchem", {}, id="nwchem", marks=using("nwchem")),
+        pytest.param("nwchem", {"nwchem_geometry__autosym": "1d-4"}, id="nwchem", marks=using("nwchem")),
         pytest.param(
             "psi4",
             {
@@ -72,14 +83,15 @@ def test_simple_ghost(qcp):
         ),
     ],
 )
-def test_tricky_ghost(qcprog, subject, keywords):
+def test_tricky_ghost(driver, qcprog, subject, keywords):
     qmol = eneyne_ne_qcdbmols()["eneyne"][subject]
     ref = bimol_ref["eneyne"]
 
     assert qmol.natom() == ref["natom"][subject]
     assert sum([int(qmol.Z(at) > 0) for at in range(qmol.natom())]) == ref["nreal"][subject]
 
-    ene, wfn = qcdb.energy(
+    fdriver = {"energy": qcdb.energy, "gradient": qcdb.gradient}[driver]
+    res, wfn = fdriver(
         qcdb.util.program_prefix(qcprog) + "mp2/6-31g*", return_wfn=True, molecule=qmol, options=keywords
     )
     pprint.pprint(wfn, width=200)
@@ -93,7 +105,9 @@ def test_tricky_ghost(qcprog, subject, keywords):
     assert compare(
         ref["nmo"][subject], wfn["properties"]["calcinfo_nmo"], label="nmo"
     ), f'nmo: {wfn["properties"]["calcinfo_nmo"]} != {ref["nmo"][subject]}'
-    assert compare_values(ref["mp2"][subject], ene, atol=1.0e-6, label="ene"), f'ene: {ene} != {ref["mp2"][subject]}'
+    assert compare_values(ref["mp2"][subject], qcdb.variable("CURRENT ENERGY"), atol=1.0e-6, label="ene"), f'ene: {qcdb.variable("CURRENT ENERGY")} != {ref["mp2"][subject]}'
+    retres = {"energy": ref["mp2"][subject], "gradient": ref["mp2_gradient"][subject]}[driver]
+    assert compare_values(retres, res, atol=2.0e-6, label="res"), f'res: {res} != {retres}'
 
     pgline = {
         "cfour": r"Computational point group: (?P<pg>\w+)",

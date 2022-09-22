@@ -79,7 +79,7 @@ def load_nwchem_keywords(options: Keywords) -> None:
         Keyword(
             keyword="geometry__autosym",
             default=True,
-            validator=parsers.boolean,
+            validator=parsers.bool_or_conv,
             glossary="The option to automatically determine the symmetry of the geometric system. Default is on.",
         ),
     )
@@ -1475,6 +1475,16 @@ def load_nwchem_keywords(options: Keywords) -> None:
         ),
     )
 
+    options.add(
+        "nwchem",
+        Keyword(
+            keyword="dft__dftmp2",
+            default=False,
+            validator=parsers.boolean,
+            glossary="MP2 for DH-DFH",
+        ),
+    )
+
     #    options.add(
     #        'nwchem',
     #        Keyword(
@@ -1946,6 +1956,16 @@ def load_nwchem_keywords(options: Keywords) -> None:
             default=False,
             validator=parsers.boolean,
             glossary="TCE module option of Moller-Plesset perturbation theory to the fourth order (MP4).",
+        ),
+    )
+
+    options.add(
+        "nwchem",
+        Keyword(
+            keyword="tce__cc2",
+            default=False,
+            validator=parsers.boolean,
+            glossary="TCE module option of approximate second order coupled-cluster (CC2).",
         ),
     )
 

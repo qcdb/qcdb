@@ -308,6 +308,16 @@ def wfn_qcvars() -> List[Dict[str, Any]]:
         _solve_in_turn(args=["CCD CORRELATION ENERGY", "CCD DOUBLES ENERGY", "CCD SINGLES ENERGY"], coeff=[-1, 1, 1])
     )
 
+    # BCCD
+    pv0.extend(
+        _solve_in_turn(args=["BCCD TOTAL ENERGY", "HF TOTAL ENERGY", "BCCD CORRELATION ENERGY"], coeff=[-1, 1, 1])
+    )
+
+    # CC2
+    pv0.extend(
+        _solve_in_turn(args=["CC2 TOTAL ENERGY", "HF TOTAL ENERGY", "CC2 CORRELATION ENERGY"], coeff=[-1, 1, 1])
+    )
+
     # CCSD
     pv0.extend(
         _solve_in_turn(args=["CCSD TOTAL ENERGY", "HF TOTAL ENERGY", "CCSD CORRELATION ENERGY"], coeff=[-1, 1, 1])
@@ -383,6 +393,21 @@ def wfn_qcvars() -> List[Dict[str, Any]]:
         _solve_in_turn(
             args=["CCSD[T] CORRELATION ENERGY", "CCSD CORRELATION ENERGY", "[T] CORRECTION ENERGY"], coeff=[-1, 1, 1]
         )
+    )
+
+    # BCCD(T)
+    pv0.extend(
+        _solve_in_turn(args=["BCCD(T) TOTAL ENERGY", "HF TOTAL ENERGY", "BCCD(T) CORRELATION ENERGY"], coeff=[-1, 1, 1])
+    )
+    pv0.extend(
+        _solve_in_turn(
+            args=["BCCD(T) CORRELATION ENERGY", "BCCD CORRELATION ENERGY", "B(T) CORRECTION ENERGY"], coeff=[-1, 1, 1]
+        )
+    )
+
+    # CC3
+    pv0.extend(
+        _solve_in_turn(args=["CC3 TOTAL ENERGY", "HF TOTAL ENERGY", "CC3 CORRELATION ENERGY"], coeff=[-1, 1, 1])
     )
 
     # CCSDT
